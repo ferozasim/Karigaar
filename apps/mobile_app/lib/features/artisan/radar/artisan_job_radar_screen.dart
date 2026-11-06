@@ -5,7 +5,6 @@ import '../../../core/providers/app_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../shared/widgets/mode_switcher_pill.dart';
-import '../../shared/widgets/karigaar_button.dart';
 
 class ArtisanJobRadarScreen extends ConsumerStatefulWidget {
   const ArtisanJobRadarScreen({super.key});
@@ -105,7 +104,7 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                     ),
                     Switch(
                       value: isOnline,
-                      activeColor: AppColors.secondary,
+                      activeThumbColor: AppColors.secondary,
                       onChanged: (val) {
                         ref.read(artisanDutyOnlineProvider.notifier).state = val;
                       },
@@ -182,7 +181,7 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                     border: Border.all(color: AppColors.secondary, width: 2),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.secondary.withOpacity(0.12),
+                        color: AppColors.secondary.withValues(alpha: 0.12),
                         blurRadius: 16,
                         offset: const Offset(0, 4),
                       ),

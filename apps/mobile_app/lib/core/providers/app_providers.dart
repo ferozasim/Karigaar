@@ -21,10 +21,36 @@ final launchTradesProvider = FutureProvider<List<TradeModel>>((ref) async {
   return AppDataService.loadTrades();
 });
 
+/// Selected Locality in Pilot City (Nanded)
+final selectedLocalityProvider = StateProvider<LocalityModel>((ref) {
+  return const LocalityModel(
+    localityId: 'loc_anand_nagar',
+    name: 'Anand Nagar',
+    marathiName: 'आनंद नगर',
+    pincode: '431602',
+    center: GeoPointModel(latitude: 19.1685, longitude: 77.3090),
+    radiusKm: 2.0,
+    density: 'HIGH_RESIDENTIAL',
+    emergencyHub: true,
+  );
+});
+
 /// Sample Nanded Verified Master Craftsmen
 final topArtisansProvider = Provider<List<ArtisanProfileModel>>((ref) {
   return AppDataService.getSampleNandedArtisans();
 });
+
+/// Artisan Profile by ID Provider
+final artisanByIdProvider = Provider.family<ArtisanProfileModel, String>((ref, id) {
+  final list = ref.watch(topArtisansProvider);
+  return list.firstWhere(
+    (a) => a.artisanId == id,
+    orElse: () => list.first,
+  );
+});
+
+/// Artisan Cleared Available Wallet Balance
+final artisanWalletBalanceProvider = StateProvider<double>((ref) => 4620.00);
 
 /// Artisan Duty Status Toggle (Active vs Paused)
 final artisanDutyOnlineProvider = StateProvider<bool>((ref) => true);

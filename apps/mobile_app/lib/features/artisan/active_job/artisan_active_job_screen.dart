@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pinput/pinput.dart';
 import '../../../core/providers/app_providers.dart';
 import '../../../core/models/booking_model.dart';
 import '../../../core/theme/app_colors.dart';
@@ -104,7 +103,7 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
+                      color: Colors.white.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text('Live Log', style: AppTypography.labelSm.copyWith(color: Colors.white)),
@@ -165,8 +164,8 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                   color: AppColors.tertiarySurfaceTint,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Row(
-                  children: const [
+                child: const Row(
+                  children: [
                     Icon(Icons.check_circle_rounded, color: AppColors.tertiary, size: 20),
                     SizedBox(width: 8),
                     Text('Start Code 4921 Verified • Doorstep Handshake Complete', style: TextStyle(color: AppColors.tertiary, fontWeight: FontWeight.bold)),
@@ -232,8 +231,8 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                             children: [
                               Text(part.name, style: const TextStyle(fontWeight: FontWeight.w600)),
                               if (part.receiptPhotoUrl != null)
-                                Row(
-                                  children: const [
+                                const Row(
+                                  children: [
                                     Icon(Icons.receipt_long_rounded, size: 14, color: AppColors.tertiary),
                                     SizedBox(width: 4),
                                     Text('Receipt Photo Attached', style: TextStyle(fontSize: 11, color: AppColors.tertiary)),
@@ -248,7 +247,7 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                   ],
                 ),
               );
-            }).toList(),
+            }),
 
             const SizedBox(height: 16),
             // Bill Summary

@@ -79,3 +79,9 @@ tmp/
 *.tmp
 logs/
 *.log
+
+# Antigravity Subagents Runtime & Logs
+.agents/
+.system_generated/
+coverage/
+apps/mobile_app/coverage/

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/models/user_role.dart';
 import '../../../core/models/trade_model.dart';
 import '../../../core/models/artisan_profile_model.dart';
 import '../../../core/providers/app_providers.dart';
@@ -180,8 +179,8 @@ class CustomerHomeScreen extends ConsumerWidget {
                         ],
                       ),
                       const SizedBox(height: 12),
-                      Row(
-                        children: const [
+                      const Row(
+                        children: [
                           Expanded(child: TrustShieldBadge.policeVerified()),
                           SizedBox(width: 8),
                           Expanded(child: TrustShieldBadge.warranty30Days()),
@@ -247,7 +246,7 @@ class CustomerHomeScreen extends ConsumerWidget {
             decoration: BoxDecoration(
               color: trade.surfaceTint,
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: trade.accentColor.withOpacity(0.3)),
+              border: Border.all(color: trade.accentColor.withValues(alpha: 0.3)),
             ),
             child: Icon(
               _getIconData(trade.iconName),

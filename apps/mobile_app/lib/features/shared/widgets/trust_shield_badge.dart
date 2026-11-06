@@ -31,8 +31,8 @@ class TrustShieldBadge extends StatelessWidget {
   const TrustShieldBadge.toolAuditPassed({super.key})
       : label = 'Laser Tool Calibrated',
         icon = Icons.build_circle_rounded,
-        tintColor = Color(0xFFEFF6FF),
-        textColor = Color(0xFF2563EB);
+        tintColor = const Color(0xFFEFF6FF),
+        textColor = const Color(0xFF2563EB);
 
   @override
   Widget build(BuildContext context) {

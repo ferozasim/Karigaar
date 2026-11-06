@@ -50,6 +50,9 @@ dependencies:
   audioplayers: ^6.1.0
   record: ^5.2.0
 
+  # Intent Dispatches (Path A Direct Call & WhatsApp)
+  url_launcher: ^6.3.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

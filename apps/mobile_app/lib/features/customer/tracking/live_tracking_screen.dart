@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/providers/app_providers.dart';
-import '../../../core/models/booking_model.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../shared/widgets/trust_shield_badge.dart';
@@ -122,10 +121,10 @@ class LiveTrackingScreen extends ConsumerWidget {
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.95),
+                            color: Colors.white.withValues(alpha: 0.95),
                             borderRadius: BorderRadius.circular(10),
                             boxShadow: [
-                              BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 8),
+                              BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 8),
                             ],
                           ),
                           child: Row(

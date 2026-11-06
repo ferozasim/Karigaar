@@ -109,18 +109,18 @@ class AppDataService {
     ];
   }
 
-  static final CityConfigModel _defaultNandedConfig = CityConfigModel(
+  static final CityConfigModel _defaultNandedConfig = const CityConfigModel(
     cityId: 'city_nanded_01',
     name: 'Nanded',
     fullName: 'Nanded-Waghala, Maharashtra',
     state: 'Maharashtra',
     country: 'India',
-    pincodeRange: const ['431601', '431602', '431603', '431604', '431605', '431606'],
-    centerCoordinates: const GeoPointModel(latitude: 19.1383, longitude: 77.3210),
+    pincodeRange: ['431601', '431602', '431603', '431604', '431605', '431606'],
+    centerCoordinates: GeoPointModel(latitude: 19.1383, longitude: 77.3210),
     defaultDispatchRadiusKm: 4.5,
     emergencyDispatchWindowMins: 25,
     currencySymbol: '₹',
-    localities: const [
+    localities: [
       LocalityModel(
         localityId: 'loc_vazirabad',
         name: 'Vazirabad & Sarafa',

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 
 class EmergencyAssistBanner extends StatelessWidget {
@@ -25,7 +24,7 @@ class EmergencyAssistBanner extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFD97706).withOpacity(0.25),
+            color: const Color(0xFFD97706).withValues(alpha: 0.25),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -69,7 +68,7 @@ class EmergencyAssistBanner extends StatelessWidget {
                 Text(
                   'Electricians & Plumbers on stand-by across Nanded',
                   style: AppTypography.bodySm.copyWith(
-                    color: Colors.white.withOpacity(0.9),
+                    color: Colors.white.withValues(alpha: 0.9),
                   ),
                 ),
               ],

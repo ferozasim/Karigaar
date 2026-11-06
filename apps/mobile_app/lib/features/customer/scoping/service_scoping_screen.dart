@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/models/trade_model.dart';
 import '../../../core/providers/app_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
@@ -78,8 +77,8 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            children: const [
+                          const Row(
+                            children: [
                               TrustShieldBadge(
                                 label: 'Verified Master Guild',
                                 icon: Icons.workspace_premium_rounded,
@@ -107,7 +106,7 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                           Container(
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.08),
+                              color: Colors.white.withValues(alpha: 0.08),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Row(
@@ -199,7 +198,7 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                           ),
                         ),
                       );
-                    }).toList(),
+                    }),
 
                     const SizedBox(height: 20),
                     // Media & Voice Scoping (15s Audio Memo)
@@ -302,7 +301,7 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                           ),
                         ),
                       );
-                    }).toList(),
+                    }),
                   ],
                 ),
               ),
@@ -319,7 +318,7 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                     border: const Border(top: BorderSide(color: AppColors.borderSubtle)),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.08),
+                        color: Colors.black.withValues(alpha: 0.08),
                         blurRadius: 16,
                         offset: const Offset(0, -4),
                       ),

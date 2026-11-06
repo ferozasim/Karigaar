@@ -66,7 +66,7 @@ class ModeSwitcherPill extends ConsumerWidget {
           boxShadow: isActive
               ? [
                   BoxShadow(
-                    color: AppColors.primary.withOpacity(0.15),
+                    color: AppColors.primary.withValues(alpha: 0.15),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),

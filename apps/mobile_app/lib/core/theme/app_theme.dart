@@ -26,7 +26,7 @@ abstract class AppTheme {
         surface: AppColors.surfaceRaised,
         onSurface: AppColors.textPrimary,
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: AppColors.surfaceRaised,
         elevation: 0,
         shape: RoundedRectangleBorder(
