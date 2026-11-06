@@ -9,6 +9,7 @@ import '../../../core/theme/app_typography.dart';
 import '../../shared/widgets/emergency_assist_banner.dart';
 import '../../shared/widgets/trust_shield_badge.dart';
 import '../../shared/widgets/mode_switcher_pill.dart';
+import '../../shared/widgets/locality_selector_sheet.dart';
 
 class CustomerHomeScreen extends ConsumerWidget {
   const CustomerHomeScreen({super.key});
@@ -17,6 +18,7 @@ class CustomerHomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tradesAsync = ref.watch(launchTradesProvider);
     final artisans = ref.watch(topArtisansProvider);
+    final selectedLocality = ref.watch(selectedLocalityProvider);
 
     return Scaffold(
       backgroundColor: AppColors.surfaceBase,
@@ -44,25 +46,30 @@ class CustomerHomeScreen extends ConsumerWidget {
                     const SizedBox(width: 12),
                     // Locality Selector (Pilot City: Nanded)
                     Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                'Anand Nagar, Nanded',
-                                style: AppTypography.headlineSm.copyWith(fontSize: 16),
-                              ),
-                              const Icon(Icons.keyboard_arrow_down_rounded, size: 20),
-                            ],
-                          ),
-                          Text(
-                            'Pilot Hub • Maharashtra 431602',
-                            style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
-                          ),
-                        ],
+                      child: InkWell(
+                        onTap: () => LocalitySelectorSheet.show(context),
+                        borderRadius: BorderRadius.circular(10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  '${selectedLocality.name}, Nanded',
+                                  style: AppTypography.headlineSm.copyWith(fontSize: 16),
+                                ),
+                                const Icon(Icons.keyboard_arrow_down_rounded, size: 20),
+                              ],
+                            ),
+                            Text(
+                              '${selectedLocality.marathiName} • ${selectedLocality.pincode}',
+                              style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
+                    const SizedBox(width: 8),
                     // Mode Switcher Pill Compact
                     const ModeSwitcherPill(compact: true),
                   ],
@@ -281,17 +288,20 @@ class CustomerHomeScreen extends ConsumerWidget {
   }
 
   Widget _buildArtisanCard(BuildContext context, ArtisanProfileModel artisan) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 14),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceRaised,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.borderSubtle),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+    return InkWell(
+      borderRadius: BorderRadius.circular(16),
+      onTap: () => context.push('/customer/artisan/${artisan.artisanId}'),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 14),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.surfaceRaised,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.borderSubtle),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -368,7 +378,8 @@ class CustomerHomeScreen extends ConsumerWidget {
           ),
         ],
       ),
-    );
+    ),
+  );
   }
 
   Widget _buildBottomNav(BuildContext context) {

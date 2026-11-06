@@ -17,7 +17,6 @@ class LoginScreen extends ConsumerStatefulWidget {
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final TextEditingController _phoneController = TextEditingController(text: '9822199882');
-  final bool _isLoading = false;
 
   @override
   void dispose() {

@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/login_screen.dart';
 import '../../features/auth/otp_verification_screen.dart';
 import '../../features/customer/home/customer_home_screen.dart';
+import '../../features/customer/profile/artisan_profile_screen.dart';
 import '../../features/customer/scoping/service_scoping_screen.dart';
 import '../../features/customer/tracking/live_tracking_screen.dart';
 import '../../features/artisan/radar/artisan_job_radar_screen.dart';
@@ -24,6 +25,13 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/customer/home',
       builder: (context, state) => const CustomerHomeScreen(),
+    ),
+    GoRoute(
+      path: '/customer/artisan/:artisanId',
+      builder: (context, state) {
+        final artisanId = state.pathParameters['artisanId'] ?? 'art_nanded_01';
+        return ArtisanProfileScreen(artisanId: artisanId);
+      },
     ),
     GoRoute(
       path: '/customer/service/:tradeId',

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/providers/app_providers.dart';
+import '../../../core/services/contact_intent_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../shared/widgets/trust_shield_badge.dart';
@@ -230,11 +231,25 @@ class LiveTrackingScreen extends ConsumerWidget {
                       ),
                       // WhatsApp Chat & Call Buttons
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          ContactIntentService.openWhatsAppChat(
+                            context,
+                            phoneNumber: booking.assignedArtisanPhone ?? '+919822012345',
+                            prefilledMessage:
+                                'Hello ${booking.assignedArtisanName ?? "Karigaar"}, tracking your arrival for Booking #${booking.bookingId}',
+                            contactName: booking.assignedArtisanName,
+                          );
+                        },
                         icon: const Icon(Icons.chat_bubble_rounded, color: Color(0xFF25D366)),
                       ),
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          ContactIntentService.makePhoneCall(
+                            context,
+                            phoneNumber: booking.assignedArtisanPhone ?? '+919822012345',
+                            contactName: booking.assignedArtisanName,
+                          );
+                        },
                         icon: const Icon(Icons.phone_rounded, color: AppColors.primary),
                       ),
                     ],
@@ -300,7 +315,7 @@ class LiveTrackingScreen extends ConsumerWidget {
     } else if (isCurrent) {
       iconColor = AppColors.secondary;
     } else {
-      iconColor = AppColors.textSubtle;
+      iconColor = AppColors.borderSubtle;
     }
 
     return Row(
@@ -317,9 +332,7 @@ class LiveTrackingScreen extends ConsumerWidget {
                     : (isCurrent ? AppColors.secondarySurfaceTint : AppColors.surfaceSubtle),
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isCompleted
-                      ? AppColors.tertiary
-                      : (isCurrent ? AppColors.secondary : AppColors.borderSubtle),
+                  color: iconColor,
                   width: 2,
                 ),
               ),

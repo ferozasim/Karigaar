@@ -1,9 +1,22 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_typography.dart';
 
 class ContactIntentService {
+  /// Test override flag to force simulated intent sheet
+  static bool forceSimulationForTesting = false;
+
+  static bool get _shouldSimulate {
+    if (forceSimulationForTesting) return true;
+    if (kIsWeb) return false;
+    if (WidgetsBinding.instance.runtimeType.toString().contains('TestWidgetsFlutterBinding')) {
+      return true;
+    }
+    return false;
+  }
+
   /// Launches native phone dialer for Path A direct communication with fallback dialog
   static Future<void> makePhoneCall(
     BuildContext context, {
@@ -13,9 +26,33 @@ class ContactIntentService {
     final cleanPhone = phoneNumber.replaceAll(RegExp(r'[^0-9+]'), '');
     final uri = Uri.parse('tel:$cleanPhone');
 
+    if (_shouldSimulate) {
+      if (context.mounted) {
+        _showSimulatedIntentSheet(
+          context,
+          title: 'Direct Telephony Call Dispatched',
+          actionText: 'Calling ${contactName ?? cleanPhone}',
+          details: 'Intent: tel:$cleanPhone\n\n(Dialer intent simulated on desktop/test environment)',
+          icon: Icons.phone_in_talk_rounded,
+          iconColor: AppColors.primary,
+        );
+      }
+      return;
+    }
+
     try {
       if (await canLaunchUrl(uri)) {
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
+        final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+        if (!launched && context.mounted) {
+          _showSimulatedIntentSheet(
+            context,
+            title: 'Direct Telephony Call Dispatched',
+            actionText: 'Calling ${contactName ?? cleanPhone}',
+            details: 'Intent: tel:$cleanPhone\n\n(Dialer intent simulated on desktop/test environment)',
+            icon: Icons.phone_in_talk_rounded,
+            iconColor: AppColors.primary,
+          );
+        }
       } else {
         if (context.mounted) {
           _showSimulatedIntentSheet(
@@ -53,9 +90,33 @@ class ContactIntentService {
     final encodedMsg = Uri.encodeComponent(prefilledMessage);
     final uri = Uri.parse('https://wa.me/$cleanPhone?text=$encodedMsg');
 
+    if (_shouldSimulate) {
+      if (context.mounted) {
+        _showSimulatedIntentSheet(
+          context,
+          title: 'WhatsApp Conversation Dispatched',
+          actionText: 'Chatting with ${contactName ?? cleanPhone}',
+          details: 'URI: $uri\n\nMessage: "$prefilledMessage"\n\n(WhatsApp intent simulated on desktop/test environment)',
+          icon: Icons.chat_bubble_rounded,
+          iconColor: const Color(0xFF25D366),
+        );
+      }
+      return;
+    }
+
     try {
       if (await canLaunchUrl(uri)) {
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
+        final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+        if (!launched && context.mounted) {
+          _showSimulatedIntentSheet(
+            context,
+            title: 'WhatsApp Conversation Dispatched',
+            actionText: 'Chatting with ${contactName ?? cleanPhone}',
+            details: 'URI: $uri\n\nMessage: "$prefilledMessage"\n\n(WhatsApp intent simulated on desktop/test environment)',
+            icon: Icons.chat_bubble_rounded,
+            iconColor: const Color(0xFF25D366),
+          );
+        }
       } else {
         if (context.mounted) {
           _showSimulatedIntentSheet(
@@ -93,68 +154,74 @@ class ContactIntentService {
   }) {
     showModalBottomSheet<void>(
       context: context,
+      isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(ctx).size.height * 0.85,
+        ),
         padding: const EdgeInsets.all(24),
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: iconColor.withValues(alpha: 0.12),
-                    shape: BoxShape.circle,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: iconColor.withValues(alpha: 0.12),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(icon, color: iconColor, size: 28),
                   ),
-                  child: Icon(icon, color: iconColor, size: 28),
-                ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(title, style: AppTypography.headlineSm.copyWith(fontSize: 16)),
-                      Text(actionText, style: AppTypography.bodySm.copyWith(color: AppColors.textMuted)),
-                    ],
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(title, style: AppTypography.headlineSm.copyWith(fontSize: 16)),
+                        Text(actionText, style: AppTypography.bodySm.copyWith(color: AppColors.textMuted)),
+                      ],
+                    ),
                   ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceSubtle,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.borderSubtle),
                 ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppColors.surfaceSubtle,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.borderSubtle),
-              ),
-              child: Text(
-                details,
-                style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
-              ),
-            ),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () => Navigator.pop(ctx),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                child: Text(
+                  details,
+                  style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
                 ),
-                child: const Text('Dismiss Intent Simulation'),
               ),
-            ),
-          ],
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pop(ctx),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
+                  child: const Text('Dismiss Intent Simulation'),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/models/user_role.dart';
 import '../../../core/providers/app_providers.dart';
 import '../../../core/theme/app_colors.dart';
@@ -30,7 +31,17 @@ class ModeSwitcherPill extends ConsumerWidget {
             isActive: currentRole == UserRole.customer,
             label: compact ? 'Homeowner' : 'Homeowner Mode',
             icon: Icons.home_rounded,
-            onTap: () => ref.read(userRoleProvider.notifier).state = UserRole.customer,
+            onTap: () {
+              ref.read(userRoleProvider.notifier).state = UserRole.customer;
+              try {
+                final location = GoRouterState.of(context).uri.path;
+                if (location.startsWith('/artisan')) {
+                  context.go('/customer/home');
+                }
+              } catch (_) {
+                // Not in router context
+              }
+            },
           ),
           const SizedBox(width: 4),
           _buildRoleTab(
@@ -39,7 +50,17 @@ class ModeSwitcherPill extends ConsumerWidget {
             isActive: currentRole == UserRole.artisan,
             label: compact ? 'Karigaar' : 'Artisan Mode',
             icon: Icons.handyman_rounded,
-            onTap: () => ref.read(userRoleProvider.notifier).state = UserRole.artisan,
+            onTap: () {
+              ref.read(userRoleProvider.notifier).state = UserRole.artisan;
+              try {
+                final location = GoRouterState.of(context).uri.path;
+                if (location.startsWith('/customer')) {
+                  context.go('/artisan/radar');
+                }
+              } catch (_) {
+                // Not in router context
+              }
+            },
           ),
         ],
       ),

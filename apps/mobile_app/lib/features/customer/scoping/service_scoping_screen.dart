@@ -256,7 +256,7 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
-                                    _isRecordingAudio ? 'Stop (15s)' : '15s Audio Memo',
+                                    _isRecordingAudio ? 'Stop (${_audioSeconds}s)' : '15s Audio Memo',
                                     style: AppTypography.labelMd.copyWith(
                                       color: _isRecordingAudio ? AppColors.error : AppColors.textPrimary,
                                     ),
