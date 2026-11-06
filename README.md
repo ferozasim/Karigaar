@@ -33,9 +33,10 @@ Karigaar_app/
 │   └── design_tokens.json           # Design tokens extracted from DESIGN.md
 ├── scripts/                         # Automated Tooling & SDK Installers
 │   ├── setup-workspace.bat          # One-click Windows CMD/PowerShell setup launcher
-│   ├── setup-environment.ps1        # Master SDK orchestrator (Flutter, Android, Java)
+│   ├── setup-environment.ps1        # Master SDK orchestrator (Flutter, Android, Java, Studio)
 │   ├── install-flutter.ps1          # Automated Flutter SDK installer (User PATH)
 │   ├── install-android-sdk.ps1      # Automated Android command-line tools installer
+│   ├── install-android-studio.ps1   # Automated Android Studio IDE installer (User level)
 │   ├── install-java.ps1             # Portable OpenJDK 17 LTS installer
 │   └── verify-env.ps1               # Environment health-check diagnostic script
 ├── tests/
@@ -103,7 +104,8 @@ This automated script performs the following actions **without requiring adminis
 3. Downloads & installs portable **OpenJDK 17 LTS** into `%USERPROFILE%\development\jdk-17`, sets `JAVA_HOME`, and updates User PATH.
 4. Clones and configures **Flutter SDK** stable branch into `%USERPROFILE%\development\flutter`, sets User PATH, and runs `flutter doctor`.
 5. Downloads **Android Command-line Tools** into `%LOCALAPPDATA%\Android\Sdk`, configures `ANDROID_HOME`, accepts licenses, and installs API 34 platform & build tools.
-6. Runs a non-destructive verification check via `scripts\verify-env.ps1`.
+6. Downloads portable **Android Studio IDE** into `%USERPROFILE%\development\android-studio`, registers it with Flutter (`flutter config --android-studio-dir`), sets user PATH, and generates Start Menu & Desktop shortcuts.
+7. Runs a non-destructive verification check via `scripts\verify-env.ps1`.
 
 ### Diagnosing Your Environment
 To verify current SDK availability anytime:
