@@ -1,0 +1,91 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (request.auth.token.role == 'ROLE_ADMIN' || request.auth.token.admin == true);
+    }
+
+    // Public / Reference Collections
+    match /cities/{cityId} {
+      allow read: if true;
+      allow write: if isAdmin();
+
+      match /localities/{localityId} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+    }
+
+    match /trades/{tradeId} {
+      allow read: if true;
+      allow write: if isAdmin();
+
+      match /services/{serviceId} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+    }
+
+    // User Accounts
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Artisan Guild Profiles
+    match /artisans/{artisanId} {
+      allow read: if true;
+      allow create: if isOwner(artisanId);
+      allow update: if isOwner(artisanId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Bookings & Dispatch Radar
+    match /bookings/{bookingId} {
+      allow read: if isAuthenticated() && (
+        resource.data.customerId == request.auth.uid ||
+        resource.data.assignedArtisanId == request.auth.uid ||
+        resource.data.status == 'BROADCASTING' ||
+        isAdmin()
+      );
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && (
+        resource.data.customerId == request.auth.uid ||
+        resource.data.assignedArtisanId == request.auth.uid ||
+        (resource.data.status == 'BROADCASTING' && request.resource.data.assignedArtisanId == request.auth.uid) ||
+        isAdmin()
+      );
+      allow delete: if isAdmin();
+    }
+
+    // Reviews & Ratings
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update, delete: if isAdmin();
+    }
+
+    // Wallets & Ledger
+    match /wallets/{walletId} {
+      allow read: if isAuthenticated() && (request.auth.uid == walletId || isAdmin());
+      allow write: if isAdmin();
+    }
+
+    // Platform Configuration & Operational Telemetry
+    match /platform_config/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+  }
+}

@@ -1,0 +1,395 @@
+{
+  "trades": [
+    {
+      "tradeId": "trade_electrician",
+      "slug": "electrician",
+      "name": "Electrician",
+      "marathiName": "इलेक्ट्रिशियन",
+      "tagline": "Short circuit, MCB, switchboard & heavy appliance wiring",
+      "accentColor": "#D97706",
+      "surfaceTint": "#FEF3C7",
+      "iconName": "bolt",
+      "baseInspectionFee": 199,
+      "safetyShieldFee": 29,
+      "guaranteeDays": 30,
+      "emergencyEligible": true,
+      "popularPackages": [
+        {
+          "packageId": "pkg_elec_mcb",
+          "name": "Short Circuit & MCB Tripping",
+          "estimatedPrice": 249,
+          "estimatedMinutes": 45,
+          "description": "Continuous tripping, spark diagnosis, neutral fault identification & fuse repair"
+        },
+        {
+          "packageId": "pkg_elec_switchboard",
+          "name": "Switchboard & Socket Repair",
+          "estimatedPrice": 149,
+          "estimatedMinutes": 30,
+          "description": "Loose modular switches, burnt contact points, 16A power socket installation"
+        },
+        {
+          "packageId": "pkg_elec_fan",
+          "name": "Ceiling Fan / Chandelier Fitting",
+          "estimatedPrice": 199,
+          "estimatedMinutes": 40,
+          "description": "Anchor rod hanging, speed regulator rewiring, vibration reduction"
+        },
+        {
+          "packageId": "pkg_elec_inverter",
+          "name": "Inverter & Battery Wiring",
+          "estimatedPrice": 399,
+          "estimatedMinutes": 60,
+          "description": "Backup bypass line, heavy load terminal setup, battery water check"
+        }
+      ]
+    },
+    {
+      "tradeId": "trade_plumber",
+      "slug": "plumber",
+      "name": "Plumber",
+      "marathiName": "प्लंबर (नळ कारागीर)",
+      "tagline": "Pipe leaks, tap replacement, drainage blockages & sanitary fittings",
+      "accentColor": "#0284C7",
+      "surfaceTint": "#E0F2FE",
+      "iconName": "plumbing",
+      "baseInspectionFee": 199,
+      "safetyShieldFee": 29,
+      "guaranteeDays": 30,
+      "emergencyEligible": true,
+      "popularPackages": [
+        {
+          "packageId": "pkg_plumb_leak",
+          "name": "Water Pipe Joint Leakage Fix",
+          "estimatedPrice": 229,
+          "estimatedMinutes": 45,
+          "description": "CPVC/PVC pipe joint soldering, concealed wall seepage diagnosis"
+        },
+        {
+          "packageId": "pkg_plumb_drain",
+          "name": "Kitchen Sink & Bathroom Drain Unclog",
+          "estimatedPrice": 279,
+          "estimatedMinutes": 50,
+          "description": "High pressure mechanical auger drain clearing, trap cleaning"
+        },
+        {
+          "packageId": "pkg_plumb_tap",
+          "name": "Tap / Mixer / Diverter Replacement",
+          "estimatedPrice": 179,
+          "estimatedMinutes": 35,
+          "description": "Ceramic spindle change, quarter-turn angle valve fitting, teflon sealing"
+        },
+        {
+          "packageId": "pkg_plumb_tank",
+          "name": "Overhead Tank Float Valve & Motor Line",
+          "estimatedPrice": 349,
+          "estimatedMinutes": 60,
+          "description": "Ball cock auto cut-off valve replacement, airlock clearance"
+        }
+      ]
+    },
+    {
+      "tradeId": "trade_carpenter",
+      "slug": "carpenter",
+      "name": "Carpenter",
+      "marathiName": "सुतार (कारपेंटर)",
+      "tagline": "Door locks, modular kitchen hinges, veneer repairs & furniture assembly",
+      "accentColor": "#EA580C",
+      "surfaceTint": "#FFEDD5",
+      "iconName": "carpenter",
+      "baseInspectionFee": 249,
+      "safetyShieldFee": 29,
+      "guaranteeDays": 30,
+      "emergencyEligible": true,
+      "popularPackages": [
+        {
+          "packageId": "pkg_carp_lock",
+          "name": "Main Door Deadbolt / Godrej Lock Repair",
+          "estimatedPrice": 299,
+          "estimatedMinutes": 45,
+          "description": "Cylinder replacement, jammed latch alignment, brass strike plate fitting"
+        },
+        {
+          "packageId": "pkg_carp_hinge",
+          "name": "Hydraulic Cabinet & Wardrobe Hinge Replacement",
+          "estimatedPrice": 199,
+          "estimatedMinutes": 40,
+          "description": "Soft-close hinge tension adjustment, plywood screw anchor grip repair"
+        },
+        {
+          "packageId": "pkg_carp_door_trim",
+          "name": "Door Dragging & Frame Planing",
+          "estimatedPrice": 249,
+          "estimatedMinutes": 45,
+          "description": "Precision bottom trimming, monsoon swollen wood clearance"
+        },
+        {
+          "packageId": "pkg_carp_furniture",
+          "name": "Bed / Table Assembly & Structural Tightening",
+          "estimatedPrice": 499,
+          "estimatedMinutes": 90,
+          "description": "Hardware re-bolting, wooden bracket reinforcement, termite inspection"
+        }
+      ]
+    },
+    {
+      "tradeId": "trade_mason",
+      "slug": "mason-civil-worker",
+      "name": "Mason / Civil Worker",
+      "marathiName": "गवंडी / सिव्हिल कामगार",
+      "tagline": "Tile replacement, wall plastering, concrete drilling & waterproofing",
+      "accentColor": "#78716C",
+      "surfaceTint": "#F5F5F4",
+      "iconName": "foundation",
+      "baseInspectionFee": 299,
+      "safetyShieldFee": 29,
+      "guaranteeDays": 30,
+      "emergencyEligible": false,
+      "popularPackages": [
+        {
+          "packageId": "pkg_mason_tile",
+          "name": "Broken Floor / Wall Tile Patching (Up to 4 tiles)",
+          "estimatedPrice": 399,
+          "estimatedMinutes": 75,
+          "description": "Adhesive bedding, laser levelling, anti-fungal epoxy grouting"
+        },
+        {
+          "packageId": "pkg_mason_plaster",
+          "name": "Wall Crack & Plaster Repair",
+          "estimatedPrice": 349,
+          "estimatedMinutes": 60,
+          "description": "Polymer-modified cement slurry, v-groove chasing, smooth trowel finish"
+        },
+        {
+          "packageId": "pkg_mason_waterproof",
+          "name": "Bathroom / Balcony Corner Waterproofing",
+          "estimatedPrice": 599,
+          "estimatedMinutes": 90,
+          "description": "Dr. Fixit 2-coat chemical membrane application on skirtings"
+        }
+      ]
+    },
+    {
+      "tradeId": "trade_painter",
+      "slug": "painter",
+      "name": "Painter",
+      "marathiName": "रंगारी (पेंटर)",
+      "tagline": "Wall touch-ups, dampness treatment, door polish & full home painting",
+      "accentColor": "#9333EA",
+      "surfaceTint": "#F3E8FF",
+      "iconName": "format_paint",
+      "baseInspectionFee": 199,
+      "safetyShieldFee": 29,
+      "guaranteeDays": 30,
+      "emergencyEligible": false,
+      "popularPackages": [
+        {
+          "packageId": "pkg_paint_patch",
+          "name": "Single Wall Patch & Touch-up (Putty + Paint)",
+          "estimatedPrice": 399,
+          "estimatedMinutes": 60,
+          "description": "Sanding, acrylic wall putty, 2-coat primer and shade matching"
+        },
+        {
+          "packageId": "pkg_paint_damp",
+          "name": "Anti-Dampness Chemical Barrier + Topcoat",
+          "estimatedPrice": 499,
+          "estimatedMinutes": 75,
+          "description": "Efflorescence salt removal, silicone damp-lock treatment"
+        },
+        {
+          "packageId": "pkg_paint_wood",
+          "name": "Door & Window Enamel / Melamine Polishing",
+          "estimatedPrice": 599,
+          "estimatedMinutes": 90,
+          "description": "Fine sandpaper smoothing, high-gloss PU coating"
+        }
+      ]
+    },
+    {
+      "tradeId": "trade_ac_refrig",
+      "slug": "ac-refrigeration",
+      "name": "AC & Refrigeration",
+      "marathiName": "एसी आणि फ्रीज मेकॅनिक",
+      "tagline": "Foam jet service, gas refill, compressor diagnosis & cooling issues",
+      "accentColor": "#0891B2",
+      "surfaceTint": "#CFFAFE",
+      "iconName": "mode_fan",
+      "baseInspectionFee": 249,
+      "safetyShieldFee": 29,
+      "guaranteeDays": 30,
+      "emergencyEligible": true,
+      "popularPackages": [
+        {
+          "packageId": "pkg_ac_deep_clean",
+          "name": "Split AC Foam Jet Deep Service",
+          "estimatedPrice": 499,
+          "estimatedMinutes": 60,
+          "description": "Indoor coil antibacterial foam pressure wash, outdoor unit blower rinse, filter disinfection"
+        },
+        {
+          "packageId": "pkg_ac_gas_leak",
+          "name": "AC Gas Leakage Check & Top-up",
+          "estimatedPrice": 1499,
+          "estimatedMinutes": 90,
+          "description": "Nitrogen pressure leak testing, flare nut brazing, R32/R410A vacuum charging"
+        },
+        {
+          "packageId": "pkg_fridge_cooling",
+          "name": "Refrigerator Low Cooling / Defrost Fix",
+          "estimatedPrice": 349,
+          "estimatedMinutes": 60,
+          "description": "Thermostat calibration, bi-metal sensor replacement, capillary flush"
+        }
+      ]
+    },
+    {
+      "tradeId": "trade_appliance",
+      "slug": "appliance-repair",
+      "name": "Appliance Repair",
+      "marathiName": "घरगुती उपकरणे दुरुस्ती",
+      "tagline": "Washing machine, microwave, geyser, mixer grinder & RO purifier",
+      "accentColor": "#4F46E5",
+      "surfaceTint": "#EEF2FF",
+      "iconName": "home_repair_service",
+      "baseInspectionFee": 199,
+      "safetyShieldFee": 29,
+      "guaranteeDays": 30,
+      "emergencyEligible": true,
+      "popularPackages": [
+        {
+          "packageId": "pkg_app_geyser",
+          "name": "Instant / Storage Geyser Heating Element Fix",
+          "estimatedPrice": 299,
+          "estimatedMinutes": 45,
+          "description": "Copper heating coil descaling, safety thermostat auto cut-off calibration"
+        },
+        {
+          "packageId": "pkg_app_washing",
+          "name": "Washing Machine Spin / Drain Drum Issue",
+          "estimatedPrice": 349,
+          "estimatedMinutes": 60,
+          "description": "Motor belt tightening, drain pump lint filter unclog, PCB relay check"
+        },
+        {
+          "packageId": "pkg_app_ro",
+          "name": "RO Water Purifier Membrane & Filter Overhaul",
+          "estimatedPrice": 399,
+          "estimatedMinutes": 50,
+          "description": "TDS level calibration, sediment + carbon filter change, booster pump check"
+        }
+      ]
+    },
+    {
+      "tradeId": "trade_welder",
+      "slug": "welder-fabricator",
+      "name": "Welder / Fabricator",
+      "marathiName": "वेल्डर / लोहार कामगार",
+      "tagline": "Main gate hinge welding, window safety grill, railing & shed repair",
+      "accentColor": "#B45309",
+      "surfaceTint": "#FEF3C7",
+      "iconName": "construction",
+      "baseInspectionFee": 299,
+      "safetyShieldFee": 29,
+      "guaranteeDays": 30,
+      "emergencyEligible": true,
+      "popularPackages": [
+        {
+          "packageId": "pkg_weld_gate",
+          "name": "Main Sliding / Swing Gate Heavy Hinge Arc Welding",
+          "estimatedPrice": 399,
+          "estimatedMinutes": 60,
+          "description": "Heavy duty mild steel ball-bearing pivot welding, slag chipping, rust-primer coat"
+        },
+        {
+          "packageId": "pkg_weld_grill",
+          "name": "Balcony & Window Safety Grill Reinforcement",
+          "estimatedPrice": 349,
+          "estimatedMinutes": 50,
+          "description": "Loose anchor pin tack welding, angle iron strengthening"
+        },
+        {
+          "packageId": "pkg_weld_sheet",
+          "name": "Tin Shed & Polycarbonate Roof Bracket Fix",
+          "estimatedPrice": 499,
+          "estimatedMinutes": 75,
+          "description": "Wind-damaged purlin joint welding, self-tapping screw gasket replacement"
+        }
+      ]
+    },
+    {
+      "tradeId": "trade_pest",
+      "slug": "pest-control",
+      "name": "Pest Control",
+      "marathiName": "कीटक नियंत्रण (पेस्ट कंट्रोल)",
+      "tagline": "Cockroach gel treatment, termite drill barrier, bed bug eradication",
+      "accentColor": "#059669",
+      "surfaceTint": "#D1FAE5",
+      "iconName": "pest_control",
+      "baseInspectionFee": 249,
+      "safetyShieldFee": 29,
+      "guaranteeDays": 60,
+      "emergencyEligible": false,
+      "popularPackages": [
+        {
+          "packageId": "pkg_pest_cockroach",
+          "name": "Kitchen & Bathroom Herbal Gel Treatment",
+          "estimatedPrice": 499,
+          "estimatedMinutes": 45,
+          "description": "Odorless Fipronil bait dot application in hinges, under-sink crevices (safe for kids & pets)"
+        },
+        {
+          "packageId": "pkg_pest_termite",
+          "name": "Wood Termite Drill & Inject Chemical Shield",
+          "estimatedPrice": 899,
+          "estimatedMinutes": 90,
+          "description": "Precision 6mm skirt drilling, pressurized Imidacloprid injection, wood-colored seal"
+        },
+        {
+          "packageId": "pkg_pest_bedbug",
+          "name": "2-Stage Bed Bug Thermal & Spray Eradication",
+          "estimatedPrice": 799,
+          "estimatedMinutes": 90,
+          "description": "Mattress seam steam purge, residual pyrethroid spraying, 15-day free repeat visit"
+        }
+      ]
+    },
+    {
+      "tradeId": "trade_deep_cleaning",
+      "slug": "deep-cleaning",
+      "name": "Deep Cleaning",
+      "marathiName": "डीप क्लीनिंग (स्वच्छता सेवा)",
+      "tagline": "Full bathroom descaling, kitchen oil degreasing & sofa shampooing",
+      "accentColor": "#0D9488",
+      "surfaceTint": "#CCFBF1",
+      "iconName": "cleaning_services",
+      "baseInspectionFee": 199,
+      "safetyShieldFee": 29,
+      "guaranteeDays": 30,
+      "emergencyEligible": false,
+      "popularPackages": [
+        {
+          "packageId": "pkg_clean_bath",
+          "name": "Intense Bathroom Hard Water Stain & Tile Descaling",
+          "estimatedPrice": 449,
+          "estimatedMinutes": 60,
+          "description": "Single-disc scrubber rotary tile wash, tap chrome buffing, glass divider spot removal"
+        },
+        {
+          "packageId": "pkg_clean_kitchen",
+          "name": "Modular Kitchen Chimney & Slab Degreasing",
+          "estimatedPrice": 699,
+          "estimatedMinutes": 90,
+          "description": "Caustic-free baffle filter ultrasonic cleaning, stainless steel polish, tile grout whitening"
+        },
+        {
+          "packageId": "pkg_clean_sofa",
+          "name": "Fabric Sofa 5-Seater Shampoo & Wet Extraction",
+          "estimatedPrice": 599,
+          "estimatedMinutes": 75,
+          "description": "Deep foam agitation, industrial vacuum suction moisture extraction, citrus deodorizer"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Customer scoping media (photos, 15s audio memo)
+    match /bookings/{bookingId}/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && request.resource.size < 15 * 1024 * 1024; // 15MB limit
+    }
+
+    // Hardware store receipt photos attached during dynamic billing
+    match /receipts/{bookingId}/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && request.resource.size < 10 * 1024 * 1024;
+    }
+
+    // Artisan KYC documents (Aadhaar, Police verification, Certificate)
+    match /kyc/{userId}/{allPaths=**} {
+      allow read: if isOwner(userId) || request.auth.token.role == 'ROLE_ADMIN';
+      allow write: if isOwner(userId) && request.resource.size < 10 * 1024 * 1024;
+    }
+
+    // Public avatars and trade icons
+    match /public/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth.token.role == 'ROLE_ADMIN';
+    }
+  }
+}

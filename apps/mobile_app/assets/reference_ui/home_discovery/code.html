@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "inverse-primary": "#bec6e0", "outline-variant": "#c6c6cd", "surface-container-low": "#eff4ff", "surface-dim": "#cbdbf5", "surface-bright": "#f8f9ff", "tertiary-fixed-dim": "#68dba9", "on-tertiary-fixed-variant": "#005137", "on-secondary": "#ffffff", "on-tertiary-container": "#069669", "surface-variant": "#d3e4fe", "primary": "#000000", "primary-fixed": "#dae2fd", "on-surface-variant": "#45464d", "background": "#f8f9ff", "primary-fixed-dim": "#bec6e0", "on-error-container": "#93000a", "surface-tint": "#565e74", "on-primary-fixed": "#131b2e", "outline": "#76777d", "inverse-surface": "#213145", "on-surface": "#0b1c30", "on-primary-container": "#7c839b", "on-background": "#0b1c30", "error": "#ba1a1a", "secondary": "#904d00", "surface-container-highest": "#d3e4fe", "on-primary": "#ffffff", "surface-container-lowest": "#ffffff", "on-secondary-container": "#663500", "secondary-fixed": "#ffdcc3", "on-tertiary": "#ffffff", "secondary-container": "#fe932c", "on-primary-fixed-variant": "#3f465c", "secondary-fixed-dim": "#ffb77d", "surface-container-high": "#dce9ff", "surface-container": "#e5eeff", "on-tertiary-fixed": "#002114", "surface": "#f8f9ff", "inverse-on-surface": "#eaf1ff", "primary-container": "#131b2e", "on-secondary-fixed-variant": "#6e3900", "on-secondary-fixed": "#2f1500", "error-container": "#ffdad6", "on-error": "#ffffff", "tertiary-container": "#002114", "tertiary-fixed": "#85f8c4", "tertiary": "#000000" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-sm": "0.5rem", "space-md": "0.75rem", "space-xs": "0.25rem", "margin": "1.25rem", "space-lg": "1rem", "space-xl": "1.5rem", "gutter": "1rem" }, "fontFamily": { "label-md": ["Inter"], "body-lg": ["Plus Jakarta Sans"], "numeric-price": ["Inter"], "body-md": ["Plus Jakarta Sans"], "headline-lg": ["Plus Jakarta Sans"], "label-sm": ["Inter"], "label-lg": ["Inter"], "body-sm": ["Plus Jakarta Sans"], "display-lg": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"] }, "fontSize": { "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}], "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}], "numeric-price": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.02em", "fontWeight": "700"}], "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}], "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700"}], "label-sm": ["11px", {"lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700"}], "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}], "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}], "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "800"}], "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}], "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}] } } } };</script><style>@layer base{html,body{width:100%;margin:0;padding:0;min-height:100%;}body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}}::-webkit-scrollbar{display:none;}</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased"><header class="fixed top-0 inset-x-0 z-50 bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.03)] pt-safe"><div class="h-16 px-margin flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-sm min-w-0 flex-1"><img alt="Karigaar App Icon Logo" class="h-8 w-auto object-contain flex-shrink-0" src="https://lh3.googleusercontent.com/aida/AEtjO1WPTPBSAw_XKRb_KFDToZg4g4Ooz2Q3gCpx4xQWS0uusdn61yovZsJw-Qhhs6tr3EUHq8HRCaLk4w1PSFAkJxpWuf00ar_ULoZGm0zVKO5TykzusC0v2y9Um-O_YzWryb9WFTXZzy-XOKJ2NQO4XtekvWIf3YpzIrOwTyeJY1vFr9PCB7ZhfZHD10KZKtMlnOpT5tK94GOh0lXAc_4ky8VYsTWo7BG6RA8JWApp5_TEKTqnODXwfDhcQGvU"/><div class="flex flex-col min-w-0"><span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-bold flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">near_me</span>Karigaar Explore</span><button class="flex items-center gap-1 text-left min-w-0 group"><span class="font-label-md text-label-md text-on-surface truncate max-w-[140px]">Home • 42 Green Valley, Sector 4</span><span class="material-symbols-outlined text-on-surface-variant text-[16px]">expand_more</span></button></div></div><div class="flex items-center gap-space-xs flex-shrink-0"><button aria-label="Notifications" class="w-11 h-11 flex items-center justify-center relative rounded-full text-on-surface hover:bg-surface-container-low transition-colors"><span class="material-symbols-outlined text-[24px]">notifications</span><span class="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-secondary-container"></span></button><div class="w-11 h-11 flex items-center justify-center"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8S-vHhQ-cRKkUxn28KfaMe0Blq4VThlOh5dbuWoQTE_Ri8DVtS5Y1BejbArzWWOHOo4raE43OnPkdjLDFS4kzmYnj8At8E5MPYmLzwWFW_bWMaRBofMHAsD0kTgfPPYA7uS0i5wEjfn9fepU6lXDc12dmplfkcskDLL77Bl5fQmNTtKqwRWAWdjeULCO6hr-MCvvcAALoM611tfhyTo_r6JlqSuKz7cpcVO3MAYlNZDe2h8VKG5aqBA"/></div></div></div></header><main class="flex flex-col relative w-full pt-16 pb-20 bg-surface min-h-screen"><div class="flex flex-col w-full pb-10">
+<!-- Search & Action Header Bar -->
+<div class="px-margin pt-2 pb-3">
+<div class="flex items-center gap-space-xs bg-surface-container-lowest rounded-xl shadow-sm px-space-md py-1.5 transition-all focus-within:shadow-md">
+<span class="material-symbols-outlined text-outline text-[22px] flex-shrink-0">search</span>
+<input class="w-full bg-transparent text-on-surface font-body-md text-body-md placeholder:text-outline focus:outline-none py-1.5" placeholder="Search electricians, carpenters, plumbers..." type="text"/>
+<button aria-label="Voice Search" class="w-9 h-9 flex items-center justify-center rounded-lg text-secondary hover:bg-surface-container-low transition-colors flex-shrink-0">
+<span class="material-symbols-outlined text-[20px]">mic</span>
+</button>
+<button aria-label="Filters" class="w-9 h-9 flex items-center justify-center rounded-lg bg-surface-container-low text-on-surface hover:bg-surface-container transition-colors flex-shrink-0">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+</button>
+</div>
+</div>
+<!-- Emergency Quick-Assist Banner -->
+<div class="px-margin mb-space-lg">
+<div class="relative overflow-hidden rounded-xl bg-gradient-to-br from-secondary via-secondary-container to-amber-600 p-space-lg text-on-secondary shadow-md">
+<div class="absolute -right-6 -bottom-8 w-32 h-32 rounded-full bg-white/10 blur-xl pointer-events-none"></div>
+<div class="flex items-start justify-between gap-space-md relative z-10">
+<div class="flex flex-col gap-1 min-w-0">
+<div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-black/20 backdrop-blur-sm self-start">
+<span class="w-2 h-2 rounded-full bg-tertiary-fixed animate-ping"></span>
+<span class="font-label-sm text-label-sm text-white tracking-wide uppercase">Emergency 24x7</span>
+</div>
+<h2 class="font-headline-sm text-headline-sm font-bold text-white tracking-tight mt-1">Urgent Breakdown?</h2>
+<p class="font-body-sm text-body-sm text-white/90 line-clamp-2">Get an artisan dispatched to your doorstep within 25 mins.</p>
+</div>
+<button class="flex-shrink-0 mt-1 flex items-center gap-1.5 px-3.5 py-2.5 rounded-lg bg-white text-secondary font-label-md text-label-md font-bold shadow-md active:scale-95 transition-transform">
+<span>Book Fast</span>
+<span class="material-symbols-outlined text-[16px]">bolt</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Trade Categories 8-Grid -->
+<div class="px-margin mb-space-xl">
+<div class="flex items-center justify-between mb-space-md">
+<div>
+<h2 class="font-headline-sm text-headline-sm font-bold text-on-surface">Artisan Guilds</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Verified trade specialists for every corner of your home</p>
+</div>
+<button class="font-label-md text-label-md text-secondary font-semibold flex items-center">
+        All (14)
+      </button>
+</div>
+<div class="grid grid-cols-4 gap-2.5">
+<!-- Electrician -->
+<button class="group flex flex-col items-center gap-1.5 p-2 rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-all active:scale-95 text-center">
+<div class="w-12 h-12 rounded-xl bg-amber-50 text-secondary flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[26px]" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface leading-tight">Electrician</span>
+</button>
+<!-- Carpenter -->
+<button class="group flex flex-col items-center gap-1.5 p-2 rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-all active:scale-95 text-center">
+<div class="w-12 h-12 rounded-xl bg-orange-50 text-secondary-container flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[26px]">carpenter</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface leading-tight">Carpenter</span>
+</button>
+<!-- Plumber -->
+<button class="group flex flex-col items-center gap-1.5 p-2 rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-all active:scale-95 text-center">
+<div class="w-12 h-12 rounded-xl bg-blue-50 text-sky-700 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[26px]">plumbing</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface leading-tight">Plumber</span>
+</button>
+<!-- Painter -->
+<button class="group flex flex-col items-center gap-1.5 p-2 rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-all active:scale-95 text-center">
+<div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[26px]">format_paint</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface leading-tight">Painter</span>
+</button>
+<!-- Appliance Repair -->
+<button class="group flex flex-col items-center gap-1.5 p-2 rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-all active:scale-95 text-center">
+<div class="w-12 h-12 rounded-xl bg-cyan-50 text-cyan-800 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[26px]">mode_fan</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface leading-tight">Appliance</span>
+</button>
+<!-- Masonry / Civil -->
+<button class="group flex flex-col items-center gap-1.5 p-2 rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-all active:scale-95 text-center">
+<div class="w-12 h-12 rounded-xl bg-stone-100 text-stone-700 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[26px]">foundation</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface leading-tight">Masonry</span>
+</button>
+<!-- Pest Control -->
+<button class="group flex flex-col items-center gap-1.5 p-2 rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-all active:scale-95 text-center">
+<div class="w-12 h-12 rounded-xl bg-emerald-50 text-on-tertiary-container flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[26px]">pest_control</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface leading-tight">Pest Guard</span>
+</button>
+<!-- Locksmith -->
+<button class="group flex flex-col items-center gap-1.5 p-2 rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-all active:scale-95 text-center">
+<div class="w-12 h-12 rounded-xl bg-amber-100/60 text-secondary flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[26px]">lock_reset</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface leading-tight">Locksmith</span>
+</button>
+</div>
+</div>
+<!-- Karigaar Shield Trust Banner -->
+<div class="px-margin mb-space-xl">
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-xs">
+<div class="flex items-center gap-2 mb-space-sm">
+<span class="material-symbols-outlined text-on-tertiary-container text-[20px]" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span class="font-label-sm text-label-sm text-on-surface uppercase font-bold tracking-wider">The Karigaar Shield Commitment</span>
+</div>
+<div class="grid grid-cols-3 gap-2 text-left">
+<div class="bg-surface-container-lowest p-2 rounded-lg flex flex-col gap-1 shadow-2xs">
+<span class="material-symbols-outlined text-secondary text-[18px]">badge</span>
+<span class="font-label-sm text-label-sm font-bold text-on-surface leading-tight">100% Police Verified</span>
+<span class="font-body-sm text-[10px] text-on-surface-variant leading-tight">Background vetted</span>
+</div>
+<div class="bg-surface-container-lowest p-2 rounded-lg flex flex-col gap-1 shadow-2xs">
+<span class="material-symbols-outlined text-secondary text-[18px]">receipt_long</span>
+<span class="font-label-sm text-label-sm font-bold text-on-surface leading-tight">Rate Card Protection</span>
+<span class="font-body-sm text-[10px] text-on-surface-variant leading-tight">No hidden surprises</span>
+</div>
+<div class="bg-surface-container-lowest p-2 rounded-lg flex flex-col gap-1 shadow-2xs">
+<span class="material-symbols-outlined text-secondary text-[18px]">security_update_good</span>
+<span class="font-label-sm text-label-sm font-bold text-on-surface leading-tight">30-Day Guarantee</span>
+<span class="font-body-sm text-[10px] text-on-surface-variant leading-tight">Free rework cover</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Top Rated Karigaars Nearby -->
+<div class="px-margin mb-space-xl">
+<div class="flex items-center justify-between mb-space-md">
+<div>
+<h2 class="font-headline-sm text-headline-sm font-bold text-on-surface">Top Masters in Sector 4</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Highest rated craftsmanship near you</p>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Live Dispatch</span>
+</div>
+</div>
+<!-- Craftsman Cards Stack -->
+<div class="flex flex-col gap-space-md">
+<!-- Card 1: Master Carpenter -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-start gap-space-md">
+<div class="relative flex-shrink-0">
+<img class="w-16 h-16 rounded-xl object-cover shadow-xs" data-alt="Close up warm portrait of Rajesh, an experienced Indian master carpenter in late 40s wearing a clean professional workshop apron, smiling genuinely in a sunlit artisanal woodcraft studio with chisels and polished teak boards in blurred background, warm amber tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuArCus9en-CJtKqz4SSJqgMNTEqpeZiAk0BsyT_qJQ-oc7HzIEtOV4Zbvvld9vIG3qHnsOwpHNlJkOGt-kr1QciqYt1kXLLkHrqonf6HBTb1GyV81U8ZzuGvNegLcMF-7TByZCe1FZDUR_eLnBv8eOrh_eMvxAkVszAA-4emXPOfdUCTBd-UDl4TQlzhItk8YoyqHJISuXUC0O2LBiGcWJoeOrRrwrUF0VLzIlsa0YwNuoa2V36HQZI4g"/>
+<div class="absolute -bottom-1 -right-1 bg-on-tertiary-container text-on-tertiary w-5 h-5 rounded-full flex items-center justify-center shadow-xs">
+<span class="material-symbols-outlined text-[13px]">check</span>
+</div>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<div class="flex items-center justify-between gap-1">
+<h3 class="font-headline-sm text-[16px] font-bold text-on-surface truncate">Rajesh Sharma</h3>
+<div class="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-amber-50 text-secondary flex-shrink-0">
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-sm text-label-sm font-bold">4.9</span>
+<span class="font-body-sm text-[10px] text-on-surface-variant">(320)</span>
+</div>
+</div>
+<div class="flex items-center gap-1.5 mt-0.5 text-on-surface-variant font-label-sm text-label-sm">
+<span class="text-secondary font-semibold">Master Carpenter</span>
+<span>•</span>
+<span>8 yrs exp</span>
+<span>•</span>
+<span class="flex items-center gap-0.5 text-on-surface">
+<span class="material-symbols-outlined text-[13px]">location_on</span>
+                1.4 km
+              </span>
+</div>
+<div class="flex flex-wrap items-center gap-1.5 mt-2">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-on-tertiary-container font-label-sm text-[10px] font-semibold">
+<span class="material-symbols-outlined text-[11px]">shield</span>
+                Police Verified
+              </span>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-[10px] font-semibold">
+<span class="material-symbols-outlined text-[11px]">workspace_premium</span>
+                Super Artisan
+              </span>
+</div>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-space-sm pl-1 line-clamp-1">
+          “Specialist in modular kitchen fittings, veneer repairs &amp; high-security door locks.”
+        </p>
+<div class="mt-space-md pt-space-sm flex items-center justify-between bg-surface-container-low rounded-lg px-space-md py-2">
+<div class="flex flex-col">
+<span class="font-body-sm text-[11px] text-on-surface-variant">Inspection &amp; Visit Fee</span>
+<div class="flex items-baseline gap-1">
+<span class="font-numeric-price text-numeric-price text-on-surface">₹299</span>
+<span class="font-body-sm text-[11px] text-on-surface-variant">adjustable in bill</span>
+</div>
+</div>
+<button class="px-4 py-2 rounded-lg bg-primary-container text-white font-label-md text-label-md font-bold shadow-sm active:scale-95 transition-transform flex items-center gap-1">
+<span>Hire Artisan</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Card 2: Certified Electrician -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-start gap-space-md">
+<div class="relative flex-shrink-0">
+<img class="w-16 h-16 rounded-xl object-cover shadow-xs" data-alt="Medium closeup of Tariq, a focused and friendly 38-year-old certified Indian electrical engineer holding professional digital multimeter and insulated tools, wearing a navy work shirt with credentials badge, brightly illuminated workshop background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPGIDwSxHA8lRDqZZIomKO6nEgOA9fn5gecX7qo6TDgKk5SaOoEyLxljKpv2hCPOX7s1fYLsWh7o6v8GS8WqZGBNdZWlszscf9n98-TDQHfl-Jnrm_7DIer9Nns42IzTWlSFOSgkXLIefAGLXzoYjrGrVvqURnYKt_KzTLarKMHBMyORq3KmeQUVDYMVNG_OEM_X1eAWj0KeE6soTaduYpm72OFZlSD1kYoTxpZH6MaPaFJ8baLQGM3w"/>
+<div class="absolute -bottom-1 -right-1 bg-on-tertiary-container text-on-tertiary w-5 h-5 rounded-full flex items-center justify-center shadow-xs">
+<span class="material-symbols-outlined text-[13px]">check</span>
+</div>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<div class="flex items-center justify-between gap-1">
+<h3 class="font-headline-sm text-[16px] font-bold text-on-surface truncate">Tariq Anwar</h3>
+<div class="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-amber-50 text-secondary flex-shrink-0">
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-sm text-label-sm font-bold">4.8</span>
+<span class="font-body-sm text-[10px] text-on-surface-variant">(410)</span>
+</div>
+</div>
+<div class="flex items-center gap-1.5 mt-0.5 text-on-surface-variant font-label-sm text-label-sm">
+<span class="text-secondary font-semibold">Certified Electrician</span>
+<span>•</span>
+<span>12 yrs exp</span>
+<span>•</span>
+<span class="flex items-center gap-0.5 text-on-surface">
+<span class="material-symbols-outlined text-[13px]">location_on</span>
+                2.1 km
+              </span>
+</div>
+<div class="flex flex-wrap items-center gap-1.5 mt-2">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-on-tertiary-container font-label-sm text-[10px] font-semibold">
+<span class="material-symbols-outlined text-[11px]">shield</span>
+                Police Verified
+              </span>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-[10px] font-semibold">
+<span class="material-symbols-outlined text-[11px]">bolt</span>
+                Heavy Power Expert
+              </span>
+</div>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-space-sm pl-1 line-clamp-1">
+          “Inverter wiring, MCB recurring tripping, chandelier setup &amp; smart switches.”
+        </p>
+<div class="mt-space-md pt-space-sm flex items-center justify-between bg-surface-container-low rounded-lg px-space-md py-2">
+<div class="flex flex-col">
+<span class="font-body-sm text-[11px] text-on-surface-variant">Inspection &amp; Visit Fee</span>
+<div class="flex items-baseline gap-1">
+<span class="font-numeric-price text-numeric-price text-on-surface">₹199</span>
+<span class="font-body-sm text-[11px] text-on-surface-variant">adjustable in bill</span>
+</div>
+</div>
+<button class="px-4 py-2 rounded-lg bg-primary-container text-white font-label-md text-label-md font-bold shadow-sm active:scale-95 transition-transform flex items-center gap-1">
+<span>Hire Artisan</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Seasonal Curated Packages -->
+<div class="px-margin mb-space-lg">
+<div class="flex items-center justify-between mb-space-md">
+<div>
+<h2 class="font-headline-sm text-headline-sm font-bold text-on-surface">Curated Guild Packages</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Preventive maintenance bundles with full warranty</p>
+</div>
+</div>
+<div class="flex flex-col gap-space-md">
+<!-- Package 1 -->
+<div class="relative overflow-hidden rounded-xl bg-surface-container-lowest p-space-md shadow-sm flex items-center gap-space-md">
+<div class="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 relative">
+<img class="w-full h-full object-cover" data-alt="Professional technician servicing a split AC unit with high pressure water jet foam in an upscale living room, wearing gloves and safety goggles, crisp clean aesthetic with turquoise water spray highlights." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbxu46UCShTZLedweFW1CpkWg8le7BTjt9LOeBiS6qdRcyselAuD7C6eWY7T3RR0TulKVlO1lGcm7jdR5fBTf9Vx_CogkVlBvx_9uUX5uLxFPPFqsh-vLugBu7gPIe5flv8Y3Qmj7s4sPn0M7VL9i3AkbJWUJMAtywV4EqpcJw9PfY8502yy6zhpVCemM0fo67VH2eR4Bg3JcWT2D3ShtIua1UMz_f3Te88XdIIlmMTkxHzgpyfZDh4Q"/>
+<div class="absolute top-1 left-1 bg-secondary text-white font-label-sm text-[9px] font-bold px-1.5 py-0.5 rounded">
+            20% OFF
+          </div>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<div class="flex items-center gap-1 text-on-tertiary-container">
+<span class="material-symbols-outlined text-[14px]">eco</span>
+<span class="font-label-sm text-[10px] uppercase font-bold tracking-wider">Summer Prep Bundle</span>
+</div>
+<h3 class="font-headline-sm text-[15px] font-bold text-on-surface truncate">AC Deep Service &amp; Jet Clean</h3>
+<p class="font-body-sm text-[11px] text-on-surface-variant line-clamp-1">Filter flush, indoor coil sanitize &amp; gas pressure check</p>
+<div class="flex items-center justify-between mt-2 pt-1">
+<div class="flex items-baseline gap-1.5">
+<span class="font-headline-sm text-[17px] font-bold text-on-surface">₹599</span>
+<span class="font-body-sm text-[12px] text-outline line-through">₹749</span>
+</div>
+<button class="px-3 py-1.5 rounded-lg bg-surface-container text-on-surface font-label-sm text-label-sm font-bold hover:bg-primary hover:text-white transition-colors">
+              Add +
+            </button>
+</div>
+</div>
+</div>
+<!-- Package 2 -->
+<div class="relative overflow-hidden rounded-xl bg-surface-container-lowest p-space-md shadow-sm flex items-center gap-space-md">
+<div class="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 relative">
+<img class="w-full h-full object-cover" data-alt="An electrician testing residential main distribution board fuses and circuit breakers with precision digital equipment, clean bright technical composition with warm electrical indicators glowing." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3-MLFEa1K19_ITj-fYNCxEmUa_Jk49fK3eKmbSc6NxAOw3Zlag50COABb0rN8PmnIDAriw5enzRknj5X2bkqNAAuN12gDKKn2mRyde9WWHtZ6Rj92Pcnp3O4ueRNZcyZGpeG8G2XWO2kQtnJM3bp8R7grma3peKJN_Sn2NbFUDTnNJjopFTQU-fkBeQ6ONNz2RKR3WxjvEwIGpAl_lGMThCVQwackdbH_5YUkQVg5DSfl8i9HA-NCeg"/>
+<div class="absolute top-1 left-1 bg-on-tertiary-container text-white font-label-sm text-[9px] font-bold px-1.5 py-0.5 rounded">
+            POPULAR
+          </div>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<div class="flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-[14px]">health_and_safety</span>
+<span class="font-label-sm text-[10px] uppercase font-bold tracking-wider">Safety First</span>
+</div>
+<h3 class="font-headline-sm text-[15px] font-bold text-on-surface truncate">Full Home Electrical Audit</h3>
+<p class="font-body-sm text-[11px] text-on-surface-variant line-clamp-1">32-point earthing, load test &amp; surge prevention</p>
+<div class="flex items-center justify-between mt-2 pt-1">
+<div class="flex items-baseline gap-1.5">
+<span class="font-headline-sm text-[17px] font-bold text-on-surface">₹799</span>
+<span class="font-body-sm text-[12px] text-outline line-through">₹999</span>
+</div>
+<button class="px-3 py-1.5 rounded-lg bg-surface-container text-on-surface font-label-sm text-label-sm font-bold hover:bg-primary hover:text-white transition-colors">
+              Add +
+            </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Interactive Micro-delight: Guild Craftsman Pledge -->
+<div class="px-margin pt-2">
+<div class="rounded-xl p-space-md bg-gradient-to-r from-surface-container to-surface-container-high flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed text-on-secondary-fixed flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-[20px]">handshake</span>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<span class="font-label-md text-label-md font-bold text-on-surface">Need a custom estimation?</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Post your requirement &amp; receive bids from verified masters within 15 mins.</span>
+</div>
+<button class="px-3 py-1.5 rounded-lg bg-surface-container-lowest text-on-surface shadow-xs font-label-sm text-label-sm font-bold active:scale-95 transition-transform flex-shrink-0">
+        Post Job
+      </button>
+</div>
+</div>
+</div></main><nav class="fixed bottom-0 inset-x-0 z-50 pb-safe bg-surface/90 backdrop-blur-xl shadow-[0_-4px_16px_rgba(15,23,42,0.04)]" data-active-classes="text-primary font-bold"><div class="flex justify-around items-center h-16 px-space-xs"><a aria-current="page" class="flex flex-col items-center justify-center gap-1 min-w-[64px] h-12 transition-colors text-primary font-bold" data-path="explore" href="#"><span class="material-symbols-outlined text-[22px]">explore</span><span class="font-label-sm text-label-sm">Explore</span></a><a class="flex flex-col items-center justify-center gap-1 min-w-[64px] h-12 text-on-surface-variant hover:text-on-surface transition-colors" data-path="my-bookings" href="#"><span class="material-symbols-outlined text-[22px]">event_available</span><span class="font-label-sm text-label-sm">Bookings</span></a><a class="flex flex-col items-center justify-center gap-1 min-w-[64px] h-12 relative text-on-surface-variant hover:text-on-surface transition-colors" data-path="messages" href="#"><div class="relative flex items-center justify-center"><span class="material-symbols-outlined text-[22px]">chat_bubble</span><span class="absolute -top-1 -right-2 px-1.5 min-w-[16px] h-4 rounded-full bg-secondary text-on-secondary font-label-sm text-[10px] flex items-center justify-center leading-none">2</span></div><span class="font-label-sm text-label-sm">Messages</span></a><a class="flex flex-col items-center justify-center gap-1 min-w-[64px] h-12 text-on-surface-variant hover:text-on-surface transition-colors" data-path="user-profile" href="#"><span class="material-symbols-outlined text-[22px]">person</span><span class="font-label-sm text-label-sm">Profile</span></a></div></nav></body></html>

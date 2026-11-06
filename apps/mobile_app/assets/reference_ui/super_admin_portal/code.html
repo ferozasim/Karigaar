@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="super_admin_mobile" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "primary-fixed": "#dae2fd", "inverse-on-surface": "#eaf1ff", "on-secondary-container": "#663500", "outline-variant": "#c6c6cd", "inverse-surface": "#213145", "on-primary-fixed-variant": "#3f465c", "surface-container-lowest": "#ffffff", "on-surface-variant": "#45464d", "primary": "#000000", "on-tertiary-fixed": "#002114", "secondary": "#904d00", "secondary-fixed-dim": "#ffb77d", "tertiary-fixed": "#85f8c4", "tertiary-container": "#002114", "on-background": "#0b1c30", "error-container": "#ffdad6", "surface-container-high": "#dce9ff", "surface": "#f8f9ff", "background": "#f8f9ff", "tertiary": "#000000", "outline": "#76777d", "on-primary-container": "#7c839b", "on-tertiary-container": "#069669", "on-tertiary": "#ffffff", "tertiary-fixed-dim": "#68dba9", "secondary-fixed": "#ffdcc3", "primary-container": "#131b2e", "surface-tint": "#565e74", "on-primary-fixed": "#131b2e", "on-secondary": "#ffffff", "on-error-container": "#93000a", "primary-fixed-dim": "#bec6e0", "surface-bright": "#f8f9ff", "surface-container": "#e5eeff", "on-primary": "#ffffff", "inverse-primary": "#bec6e0", "surface-variant": "#d3e4fe", "surface-container-highest": "#d3e4fe", "surface-dim": "#cbdbf5", "secondary-container": "#fe932c", "on-secondary-fixed-variant": "#6e3900", "error": "#ba1a1a", "on-error": "#ffffff", "on-surface": "#0b1c30", "surface-container-low": "#eff4ff", "on-tertiary-fixed-variant": "#005137", "on-secondary-fixed": "#2f1500" }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, spacing: { "margin": "1.25rem", "space-xl": "1.5rem", "space-sm": "0.5rem", "space-lg": "1rem", "space-md": "0.75rem", "space-xs": "0.25rem", "gutter": "1rem" }, fontFamily: { "label-lg": ["Inter"], "headline-md": ["Plus Jakarta Sans"], "numeric-price": ["Inter"], "label-md": ["Inter"], "body-sm": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "headline-lg": ["Plus Jakarta Sans"], "label-sm": ["Inter"], "body-md": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "display-lg": ["Plus Jakarta Sans"] }, fontSize: { "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "numeric-price": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }], "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "800" }] } } } };</script><style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface font-body-md text-body-md text-on-surface flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 pt-safe bg-primary-container text-on-primary-fixed shadow-[0_2px_10px_rgba(0,0,0,0.12)]"><div class="h-16 px-margin flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="Brand logo. - Primary color: #0f172a
+- Font: plusJakartaSans
+- Mode: light
+- Roundness: rounded-md
+" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UBIVqDSa7RKEqgUarRkiQqYGClKKRf-M5OPuU-bfmdO2bOI4daW2Sl1UGrODVZ6kGog8NpD99uIlRDx7iKofq7gGBYhhDJl72Hi_qrZ101pQMdPe56XQrokWqne1JGHmTOwQG0wdJWdNRbshgmr3ug6paSfeOwTssHEKmgbNtori70obnAbPxiHQKdKm6cCmjnol1C8SCWRfWWrxYeRh2hfVdDP-2XJa56M5_sppyv9ATzlpEED4uTAUAd"/><div class="flex flex-col"><div class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px] text-secondary-container">shield</span><span class="font-label-sm text-label-sm text-surface tracking-wider uppercase font-bold">Admin Guild</span></div><div class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed"></span><span class="font-label-sm text-[10px] text-on-primary-container leading-none">Live 99.8%</span></div></div></div><div class="flex items-center gap-space-xs"><button class="min-w-[44px] min-h-[44px] flex items-center justify-center text-surface-container-highest hover:text-surface" type="button"><span class="material-symbols-outlined text-[20px]">search</span></button><button class="min-w-[44px] min-h-[44px] flex items-center justify-center text-surface-container-highest hover:text-surface relative" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-secondary-container"></span></button><img alt="Profile" class="w-8 h-8 rounded-full object-cover ml-1" src="https://lh3.googleusercontent.com/aida/AEtjO1Un9ckK2d_gxMxfAymNn7w657zErjudl3Z_ohQRjV8R_aE9Z9rm2iD-JcaduR2x0AvWOrtbd9qo-9W-QRQDurOELJA5ftfLAuZaUKZuwHKbQfwMyMBjpw6vecJY58usfeVBEtJtn9QCmxjQ63nSnoMj8OagAWSybCp0-oUH-Az3SWdnvpIT05zcIbGXJF9FaMNIYXNQGJ8QgwWyUpTS_hWIB5YGRLyZdNB5oR6ZV-3hbTsxaoHRi6cKF1M"/></div></div></header><main class="flex flex-col relative w-full pt-16 pb-24 bg-surface"><div class="flex flex-col w-full space-y-space-xl px-margin pb-6">
+<!-- Live Pulse Bar & Metric Chips -->
+<div class="flex flex-col space-y-space-sm pt-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary-container opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-secondary"></span>
+</span>
+<span class="font-label-sm text-label-sm text-on-surface uppercase tracking-wider font-bold">HQ Ops Stream</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">sync</span> Synced 8s ago
+      </span>
+</div>
+<!-- Horizontal Scrolling Metrics Pill Strip -->
+<div class="flex gap-space-sm overflow-x-auto no-scrollbar py-space-xs -mx-margin px-margin">
+<div class="flex items-center gap-space-xs bg-surface-container-high px-space-md py-1.5 rounded-full flex-shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[16px] text-secondary">local_shipping</span>
+<span class="font-label-md text-label-md text-on-surface">Active Dispatches:</span>
+<span class="font-label-md text-label-md text-secondary font-bold">142</span>
+</div>
+<div class="flex items-center gap-space-xs bg-surface-container-high px-space-md py-1.5 rounded-full flex-shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[16px] text-tertiary-container">person_pin_circle</span>
+<span class="font-label-md text-label-md text-on-surface">Available Artisans:</span>
+<span class="font-label-md text-label-md text-on-tertiary-container font-bold">89</span>
+</div>
+<div class="flex items-center gap-space-xs bg-surface-container-high px-space-md py-1.5 rounded-full flex-shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[16px] text-error">gavel</span>
+<span class="font-label-md text-label-md text-on-surface">Dispute Rate:</span>
+<span class="font-label-md text-label-md text-error font-bold">0.2%</span>
+</div>
+</div>
+</div>
+<!-- 2x2 KPI Grid -->
+<div class="grid grid-cols-2 gap-space-md">
+<!-- GMV Card -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Daily GMV</span>
+<div class="w-7 h-7 rounded-lg bg-surface-container-low flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[18px]">currency_rupee</span>
+</div>
+</div>
+<div class="mt-space-md">
+<div class="font-numeric-price text-numeric-price text-on-surface leading-tight">₹1,84,500</div>
+<div class="flex items-center gap-1 mt-1 text-on-tertiary-container">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+<span class="font-label-sm text-label-sm font-bold">+14%</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">vs yst</span>
+</div>
+</div>
+</div>
+<!-- Completed Bookings -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Completed</span>
+<div class="w-7 h-7 rounded-lg bg-surface-container-low flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[18px]">task_alt</span>
+</div>
+</div>
+<div class="mt-space-md">
+<div class="font-numeric-price text-numeric-price text-on-surface leading-tight">328 <span class="font-body-sm text-body-sm text-on-surface-variant">jobs</span></div>
+<div class="flex items-center gap-1 mt-1 text-on-surface-variant">
+<span class="font-label-sm text-label-sm">Peak: 11am-2pm</span>
+</div>
+</div>
+</div>
+<!-- Guild Queue -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Guild Queue</span>
+<div class="w-7 h-7 rounded-lg bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed">
+<span class="material-symbols-outlined text-[18px]">engineering</span>
+</div>
+</div>
+<div class="mt-space-md">
+<div class="font-numeric-price text-numeric-price text-on-surface leading-tight">18 <span class="font-body-sm text-body-sm text-on-surface-variant">pending</span></div>
+<div class="flex items-center gap-1 mt-1 text-secondary">
+<span class="material-symbols-outlined text-[14px]">priority_high</span>
+<span class="font-label-sm text-label-sm font-bold">5 Priority SLA</span>
+</div>
+</div>
+</div>
+<!-- WhatsApp Alerts -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">WA Outbound</span>
+<div class="w-7 h-7 rounded-lg bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed">
+<span class="material-symbols-outlined text-[18px]">chat</span>
+</div>
+</div>
+<div class="mt-space-md">
+<div class="font-numeric-price text-numeric-price text-on-surface leading-tight">1,420</div>
+<div class="flex items-center gap-1 mt-1 text-on-tertiary-container">
+<span class="material-symbols-outlined text-[14px]">done_all</span>
+<span class="font-label-sm text-label-sm">99.1% deliv.</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Live Dispatch Radar & Heatmap Widget -->
+<div class="bg-primary-container text-surface rounded-xl p-space-lg shadow-md relative overflow-hidden">
+<div class="flex items-start justify-between relative z-10">
+<div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-secondary-container text-[20px] animate-spin">radar</span>
+<h2 class="font-headline-sm text-headline-sm text-surface">Surge Grid Alert</h2>
+</div>
+<p class="font-body-sm text-body-sm text-on-primary-container mt-1">High demand in DLF Phase 4 &amp; Cyber City</p>
+</div>
+<span class="bg-secondary-container text-on-secondary-container font-label-sm text-label-sm px-2.5 py-1 rounded-full font-bold uppercase tracking-wider">Surge 1.4x</span>
+</div>
+<!-- Micro Geo Canvas & Demand Stack -->
+<div class="mt-space-lg bg-surface-container-lowest/10 backdrop-blur-sm rounded-lg p-space-md flex items-center justify-between relative z-10">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-full bg-secondary-container/20 flex items-center justify-center text-secondary-container">
+<span class="material-symbols-outlined text-[22px]">bolt</span>
+</div>
+<div>
+<div class="font-label-lg text-label-lg text-surface">6 Electricians Urgently Needed</div>
+<div class="font-body-sm text-body-sm text-on-primary-container">Avg ETA stretched to 34 mins</div>
+</div>
+</div>
+<button class="bg-secondary-container hover:bg-secondary text-surface font-label-md text-label-md px-3 py-2 rounded-lg transition-colors flex items-center gap-1" type="button">
+<span>Route</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+<!-- Background Grid Lines Deco -->
+<div class="absolute inset-0 opacity-5 pointer-events-none flex items-center justify-center">
+<div class="w-72 h-72 rounded-full border border-surface"></div>
+<div class="w-48 h-48 rounded-full border border-surface absolute"></div>
+<div class="w-24 h-24 rounded-full border border-surface absolute"></div>
+</div>
+</div>
+<!-- Category Volume Breakdown -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm">
+<div class="flex items-center justify-between mb-space-md">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Job Volume Mix</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Live dispatches by trade craft</p>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container-high px-2 py-1 rounded-md font-semibold">Today</span>
+</div>
+<!-- Multi-segmented Progress Bar -->
+<div class="w-full h-3 bg-surface-container-high rounded-full overflow-hidden flex">
+<div class="bg-secondary-container h-full" style="width: 38%"></div>
+<div class="bg-primary-container h-full" style="width: 26%"></div>
+<div class="bg-on-tertiary-container h-full" style="width: 20%"></div>
+<div class="bg-surface-tint h-full" style="width: 16%"></div>
+</div>
+<!-- Legend Items -->
+<div class="grid grid-cols-2 gap-y-space-sm gap-x-space-md mt-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary-container"></span>
+<span class="font-body-sm text-body-sm text-on-surface">Electrician</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface font-bold">38%</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container"></span>
+<span class="font-body-sm text-body-sm text-on-surface">Carpenter</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface font-bold">26%</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-on-tertiary-container"></span>
+<span class="font-body-sm text-body-sm text-on-surface">Plumber</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface font-bold">20%</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-surface-tint"></span>
+<span class="font-body-sm text-body-sm text-on-surface">Appliance</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface font-bold">16%</span>
+</div>
+</div>
+</div>
+<!-- Priority Artisan Verification Queue -->
+<div class="flex flex-col space-y-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Guild Verification Queue</h3>
+<span class="bg-secondary-fixed text-on-secondary-fixed px-2 py-0.5 rounded-full font-label-sm text-label-sm font-bold">18</span>
+</div>
+<a class="font-label-md text-label-md text-secondary hover:underline" href="#">View All</a>
+</div>
+<!-- Candidate 1: Ready for Signoff -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col space-y-space-md transition-all" id="card-artisan-1">
+<div class="flex items-start gap-space-md">
+<div class="relative">
+<img class="w-14 h-14 rounded-xl object-cover" data-alt="Close up portrait photograph of an Indian craftsman master plumber in neat uniform smiling proudly with warm workshop lighting in background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0niMzhrO4lMthcXzNVh614oAz61ra_lL70s2bys33JMXtaF-nLkTBSUhT_34yUPnVm4_uQYtYdWTVd-2diOeHGG5Zllmo5d6ZowDE1MR3xLjjO1l1y8_dX7dfVcelMsafyQB43Gt0p0W39ZGxtoulhCSCKnllhANe1HYtO6aD6Ai34EA25E7RYHwaYLFHhOaujMFrhlrgtr5adx12ZfZoatvSAKKcHg-uGofWLF7-D-oTSDZHxQ4Djg"/>
+<span class="absolute -bottom-1 -right-1 bg-surface-container-lowest p-0.5 rounded-full">
+<span class="material-symbols-outlined text-[16px] text-on-tertiary-container">verified</span>
+</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<h4 class="font-headline-sm text-headline-sm text-on-surface truncate">Mohd. Salim</h4>
+<span class="bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm px-2 py-0.5 rounded">8 yrs exp</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Master Plumber &amp; Pipe Fitter</p>
+<div class="flex flex-wrap gap-1.5 mt-2">
+<span class="bg-surface-container-low text-on-tertiary-container px-2 py-0.5 rounded-full font-label-sm text-label-sm flex items-center gap-1 font-semibold">
+<span class="material-symbols-outlined text-[12px]">check_circle</span> Aadhaar + Police
+            </span>
+<span class="bg-surface-container-low text-primary-container px-2 py-0.5 rounded-full font-label-sm text-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">school</span> NSDC Cert
+            </span>
+</div>
+</div>
+</div>
+<!-- Action Buttons with optimistic feedback -->
+<div class="grid grid-cols-2 gap-space-sm pt-space-xs">
+<button class="min-h-[44px] bg-primary-container text-surface hover:bg-secondary-container hover:text-on-secondary-container rounded-lg font-label-lg text-label-lg flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-transform" onclick="document.getElementById('card-artisan-1').classList.add('opacity-40'); this.innerText='Approved';" type="button">
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+<span>Approve Guild</span>
+</button>
+<button class="min-h-[44px] bg-surface-container text-error rounded-lg font-label-lg text-label-lg flex items-center justify-center gap-1 active:scale-95 transition-transform" onclick="document.getElementById('card-artisan-1').classList.add('opacity-40'); this.innerText='Declined';" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+<span>Reject</span>
+</button>
+</div>
+</div>
+<!-- Candidate 2: Incomplete -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col space-y-space-md" id="card-artisan-2">
+<div class="flex items-start gap-space-md">
+<div class="relative">
+<img class="w-14 h-14 rounded-xl object-cover" data-alt="Headshot photo of Ramesh Verma an Indian HVAC and AC technician in blue work shirt holding a digital multimeter." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDj55VvVuzJgWFM3SxOU9nrUDNHU8KipImH5hrQL3sP4pCH2XBVkud-6frrBQbQkBGpkQ3IJ2sx0gZf6hYENVzTXjG1bhhhxHD8RPPGcYNzdJq1TV2rJxfTAwnkhuUU3HkTy_ySxhKKoWeLCmtQ122MNyS5690xZ8LbXiGF2LsOPpePWbYrU8pYib8G_JZ_MXKz0k5tn79vT07h1Wn7Y4J9IgL2nsi6aoYRAFxAf9NEMgw25S5o4rgWrg"/>
+<span class="absolute -bottom-1 -right-1 bg-surface-container-lowest p-0.5 rounded-full">
+<span class="material-symbols-outlined text-[16px] text-secondary">pending</span>
+</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<h4 class="font-headline-sm text-headline-sm text-on-surface truncate">Ramesh Verma</h4>
+<span class="bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm px-2 py-0.5 rounded">4 yrs exp</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">AC &amp; Heating Technician</p>
+<div class="flex flex-wrap gap-1.5 mt-2">
+<span class="bg-error-container text-on-error-container px-2 py-0.5 rounded-full font-label-sm text-label-sm flex items-center gap-1 font-semibold">
+<span class="material-symbols-outlined text-[12px]">build_circle</span> Tool Calibration Due
+            </span>
+</div>
+</div>
+</div>
+<div class="pt-space-xs">
+<button class="w-full min-h-[44px] bg-surface-container-high text-on-surface hover:bg-surface-container rounded-lg font-label-lg text-label-lg flex items-center justify-center gap-1.5 active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[18px]">description</span>
+<span>Review Documents &amp; Tools</span>
+</button>
+</div>
+</div>
+</div>
+<!-- WhatsApp Operations & Broadcast Tool -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm space-y-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-8 h-8 rounded-lg bg-surface-container-low flex items-center justify-center text-on-tertiary-container">
+<span class="material-symbols-outlined text-[20px]">cell_tower</span>
+</span>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">WhatsApp Dispatcher</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Instant broadcast pipeline</p>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-on-tertiary-container bg-surface-container-low px-2 py-1 rounded-md font-bold">API Healthy</span>
+</div>
+<!-- Quick Action Emergency Surge Broadcast -->
+<div class="bg-surface-container-low rounded-xl p-space-md space-y-space-sm">
+<div class="flex items-center justify-between text-on-surface">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-secondary-container text-[18px]">campaign</span>
+<span class="font-label-md text-label-md font-bold">DLF 4 Electrician Emergency</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Radius 5.5km</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Notify 24 standby certified technicians with ₹250 bonus surcharge.</p>
+<button class="w-full min-h-[48px] bg-secondary-container hover:bg-secondary text-surface font-label-lg text-label-lg rounded-lg flex items-center justify-center gap-2 active:scale-98 transition-all shadow-sm" id="broadcastBtn" onclick="this.innerHTML='&lt;span class=\'material-symbols-outlined text-[18px] animate-spin\'&gt;refresh&lt;/span&gt; Broadcasting...'; setTimeout(() =&gt; { this.innerHTML='&lt;span class=\'material-symbols-outlined text-[18px]\'&gt;done&lt;/span&gt; Broadcast Sent to 24 Artisans'; this.classList.remove('bg-secondary-container'); this.classList.add('bg-tertiary-container', 'text-tertiary-fixed'); }, 1200);" type="button">
+<span class="material-symbols-outlined text-[20px]">send</span>
+<span>Broadcast Surge Alert via WhatsApp</span>
+</button>
+</div>
+<!-- CSAT Sentiment Strip -->
+<div class="flex items-center justify-between p-space-md rounded-lg bg-surface-container-high/60">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-full bg-surface-container-lowest flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[20px]">star</span>
+</div>
+<div>
+<span class="font-label-md text-label-md text-on-surface block">Automated Post-Job CSAT</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">94% 5-Star (1,180 responses)</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">arrow_forward</span>
+</div>
+</div>
+</div></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/90 backdrop-blur-xl shadow-[0_-2px_12px_rgba(0,0,0,0.05)]" data-active-classes="text-secondary font-label-md"><div class="flex justify-around items-center h-20 px-space-xs"><a aria-current="page" class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] gap-1 transition-colors text-secondary font-label-md" data-path="overview-dashboard" href="#"><span class="material-symbols-outlined text-[24px]">dashboard</span><span class="font-label-sm text-label-sm">Overview</span></a><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] gap-1 text-on-surface-variant hover:text-on-surface transition-colors" data-path="artisan-queue" href="#"><span class="material-symbols-outlined text-[24px]">how_to_reg</span><span class="font-label-sm text-label-sm">Queue</span></a><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] gap-1 text-on-surface-variant hover:text-on-surface transition-colors" data-path="dispatches" href="#"><span class="material-symbols-outlined text-[24px]">near_me</span><span class="font-label-sm text-label-sm">Dispatches</span></a><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] gap-1 text-on-surface-variant hover:text-on-surface transition-colors" data-path="system-config" href="#"><span class="material-symbols-outlined text-[24px]">tune</span><span class="font-label-sm text-label-sm">Config</span></a></div></nav></body></html>

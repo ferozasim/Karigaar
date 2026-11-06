@@ -1,0 +1,78 @@
+# Git Ignore for Karigaar Monorepo (Flutter Mobile + Next.js Admin + Firebase)
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE & Editor Files
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+*.iml
+*.ipr
+*.iws
+
+# Node & Next.js
+node_modules/
+.next/
+out/
+build/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+.env*.local
+
+# Flutter & Dart
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+*.ephemeral
+*.lock
+apps/mobile_app/.dart_tool/
+apps/mobile_app/.packages
+apps/mobile_app/.pub/
+apps/mobile_app/build/
+apps/mobile_app/.flutter-plugins
+apps/mobile_app/.flutter-plugins-dependencies
+
+# Android Platform
+android/.gradle/
+android/local.properties
+android/captures/
+android/gradlew
+android/gradlew.bat
+android/wrapper/
+**/android/app/release/
+**/android/app/build/
+*.apk
+*.aab
+
+# iOS Platform
+ios/.symlinks/
+ios/Pods/
+ios/Podfile.lock
+ios/.generated/
+*.ipa
+
+# Firebase & Emulators
+.firebase/
+firebase-debug.log*
+firestore-debug.log*
+ui-debug.log*
+database-debug.log*
+pubsub-debug.log*
+
+# Local Development Scripts & Temporary Dumps
+tmp/
+*.tmp
+logs/
+*.log

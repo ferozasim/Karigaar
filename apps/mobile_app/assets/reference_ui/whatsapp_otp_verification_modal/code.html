@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_auth" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "primary-fixed": "#dae2fd", "inverse-on-surface": "#eaf1ff", "on-secondary-container": "#663500", "outline-variant": "#c6c6cd", "inverse-surface": "#213145", "on-primary-fixed-variant": "#3f465c", "surface-container-lowest": "#ffffff", "on-surface-variant": "#45464d", "primary": "#000000", "on-tertiary-fixed": "#002114", "secondary": "#904d00", "secondary-fixed-dim": "#ffb77d", "tertiary-fixed": "#85f8c4", "tertiary-container": "#002114", "on-background": "#0b1c30", "error-container": "#ffdad6", "surface-container-high": "#dce9ff", "surface": "#f8f9ff", "background": "#f8f9ff", "tertiary": "#000000", "outline": "#76777d", "on-primary-container": "#7c839b", "on-tertiary-container": "#069669", "on-tertiary": "#ffffff", "tertiary-fixed-dim": "#68dba9", "secondary-fixed": "#ffdcc3", "primary-container": "#131b2e", "surface-tint": "#565e74", "on-primary-fixed": "#131b2e", "on-secondary": "#ffffff", "on-error-container": "#93000a", "primary-fixed-dim": "#bec6e0", "surface-bright": "#f8f9ff", "surface-container": "#e5eeff", "on-primary": "#ffffff", "inverse-primary": "#bec6e0", "surface-variant": "#d3e4fe", "surface-container-highest": "#d3e4fe", "surface-dim": "#cbdbf5", "secondary-container": "#fe932c", "on-secondary-fixed-variant": "#6e3900", "error": "#ba1a1a", "on-error": "#ffffff", "on-surface": "#0b1c30", "surface-container-low": "#eff4ff", "on-tertiary-fixed-variant": "#005137", "on-secondary-fixed": "#2f1500" }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, spacing: { "margin": "1.25rem", "space-xl": "1.5rem", "space-sm": "0.5rem", "space-lg": "1rem", "space-md": "0.75rem", "space-xs": "0.25rem", "gutter": "1rem" }, fontFamily: { "label-lg": ["Inter"], "headline-md": ["Plus Jakarta Sans"], "numeric-price": ["Inter"], "label-md": ["Inter"], "body-sm": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "headline-lg": ["Plus Jakarta Sans"], "label-sm": ["Inter"], "body-md": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "display-lg": ["Plus Jakarta Sans"] }, fontSize: { "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "numeric-price": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }], "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "800" }] } } } };</script><style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head><body class="bg-surface font-body-md text-body-md text-on-surface flex flex-col min-h-screen relative"><header class="fixed top-0 w-full z-40 pt-safe bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 px-margin flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="Brand logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UBIVqDSa7RKEqgUarRkiQqYGClKKRf-M5OPuU-bfmdO2bOI4daW2Sl1UGrODVZ6kGog8NpD99uIlRDx7iKofq7gGBYhhDJl72Hi_qrZ101pQMdPe56XQrokWqne1JGHmTOwQG0wdJWdNRbshgmr3ug6paSfeOwTssHEKmgbNtori70obnAbPxiHQKdKm6cCmjnol1C8SCWRfWWrxYeRh2hfVdDP-2XJa56M5_sppyv9ATzlpEED4uTAUAd"/><span class="font-headline-sm text-headline-sm text-on-surface font-bold tracking-tight">Karigaar</span></div><div class="flex items-center gap-space-sm"><button class="min-h-[44px] min-w-[44px] px-space-md py-space-xs rounded-full bg-surface-container-high text-on-surface flex items-center justify-center font-label-md text-label-md transition-colors hover:bg-surface-variant" type="button"><span class="material-symbols-outlined text-[18px] mr-1">translate</span><span>EN / HI</span></button><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1Un9ckK2d_gxMxfAymNn7w657zErjudl3Z_ohQRjV8R_aE9Z9rm2iD-JcaduR2x0AvWOrtbd9qo-9W-QRQDurOELJA5ftfLAuZaUKZuwHKbQfwMyMBjpw6vecJY58usfeVBEtJtn9QCmxjQ63nSnoMj8OagAWSybCp0-oUH-Az3SWdnvpIT05zcIbGXJF9FaMNIYXNQGJ8QgwWyUpTS_hWIB5YGRLyZdNB5oR6ZV-3hbTsxaoHRi6cKF1M"/></div></div></header><main class="flex flex-col relative w-full pt-16 bg-surface"><div class="flex flex-col w-full pb-safe">
+<!-- Subtle Ambient Glow -->
+<div class="relative w-full overflow-hidden px-margin pt-space-md pb-space-lg flex flex-col gap-space-md">
+<!-- Warm Artisanal Greeting Banner -->
+<div class="relative overflow-hidden rounded-xl bg-surface-container-high p-space-lg shadow-sm">
+<div class="flex items-start justify-between relative z-10">
+<div class="flex flex-col gap-space-xs max-w-[78%]">
+<div class="inline-flex items-center gap-space-xs px-space-sm py-0.5 rounded-full bg-surface-container-lowest shadow-sm w-fit">
+<span class="material-symbols-outlined text-secondary text-[14px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-label-sm text-label-sm text-secondary tracking-wide uppercase">Guild Certified Safe</span>
+</div>
+<h1 class="font-headline-md text-headline-md text-on-surface tracking-tight mt-1">
+            Welcome to Karigaar
+          </h1>
+<p class="font-label-md text-label-md text-secondary font-semibold">
+            भारत के सबसे भरोसेमंद कारीगर
+          </p>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-snug mt-0.5">
+            Book verified master tradespeople or get hired for high-ticket local jobs.
+          </p>
+</div>
+<div class="w-14 h-14 rounded-xl overflow-hidden shrink-0 shadow-sm bg-surface-container-lowest">
+<img class="w-full h-full object-cover" data-alt="Close up photograph of a skilled Indian craftsman artisan hands polishing fine teak wood joint with warm golden workshop natural lighting and brass measuring tools in soft background bokeh." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWZzT2KlvOhk8dU_3eet49E3puj9PQrGJWlPYk8YwwmV8YjiNAIjXcdOLBoDmBXhidsjdDODCD3jLerpSB_a4bj_RlbQh8wZL79DsaXbojo3wFiALRPLxH5oNKrU4ixCRrMAqEMsom72dVHCKBPMfgsy_Hpn2S3yTd1UDPA8aqbP9rCVqwo2BkyZ5prupmxvGQaa5sVU8BvDAfmgjgmZQepStbanV_iEVSUdEaDbnk9OgQqvRO9y0gtA"/>
+</div>
+</div>
+</div>
+<!-- Role Switcher Segmented Tabs -->
+<div class="p-1 rounded-xl bg-surface-container flex items-center gap-1 shadow-sm">
+<button class="flex-1 min-h-[46px] flex items-center justify-center gap-space-sm rounded-lg bg-surface-container-lowest text-on-surface shadow-sm transition-all duration-200" id="tab-homeowner" onclick="switchRole('homeowner')" type="button">
+<span class="material-symbols-outlined text-[20px] text-secondary">home_repair_service</span>
+<div class="flex flex-col text-left leading-none">
+<span class="font-label-lg text-label-lg font-bold">Homeowner</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Hire an Expert</span>
+</div>
+</button>
+<button class="flex-1 min-h-[46px] flex items-center justify-center gap-space-sm rounded-lg text-on-surface-variant transition-all duration-200 hover:text-on-surface" id="tab-artisan" onclick="switchRole('artisan')" type="button">
+<span class="material-symbols-outlined text-[20px]">handyman</span>
+<div class="flex flex-col text-left leading-none">
+<span class="font-label-lg text-label-lg font-bold">Karigaar</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Work &amp; Earn</span>
+</div>
+</button>
+</div>
+<!-- Dynamic Artisan Benefit Banner (Toggled by role) -->
+<div class="hidden flex-col gap-space-sm p-space-md rounded-xl bg-surface-container-lowest shadow-sm" id="artisan-promo-card">
+<div class="flex items-center justify-between">
+<span class="font-label-lg text-label-lg text-on-surface font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-secondary text-[18px]">workspace_premium</span>
+          New Artisan? Register in 2 mins
+        </span>
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-bold">0% Commission Month</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+        Select your craft to start getting instant nearby home bookings directly on WhatsApp:
+      </p>
+<!-- Trade Categories Grid Carousel -->
+<div class="flex gap-space-xs overflow-x-auto pb-1 no-scrollbar">
+<span class="px-space-md py-1.5 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md flex items-center gap-1 shrink-0">
+<span class="material-symbols-outlined text-[16px]">bolt</span> Electrician
+        </span>
+<span class="px-space-md py-1.5 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md flex items-center gap-1 shrink-0">
+<span class="material-symbols-outlined text-[16px]">carpenter</span> Carpenter
+        </span>
+<span class="px-space-md py-1.5 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md flex items-center gap-1 shrink-0">
+<span class="material-symbols-outlined text-[16px]">plumbing</span> Plumber
+        </span>
+<span class="px-space-md py-1.5 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md flex items-center gap-1 shrink-0">
+<span class="material-symbols-outlined text-[16px]">format_paint</span> Painter
+        </span>
+<span class="px-space-md py-1.5 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md flex items-center gap-1 shrink-0">
+<span class="material-symbols-outlined text-[16px]">ac_unit</span> AC Tech
+        </span>
+</div>
+<!-- Trust Badges Checklist -->
+<div class="flex items-center justify-between pt-space-xs px-1">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-on-tertiary-container text-[16px]">id_card</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Aadhaar KYC</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-on-tertiary-container text-[16px]">shield</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Tool Insurance</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-on-tertiary-container text-[16px]">currency_rupee</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Daily Payouts</span>
+</div>
+</div>
+</div>
+<!-- Main Auth Container -->
+<div class="flex flex-col gap-space-md p-space-lg rounded-xl bg-surface-container-lowest shadow-sm">
+<!-- Primary Action: WhatsApp Instant Login -->
+<button class="w-full min-h-[56px] rounded-xl bg-on-tertiary-container hover:opacity-95 text-on-tertiary px-space-md py-space-sm flex items-center justify-between shadow-sm active:scale-[0.99] transition-transform" onclick="openOtpModal()" type="button">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest/20 flex items-center justify-center shrink-0">
+<svg class="w-6 h-6 fill-current text-on-tertiary" viewbox="0 0 24 24">
+<path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M9.53 7.37C9.33 7.37 9 7.45 8.71 7.76C8.42 8.08 7.62 8.84 7.62 10.38C7.62 11.92 8.74 13.41 8.9 13.62C9.06 13.83 11.1 16.97 14.21 18.32C14.95 18.64 15.53 18.83 15.98 18.97C16.72 19.21 17.39 19.17 17.93 19.09C18.53 19 19.78 18.33 20.04 17.6C20.3 16.87 20.3 16.25 20.22 16.12C20.14 16 19.94 15.92 19.64 15.77C19.34 15.62 17.87 14.89 17.59 14.79C17.32 14.69 17.12 14.64 16.92 14.94C16.72 15.25 16.14 15.92 15.96 16.12C15.78 16.33 15.6 16.35 15.3 16.2C15 16.05 13.73 15.63 12.22 14.28C11.04 13.23 10.25 11.93 10.02 11.53C9.79 11.13 10 10.91 10.15 10.76C10.28 10.63 10.45 10.41 10.6 10.23C10.75 10.05 10.8 9.92 10.9 9.72C11 9.51 10.95 9.33 10.87 9.18C10.8 9.03 10.2 7.55 9.95 6.95C9.71 6.36 9.46 6.45 9.28 6.44C9.11 6.43 8.91 6.43 8.71 6.43L9.53 7.37Z"></path>
+</svg>
+</div>
+<div class="flex flex-col text-left">
+<span class="font-headline-sm text-headline-sm font-bold text-on-tertiary tracking-tight">Instant Login with WhatsApp</span>
+<span class="font-label-sm text-label-sm text-tertiary-fixed opacity-90">1-Tap instant OTP &amp; updates on +91 WhatsApp</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-tertiary text-[22px]">arrow_forward</span>
+</button>
+<!-- Soft Divider -->
+<div class="flex items-center gap-space-sm my-1">
+<div class="flex-1 h-[1px] bg-surface-container-high"></div>
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">or continue with mobile number</span>
+<div class="flex-1 h-[1px] bg-surface-container-high"></div>
+</div>
+<!-- Mobile Number Entry Form -->
+<div class="flex flex-col gap-space-sm">
+<label class="font-label-md text-label-md text-on-surface font-semibold flex items-center justify-between" for="mobile-number-input">
+<span>Mobile Phone Number</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-normal">SMS verification fallback</span>
+</label>
+<div class="flex items-center rounded-xl bg-surface-container-low p-1.5 focus-within:bg-surface-container-lowest focus-within:shadow-md transition-all">
+<!-- Country code chip -->
+<div class="flex items-center gap-1 px-space-sm py-2 rounded-lg bg-surface-container-lowest text-on-surface shrink-0 shadow-sm">
+<span class="text-[16px] leading-none">🇮🇳</span>
+<span class="font-label-md text-label-md font-bold">+91</span>
+<span class="material-symbols-outlined text-[16px] text-outline">expand_more</span>
+</div>
+<!-- Input field -->
+<input class="w-full bg-transparent px-space-sm py-2 font-numeric-price text-numeric-price text-on-surface placeholder:text-outline placeholder:font-body-md placeholder:text-body-md outline-none border-none" id="mobile-number-input" inputmode="numeric" maxlength="10" oninput="handlePhoneInput(this)" placeholder="Enter 10-digit mobile number" type="tel"/>
+</div>
+<!-- Phone Action CTA -->
+<button class="w-full min-h-[50px] rounded-xl bg-primary text-on-primary font-label-lg text-label-lg font-bold flex items-center justify-center gap-space-xs mt-1 transition-all active:scale-[0.98] shadow-sm" id="phone-submit-btn" onclick="openOtpModal()" type="button">
+<span>Get Verification Code</span>
+<span class="material-symbols-outlined text-[18px]">lock</span>
+</button>
+</div>
+<!-- Consent Microcopy -->
+<p class="font-body-sm text-body-sm text-outline text-center leading-normal">
+        By continuing, you agree to Karigaar Guild's <a class="text-on-surface font-semibold underline decoration-secondary" href="#">Terms of Service</a> &amp; <a class="text-on-surface font-semibold underline decoration-secondary" href="#">Privacy Code</a>.
+      </p>
+</div>
+<!-- Craft Guild Trust Strip -->
+<div class="p-space-md rounded-xl bg-surface-container-low flex items-center justify-around text-center gap-2">
+<div class="flex flex-col items-center gap-0.5">
+<span class="material-symbols-outlined text-secondary text-[22px]" style="font-variation-settings: 'FILL' 1;">security</span>
+<span class="font-label-sm text-label-sm text-on-surface font-bold">256-bit Encrypted</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Bank-Grade Privacy</span>
+</div>
+<div class="h-8 w-[1px] bg-surface-container-high"></div>
+<div class="flex flex-col items-center gap-0.5">
+<span class="material-symbols-outlined text-on-tertiary-container text-[22px]" style="font-variation-settings: 'FILL' 1;">assignment_turned_in</span>
+<span class="font-label-sm text-label-sm text-on-surface font-bold">NSDC Partner</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Skill Verified Guild</span>
+</div>
+<div class="h-8 w-[1px] bg-surface-container-high"></div>
+<div class="flex flex-col items-center gap-0.5">
+<span class="material-symbols-outlined text-secondary text-[22px]" style="font-variation-settings: 'FILL' 1;">gavel</span>
+<span class="font-label-sm text-label-sm text-on-surface font-bold">Guaranteed Rate</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Zero Hidden Charges</span>
+</div>
+</div>
+<!-- Human Help & WhatsApp Guild Support Touchpoint -->
+<div class="rounded-xl bg-surface-container-lowest p-space-md shadow-sm flex items-center justify-between gap-space-sm mb-space-lg">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-secondary text-[20px]">support_agent</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-bold text-on-surface">Need help getting started?</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Chat with Guild Concierge on WhatsApp</span>
+</div>
+</div>
+<a class="min-h-[40px] px-space-md py-1 rounded-full bg-surface-container text-on-surface font-label-sm text-label-sm font-bold flex items-center gap-1 shrink-0 hover:bg-surface-container-high transition-colors" href="https://wa.me/919999999999" rel="noopener noreferrer" target="_blank">
+<span class="material-symbols-outlined text-[16px] text-on-tertiary-container">forum</span>
+<span>Chat Now</span>
+</a>
+</div>
+</div>
+</div>
+</main>
+<!-- Interactive WhatsApp OTP Verification Modal Popup / Sheet -->
+<div class="fixed inset-0 z-50 flex items-end sm:items-center justify-center transition-all duration-300" id="otp-modal">
+<!-- Semi-transparent backdrop with blur -->
+<div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeOtpModal()"></div>
+<!-- Modal Sheet / Container Card -->
+<div class="relative w-full max-w-lg bg-surface-container-lowest rounded-t-3xl sm:rounded-3xl shadow-2xl p-space-lg z-10 flex flex-col gap-space-md pb-safe sm:pb-space-lg transform transition-transform duration-300">
+<!-- Top Drag Handle indicator (Mobile UX) -->
+<div class="w-10 h-1 rounded-full bg-outline-variant/60 mx-auto -mt-1 sm:hidden"></div>
+<!-- Header: Guild badge + WhatsApp icon + Close button -->
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-12 h-12 rounded-2xl bg-[#25D366]/15 flex items-center justify-center text-on-tertiary-container shrink-0">
+<svg class="w-7 h-7 fill-[#075E54] text-[#25D366]" viewbox="0 0 24 24">
+<path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M9.53 7.37C9.33 7.37 9 7.45 8.71 7.76C8.42 8.08 7.62 8.84 7.62 10.38C7.62 11.92 8.74 13.41 8.9 13.62C9.06 13.83 11.1 16.97 14.21 18.32C14.95 18.64 15.53 18.83 15.98 18.97C16.72 19.21 17.39 19.17 17.93 19.09C18.53 19 19.78 18.33 20.04 17.6C20.3 16.87 20.3 16.25 20.22 16.12C20.14 16 19.94 15.92 19.64 15.77C19.34 15.62 17.87 14.89 17.59 14.79C17.32 14.69 17.12 14.64 16.92 14.94C16.72 15.25 16.14 15.92 15.96 16.12C15.78 16.33 15.6 16.35 15.3 16.2C15 16.05 13.73 15.63 12.22 14.28C11.04 13.23 10.25 11.93 10.02 11.53C9.79 11.13 10 10.91 10.15 10.76C10.28 10.63 10.45 10.41 10.6 10.23C10.75 10.05 10.8 9.92 10.9 9.72C11 9.51 10.95 9.33 10.87 9.18C10.8 9.03 10.2 7.55 9.95 6.95C9.71 6.36 9.46 6.45 9.28 6.44C9.11 6.43 8.91 6.43 8.71 6.43L9.53 7.37Z" fill="#069669"></path>
+</svg>
+</div>
+<div>
+<div class="inline-flex items-center gap-1 text-[11px] font-bold text-on-tertiary-container bg-surface-container-high px-2 py-0.5 rounded-full">
+<span class="material-symbols-outlined text-[13px]">lock</span>
+            Guild Instant WhatsApp Auth
+          </div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-bold tracking-tight mt-0.5">Verify WhatsApp Number</h2>
+</div>
+</div>
+<button aria-label="Close dialog" class="w-9 h-9 rounded-full bg-surface-container-high hover:bg-surface-variant flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors" onclick="closeOtpModal()" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- Subtitle with Phone and Edit Action -->
+<div class="p-space-sm rounded-xl bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-2 text-on-surface">
+<span class="material-symbols-outlined text-[18px] text-on-tertiary-container">chat</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+          Code sent to <span class="font-bold text-on-surface">+91 98104 22910</span>
+</p>
+</div>
+<button class="text-secondary font-label-sm text-label-sm font-bold hover:underline shrink-0 ml-2" onclick="editPhoneNumber()" type="button">
+        Edit Number
+      </button>
+</div>
+<!-- 6-digit OTP Interactive Box Container -->
+<div class="flex flex-col gap-space-sm mt-1">
+<div class="flex justify-between items-center gap-2" id="otp-input-container">
+<input autocomplete="one-time-code" class="otp-box w-12 h-14 sm:w-14 sm:h-16 text-center font-numeric-price text-numeric-price font-bold text-on-surface bg-surface-container-low border-2 border-outline-variant/50 rounded-xl focus:border-secondary focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary/20 outline-none transition-all" data-index="0" inputmode="numeric" maxlength="1" type="text" value="5"/>
+<input class="otp-box w-12 h-14 sm:w-14 sm:h-16 text-center font-numeric-price text-numeric-price font-bold text-on-surface bg-surface-container-low border-2 border-outline-variant/50 rounded-xl focus:border-secondary focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary/20 outline-none transition-all" data-index="1" inputmode="numeric" maxlength="1" type="text" value="8"/>
+<input class="otp-box w-12 h-14 sm:w-14 sm:h-16 text-center font-numeric-price text-numeric-price font-bold text-on-surface bg-surface-container-low border-2 border-outline-variant/50 rounded-xl focus:border-secondary focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary/20 outline-none transition-all" data-index="2" inputmode="numeric" maxlength="1" type="text" value="3"/>
+<input class="otp-box w-12 h-14 sm:w-14 sm:h-16 text-center font-numeric-price text-numeric-price font-bold text-on-surface bg-surface-container-low border-2 border-outline-variant/50 rounded-xl focus:border-secondary focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary/20 outline-none transition-all" data-index="3" inputmode="numeric" maxlength="1" placeholder="•" type="text"/>
+<input class="otp-box w-12 h-14 sm:w-14 sm:h-16 text-center font-numeric-price text-numeric-price font-bold text-on-surface bg-surface-container-low border-2 border-outline-variant/50 rounded-xl focus:border-secondary focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary/20 outline-none transition-all" data-index="4" inputmode="numeric" maxlength="1" placeholder="•" type="text"/>
+<input class="otp-box w-12 h-14 sm:w-14 sm:h-16 text-center font-numeric-price text-numeric-price font-bold text-on-surface bg-surface-container-low border-2 border-outline-variant/50 rounded-xl focus:border-secondary focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary/20 outline-none transition-all" data-index="5" inputmode="numeric" maxlength="1" placeholder="•" type="text"/>
+</div>
+<p class="font-label-sm text-label-sm text-outline text-center">Auto-detecting WhatsApp code...</p>
+</div>
+<!-- Timer and Fallback Channels -->
+<div class="flex flex-col gap-2 pt-1 border-t border-surface-container-high/60">
+<div class="flex items-center justify-between text-body-sm">
+<span class="font-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-outline">timer</span>
+          Resend code in <strong class="text-on-surface font-semibold ml-0.5" id="otp-countdown">00:42</strong>
+</span>
+<button class="font-label-md text-label-md font-bold text-outline hover:text-secondary disabled:opacity-50" disabled="" id="resend-otp-btn" onclick="resendOtp()" type="button">
+          Resend OTP
+        </button>
+</div>
+<div class="flex items-center justify-between text-body-sm pt-1">
+<span class="text-on-surface-variant font-body-sm">Didn't receive code on WhatsApp?</span>
+<button class="text-secondary font-label-md text-label-md font-bold hover:underline flex items-center gap-0.5" onclick="sendSmsFallback()" type="button">
+<span>Send via SMS</span>
+<span class="material-symbols-outlined text-[15px]">sms</span>
+</button>
+</div>
+</div>
+<!-- Primary Verification Action CTA -->
+<button class="w-full min-h-[52px] rounded-xl bg-primary text-on-primary font-label-lg text-label-lg font-bold flex items-center justify-center gap-space-xs mt-1 hover:opacity-90 active:scale-[0.98] transition-all shadow-md" id="verify-otp-submit-btn" onclick="submitOtpVerification()" type="button">
+<span>Verify &amp; Continue</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+<!-- Trust Stamp -->
+<div class="flex items-center justify-center gap-1.5 text-center text-outline">
+<span class="material-symbols-outlined text-[16px] text-on-tertiary-container" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span class="font-label-sm text-label-sm">End-to-end encrypted • Karigaar Guild Secure Auth</span>
+</div>
+</div>
+</div>
+<script>
+  function switchRole(role) {
+    const homeownerBtn = document.getElementById('tab-homeowner');
+    const artisanBtn = document.getElementById('tab-artisan');
+    const promoCard = document.getElementById('artisan-promo-card');
+
+    if (role === 'artisan') {
+      homeownerBtn.className = 'flex-1 min-h-[46px] flex items-center justify-center gap-space-sm rounded-lg text-on-surface-variant transition-all duration-200 hover:text-on-surface';
+      artisanBtn.className = 'flex-1 min-h-[46px] flex items-center justify-center gap-space-sm rounded-lg bg-surface-container-lowest text-on-surface shadow-sm transition-all duration-200';
+      promoCard.classList.remove('hidden');
+      promoCard.classList.add('flex');
+    } else {
+      artisanBtn.className = 'flex-1 min-h-[46px] flex items-center justify-center gap-space-sm rounded-lg text-on-surface-variant transition-all duration-200 hover:text-on-surface';
+      homeownerBtn.className = 'flex-1 min-h-[46px] flex items-center justify-center gap-space-sm rounded-lg bg-surface-container-lowest text-on-surface shadow-sm transition-all duration-200';
+      promoCard.classList.add('hidden');
+      promoCard.classList.remove('flex');
+    }
+  }
+
+  function handlePhoneInput(input) {
+    input.value = input.value.replace(/[^0-9]/g, '');
+    const submitBtn = document.getElementById('phone-submit-btn');
+    if (input.value.length === 10) {
+      submitBtn.classList.remove('bg-primary');
+      submitBtn.classList.add('bg-secondary-container', 'text-on-secondary-container');
+    } else {
+      submitBtn.classList.add('bg-primary');
+      submitBtn.classList.remove('bg-secondary-container', 'text-on-secondary-container');
+    }
+  }
+
+  /* OTP Modal Controls */
+  const otpModal = document.getElementById('otp-modal');
+  const otpBoxes = document.querySelectorAll('.otp-box');
+  let countdownTimer;
+
+  function openOtpModal() {
+    otpModal.classList.remove('hidden');
+    otpModal.classList.add('flex');
+    // Focus first empty box or box index 3
+    const firstEmpty = Array.from(otpBoxes).find(input => !input.value);
+    if (firstEmpty) {
+      firstEmpty.focus();
+    } else if (otpBoxes[0]) {
+      otpBoxes[0].focus();
+    }
+    startCountdown();
+  }
+
+  function closeOtpModal() {
+    otpModal.classList.add('hidden');
+    otpModal.classList.remove('flex');
+  }
+
+  function editPhoneNumber() {
+    closeOtpModal();
+    const phoneInput = document.getElementById('mobile-number-input');
+    if (phoneInput) {
+      phoneInput.focus();
+    }
+  }
+
+  /* Interactive OTP Keyboard Navigation & Paste Handling */
+  otpBoxes.forEach((box, index) => {
+    box.addEventListener('input', (e) => {
+      const value = e.target.value.replace(/[^0-9]/g, '');
+      e.target.value = value ? value[value.length - 1] : '';
+
+      if (e.target.value && index < otpBoxes.length - 1) {
+        otpBoxes[index + 1].focus();
+        otpBoxes[index + 1].select();
+      }
+      checkOtpFilled();
+    });
+
+    box.addEventListener('keydown', (e) => {
+      if (e.key === 'Backspace') {
+        if (!e.target.value && index > 0) {
+          otpBoxes[index - 1].focus();
+          otpBoxes[index - 1].value = '';
+        } else {
+          e.target.value = '';
+        }
+        checkOtpFilled();
+      } else if (e.key === 'ArrowLeft' && index > 0) {
+        otpBoxes[index - 1].focus();
+      } else if (e.key === 'ArrowRight' && index < otpBoxes.length - 1) {
+        otpBoxes[index + 1].focus();
+      }
+    });
+
+    box.addEventListener('paste', (e) => {
+      e.preventDefault();
+      const pasteData = (e.clipboardData || window.clipboardData).getData('text').trim();
+      const digits = pasteData.replace(/[^0-9]/g, '').slice(0, 6);
+      if (digits.length > 0) {
+        digits.split('').forEach((digit, i) => {
+          if (otpBoxes[i]) otpBoxes[i].value = digit;
+        });
+        const nextIndex = Math.min(digits.length, otpBoxes.length - 1);
+        otpBoxes[nextIndex].focus();
+        checkOtpFilled();
+      }
+    });
+
+    box.addEventListener('focus', () => {
+      box.select();
+    });
+  });
+
+  function checkOtpFilled() {
+    const isComplete = Array.from(otpBoxes).every(b => b.value.length === 1);
+    const verifyBtn = document.getElementById('verify-otp-submit-btn');
+    if (isComplete) {
+      verifyBtn.classList.remove('bg-primary');
+      verifyBtn.classList.add('bg-secondary-container', 'text-on-secondary-container');
+    } else {
+      verifyBtn.classList.add('bg-primary');
+      verifyBtn.classList.remove('bg-secondary-container', 'text-on-secondary-container');
+    }
+  }
+
+  function startCountdown() {
+    clearInterval(countdownTimer);
+    let timeLeft = 42;
+    const timerElem = document.getElementById('otp-countdown');
+    const resendBtn = document.getElementById('resend-otp-btn');
+    resendBtn.disabled = true;
+    resendBtn.classList.add('text-outline');
+    resendBtn.classList.remove('text-secondary', 'cursor-pointer');
+
+    countdownTimer = setInterval(() => {
+      timeLeft--;
+      if (timeLeft <= 0) {
+        clearInterval(countdownTimer);
+        timerElem.innerText = '00:00';
+        resendBtn.disabled = false;
+        resendBtn.classList.remove('text-outline');
+        resendBtn.classList.add('text-secondary', 'cursor-pointer');
+      } else {
+        const secs = timeLeft < 10 ? '0' + timeLeft : timeLeft;
+        timerElem.innerText = `00:${secs}`;
+      }
+    }, 1000);
+  }
+
+  function resendOtp() {
+    const resendBtn = document.getElementById('resend-otp-btn');
+    if (resendBtn.disabled) return;
+    startCountdown();
+  }
+
+  function sendSmsFallback() {
+    alert('SMS Verification code sent to +91 98104 22910');
+    startCountdown();
+  }
+
+  function submitOtpVerification() {
+    const verifyBtn = document.getElementById('verify-otp-submit-btn');
+    const originalText = verifyBtn.innerHTML;
+    verifyBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[20px]">sync</span><span>Verifying Guild Access...</span>';
+    setTimeout(() => {
+      verifyBtn.innerHTML = '<span class="material-symbols-outlined text-[20px] text-tertiary-fixed">check_circle</span><span>Authenticated!</span>';
+      setTimeout(() => {
+        closeOtpModal();
+        verifyBtn.innerHTML = originalText;
+      }, 700);
+    }, 900);
+  }
+
+  // Pre-focus the active digit box on load
+  document.addEventListener('DOMContentLoaded', () => {
+    if (otpBoxes[3]) {
+      otpBoxes[3].focus();
+    }
+    startCountdown();
+  });
+</script></body></html>

@@ -1,0 +1,80 @@
+# Karigaar Workspace Environment Verification Script
+# Checks system readiness for Flutter Mobile App, Admin Web, and Firebase
+
+Write-Host "`n=======================================================" -ForegroundColor Cyan
+Write-Host "     KARIGAAR WORKSPACE ENVIRONMENT VERIFICATION       " -ForegroundColor Yellow
+Write-Host "=======================================================`n" -ForegroundColor Cyan
+
+$statusReport = @()
+
+function Test-Executable {
+    param(
+        [string]$Name,
+        [string]$Command,
+        [string]$VersionArg = "--version",
+        [bool]$Required = $true
+    )
+
+    $cmd = Get-Command $Command -ErrorAction SilentlyContinue
+    if ($cmd) {
+        try {
+            $ver = (Invoke-Expression "$Command $VersionArg" 2>&1 | Select-Object -First 1).ToString().Trim()
+            Write-Host "[PASS] $Name is installed: $ver" -ForegroundColor Green
+            return [PSCustomObject]@{ Tool = $Name; Status = "INSTALLED"; Version = $ver; Required = $Required }
+        } catch {
+            Write-Host "[PASS] $Name is found at $($cmd.Source)" -ForegroundColor Green
+            return [PSCustomObject]@{ Tool = $Name; Status = "INSTALLED"; Version = "Found"; Required = $Required }
+        }
+    } else {
+        if ($Required) {
+            Write-Host "[FAIL] $Name is NOT found on PATH" -ForegroundColor Red
+            return [PSCustomObject]@{ Tool = $Name; Status = "MISSING"; Version = "None"; Required = $Required }
+        } else {
+            Write-Host "[WARN] $Name is optional and not found on PATH" -ForegroundColor Yellow
+            return [PSCustomObject]@{ Tool = $Name; Status = "OPTIONAL_MISSING"; Version = "None"; Required = $Required }
+        }
+    }
+}
+
+# 1. Base Development Tools
+$statusReport += Test-Executable -Name "Git" -Command "git"
+$statusReport += Test-Executable -Name "Node.js" -Command "node" -VersionArg "-v"
+$statusReport += Test-Executable -Name "npm" -Command "npm" -VersionArg "-v"
+$statusReport += Test-Executable -Name "Docker" -Command "docker" -VersionArg "--version" -Required $false
+
+# 2. Flutter & Dart Ecosystem
+$statusReport += Test-Executable -Name "Flutter SDK" -Command "flutter" -VersionArg "--version"
+$statusReport += Test-Executable -Name "Dart SDK" -Command "dart" -VersionArg "--version"
+
+# 3. Android & Java
+$statusReport += Test-Executable -Name "Java JDK" -Command "java" -VersionArg "-version"
+$androidHome = $env:ANDROID_HOME
+if (-not $androidHome) { $androidHome = $env:ANDROID_SDK_ROOT }
+if (-not $androidHome -and (Test-Path "$env:LOCALAPPDATA\Android\Sdk")) {
+    $androidHome = "$env:LOCALAPPDATA\Android\Sdk"
+}
+
+if ($androidHome -and (Test-Path $androidHome)) {
+    Write-Host "[PASS] Android SDK found at: $androidHome" -ForegroundColor Green
+    $statusReport += [PSCustomObject]@{ Tool = "Android SDK"; Status = "INSTALLED"; Version = $androidHome; Required = $true }
+} else {
+    Write-Host "[FAIL] Android SDK is NOT installed or ANDROID_HOME is not set" -ForegroundColor Red
+    $statusReport += [PSCustomObject]@{ Tool = "Android SDK"; Status = "MISSING"; Version = "None"; Required = $true }
+}
+
+# 4. Firebase CLI
+$statusReport += Test-Executable -Name "Firebase CLI" -Command "firebase" -VersionArg "--version" -Required $false
+
+Write-Host "`n-------------------------------------------------------" -ForegroundColor Cyan
+Write-Host "                SUMMARY OF ENVIRONMENT                 " -ForegroundColor Cyan
+Write-Host "-------------------------------------------------------" -ForegroundColor Cyan
+
+$missingRequired = $statusReport | Where-Object { $_.Required -eq $true -and $_.Status -eq "MISSING" }
+
+if ($missingRequired.Count -eq 0) {
+    Write-Host "`nAll core development dependencies are satisfied! You are ready to build." -ForegroundColor Green
+} else {
+    Write-Host "`nMissing required components detected: $($missingRequired.Tool -join ', ')" -ForegroundColor Yellow
+    Write-Host "`nTo automatically install and configure missing SDKs without admin rights, run:" -ForegroundColor White
+    Write-Host "   powershell -ExecutionPolicy Bypass -File .\scripts\setup-environment.ps1`n" -ForegroundColor Cyan
+}

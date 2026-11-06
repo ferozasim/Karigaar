@@ -1,0 +1,129 @@
+{
+  "cityId": "city_nanded_01",
+  "name": "Nanded",
+  "fullName": "Nanded-Waghala, Maharashtra",
+  "state": "Maharashtra",
+  "country": "India",
+  "pincodeRange": ["431601", "431602", "431603", "431604", "431605"],
+  "centerCoordinates": {
+    "latitude": 19.1383,
+    "longitude": 77.3210
+  },
+  "defaultDispatchRadiusKm": 4.5,
+  "emergencyDispatchWindowMins": 25,
+  "currency": "INR",
+  "currencySymbol": "₹",
+  "timezone": "Asia/Kolkata",
+  "status": "ACTIVE_PILOT",
+  "surgePricing": {
+    "enabled": true,
+    "currentMultiplier": 1.0,
+    "surgeCorridors": [
+      { "localityId": "loc_anand_nagar", "multiplier": 1.0 },
+      { "localityId": "loc_cidco", "multiplier": 1.0 },
+      { "localityId": "loc_vazirabad", "multiplier": 1.0 }
+    ]
+  },
+  "localities": [
+    {
+      "localityId": "loc_vazirabad",
+      "name": "Vazirabad & Sarafa",
+      "marathiName": "वजिराबाद आणि सराफा",
+      "pincode": "431601",
+      "center": { "latitude": 19.1555, "longitude": 77.3190 },
+      "radiusKm": 2.5,
+      "density": "HIGH_COMMERCIAL_RESIDENTIAL",
+      "emergencyHub": true
+    },
+    {
+      "localityId": "loc_anand_nagar",
+      "name": "Anand Nagar",
+      "marathiName": "आनंद नगर",
+      "pincode": "431602",
+      "center": { "latitude": 19.1685, "longitude": 77.3090 },
+      "radiusKm": 2.0,
+      "density": "HIGH_RESIDENTIAL",
+      "emergencyHub": true
+    },
+    {
+      "localityId": "loc_taroda_naka",
+      "name": "Taroda Naka & Taroda BK",
+      "marathiName": "तरोडा नाका",
+      "pincode": "431605",
+      "center": { "latitude": 19.1820, "longitude": 77.2950 },
+      "radiusKm": 3.0,
+      "density": "RESIDENTIAL_EXPANSION",
+      "emergencyHub": true
+    },
+    {
+      "localityId": "loc_shivaji_nagar",
+      "name": "Shivaji Nagar",
+      "marathiName": "शिवाजी नगर",
+      "pincode": "431602",
+      "center": { "latitude": 19.1490, "longitude": 77.3060 },
+      "radiusKm": 2.0,
+      "density": "HIGH_RESIDENTIAL",
+      "emergencyHub": true
+    },
+    {
+      "localityId": "loc_cidco",
+      "name": "CIDCO New Nanded",
+      "marathiName": "सिडको",
+      "pincode": "431603",
+      "center": { "latitude": 19.1310, "longitude": 77.3380 },
+      "radiusKm": 3.5,
+      "density": "RESIDENTIAL_PLANNED",
+      "emergencyHub": true
+    },
+    {
+      "localityId": "loc_workshop_corner",
+      "name": "Workshop Corner & Khadgaon",
+      "marathiName": "वर्कशॉप कॉर्नर / खडगाव",
+      "pincode": "431605",
+      "center": { "latitude": 19.1760, "longitude": 77.3180 },
+      "radiusKm": 2.5,
+      "density": "MIXED_COMMERCIAL",
+      "emergencyHub": false
+    },
+    {
+      "localityId": "loc_baba_nagar",
+      "name": "Baba Nagar & Hyder Bagh",
+      "marathiName": "बाबा नगर / हैदर बाग",
+      "pincode": "431601",
+      "center": { "latitude": 19.1620, "longitude": 77.3290 },
+      "radiusKm": 2.0,
+      "density": "DENSE_URBAN",
+      "emergencyHub": false
+    },
+    {
+      "localityId": "loc_snehnagar",
+      "name": "Snehnagar & Bhagya Nagar",
+      "marathiName": "स्नेहनगर / भाग्य नगर",
+      "pincode": "431602",
+      "center": { "latitude": 19.1580, "longitude": 77.3020 },
+      "radiusKm": 2.0,
+      "density": "PREMIUM_RESIDENTIAL",
+      "emergencyHub": true
+    },
+    {
+      "localityId": "loc_vishnupuri",
+      "name": "Vishnupuri & SRTMUN Campus",
+      "marathiName": "विष्णुपुरी",
+      "pincode": "431606",
+      "center": { "latitude": 19.1020, "longitude": 77.2920 },
+      "radiusKm": 4.0,
+      "density": "INSTITUTIONAL_RESIDENTIAL",
+      "emergencyHub": false
+    },
+    {
+      "localityId": "loc_station_degloor",
+      "name": "Railway Station & Degloor Naka",
+      "marathiName": "रेल्वे स्टेशन / देगलूर नाका",
+      "pincode": "431601",
+      "center": { "latitude": 19.1440, "longitude": 77.3160 },
+      "radiusKm": 2.5,
+      "density": "TRANSIT_COMMERCIAL",
+      "emergencyHub": true
+    }
+  ]
+}
