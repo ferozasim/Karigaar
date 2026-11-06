@@ -22,6 +22,7 @@ if (Test-Path $javaExe) {
     $tempZip = Join-Path $env:TEMP "openjdk17.zip"
     $tempExtract = Join-Path $env:TEMP "openjdk17-extract"
 
+    $ProgressPreference = "SilentlyContinue"
     Invoke-WebRequest -Uri $downloadUrl -OutFile $tempZip -UseBasicParsing
 
     Write-Host "[INFO] Extracting OpenJDK 17..." -ForegroundColor Cyan
@@ -30,8 +31,9 @@ if (Test-Path $javaExe) {
 
     $extractedFolder = Get-ChildItem -Path $tempExtract -Directory | Select-Object -First 1
 
-    if (-not (Test-Path (Split-Path -Parent $TargetDir))) {
-        New-Item -ItemType Directory -Path (Split-Path -Parent $TargetDir) -Force | Out-Null
+    $parentDir = Split-Path -Parent $TargetDir
+    if (-not (Test-Path $parentDir)) {
+        New-Item -ItemType Directory -Path $parentDir -Force | Out-Null
     }
 
     if (Test-Path $TargetDir) { Remove-Item -Recurse -Force $TargetDir }

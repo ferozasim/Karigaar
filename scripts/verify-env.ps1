@@ -5,6 +5,28 @@ Write-Host "`n=======================================================" -Foregrou
 Write-Host "     KARIGAAR WORKSPACE ENVIRONMENT VERIFICATION       " -ForegroundColor Yellow
 Write-Host "=======================================================`n" -ForegroundColor Cyan
 
+# Refresh environment variables from registry so newly installed tools are immediately detected
+$userPath = [Environment]::GetEnvironmentVariable("Path", "User")
+$machinePath = [Environment]::GetEnvironmentVariable("Path", "Machine")
+$combinedPath = "$userPath;$machinePath"
+foreach ($p in ($combinedPath -split ';')) {
+    if ($p -and ($env:Path -split ';' -notcontains $p)) {
+        $env:Path = "$p;$env:Path"
+    }
+}
+if (-not $env:JAVA_HOME) {
+    $env:JAVA_HOME = [Environment]::GetEnvironmentVariable("JAVA_HOME", "User")
+}
+if ($env:JAVA_HOME -and (Test-Path (Join-Path $env:JAVA_HOME "bin"))) {
+    $javaBin = Join-Path $env:JAVA_HOME "bin"
+    if ($env:Path -split ';' -notcontains $javaBin) {
+        $env:Path = "$javaBin;$env:Path"
+    }
+}
+if (-not $env:ANDROID_HOME) {
+    $env:ANDROID_HOME = [Environment]::GetEnvironmentVariable("ANDROID_HOME", "User")
+}
+
 $statusReport = @()
 
 function Test-Executable {
@@ -60,6 +82,27 @@ if ($androidHome -and (Test-Path $androidHome)) {
 } else {
     Write-Host "[FAIL] Android SDK is NOT installed or ANDROID_HOME is not set" -ForegroundColor Red
     $statusReport += [PSCustomObject]@{ Tool = "Android SDK"; Status = "MISSING"; Version = "None"; Required = $true }
+}
+
+# Android Studio IDE
+$studioLocations = @(
+    $env:ANDROID_STUDIO_PATH,
+    "$env:USERPROFILE\development\android-studio",
+    "C:\Program Files\Android\Android Studio"
+)
+$foundStudio = $null
+foreach ($loc in $studioLocations) {
+    if ($loc -and (Test-Path (Join-Path $loc "bin\studio64.exe"))) {
+        $foundStudio = $loc
+        break
+    }
+}
+if ($foundStudio) {
+    Write-Host "[PASS] Android Studio found at: $foundStudio" -ForegroundColor Green
+    $statusReport += [PSCustomObject]@{ Tool = "Android Studio"; Status = "INSTALLED"; Version = $foundStudio; Required = $false }
+} else {
+    Write-Host "[WARN] Android Studio is not detected at standard locations" -ForegroundColor Yellow
+    $statusReport += [PSCustomObject]@{ Tool = "Android Studio"; Status = "OPTIONAL_MISSING"; Version = "None"; Required = $false }
 }
 
 # 4. Firebase CLI

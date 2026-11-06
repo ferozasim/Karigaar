@@ -204,28 +204,32 @@ The following master feature inventory consolidates all components identified ac
 - **Target Features**: F-06, F-07, F-08, F-09, F-10, F-11, F-25, F-26, F-27, F-35.
 - **Scope**:
   - Customer app discovery shell (`home_discovery`) featuring 8-trade grid, Emergency 24x7 Quick-Assist banner, and Top Masters Nearby stack.
-  - Master artisan profile (`karigaar_profile_reviews`) showcasing triple-screened badges, bleeding portfolio carousel, and granular sawdust/cleanliness scorecard.
-  - Path A direct contact actions (`tel:` and `wa.me`) with transparent inspection fee indicators.
-  - Path B service configurator (`service_details_custom_quote`) with dynamic task math, photo upload, 15-second voice memo recording, arrival slot carousel, and post-service escrow calculation.
+  - Master artisan profile (`karigaar_profile_reviews`) showcasing two-tier damage cover (Base ₹10,000 vs Master ₹25,000), bleeding portfolio carousel, and granular sawdust/cleanliness scorecard.
+  - Path A direct contact actions via Virtual Masked Telephony (`/api/v1/telephony/bridge-call`) supported by founder monetization choices (Monthly Pass ₹499/mo or Pay-per-lead unlock ₹49–₹99).
+  - Path B service configurator (`service_details_custom_quote`) with dynamic task math, photo upload, 15-second voice memo recording, arrival slot carousel, and upfront pre-authorization / UPI mandate dock (guaranteeing the ₹99 transit fee).
 
 ### Phase 3: Partner Job Radar, 45s Broadcast & Live GPS Telemetry
-- **Target Features**: F-12, F-13, F-14, F-15, F-16, F-17, F-18, F-19.
+- **Target Features**: F-12, F-13, F-14, F-15, F-16, F-17, F-18, F-19, F-38.
 - **Scope**:
   - Partner Job Radar terminal (`karigaar_partner_job_radar`) featuring active/paused duty toggle and daily metrics bento.
-  - 45-second circular SVG countdown timer dispatch card with automated radius cascading.
-  - Pre-flight WhatsApp assist link (`Ask Customer on WhatsApp First`).
+  - 45-second circular SVG countdown timer dispatch card with automated radius cascading and fallback transition to **`DISPATCH_UNFULFILLED`** if no artisan accepts.
+  - Pre-flight masked inquiry link invoking `/api/v1/telephony/bridge-call` or in-app secure chat channel (zero raw MSISDN leakage).
   - Real-time geolocation tracking engine (`geolocation_tracking_service`) streaming partner GPS coordinates via WebSockets.
   - Customer live tracking cockpit (`active_job_live_tracking`) with multi-segment SVG polyline, moving two-wheeler marker, 5-stage milestone stepper, in-app chat drawer with canned gated society chips, and **Security Start Code (`4921`)**.
+  - Doorstep Access Timeout Guard (F-38): 15-minute wait timer triggering **`DOORSTEP_ACCESS_DENIED`** if customer unreached/denies entry, capturing ₹99 transit fee from upfront mandate (₹80 to partner, ₹19 to platform).
 
 ### Phase 4: Active Job Execution, Material Invoicing & Guild Wallet (IMPS)
 - **Target Features**: F-20, F-21, F-22, F-23, F-24, F-36.
 - **Scope**:
   - Partner active job terminal (`partner_active_job_wallet`) with live elapsed execution stopwatch.
-  - Material & Labor Dynamic Bill Builder allowing on-site spare part addition (e.g. MCB +₹380) with receipt photo capture and automatic 18% GST recalculation.
-  - Two-factor OTP validation: Start Code entry by partner on arrival, Completion OTP release by customer upon physical sign-off.
+  - Material & Labor Dynamic Bill Builder allowing on-site spare part addition (e.g. MCB +₹380) with receipt photo capture, 2% parts payment gateway convenience surcharge, automatic 18% GST recalculation, and mandatory **RBI 2FA customer in-app approval / OTP**.
+  - Decoupled completion architecture:
+    - Artisan submits itemized bill via `POST /api/v1/bookings/:id/submit-invoice` (moves booking to `INVOICE_SUBMITTED`).
+    - Customer reviews bill on screen and inputs 4-digit Completion OTP via `POST /api/v1/bookings/:id/verify-completion` (moves booking to `PAYMENT_RELEASED`).
   - Double-entry ledger settlement: instantaneous escrow debit and Guild Wallet credit.
-  - Instant 24/7 bank withdrawal engine via UPI/IMPS (RazorpayX/Cashfree integration).
-  - Guild Tier milestone gauge (tracking progression to 50 completed jobs for 0% commission tier).
+  - Guild Wallet payout engine with **instant 24/7 IMPS bank withdrawals** (RazorpayX/Cashfree), protected by a mandatory **₹2,000 rolling security reserve** (or 24h settlement hold on newly completed jobs) to defend against instant wallet drain after property damage.
+  - Guild Tier milestone gauge tracking progression to sustainable **5% commission floor** or ₹999/month "Guild Elite" subscription (replacing insolvent 0% tier).
+  - Allocation of **30% of platform take-rate** into the Warranty & Rework Underwriting Reserve with a **₹250 customer deductible** on damage claims.
   - Path A to Path B retroactive on-site formalization to lock ₹25,000 Guild Damage Cover.
 
 ### Phase 5: Super Admin Console, KYC Verification & Emergency Surge Dispatch
@@ -343,9 +347,28 @@ Content-Type: application/json
       "voiceMemoUrl": "https://cdn.karigaar.in/jobs/KG-8842/voice_14s.aac",
       "voiceMemoDurationSeconds": 14
     },
-    "whatsappDirectLink": "https://wa.me/919810422910?text=Hello%20Vikram%2C%20I%20am%20your%20Karigaar%20Master%20Electrician%20reviewing%20your%20MCB%20emergency.",
+    "telephonyBridgeEndpoint": "/api/v1/telephony/bridge-call",
+    "secureChatChannelId": "ch_kg8842_masked",
+    "maskedContactVirtualNumber": "+91-11-4084XXXX",
     "acceptanceCountdownSeconds": 45,
     "expiresAt": "2026-11-06T14:35:55.000Z"
+  }
+}
+```
+
+#### Broadcast Expiry / Fallback Event (`job.radar.unfulfilled`)
+```json
+{
+  "event": "JOB_RADAR_UNFULFILLED",
+  "timestamp": "2026-11-06T14:35:55.000Z",
+  "data": {
+    "broadcastId": "bc_998124",
+    "bookingId": "KG-8842",
+    "state": "DISPATCH_UNFULFILLED",
+    "reason": "RADAR_45S_TIMER_EXPIRED_NO_ACCEPTANCE",
+    "fallbackAction": "AUTO_RETRY_EXPANDED_RADIUS",
+    "expandedRadiusKm": 6.0,
+    "customerNotification": "Searching expanded radius (6 km) for available Master Electricians."
   }
 }
 ```
@@ -458,13 +481,46 @@ Content-Type: application/json
 }
 ```
 
+#### Doorstep Access Denied / Unreachable Timeout Endpoint
+```http
+POST /api/v1/bookings/KG-8842/doorstep-access-denied HTTP/1.1
+Authorization: Bearer <ARTISAN_JWT>
+Content-Type: application/json
+
+{
+  "reason": "CUSTOMER_UNREACHABLE_OR_DOORSTEP_DENIED",
+  "dwellDurationMinutes": 16,
+  "artisanCoordinates": {
+    "latitude": 28.4721,
+    "longitude": 77.0380
+  }
+}
+```
+
+#### Doorstep Access Denied Response
+```json
+{
+  "status": "SUCCESS",
+  "data": {
+    "bookingId": "KG-8842",
+    "state": "DOORSTEP_ACCESS_DENIED",
+    "transitCompensation": {
+      "totalDebitedFromPreAuthMandate": 99.00,
+      "creditedToArtisanGuildWallet": 80.00,
+      "platformCancellationProcessingFee": 19.00
+    },
+    "message": "Doorstep access denial verified via GPS dwell time (>15 mins). ₹80 transit fee credited to artisan wallet. Job closed cleanly."
+  }
+}
+```
+
 ---
 
-### Contract 4: Dynamic Invoicing, Escrow Release & IMPS Settlement
+### Contract 4: Decoupled Invoicing, RBI 2FA Parts, Escrow Release & IMPS Settlement
 - **Protocol**: HTTPS REST (`application/json`)
-- **Service Owner**: `wallet_settlement_service`
+- **Service Owner**: `wallet_settlement_service` & `booking_escrow_service`
 
-#### Add Material / Spare Part Endpoint
+#### Add Material / Spare Part Endpoint (RBI 2FA Scoped)
 ```http
 POST /api/v1/bookings/KG-8842/invoice/items HTTP/1.1
 Authorization: Bearer <ARTISAN_JWT>
@@ -476,30 +532,80 @@ Content-Type: application/json
   "quantity": 1,
   "unitPrice": 380.00,
   "receiptPhotoUrl": "https://cdn.karigaar.in/invoices/KG-8842/schneider_receipt.jpg",
-  "hardwareStoreName": "Gupta Electricals, Sector 48"
+  "hardwareStoreName": "Gupta Electricals, Sector 48",
+  "customer2FaApprovalRequired": true
 }
 ```
 
-#### Final Job Completion & OTP Release Endpoint
-```http
-POST /api/v1/bookings/KG-8842/complete-job HTTP/1.1
-Authorization: Bearer <ARTISAN_JWT>
-Content-Type: application/json
-
+#### Add Spare Part Response (Awaiting Customer 2FA Approval)
+```json
 {
-  "completionOtp": "7812",
-  "elapsedExecutionMinutes": 28,
-  "finalTally": {
-    "diagnosticLabor": 249.00,
-    "spareParts": 380.00,
-    "safetyInsuranceShield": 29.00,
-    "gstTaxAmount": 68.22,
-    "totalCustomerPayable": 629.00
+  "status": "SUCCESS",
+  "data": {
+    "bookingId": "KG-8842",
+    "itemId": "item_mcb_9921",
+    "approvalStatus": "PENDING_CUSTOMER_2FA_APPROVAL",
+    "customerApprovalPromptDispatched": true,
+    "partsGatewayConvenienceFee": 7.60,
+    "message": "Push notification and in-app modal dispatched to customer for 2FA approval of ₹380.00 spare part before addition to final bill."
   }
 }
 ```
 
-#### Completion & Instant IMPS Wallet Payout Response
+#### Endpoint 4A: Artisan Submit Itemized Invoice
+```http
+POST /api/v1/bookings/KG-8842/submit-invoice HTTP/1.1
+Authorization: Bearer <ARTISAN_JWT>
+Content-Type: application/json
+
+{
+  "elapsedExecutionMinutes": 28,
+  "itemizedBill": {
+    "diagnosticLabor": 249.00,
+    "spareParts": 380.00,
+    "partsGatewayConvenienceFee": 7.60,
+    "safetyInsuranceShield": 29.00,
+    "gstTaxAmount": 69.59,
+    "totalCustomerPayable": 635.19
+  },
+  "partsReceiptPhotos": [
+    "https://cdn.karigaar.in/invoices/KG-8842/schneider_receipt.jpg"
+  ],
+  "customerScopeApprovalToken": "appr_mcb_8842_2fa"
+}
+```
+
+#### Artisan Submit Invoice Response
+```json
+{
+  "status": "SUCCESS",
+  "data": {
+    "bookingId": "KG-8842",
+    "state": "INVOICE_SUBMITTED",
+    "invoiceNumber": "INV-2026-KG8842",
+    "totalPayable": 635.19,
+    "customerVerificationPromptSent": true,
+    "immutableRecordPersisted": true,
+    "deadlockProtection": "Bill and receipts are immutably persisted on server. If customer disputes on-site, the bill is already recorded, preventing state machine deadlock and eliminating reliance on verbal handshakes or holding the OTP hostage."
+  }
+}
+```
+
+#### Endpoint 4B: Customer Verify Completion & Release Escrow
+```http
+POST /api/v1/bookings/KG-8842/verify-completion HTTP/1.1
+Authorization: Bearer <CUSTOMER_JWT>
+Content-Type: application/json
+
+{
+  "completionOtp": "7812",
+  "customerAccepted": true,
+  "customerRating": 5,
+  "feedbackNote": "Masterful MCB installation, prompt and clean."
+}
+```
+
+#### Verify Completion & Instant IMPS Wallet Payout Response
 ```json
 {
   "status": "SUCCESS",
@@ -507,20 +613,33 @@ Content-Type: application/json
     "bookingId": "KG-8842",
     "state": "PAYMENT_RELEASED",
     "escrowSettlement": {
-      "totalDebitedFromCustomer": 629.00,
-      "platformTakeRateDeduction": 29.88,
+      "totalDebitedFromCustomer": 635.19,
+      "diagnosticLabor": 249.00,
+      "platformLaborTakeRateDeduction": 29.88,
+      "warrantyUnderwritingReserveContribution": 8.96,
       "safetyShieldDeduction": 29.00,
-      "netCreditedToGuildWallet": 570.12
+      "partsPassThroughCredited": 380.00,
+      "partsGatewayConvenienceFeeRetained": 7.60,
+      "netCreditedToGuildWallet": 599.12
     },
     "guildWallet": {
-      "clearedAvailableBalance": 4620.00,
-      "pendingClearance": 0.00,
+      "clearedAvailableBalance": 2620.00,
+      "lockedSecurityReserve": 2000.00,
+      "pendingClearanceHold24h": 599.12,
+      "reservePolicy": "₹2,000 rolling security reserve enforced to protect against property damage flight risk. New completions subject to 24h settlement hold.",
       "currency": "INR"
+    },
+    "underwritingWarrantyShield": {
+      "coverageTier": "BASE_GUILD_COVER",
+      "maxClaimLimit": 10000.00,
+      "customerDeductible": 250.00,
+      "reworkWarrantyDays": 30
     },
     "tierProgression": {
       "currentTier": "GOLD_GUILDSMAN",
       "completedJobsCount": 43,
-      "jobsRemainingForMasterZeroCommissionTier": 7
+      "jobsRemainingForMasterSustainableTier": 7,
+      "masterTierBenefit": "Sustainable 5% commission floor or ₹999/mo Guild Elite subscription (replaces insolvent 0% tier)"
     }
   }
 }
@@ -577,9 +696,9 @@ Karigaar_app/
 │   ├── auth_service/                     # WhatsApp Cloud API OAuth & DLT fallback
 │   ├── dispatch_radar_service/           # 45s timer & Redis geospatial engine
 │   ├── geolocation_tracking_service/     # WebSocket/MQTT location stream & polylines
-│   ├── booking_escrow_service/           # 14-state lifecycle & dual-stage OTPs
-│   ├── wallet_settlement_service/        # Double-entry ledger & instant IMPS
-│   ├── notification_service/             # WhatsApp dual-sync, voice relay, CSAT
+│   ├── booking_escrow_service/           # 16-state lifecycle, UPI pre-auth & dual OTPs
+│   ├── wallet_settlement_service/        # Double-entry ledger, rolling reserve & IMPS
+│   ├── notification_service/             # WhatsApp dual-sync, telephony masking, CSAT
 │   └── admin_ops_service/                # Surge pricing & KYC queue orchestration
 ├── infra/
 │   ├── docker/                           # Dockerfiles for services

@@ -45,22 +45,25 @@ apps/mobile_app/.flutter-plugins
 apps/mobile_app/.flutter-plugins-dependencies
 
 # Android Platform
-android/.gradle/
-android/local.properties
-android/captures/
-android/gradlew
-android/gradlew.bat
-android/wrapper/
+**/android/.gradle/
+**/android/local.properties
+**/android/captures/
+**/android/gradlew
+**/android/gradlew.bat
+**/android/wrapper/
 **/android/app/release/
 **/android/app/build/
 *.apk
 *.aab
 
 # iOS Platform
-ios/.symlinks/
-ios/Pods/
-ios/Podfile.lock
-ios/.generated/
+**/ios/.symlinks/
+**/ios/Pods/
+**/ios/Podfile.lock
+**/ios/.generated/
+**/ios/Flutter/ephemeral/
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/flutter_export_environment.sh
 *.ipa
 
 # Firebase & Emulators

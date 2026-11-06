@@ -41,7 +41,7 @@ void main() {
         'fullName': 'Nanded-Waghala, Maharashtra',
         'state': 'Maharashtra',
         'country': 'India',
-        'pincodeRange': ['431601', '431602', '431603', '431604', '431605'],
+        'pincodeRange': ['431601', '431602', '431603', '431604', '431605', '431606'],
         'centerCoordinates': {'latitude': 19.1383, 'longitude': 77.3210},
         'defaultDispatchRadiusKm': 4.5,
         'emergencyDispatchWindowMins': 25,
@@ -56,6 +56,16 @@ void main() {
             'radiusKm': 2.5,
             'density': 'HIGH_COMMERCIAL_RESIDENTIAL',
             'emergencyHub': true,
+          },
+          {
+            'localityId': 'loc_vishnupuri',
+            'name': 'Vishnupuri & SRTMUN Campus',
+            'marathiName': 'विष्णुपुरी',
+            'pincode': '431606',
+            'center': {'latitude': 19.1020, 'longitude': 77.2920},
+            'radiusKm': 4.0,
+            'density': 'INSTITUTIONAL_RESIDENTIAL',
+            'emergencyHub': false,
           }
         ]
       };
@@ -65,9 +75,14 @@ void main() {
       expect(city.state, equals('Maharashtra'));
       expect(city.pincodeRange, contains('431601'));
       expect(city.pincodeRange, contains('431605'));
+      expect(city.pincodeRange, contains('431606'));
       expect(city.emergencyDispatchWindowMins, equals(25));
       expect(city.defaultDispatchRadiusKm, equals(4.5));
-      expect(city.localities.length, equals(1));
+      expect(city.localities.length, equals(2));
+      for (final loc in city.localities) {
+        expect(city.pincodeRange, contains(loc.pincode),
+            reason: 'Locality ${loc.name} pincode ${loc.pincode} must be in city pincodeRange');
+      }
     });
   });
 }

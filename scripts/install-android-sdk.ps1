@@ -12,7 +12,31 @@ Write-Host "`n=======================================================" -Foregrou
 Write-Host "       AUTOMATED ANDROID SDK SETUP (USER LEVEL)        " -ForegroundColor Yellow
 Write-Host "=======================================================`n" -ForegroundColor Cyan
 
-# 1. Ensure target directory structure exists
+# Ensure JAVA_HOME is resolved from environment or registry
+if (-not $env:JAVA_HOME) {
+    $env:JAVA_HOME = [Environment]::GetEnvironmentVariable("JAVA_HOME", "User")
+}
+if (-not $env:JAVA_HOME -and (Test-Path "$env:USERPROFILE\development\jdk-17")) {
+    $env:JAVA_HOME = "$env:USERPROFILE\development\jdk-17"
+}
+if ($env:JAVA_HOME -and (Test-Path (Join-Path $env:JAVA_HOME "bin"))) {
+    $javaBin = Join-Path $env:JAVA_HOME "bin"
+    if ($env:Path -split ';' -notcontains $javaBin) {
+        $env:Path = "$javaBin;$env:Path"
+    }
+}
+
+# 0. Ensure JAVA_HOME is configured for current session
+if (-not $env:JAVA_HOME) {
+    if (Test-Path "$env:USERPROFILE\development\jdk-17") {
+        $env:JAVA_HOME = "$env:USERPROFILE\development\jdk-17"
+    } else {
+        $env:JAVA_HOME = [Environment]::GetEnvironmentVariable("JAVA_HOME", "User")
+    }
+}
+if ($env:JAVA_HOME -and (Test-Path "$env:JAVA_HOME\bin")) {
+    $env:Path = "$env:JAVA_HOME\bin;$env:Path"
+}
 $cmdlineDir = Join-Path $SdkRoot "cmdline-tools"
 $latestDir = Join-Path $cmdlineDir "latest"
 $binDir = Join-Path $latestDir "bin"
@@ -29,6 +53,7 @@ if (-not (Test-Path (Join-Path $binDir "sdkmanager.bat"))) {
     $tempZip = Join-Path $env:TEMP "android-cmdline-tools.zip"
     $tempExtract = Join-Path $env:TEMP "cmdline-tools-extract"
 
+    $ProgressPreference = "SilentlyContinue"
     Invoke-WebRequest -Uri $zipUrl -OutFile $tempZip -UseBasicParsing
     Write-Host "[INFO] Extracting command-line tools..." -ForegroundColor Cyan
 
@@ -40,7 +65,9 @@ if (-not (Test-Path (Join-Path $binDir "sdkmanager.bat"))) {
     }
 
     if (Test-Path $latestDir) { Remove-Item -Recurse -Force $latestDir }
-    Move-Item -Path (Join-Path $tempExtract "cmdline-tools") -Destination $latestDir -Force
+    New-Item -ItemType Directory -Path $latestDir -Force | Out-Null
+
+    Copy-Item -Path (Join-Path $tempExtract "cmdline-tools\*") -Destination $latestDir -Recurse -Force
 
     Remove-Item -Force $tempZip -ErrorAction SilentlyContinue
     Remove-Item -Recurse -Force $tempExtract -ErrorAction SilentlyContinue
@@ -73,8 +100,19 @@ $env:Path = "$binDir;$platformTools;$env:Path"
 $sdkManagerBat = Join-Path $binDir "sdkmanager.bat"
 if (Test-Path $sdkManagerBat) {
     Write-Host "[INFO] Accepting licenses and installing platform-tools, build-tools;34.0.0, platforms;android-34..." -ForegroundColor Cyan
-    & cmd /c "echo y | `"$sdkManagerBat`" --licenses"
+    $acceptLicenses = ("y`r`n" * 30)
+    $acceptLicenses | & cmd /c "`"$sdkManagerBat`" --licenses"
     & cmd /c "`"$sdkManagerBat`" `"platform-tools`" `"platforms;android-34`" `"build-tools;34.0.0`""
+}
+
+# 5. Configure Flutter with Android SDK and JDK paths
+$flutterBat = "$env:USERPROFILE\development\flutter\bin\flutter.bat"
+if (Test-Path $flutterBat) {
+    Write-Host "[INFO] Pointing Flutter to Android SDK & JDK..." -ForegroundColor Cyan
+    & $flutterBat config --android-sdk "$SdkRoot"
+    if ($env:JAVA_HOME) {
+        & $flutterBat config --jdk-dir "$env:JAVA_HOME"
+    }
 }
 
 Write-Host "`n[SUCCESS] Android SDK installation and configuration complete!" -ForegroundColor Green

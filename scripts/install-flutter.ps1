@@ -30,8 +30,13 @@ if (Test-Path (Join-Path $flutterBin "flutter.bat")) {
         New-Item -ItemType Directory -Path $parentDir -Force | Out-Null
     }
 
-    Write-Host "[INFO] Cloning Flutter repository from GitHub..." -ForegroundColor Cyan
-    git clone -b $Branch https://github.com/flutter/flutter.git $TargetDir
+    if (Test-Path $TargetDir) {
+        Write-Host "[WARN] Found incomplete Flutter directory. Cleaning up before clone..." -ForegroundColor Yellow
+        Remove-Item -Recurse -Force $TargetDir -ErrorAction SilentlyContinue
+    }
+
+    Write-Host "[INFO] Cloning Flutter repository from GitHub (shallow clone for speed)..." -ForegroundColor Cyan
+    git clone --depth 1 -b $Branch https://github.com/flutter/flutter.git $TargetDir
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[ERROR] Failed to clone Flutter repository." -ForegroundColor Red
         exit 1

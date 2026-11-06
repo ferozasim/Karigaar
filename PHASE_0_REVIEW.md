@@ -15,7 +15,10 @@ This informal status quo presents a profound structural paradox:
 ### 1.2 The "Master Guildsman Meets Modern Concierge" Philosophy
 **Karigaar** solves this paradox by establishing a digital craft guild. Rather than treating artisans as anonymous gig workers, Karigaar honors their mastery, elevates their social standing, and equips them with institutional trust credentials (Aadhaar KYC, Police background clearance, National Skill Development Corporation [NSDC] certification, and calibrated laser tool audits).
 
-For homeowners, Karigaar delivers modern concierge-grade assurance: instant WhatsApp onboarding, rapid 25-minute emergency dispatches, live GPS telemetry, dual-factor security OTPs (arrival Start Code `4921` + post-service Completion OTP), transparent rate cards with a ₹29 Safety & Insurance Shield, and a ₹25,000 Guild Damage Guarantee with 30-day free rework protection.
+For homeowners, Karigaar delivers modern concierge-grade assurance: instant WhatsApp onboarding, rapid 25-minute emergency dispatches, live GPS telemetry, dual-factor security OTPs (arrival Start Code `4921` + customer Completion OTP), transparent rate cards with a ₹29 Safety & Insurance Shield, and a harmonized **Two-Tier Damage Protection Structure**:
+- **Base Coverage (₹10,000)**: Included in the flat ₹29 platform safety fee across all standard Path B bookings and Verified Pro artisans.
+- **Comprehensive Master Cover (₹25,000)**: Unlocked automatically for Master Guildsman assignments or as a premium project add-on.
+- **Actuarial Solvency & Deductibles**: Supported by a mandatory **₹250 customer deductible** on damage claims to deter frivolous submissions, with **30% of platform labor take-rate** reserved into a dedicated Warranty & Rework Underwriting Fund alongside 30-day free rework protection.
 
 ### 1.3 Phased Pilot Strategy: Gurugram Launch to Pan-India Guild
 To validate liquidity, unit economics, and operational rigor, Karigaar adopts a phased expansion strategy:
@@ -110,10 +113,10 @@ The reference UI assets located in `c:\Users\asimf\Downloads\stitch_karigaar_app
    - Configured Issue / Task: `₹249`
    - Karigaar Safety & Insurance Shield: `₹29`
    - Total Guaranteed Estimate: `₹477` (*"Final bill adjusted only if new hardware required"*)
-   - Escrow pledge: *"No advance needed. Inspect work before releasing OTP payment."*
+   - Upfront Pre-Authorization Pledge: *"₹0 debited now. Temporary UPI mandate / card pre-authorization secured at booking confirmation (guarantees ₹99 transit fee if cancelled post-dispatch). Final payment debited only after inspection & customer OTP release."*
 6. **Sticky Frosted Bottom Checkout Dock**:
    - Left: `₹477 all incl.` + `45m estimate` timer icon.
-   - Right: Amber CTA *"Select Karigaar"* with right arrow.
+   - Right: Amber CTA *"Select Karigaar"* with right arrow (triggers UPI mandate pre-auth bottom sheet).
    - Tapping triggers loading spinner state (*"Finding Karigaars..."*) followed after 1200ms by matched state (*"3 Matched!"* in emerald).
 
 ---
@@ -138,31 +141,34 @@ The reference UI assets located in `c:\Users\asimf\Downloads\stitch_karigaar_app
 3. **Real-Time Job Status Card**:
    - Headline: *"Artisan On The Way"* (Arriving by 02:35 PM • 14 mins remaining • "On Time" chip).
    - 5-Step Segmented Milestone Progress Track:
-     1. Booking Confirmed (02:10 PM) — [Completed / Checkmark]
+     1. Booking Confirmed (02:10 PM) — [Completed / Checkmark; UPI Mandate Active]
      2. Karigaar Dispatched (02:18 PM) — [Completed / Checkmark]
      3. On the Way (Passing Cyber Hub) — [Active / Spinning sync icon]
-     4. Job Execution — [Pending OTP release]
-     5. Quality Sign-off — [Estimated 03:45 PM]
+     4. Job Execution & Doorstep Dwell — [Pending Start Code 4921 / 15-min Doorstep Guard]
+     5. Quality Sign-off — [Estimated 03:45 PM; Decoupled Invoice & Completion OTP]
 4. **Assigned Karigaar Profile Module**:
    - Avatar squircle with verified badge: Rajesh Kumar, Master Carpenter, 11+ yrs exp, Guild Pro, 4.9★ (418 jobs).
    - **Security Start Code Box**:
      - Label: *"Security Start Code — Share only after Rajesh arrives"*
      - Large numeric PIN block: **`4921`** (4-digit security token required to start job).
-   - Direct contact buttons: *"Call Artisan"* (`tel:+919876543210`) & *"Send Message"* (opens modal drawer).
+   - Contact buttons (Strict Privacy & Telephony Masking):
+     - *"Call Artisan"* (Invokes `/api/v1/telephony/bridge-call` via virtual carrier bridge; customer and artisan phone numbers are 100% masked).
+     - *"Send Message"* (Opens in-app secure chat drawer with encrypted session ID).
    - Canned communication quick-chips (horizontal scroll):
      - `📍 Gate code is 8842`
      - `🅿️ Visitor parking spot #4`
      - `🔔 Ring the doorbell twice`
 5. **Karigaar Guild Protection Active Banner**:
-   - Shield badge: *"Includes ₹10,000 damage cover, background-verified technician, & contactless OTP lock."*
+   - Shield badge: *"Includes Base ₹10,000 damage cover (included in ₹29 platform safety fee; upgradable to ₹25,000 Comprehensive Cover for Master Guildsman assignments or custom projects), ₹250 customer deductible, background-verified technician, & contactless OTP lock."*
 6. **Job Scope & Order Breakdown (Expandable Accordion)**:
    - Door Hinge & Alignment Repair (2 doors): `₹599`
    - Custom Wooden Shelf Latch Fix: `₹249`
    - Dispatched Tool Kit & Guild Fee: `FREE`
-   - Total Estimation: `₹848` (*"Pay after full inspection"*)
+   - Total Estimation: `₹848` (*"Pay after full inspection — secured via upfront UPI mandate"*).
 7. **Safety Actions Footer**:
    - Full-width button: *"Share Live Tracking with Family"*.
-   - Footer links: *"Need to Reschedule?"* | *"Cancel Booking"* (in error red).
+   - Footer links: *"Need to Reschedule?"* | *"Cancel Booking"* (in error red; modal displays ₹99 transit fee deduction policy if cancelled >3 mins after dispatch).
+   - Doorstep Exception Guard: 15-minute arrival dwell timer. If resident is unreached or denies entry, artisan triggers `DOORSTEP_ACCESS_DENIED`, auto-capturing the ₹99 transit fee (₹80 to artisan, ₹19 to platform) and releasing the artisan from the booking.
 8. **Interactive Quick Messaging Modal Drawer**:
    - Pull-up sheet: *"Direct Chat with Rajesh — Online & Riding"*.
    - Verbatim dialogue:
@@ -183,7 +189,7 @@ The reference UI assets located in `c:\Users\asimf\Downloads\stitch_karigaar_app
    - Animated progress bar: 33.3% filled.
 2. **Guild Welcome & Earning Proposition Card**:
    - Deep slate container: *"Join the Karigaar Guild"*.
-   - Badges: *"Guild Accreditation"* & *"0% Commission Offer"*.
+   - Badges: *"Guild Accreditation"* & *"5% Lowest Commission Floor / Guild Elite Pass"*.
    - Value proposition: *"Connect directly with premium households in your pin code. Transparent daily payouts and guild master insurance cover."*
    - Earnings trust strip: *"Over ₹42,000/mo Avg. Earnings — Join 12,400+ verified professionals across NCR & MMR"*.
 3. **Role Switcher Segmented Control**:
@@ -331,7 +337,7 @@ The reference UI assets located in `c:\Users\asimf\Downloads\stitch_karigaar_app
    - **Animated Circular SVG Countdown Timer**:
      - Circular progress ring draining from 100% to 0% over **45 seconds**.
      - Dynamic countdown text: `45s`, `44s`, ... down to `0s`.
-     - Expiration behavior: If unaccepted, card fades to 40% opacity, pointer events are disabled, and label flips to *"Expired"*.
+     - Expiration behavior: If unaccepted, card fades to 40% opacity, pointer events are disabled, label flips to *"Expired"*, and booking transitions to **`DISPATCH_UNFULFILLED`** to trigger auto-expanded re-dispatch (up to 6 km) or graceful customer fallback.
    - Job details:
      - Title: *"Emergency Short Circuit & MCB Trip"*.
      - Customer: Vikram Mehta • Sector 42 Green Valley (1.8 km away • 8 mins reach time).
@@ -340,8 +346,8 @@ The reference UI assets located in `c:\Users\asimf\Downloads\stitch_karigaar_app
      - Real photo of tripped Havells MCB breaker panel with spark soot mark.
      - Audio note indicator: *"14s Voice memo available via WhatsApp"*.
      - Customer note quote: *"Kitchen lights sparking near oven line, tripped whole sub-circuit. Urgent help!"*
-   - Direct WhatsApp Contact Option:
-     - Button: *"Ask Customer on WhatsApp First"* (opens pre-filled `wa.me` message: *"Hello Vikram, I am your Karigaar Master Electrician reviewing your MCB emergency."*).
+   - Pre-Accept Masked Contact Option:
+     - Button: *"Ask Customer via Masked Voice/Chat"* (invokes `/api/v1/telephony/bridge-call` or in-app secure chat channel, shielding customer MSISDN).
    - Decision Actions:
      - *"Pass"* (Closes and removes card with scale/fade transition).
      - *"Accept Dispatch (45s)"* (Amber CTA; on tap switches to *"Dispatch Confirmed! Opening GPS..."* then *"Navigating to Sector 42..."*).
@@ -382,29 +388,30 @@ The reference UI assets located in `c:\Users\asimf\Downloads\stitch_karigaar_app
      - Pooja Sharma (*Verified* emerald badge).
      - Flat 402, DLF Phase 4, Gurugram.
      - Direct turn-by-turn Navigation button (`directions`).
-   - Communication connectors:
-     - *"Call Customer"* (`tel:+919876543210`)
-     - *"WhatsApp Chat"* (`https://wa.me`)
-2. **Material & Labor Bill Builder (Dynamic On-Site Invoicing)**:
+   - Communication connectors (Masked Virtual Bridge):
+     - *"Call Customer"* (Invokes `/api/v1/telephony/bridge-call` via virtual carrier bridge; customer phone is masked).
+     - *"Secure In-App Chat"* (Opens encrypted in-app messaging channel; no direct WhatsApp/phone leakage).
+2. **Material & Labor Bill Builder (Dynamic On-Site Invoicing & RBI 2FA)**:
    - Base charge: Diagnostic & Labor Fee — `₹249`.
-   - Spare part itemization: *Schneider 32A MCB* — `+₹380` (Bill uploaded tag, Qty 1, remove button).
-   - Action button: *"Add Spare Part & Attach Invoice"* (with camera icon for receipts).
-   - Total customer payable tally: `₹629` (*"Includes 18% GST invoice"*).
-3. **Job Completion OTP Security Panel**:
-   - Header: *"Job Completion OTP — Ask resident"*.
-   - 4-digit numeric input boxes with auto-tab and backspace behavior.
-   - Primary completion CTA: *"Verify & Collect ₹629"* (task_alt icon).
+   - Spare part itemization: *Schneider 32A MCB* — `+₹380` (Bill uploaded tag, Qty 1, receipt photo attached).
+   - Mandatory RBI 2FA Customer Approval: Spare parts addition dispatches an in-app authorization prompt / OTP to customer; requires explicit customer confirmation before adding to final tally.
+   - Pass-Through Parts PG Surcharge: `+₹7.60` (2% payment gateway convenience surcharge on parts to shield platform safety fee).
+   - Total customer payable tally: `₹635.19` (*"Includes 18% GST and 2% parts payment gateway fee"*).
+3. **Decoupled Invoicing & Customer Completion Verification**:
+   - Step A (Artisan Bill Submission): Primary button *"Submit Itemized Invoice"* (`POST /api/v1/bookings/:id/submit-invoice`). Transitions state to `INVOICE_SUBMITTED`. Bill and receipt photos are immutably persisted on server. If customer disputes on-site, the bill is already recorded, preventing state machine deadlock and eliminating reliance on verbal handshakes or holding the OTP hostage.
+   - Step B (Customer Verification & OTP Release): Customer reviews itemized breakdown on their own screen, confirms satisfaction, and enters/releases 4-digit **Completion OTP** (`POST /api/v1/bookings/:id/verify-completion`), transitioning state to `PAYMENT_RELEASED`.
 4. **Guild Tier Progress Card**:
    - Status: *Gold Guildsman* (Tier Level 4 Craftsman, "Top 5% Partner").
    - Milestone progress gauge: *42 / 50 Jobs completed* (84% progress bar).
-   - Incentive microcopy: *"Only 8 jobs remaining to unlock 0% commission master tier!"*
-5. **Guild Wallet & Instant Payout Overview**:
+   - Incentive microcopy: *"Only 8 jobs remaining to unlock sustainable 5% commission floor or ₹999/mo Guild Elite subscription!"*
+5. **Guild Wallet & Instant Payout Overview (Governed by Rolling Reserve)**:
    - Header: *"Guild Wallet — Instant IMPS Live"*.
    - Balance Hero Card (Deep slate container):
-     - Cleared Available Payout: `₹4,620.00`
-     - Pending clearance: `+₹629 pending`
+     - Cleared Available Payout: `₹2,620.00`
+     - Locked Security Reserve: `₹2,000.00` (Mandatory reserve protecting against post-service property damage flight risk).
+     - Pending clearance (24h Hold): `+₹599.12 pending` (New job settlement held for 24h before clearance).
    - Withdrawal Actions:
-     - Primary button: *"Withdraw to Bank via UPI / IMPS (₹0 Fee)"* (Instant settlement).
+     - Primary button: *"Withdraw Available to Bank via UPI / IMPS (₹0 Fee)"* (Transfers available balance above ₹2,000 reserve).
      - Secondary button: *"Send Weekly Earnings Summary to WhatsApp"*.
    - Linked bank account display: *HDFC Bank •••• 2104* (*"Verified Guild Vault"*).
 6. **Recent Activity / Ledger Feed**:
@@ -433,7 +440,7 @@ The reference UI assets located in `c:\Users\asimf\Downloads\stitch_karigaar_app
    - 4 credential pods:
      1. *Govt. ID & Police*: Background Cleared
      2. *NSDC Certified*: Grade-A Woodcraft
-     3. *₹25,000 Cover*: Damage Protection
+     3. *₹25,000 Master Cover*: Comprehensive Damage Protection (Master Guildsman tier; Base tier ₹10,000 with ₹250 deductible)
      4. *Calibrated Tools*: Laser-level Verified
 3. **Specializations & Certified Skills**:
    - 6 Certified Skill Chips: *Modular Kitchens, Antique Restoration, Concealed Hinges, Teak Wood Polish, Custom Wardrobes, Biometric Lock Fit*.
@@ -667,28 +674,35 @@ The visual identity of Karigaar is founded on **Tactile Modernism** with **Tonal
 ```
 
 ### 4.1 Path A: Direct Contact (Open Directory / Bidding Model)
-- **Objective**: Cater to high-autonomy homeowners seeking master craftsmanship for complex or custom work (e.g. 60-year-old teak dining table restoration, full modular kitchen fitting) who prefer direct negotiation over algorithmic dispatch.
-- **User Flow**:
+- **Objective**: Cater to high-autonomy homeowners seeking master craftsmanship for complex or custom work (e.g. 60-year-old teak dining table restoration, full modular kitchen fitting) who prefer direct consultation over algorithmic dispatch.
+- **User Flow & Lifecycle Delineation**:
   1. Customer browses Top Masters Nearby on `home_discovery`.
   2. Inspects master portfolio, verified credentials, and client scorecards on `karigaar_profile_reviews`.
-  3. Initiates direct contact via phone call (`tel:`) or pre-filled WhatsApp message (`wa.me`).
+  3. Initiates direct contact via **Virtual Masked Telephony** (`/api/v1/telephony/bridge-call`) or encrypted in-app chat (strictly shielding personal phone numbers).
   4. Agrees on an upfront inspection visit fee (e.g., ₹299, adjustable against final project bill).
-- **Leakage Control**: If transacted purely offline, platform guarantees are void. The UI clearly reinforces that the **₹25,000 Guild Warranty** and **30-day rework protection** are activated only when booking through the platform.
+- **Distinct Path A Lifecycle**: Unlike the rigid synchronous Path B state machine, Path A follows an asynchronous consultative lifecycle:
+  `DIRECTORY_LISTED` ➔ `INQUIRY_INITIATED` (Masked Bridge) ➔ `INSPECTION_AGREED` ➔ `ON_SITE_SCOPED` ➔ [Either `RETROACTIVE_PATH_B_CONVERSION` (Escrow + ₹25k warranty activated) OR `OFFLINE_TRANSACTED_DIRECT` (Warranty disclaimed)].
+- **Monetization & Cannibalization Defense**: Path A is protected against unmonetized cannibalization of Path B through founder-selected monetization mechanisms (Option 4C-1: Pay-Per-Lead unlock at ₹49–₹99 per lead; Option 4C-2: Guild Directory Monthly Pass at ₹499/mo; or Option 4C-3: Virtual Click-to-Call paywall). If transacted purely offline, platform guarantees are explicitly void. The UI clearly reinforces that the **₹25,000 Guild Master Warranty** and **30-day rework protection** are activated only when booking through the platform.
 
 ### 4.2 Path B: Structured Booking (Managed Escrow Marketplace)
-- **Objective**: Provide rapid, guaranteed resolution for emergency breakdowns (MCB tripping, burst pipes, broken locks) with full escrow protection.
-- **User Flow**:
+- **Objective**: Provide rapid, guaranteed resolution for emergency breakdowns (MCB tripping, burst pipes, broken locks) with full escrow protection and deterministic SLA governance.
+- **User Flow & 16-State Lifecycle Execution**:
   1. Customer configures task, uploads photo, records 15s voice memo, and selects arrival slot on `service_details_custom_quote`.
-  2. Job is broadcast to nearby online artisans via `karigaar_partner_job_radar` with a 45-second circular countdown timer.
-  3. Artisan accepts; customer monitors en-route motorcycle on `active_job_live_tracking` with live ETA.
-  4. Artisan arrives, enters customer's **Security Start Code (`4921`)** to begin work and start the job stopwatch.
-  5. Artisan itemizes replacement parts with receipt photos on `partner_active_job_wallet`.
-  6. Customer inspects work and releases the 4-digit **Job Completion OTP**.
-  7. Payment is settled instantly to the artisan's Guild Wallet with zero-fee IMPS bank withdrawal.
+  2. **Upfront Escrow Pre-Authorization / UPI Mandate**: Customer authorizes a UPI 2.0 e-mandate / pre-auth hold during booking confirmation (₹0 debited immediately; mandate guarantees automatic collection of the ₹99 transit fee if customer cancels after dispatch >3 mins).
+  3. Job is broadcast to nearby online artisans via `karigaar_partner_job_radar` with a 45-second circular countdown timer. If unaccepted across active radius, transitions to **`DISPATCH_UNFULFILLED`** to trigger auto-expanded re-dispatch (up to 6 km) or graceful customer fallback.
+  4. Artisan accepts; customer monitors en-route motorcycle on `active_job_live_tracking` with live road polyline and ETA.
+  5. Artisan arrives at destination (`ARTISAN_ARRIVED`).
+     - *Doorstep Exception Guard*: If customer is unreachable or denies entry for >15 minutes, artisan triggers **`DOORSTEP_ACCESS_DENIED`**, automatically collecting the ₹99 transit fee from the upfront mandate (₹80 credited to artisan for fuel/time, ₹19 to platform) and terminating the job cleanly without false "no-show" penalties.
+     - *Standard Entry*: Artisan enters customer's 4-digit **Security Start Code (`4921`)** to begin work, transitioning state to `IN_PROGRESS` and starting the job stopwatch.
+  6. **Dynamic Parts Addition & RBI 2FA Compliance**: Artisan itemizes replacement parts with receipt photos and a 2% parts payment gateway convenience surcharge on `partner_active_job_wallet`. Before adding to the final bill, the system dispatches an in-app 2FA approval prompt / OTP to the customer; the customer must explicitly approve the scope expansion on their screen.
+  7. **Decoupled Completion Step A (Artisan Bill Submission)**: Artisan submits the itemized bill via `POST /api/v1/bookings/:id/submit-invoice`, transitioning state to **`INVOICE_SUBMITTED`**. The bill and receipt photos are immutably recorded on the server. If a dispute arises on-site, the bill is already recorded, preventing state machine deadlock and eliminating reliance on verbal handshakes or holding the OTP hostage.
+  8. **Decoupled Completion Step B (Customer Verification & OTP Release)**: Customer inspects the completed work, reviews the itemized bill on their own screen, and enters/releases the 4-digit **Job Completion OTP** via `POST /api/v1/bookings/:id/verify-completion`, transitioning state to `PAYMENT_RELEASED`.
+  9. **Wallet Settlement & Reserve Protection**: Funds are disbursed to the artisan's Guild Wallet subject to a mandatory **₹2,000 rolling security reserve** and a 24-hour settlement hold on newly completed jobs, defending against instant wallet drain in post-service property damage scenarios. Payouts for cleared funds above the reserve are available instantly 24/7 via IMPS/UPI.
+  10. **Actuarial Warranty Reserve**: 30% of platform labor take-rate is automatically routed into the Warranty & Rework Underwriting Reserve, supporting Base ₹10,000 / Master ₹25,000 damage coverage with a ₹250 customer deductible.
 
 ### 4.3 Cross-Path Interoperability
 - **Path A to Path B (Retroactive On-Site Formalization)**: When a direct visit turns into a major capital job (e.g., ₹18,000 kitchen cabinetry), the artisan or customer opens Karigaar on-site to lock a formal Structured Booking, funding the milestone into platform escrow to unlock the ₹25,000 warranty.
-- **Path B to Path A (Pre-Flight WhatsApp Scoping)**: An artisan receiving a 45s dispatch taps *"Ask Customer on WhatsApp First"* to clarify breaker amperage or pipe diameters, ensuring the correct parts are packed while keeping the platform booking state machine alive.
+- **Path B to Path A (Pre-Flight Masked Scoping)**: An artisan receiving a 45s dispatch taps *"Ask Customer via Masked Voice/Chat"* to clarify breaker amperage or pipe diameters via virtual bridge (`/api/v1/telephony/bridge-call`), ensuring the correct parts are packed without leaking customer MSISDN and keeping the platform booking state machine alive.
 
 ---
 
@@ -749,67 +763,96 @@ To transition from Phase 0 discovery into Phase 1 implementation, seven core arc
 
 ---
 
-### Decision 4: Direct Contact Disclosure Policies & Disintermediation Control
-- **Background**: `active_job_live_tracking` and `partner_active_job_wallet` feature call and WhatsApp buttons. Platform leakage occurs if customers and artisans bypass the platform for recurring work.
-- **Strategic Options**:
-  - **Option 4A: Full Open Contact Disclosure**:
-    - Raw phone numbers displayed. Disintermediation reaches 70–85% after first visit. Customer privacy and safety are severely compromised.
-  - **Option 4B: Virtual Masked Telephony (Recommended)**:
-    - Direct calls are routed through an Exotel / Twilio virtual bridge. Numbers remain masked and expire 2 hours post-job. High customer safety and DPDP Act compliance.
-  - **Option 4C: Paid Lead Unlock Model (Urban Company style)**:
-    - Artisans pay ₹50–₹150 to unlock customer phone numbers. Customers are spammed by multiple competing contractors.
-- **The Platform Retention Moat**: Masking alone cannot stop on-site verbal number exchange. Retention is enforced via economic and safety moats:
-  1. *Customer Moat*: ₹25,000 Guild Damage Protection and 30-Day Free Rework Warranty apply strictly to platform-recorded jobs.
-  2. *Artisan Moat*: Master Guildsman 0% Commission Tier (unlocked after 50 jobs) eliminates the financial incentive to bypass the platform.
-  3. *Transaction Moat*: On-site Dynamic Bill Builder provides official 18% GST input invoices required by condominium residents for RWA maintenance claims.
-- **Recommended Default**: **Adopt Option 4B: Virtual Masked Telephony** paired with the Platform Retention Moat.
+### Decision 4: Direct Contact Disclosure Policies, Path A Monetization & Disintermediation Defense
+- **Background**: `active_job_live_tracking` and `partner_active_job_wallet` require communication connectors, while Path A provides an open directory of top master craftsmen. Exposing raw phone numbers causes catastrophic off-platform disintermediation (70–85% leakage) and violates India's Digital Personal Data Protection (DPDP) Act 2023. Furthermore, offering Path A completely free directly cannibalizes Path B (Structured Booking), reducing platform revenue while still incurring marketing customer acquisition costs.
+- **Strategic Options for Contact Disclosure & Path A Monetization**:
+  - **Option 4A: Full Open Contact Disclosure (Unmonetized)**:
+    - Raw phone numbers and `wa.me` links displayed publicly. Disintermediation reaches 70–85% after the first visit. Zero platform revenue is captured on Path A, while Path B is severely cannibalized. Customer privacy and safety are severely compromised. *Recommendation: Strongly Reject.*
+  - **Option 4B: Virtual Masked Telephony (Carrier Bridge — Recommended for Path B)**:
+    - Direct calls are routed through an Exotel / Twilio virtual bridge (`/api/v1/telephony/bridge-call`). Phone numbers remain 100% masked on both sides and expire 2 hours post-job completion. Full DPDP Act compliance, safety logging, and zero pre-acceptance leakage.
+  - **Option 4C: Explicit Founder Monetization Options for Path A (Cannibalization Defense)**:
+    - **Option 4C-1: Pay-Per-Lead Unlock (₹49–₹99 per Lead)**:
+      - *Mechanics*: Customer browses directory for free; when tapping "Connect with Master", the artisan pays a ₹49–₹99 fee from their Guild Wallet to unlock the masked virtual bridge / in-app consultation.
+      - *Trade-off*: Delivers high immediate transaction margin per inquiry; however, leads that do not convert to paid jobs create partner friction and resistance among senior master craftsmen.
+    - **Option 4C-2: Guild Directory Monthly Pass (₹499/month Subscription — Recommended Default)**:
+      - *Mechanics*: Verified master artisans pay a predictable ₹499/month SaaS pass to maintain an active "Direct Contact Master" badge on the Path A directory, receiving unlimited inbound masked calls and custom project leads.
+      - *Trade-off*: Provides steady, recurring subscription ARR, protects Path B marketplace take-rate, and guarantees that only committed, high-reputation artisans receive high-ticket custom leads.
+    - **Option 4C-3: Virtual Click-to-Call Paywall (Customer Billed ₹49 Connection Fee)**:
+      - *Mechanics*: Free directory browsing; tapping "Instant Voice Consult" initiates a virtual bridge where the first 2 minutes are free, after which a flat ₹49 convenience fee is authorized via UPI to continue consultation.
+      - *Trade-off*: Filters out low-intent window shoppers, but creates top-of-funnel conversion friction for consumers accustomed to free directory listings.
+- **Cannibalization Analysis**:
+  - If Path A is completely free, both the customer and artisan have an economic incentive to bypass Path B (saving 12% platform take-rate + 18% GST).
+  - Instituting Option 4C-2 (₹499/mo Monthly Pass) or Option 4C-1 (Pay-per-lead) establishes an economic floor that ensures Path A monetizes top-of-funnel demand, while the ₹25,000 Guild Damage Guarantee and 30-day rework warranty provide an overwhelming incentive to convert custom jobs into formal Path B bookings on-site.
+- **The Platform Retention Moat**: Masking alone cannot stop on-site verbal contact exchange. Retention is enforced via economic and trust moats:
+  1. *Customer Trust Moat*: Two-Tier Damage Protection (Base ₹10,000 via ₹29 safety fee; Comprehensive ₹25,000 Master Cover) with 30-Day Free Rework Warranty applies strictly to platform-recorded bookings.
+  2. *Artisan Economic Moat*: Replaces negative-margin 0% tiers with a sustainable **5% commission floor** or **₹999/month "Guild Elite" subscription** for Master Guildsmen (unlocked after 50 jobs with 4.85+ rating). At 5%, platform take-rate is lower than the transaction cost of offline friction, eliminating the financial incentive to bypass the platform while preserving positive unit economics (+₹15 to +₹44 net platform margin per job).
+  3. *Transaction Moat*: On-site Dynamic Bill Builder provides official 18% GST input invoices with itemized parts breakdowns required by condominium residents for RWA maintenance claims.
+- **Recommended Default**: **Adopt Option 4B (Virtual Masked Telephony) paired with Option 4C-2 (Guild Directory Monthly Pass at ₹499/mo)** and the Sustainable Platform Retention Moat.
 
 ---
 
-### Decision 5: Booking State Machine Rules & Operational SLAs
-- **Background**: The platform requires a deterministic state machine managing transitions across both Path A and Path B.
-- **14-State Lifecycle Architecture**:
+### Decision 5: Booking State Machine Rules, SLAs & Financial Exception Governance
+- **Background**: The platform requires a deterministic state machine managing transitions across both Path A and Path B, with airtight legal, regulatory (RBI AFA), and financial protections against deadlocks, no-shows, and doorstep refusals.
+- **16-State Lifecycle Architecture (Path B Managed Marketplace)**:
   1. `DRAFT`: Customer configures task, uploads photo/voice memo.
-  2. `QUOTE_REQUESTED`: Path A project broadcasted to local guild masters.
-  3. `QUOTES_RECEIVED`: Artisans submit itemized estimates.
+  2. `QUOTE_REQUESTED`: Path A consultative project inquiry submitted.
+  3. `QUOTES_RECEIVED`: Artisans submit itemized bids.
   4. `QUOTE_ACCEPTED`: Customer selects winning bid.
-  5. `DEPOSIT_ESCROWED`: Diagnostic fee or project advance authorized.
+  5. `DEPOSIT_ESCROWED`: Base diagnostic estimate authorized via **Upfront Pre-Authorization / UPI Mandate** (securing the ₹99 transit cancellation fee; ₹0 debited immediately).
   6. `ARTISAN_DISPATCHED`: Nearest artisan accepts 45s dispatch prompt on Radar.
-  7. `ARTISAN_ARRIVED`: Artisan taps arrival within 200m geofence.
-  8. `IN_PROGRESS`: Artisan inputs customer's 4-digit Security Start Code (`4921`).
-  9. `WORK_COMPLETED`: Artisan submits final bill with spare part receipts.
-  10. `CUSTOMER_VERIFICATION`: Customer inspects work; provides 4-digit Completion OTP.
-  11. `PAYMENT_RELEASED`: Escrow releases funds to Artisan Guild Wallet.
-  12. `CLOSED`: Mutual ratings and reviews submitted; CSAT survey sent.
-  13. `DISPUTED`: Issue raised; funds frozen for Super Admin arbitration.
-  14. `CANCELLED`: Booking terminated subject to cancellation fee matrix.
+  7. `DISPATCH_UNFULFILLED` *(Exception State)*: Radar broadcast 45-second circular timer expires without acceptance across geofence, triggering automatic radius expansion (up to 6 km) or graceful customer fallback (scheduled next slot / callback).
+  8. `ARTISAN_ARRIVED`: Artisan taps arrival within 200m geofence (arms the 15-minute doorstep arrival countdown timer).
+  9. `DOORSTEP_ACCESS_DENIED` *(Terminal Exception State)*: Customer unreachable or denies entry for >15 minutes after artisan arrival; server auto-captures the ₹99 transit fee from the upfront UPI pre-auth mandate (₹80 credited to artisan for fuel/time; ₹19 platform fee) and terminates the booking cleanly without false "no-show" penalties.
+  10. `IN_PROGRESS`: Artisan inputs customer's 4-digit Security Start Code (`4921`) to begin work and start the stopwatch.
+  11. `INVOICE_SUBMITTED` *(Decoupled State)*: Artisan uploads itemized bill, parts breakdown, and hardware receipt photos via `POST /api/v1/bookings/:id/submit-invoice`. The bill is immutably persisted on the server. If customer disputes on-site, the bill is already recorded, preventing state machine deadlock and eliminating reliance on verbal handshakes or holding the OTP hostage.
+  12. `CUSTOMER_VERIFICATION`: Customer inspects work on their own screen, reviews itemized invoice, and inputs 4-digit Completion OTP via `POST /api/v1/bookings/:id/verify-completion`.
+  13. `PAYMENT_RELEASED`: Escrow releases funds to Artisan Guild Wallet, governed by a mandatory **₹2,000 rolling security reserve** and a 24-hour settlement hold on new completions to defend against property damage flight risk.
+  14. `CLOSED`: Mutual ratings and reviews submitted; automated CSAT survey sent.
+  15. `DISPUTED`: Issue logged; funds frozen for Super Admin arbitration.
+  16. `CANCELLED`: Booking terminated subject to the cancellation fee matrix.
+- **Upfront Escrow Pre-Authorization / UPI Mandate Enforcement**:
+  - Reconciles the UI Screen 3 claim (*"Pay after full inspection"*) with the cancellation policy (*"₹99 transit fee deducted"*). Under RBI regulations, a merchant cannot pull funds from UPI/VPA without an active authorization or mandate.
+  - At booking confirmation on Screen 2, the customer authorizes a UPI 2.0 e-mandate or card pre-authorization hold for the diagnostic visit amount (₹0 debited immediately).
+  - If the customer cancels after dispatch (>3 mins), the payment gateway auto-captures ₹99 directly from the pre-authorized mandate, instantly crediting ₹80 to the artisan for fuel/travel time and ₹19 to the platform.
+- **RBI 2FA Compliance for Scope Expansion & Spare Parts**:
+  - In compliance with RBI's Master Direction on Additional Factor of Authentication (AFA), merchants cannot arbitrarily debit variable amounts for on-site parts without customer-side 2FA.
+  - On-site spare parts or scope additions added by the artisan on Screen 8 trigger an in-app customer authorization push or secondary OTP/UPI approval prompt on the customer's phone; the customer must explicitly approve the price addition before the invoice can be finalized.
 - **Operational Timeouts & SLAs**:
-  - Radar Dispatch Countdown: **45 seconds** (as modeled in UI).
+  - Radar Dispatch Countdown: **45 seconds** per artisan; transitions to `DISPATCH_UNFULFILLED` if exhausted across active broadcast radius.
   - Express Arrival SLA: **25 to 45 minutes**.
-  - Arrival Grace Period: **15 minutes** beyond ETA.
-  - Auto-Release Escrow Timer: **48 hours** post-completion if uncontested.
+  - Doorstep Arrival Grace Period: **15 minutes**; triggers `DOORSTEP_ACCESS_DENIED` if entry is withheld or resident is unreachable.
+  - Auto-Release Escrow Timer: **48 hours** post-completion if uncontested by customer.
 - **Cancellation Fee Matrix**:
   - Within 3 mins: Free cancellation (100% refund).
-  - After dispatch (>5 mins): ₹99 transit fee deducted (₹80 credited to artisan for fuel/time; ₹19 platform fee).
-  - At doorstep: Full visit fee charged (85% paid to artisan).
+  - After dispatch (>3 mins): ₹99 transit fee captured from upfront mandate (₹80 credited to artisan for fuel/time; ₹19 platform fee).
+  - At doorstep (>15 mins wait / refused entry): `DOORSTEP_ACCESS_DENIED` captured; full visit diagnostic fee charged (85% paid to artisan).
   - Artisan no-show (15 mins past grace): 100% refund + ₹100 apology credit; artisan suspended for 24 hours.
-- **Recommended Default**: **Adopt the 14-State State Machine** and enforce the ₹99 transit cancellation fee.
+- **Recommended Default**: **Adopt the 16-State State Machine** with upfront UPI pre-auth mandate, decoupled invoicing (`submit-invoice` ➔ `verify-completion`), RBI 2FA parts approval, and `DOORSTEP_ACCESS_DENIED` / `DISPATCH_UNFULFILLED` exception handlers.
 
 ---
 
-### Decision 6: Core Business Rules, Monetization & Communications Architecture
+### Decision 6: Core Business Rules, Unit Economics Solvency & Monetization Architecture
 - **Artisan KYC & Accreditation Tiers**:
   - *Tier 1 (Registered Partner)*: Phone verified + Aadhaar OCR match (DigiLocker/HyperVerge). Permitted to accept standard minor repairs.
-  - *Tier 2 (Guild Verified Pro)*: Police background clearance + Penny-drop bank verification + Tool kit video audit. Unlocks 25-minute emergency dispatches.
-  - *Tier 3 (Master Guildsman)*: NSDC / ITI trade diploma + 50 completed platform jobs with 4.85+ rating. Unlocks custom high-ticket projects and the **0% commission tier**.
-- **Monetization Architecture**:
-  - Path B Commission: **12% take-rate on labor charges**.
-  - Customer Platform Safety & Insurance Fee: **Flat ₹29 per booking** (itemized on `service_details_custom_quote`). Directly funds third-party damage insurance cover.
-  - Instant Withdrawal Fee: **₹0 promotional fee** on IMPS/UPI bank transfers.
+  - *Tier 2 (Guild Verified Pro)*: Police background clearance + Penny-drop bank verification + Tool kit video audit. Unlocks 25-minute emergency dispatches and Base ₹10,000 damage protection.
+  - *Tier 3 (Master Guildsman)*: NSDC / ITI trade diploma + 50 completed platform jobs with 4.85+ rating. Unlocks custom high-ticket projects, Comprehensive ₹25,000 damage coverage, and the **sustainable 5% commission floor or ₹999/month "Guild Elite" subscription** (replacing the economically insolvent 0% tier).
+- **Monetization Architecture & Unit Economics Solvency**:
+  - **Standard Path B Commission**: **12% take-rate on labor charges**.
+  - **Master Guildsman Commission**: **Sustainable 5% floor** or **₹999/month "Guild Elite" Subscription**.
+    - *Empirical Solvency Modeling*: Adversarial stress-testing proved that a 0% commission tier produces negative contribution margins across all ticket sizes (-₹3.73 on ₹249 tickets; -₹12.85 on ₹857 tickets; -₹18.42 on ₹1,228 tickets; -₹28.20 on ₹1,880 tickets) due to direct variable COGS: payment gateway MDR (1.5%), IMPS payout fee (₹4.80), WhatsApp Cloud API templates (₹4.20), telephony bridging (₹3.00), map telemetry (₹2.00), and warranty reserve allocation (₹15.00). A 5% floor guarantees positive platform contribution margins (+₹15 to +₹44 net margin) across all ticket sizes while maintaining an irresistible incentive for artisans to stay on-platform.
+  - **Pass-Through Spare Parts Surcharge**: **2% payment gateway convenience surcharge** on customer payments for pass-through spare parts, protecting the platform's ₹29 safety fee from gateway MDR erosion on high-ticket material jobs.
+  - **Customer Platform Safety & Insurance Fee**: **Flat ₹29 per booking** (itemized on `service_details_custom_quote`). Directly funds third-party damage insurance cover.
+  - **Path A Monetization**: Founder-selected Option 4C-2 (Guild Directory Monthly Pass at ₹499/mo) or Option 4C-1 (Pay-per-lead at ₹49–₹99), eliminating unmonetized directory leakage.
+  - **Instant Withdrawal Fee**: **₹0 promotional fee** on IMPS/UPI bank transfers on cleared available funds above the reserve.
+  - **Guild Wallet Rolling Security Reserve**: Enforces a mandatory **₹2,000 rolling security reserve** and a **24-hour settlement hold** on newly completed jobs in all artisan wallets, protecting the platform against flight risk and instant wallet drainage following catastrophic property damage incidents.
+  - **Actuarial Warranty Reserve & Deductibles**:
+    - **₹250 Customer Deductible**: Mandatory customer deductible on all property damage claims to deter frivolous claims.
+    - **30% Platform Take-Rate Reserve**: 30% of platform commission on every booking is automatically reserved into the Warranty & Rework Underwriting Fund to ensure long-term actuarial solvency for 30-day rework and damage claims.
+    - **Two-Tier Coverage**: Base ₹10,000 property damage guarantee included in ₹29 fee; ₹25,000 comprehensive cover for Master Guildsman assignments or custom premium projects.
 - **Communications Infrastructure**:
   - Primary Vector: **WhatsApp Business Cloud API** for 1-tap OTP auth, dual-sync dispatch alerts (audio notes, gate PINs, GPS pins), emergency surge blasts, and CSAT surveys.
   - Fallback Vector: **Transactional SMS via DLT route** (Gupshup / Kaleyra / MSG91) triggered automatically if WhatsApp delivery is unconfirmed after 42 seconds.
-- **Recommended Default**: **Adopt the 3-Tier KYC Model**, **12% labor take-rate + ₹29 safety fee**, and the **WhatsApp-First hybrid gateway with 42s SMS fallback**.
+- **Recommended Default**: **Adopt the 3-Tier KYC Model**, **12% standard labor take-rate (5% Master floor or ₹999/mo Guild Elite pass)**, **Flat ₹29 safety fee + 2% parts PG surcharge**, **₹2,000 rolling security reserve**, **30% take-rate warranty reserve with ₹250 deductible**, and the **WhatsApp-First hybrid gateway with 42s SMS fallback**.
 
 ---
 
@@ -822,9 +865,9 @@ The following decision matrix enumerates all required approvals. Every item incl
 | **D-01** | **Pilot City & Bounds** | Exact pilot municipality and micro-cluster coordinates. | **Gurugram: DLF Phase 1–5, Cyber City, Sector 42–48 corridor** (`122002`, `122009`, `122018`). | Configures Redis geospatial query bounding boxes and initial database seed data. | **YES** |
 | **D-02** | **Launch Categories** | Scope of trades available on Day 1 vs subsequent phases. | **Wave 1: Electrician, Plumber, Carpenter**. Baseline diagnostic fee ₹199–₹299. | Defines service taxonomy schema, task configurator data models, and rate cards. | **YES** |
 | **D-03** | **App Topology** | Single unified app with role switch vs distinct apps. | **Two Distinct Mobile Apps** (`Customer` & `Partner`) in a shared Flutter monorepo. | Dictates mobile monorepo scaffolding, ASO metadata, and background permission declarations. | **YES** |
-| **D-04** | **Contact Disclosure** | Open telephone disclosure vs virtual masked telephony. | **Virtual Masked Telephony (Exotel/Twilio)** + Platform Moat (₹25k warranty). | Determines telephony microservice integration and masks raw phone numbers in APIs. | **YES** |
-| **D-05** | **State Machine & SLAs** | Formal lifecycle transitions, 45s timer, and cancellation fees. | **14-State Lifecycle** with 45s dispatch timer, ₹99 transit fee, and 48h auto-release. | Drives the backend `booking_escrow_service` state machine engine and cron workers. | **YES** |
-| **D-06** | **Monetization Model** | Platform take-rate, customer safety fee, and instant payouts. | **12% Labor Take-Rate + Flat ₹29 Safety Fee**; 0% Master Tier; ₹0 IMPS withdrawal. | Configures double-entry ledger calculation formulas and payment gateway split rules. | **YES** |
+| **D-04** | **Contact Disclosure & Path A** | Open telephone disclosure vs virtual masked telephony and Path A monetization. | **Virtual Masked Telephony (Exotel/Twilio) + Path A Monthly Pass (₹499/mo) / Pay-per-lead** + Platform Retention Moat. | Integrates telephony masking proxy, hides raw phone numbers in API payloads, and configures directory subscription tiers. | **YES** |
+| **D-05** | **State Machine & SLAs** | Formal lifecycle transitions, 45s timer, cancellation fees, and exception states. | **16-State Lifecycle** with upfront UPI pre-auth mandate, 45s radar timer (`DISPATCH_UNFULFILLED`), 15-min doorstep guard (`DOORSTEP_ACCESS_DENIED`), decoupled invoicing (`INVOICE_SUBMITTED`), and RBI 2FA parts approval. | Drives the backend `booking_escrow_service` state machine engine, cron workers, and payment pre-auth webhooks. | **YES** |
+| **D-06** | **Monetization & Reserve Model** | Platform take-rate, customer safety fee, spare parts handling, and wallet risk reserves. | **12% Standard Labor Take-Rate (5% Master Floor or ₹999/mo Guild Elite); Flat ₹29 Safety Fee; 2% Parts PG Surcharge; ₹2,000 Rolling Security Reserve; 30% Take-Rate Warranty Reserve with ₹250 Deductible; ₹0 IMPS on cleared funds.** | Configures double-entry ledger calculation formulas, payment gateway convenience surcharges, and wallet reserve holdback logic. | **YES** |
 | **D-07** | **Messaging Strategy** | WhatsApp Cloud API allocation vs standard DLT SMS fallback. | **WhatsApp-First Hybrid Pipeline** with 42s automated DLT SMS fallback. | Governs notification service webhook infrastructure and communications cost budget. | **YES** |
 
 ---
