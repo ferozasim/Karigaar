@@ -45,10 +45,10 @@ The platform operates on a **"Master Guildsman Meets Modern Concierge"** archety
 │  Auth & Identity│     │  Dispatch Radar │             │ Live Telemetry  │     │ Booking & Escrow│
 │     Service     │     │     Service     │             │     Service     │     │     Service     │
 ├─────────────────┤     ├─────────────────┤             ├─────────────────┤     ├─────────────────┤
-│ • WhatsApp OTP  │     │ • 45s Broadcast │             │ • WebSocket/MQTT│     │ • 14-State Life │
+│ • WhatsApp OTP  │     │ • 45s Broadcast │             │ • WebSocket/MQTT│     │ • 16-State Life │
 │ • +91 Phone Auth│     │ • Radius Engine │             │ • Real-time GPS │     │ • Start OTP 4921│
-│ • KYC Tiers 1-3 │     │ • Accept / Pass │             │ • ETA Polyline  │     │ • Completion OTP│
-│ • DLT Fallback  │     │ • Zone Balancing│             │ • Geofence 200m │     │ • Cancellation  │
+│ • KYC Tiers 1-3 │     │ • Unfulfilled   │             │ • ETA Polyline  │     │ • Submit/Verify │
+│ • DLT Fallback  │     │ • Masked Bridge │             │ • Geofence 200m │     │ • DoorstepDenial│
 └────────┬────────┘     └────────┬────────┘             └────────┬────────┘     └────────┬────────┘
          │                       │                               │                       │
          └───────────────────────┼───────────────────────────────┼───────────────────────┘
@@ -60,9 +60,9 @@ The platform operates on a **"Master Guildsman Meets Modern Concierge"** archety
 │     Service     │                                     │     Service     │     │     Service     │
 ├─────────────────┤                                     ├─────────────────┤     ├─────────────────┤
 │ • Double-Entry  │                                     │ • Meta Cloud API│     │ • Surge 1.4x    │
-│ • Bill Builder  │                                     │ • Voice Relay   │     │ • 18-Queue KYC  │
-│ • Instant IMPS  │                                     │ • DLT SMS Gate  │     │ • Dispute Panel │
-│ • Guild Tier 0% │                                     │ • CSAT Survey   │     │ • Real-time GMV │
+│ • RBI 2FA Parts │                                     │ • Voice Relay   │     │ • 18-Queue KYC  │
+│ • ₹2k Reserve   │                                     │ • DLT SMS Gate  │     │ • Dispute Panel │
+│ • Guild Tier 5% │                                     │ • Telephony Prox│     │ • Real-time GMV │
 └────────┬────────┘                                     └────────┬────────┘     └────────┬────────┘
          │                                                       │                       │
          ▼                                                       ▼                       ▼
@@ -71,8 +71,8 @@ The platform operates on a **"Master Guildsman Meets Modern Concierge"** archety
 ├───────────────────────────────┬───────────────────────────────┬─────────────────────────────────┤
 │ PostgreSQL 16 (Primary RDBMS) │ Redis 7 (In-Memory Cache)     │ Cloud Object Storage (S3 / GCS) │
 │ • User Profiles, Tiers & KYC  │ • Radar Dispatch Pub/Sub      │ • MCB / Pipe Defect Photos      │
-│ • 14-State Booking Ledger     │ • Active Artisan Geospatial   │ • Customer 15s Audio Notes      │
-│ • Invoices, Parts & Taxation  │ • OTP TTLs & Rate Limits      │ • Hardware Store Receipts       │
+│ • 16-State Booking Ledger     │ • Active Artisan Geospatial   │ • Customer 15s Audio Notes      │
+│ • Invoices, Parts & 2% Sur.   │ • OTP TTLs & Rate Limits      │ • Hardware Store Receipts       │
 │ • Double-Entry Guild Accounts │ • Active WebSocket Channels   │ • Aadhaar / Police Certificates │
 └───────────────────────────────┴───────────────────────────────┴─────────────────────────────────┘
 ```
@@ -81,15 +81,15 @@ The platform operates on a **"Master Guildsman Meets Modern Concierge"** archety
 1. **Customer Mobile Application (`apps/customer_mobile`)**:
    - Cross-platform Flutter client deployed to iOS and Android.
    - Persona: Homeowners and residential tenants.
-   - Core Modules: Locality picker, 8-trade discovery grid, Emergency 25-minute booking banner, Multi-issue configurator with visual/audio scoping, Live tracking vector map with two-wheeler marker and 5-stage milestone stepper, Security Start Code display (`4921`), In-app chat drawer with canned gated society chips, and Karigaar Guild trust profiles.
+   - Core Modules: Locality picker, 8-trade discovery grid, Emergency 25-minute booking banner, Multi-issue configurator with visual/audio scoping, Upfront UPI mandate pre-authorization dock, Live tracking vector map with two-wheeler marker and 5-stage milestone stepper, Security Start Code display (`4921`), In-app chat drawer with canned gated society chips, RBI 2FA spare parts approval prompt, Completion Verification screen with OTP release, and Karigaar Guild trust profiles.
 2. **Partner Mobile Application (`apps/partner_mobile`)**:
    - High-performance Flutter client tailored for blue-collar tradespeople with high-contrast UI and Hindi/English bilingual toggle.
    - Persona: Verified guild artisans (Electricians, Plumbers, Carpenters, AC Technicians).
-   - Core Modules: Active/Paused duty toggle, Today's earnings Bento metrics, WhatsApp Dual Sync notification bridge, 45-second circular SVG countdown timer dispatch card, Nearby Job Radar feed with filter pills, Foreground GPS telemetry service, Elapsed job stopwatch, Material & Labor Dynamic Bill Builder with hardware receipt photo attachment, 4-digit completion OTP verification pad, and Guild Wallet with instant zero-fee IMPS bank withdrawal.
+   - Core Modules: Active/Paused duty toggle, Today's earnings Bento metrics, WhatsApp Dual Sync notification bridge, 45-second circular SVG countdown timer dispatch card, Nearby Job Radar feed with filter pills, Foreground GPS telemetry service, Elapsed job stopwatch, Material & Labor Dynamic Bill Builder with hardware receipt photo attachment, Decoupled Invoice Submission trigger (`POST /submit-invoice`), Doorstep Timeout trigger (`POST /doorstep-access-denied`), and Guild Wallet with instant IMPS bank withdrawal governed by a ₹2,000 rolling security reserve.
 3. **Super Admin Web & Mobile Console (`apps/admin_web`)**:
    - Responsive Next.js 14 web application accessible via desktop and mobile browsers.
    - Persona: HQ Operations Managers, Guild Masters, and Dispute Arbitrators.
-   - Core Modules: Live Ops pulse stream (active dispatches, available artisans, dispute rate), 2x2 executive KPI bento grid, Surge Grid Alert heatmap (Surge 1.4x), Category volume percentage mix, Priority Guild Verification Queue (Aadhaar, Police clearance, tool calibration audit), Outbound WhatsApp emergency surge broadcast pipeline, and Automated CSAT monitor.
+   - Core Modules: Live Ops pulse stream (active dispatches, available artisans, dispute rate), 2x2 executive KPI bento grid, Surge Grid Alert heatmap (Surge 1.4x), Category volume percentage mix, Priority Guild Verification Queue (Aadhaar, Police clearance, tool calibration audit), Outbound WhatsApp emergency surge broadcast pipeline, Warranty Underwriting Reserve monitor, and Automated CSAT monitor.
 
 ### 2.2 Backend Domain Microservices
 1. **Auth & Identity Service (`services/auth_service`)**:
@@ -98,29 +98,33 @@ The platform operates on a **"Master Guildsman Meets Modern Concierge"** archety
    - Implements 3-tier artisan verification progression (Tier 1: Registered, Tier 2: Guild Verified Pro, Tier 3: Master Guildsman).
 2. **Dispatch Radar Service (`services/dispatch_radar_service`)**:
    - Governs the real-time job broadcast engine. When a customer confirms a Path B booking, the engine initiates a localized Redis geospatial query (default 3 km radius).
-   - Manages the strict **45-second circular countdown timer** per artisan. If unaccepted, auto-cascades to the next nearest qualified artisan.
-   - Supports pre-dispatch communication by generating pre-filled WhatsApp deep-links.
+   - Manages the strict **45-second circular countdown timer** per artisan. If unaccepted, auto-cascades to the next nearest qualified artisan. If exhausted without acceptance, transitions booking state to **`DISPATCH_UNFULFILLED`** to trigger auto-expanded re-dispatch (up to 6 km) or graceful customer fallback.
+   - Eliminates unmasked phone number exposure by replacing raw `wa.me` links with virtual telephony bridge endpoints (`/api/v1/telephony/bridge-call`) and in-app secure chat proxies.
 3. **Geolocation & Tracking Service (`services/geolocation_tracking_service`)**:
    - Ingests high-frequency GPS coordinate streams from the Partner app via WebSockets / MQTT.
    - Computes live road-network route polylines and real-time ETAs.
-   - Detects 200-meter proximity geofence arrivals, automatically triggering arrival notifications.
+   - Detects 200-meter proximity geofence arrivals, automatically triggering arrival notifications and arming the 15-minute doorstep timeout timer.
 4. **Booking & Escrow Lifecycle Service (`services/booking_escrow_service`)**:
-   - Implements the complete **14-state booking lifecycle** state machine.
-   - Manages two-factor OTP handshakes: generates and validates the **Security Start Code (`4921`)** on arrival, and processes the **Job Completion OTP** upon service sign-off.
-   - Enforces cancellation policies (free within 3 mins; ₹99 transit fee after dispatch).
+   - Implements the complete **16-state booking lifecycle** state machine.
+   - Enforces an upfront pre-authorization / UPI mandate at booking confirmation to ensure the **₹99 transit cancellation fee** is legally and automatically collectible if the customer cancels after dispatch (>3 mins).
+   - Manages two-factor OTP handshakes: generates and validates the **Security Start Code (`4921`)** on arrival, and enforces decoupled completion:
+     - Artisan submits invoice via `POST /api/v1/bookings/:id/submit-invoice` (moves to `INVOICE_SUBMITTED`).
+     - Customer reviews itemized bill on their own screen and releases the **Completion OTP** via `POST /api/v1/bookings/:id/verify-completion`.
+   - Handles doorstep exception states: implements **`DOORSTEP_ACCESS_DENIED`** if customer is unreachable or denies entry for >15 minutes after arrival, auto-capturing the ₹99 transit fee (₹80 credited to artisan for fuel/time, ₹19 platform fee) and terminating the job cleanly.
+   - Clearly delineates Path A (asynchronous directory contact/bidding lifecycle) from Path B (synchronous managed escrow state machine).
 5. **Wallet, Billing & Settlement Service (`services/wallet_settlement_service`)**:
-   - Double-entry bookkeeping engine managing customer escrow holds, platform commissions (12% standard labor take-rate + ₹29 safety insurance shield fee), and artisan guild wallets.
-   - Houses the on-site Material & Labor Bill Builder, permitting artisans to add spare parts (e.g. Schneider 32A MCB for +₹380) with receipt photos.
-   - Connects with banking payout gateways (RazorpayX / Cashfree) for instant 24/7 IMPS/UPI bank withdrawals with zero partner fee.
-   - Tracks the **Master Guildsman 0% Commission Tier** (unlocked after 50 jobs with 4.85+ rating).
+   - Double-entry bookkeeping engine managing upfront UPI mandates, customer escrow holds, platform commissions (12% standard labor take-rate; **sustainable 5% commission floor** or ₹999/month "Guild Elite" subscription for Master Guildsmen), flat ₹29 safety insurance shield fee, and a **2% payment gateway convenience surcharge** on customer payments for pass-through spare parts.
+   - Houses the on-site Material & Labor Bill Builder, enforcing **RBI 2FA compliance** by requiring explicit in-app customer approval or secondary OTP before any spare parts or scope expansions can be added to the final invoice.
+   - Manages the Guild Wallet with **instant 24/7 IMPS bank withdrawals** (RazorpayX / Cashfree), protected by a mandatory **₹2,000 rolling security reserve** (or 24h settlement hold on newly completed jobs) to defend against instant wallet drain in post-service property damage scenarios.
+   - Automatically directs **30% of platform labor take-rate** into a dedicated Warranty & Rework Underwriting Reserve pool, backed by a **₹250 customer deductible** on property damage claims.
 6. **WhatsApp & Communications Service (`services/notification_service`)**:
    - Direct integration with Meta's WhatsApp Business Cloud API.
-   - Routes dual-sync dispatch payloads (customer audio notes, gate codes, GPS coordinates).
+   - Routes dual-sync dispatch payloads (customer audio notes, gate codes, GPS coordinates) and handles virtual telephony masking bridges (`/api/v1/telephony/bridge-call`) to prevent customer MSISDN exposure.
    - Manages outbound emergency surge broadcast alerts and post-service automated 5-star CSAT surveys.
 7. **Admin & Operations Governance Service (`services/admin_ops_service`)**:
    - Aggregates operational telemetry for the Super Admin dashboard.
    - Manages dynamic surge pricing multipliers (e.g., 1.4x in DLF Phase 4 during thunderstorm emergencies).
-   - Orchestrates the KYC document approval pipeline and dispute arbitration workflows.
+   - Orchestrates the KYC document approval pipeline, warranty reserve claims ledger, and dispute arbitration workflows.
 
 ---
 
@@ -145,16 +149,16 @@ The following master feature inventory consolidates all components identified ac
 | **F-13** | Security Start OTP (4921) | Live Tracking | `active_job_live_tracking` | 4-digit security code generated for homeowner to share on arrival | Booking generation | Code displayed (`4921`) | Phase 3 | `active_job_live_tracking` |
 | **F-14** | 5-Stage Milestone Progress | Live Tracking | `active_job_live_tracking` | Step-by-step progress tracking from dispatch to sign-off | Server milestone events | Visual step indicator & timestamps | Phase 3 | `active_job_live_tracking` |
 | **F-15** | In-App Direct Chat Drawer | Live Tracking | `active_job_live_tracking` | Slide-up modal chat with assigned artisan | Text input, send button | Message bubble thread | Phase 3 | `active_job_live_tracking` |
-| **F-16** | 45-Second Dispatch Radar Timer| Partner Ops | `karigaar_partner_job_radar` | Circular SVG countdown timer for incoming emergency jobs | 45s server countdown | Circular progress stroke, second counter | Phase 3 | `karigaar_partner_job_radar` |
+| **F-16** | 45-Second Dispatch Radar Timer| Partner Ops | `karigaar_partner_job_radar` | Circular SVG countdown timer with auto-cascading; triggers `DISPATCH_UNFULFILLED` on expiry | 45s server countdown | Circular progress stroke, second counter, unfulfilled fallback | Phase 3 | `karigaar_partner_job_radar` |
 | **F-17** | Partner Duty Status Toggle | Partner Ops | `karigaar_partner_job_radar` | Partner toggle to pause or activate job dispatch radar | Toggle button click | "Active" (online) vs "Paused" (offline) | Phase 3 | `karigaar_partner_job_radar` |
-| **F-18** | Pre-Accept WhatsApp Inquiry | Partner Ops | `karigaar_partner_job_radar` | Direct pre-filled WhatsApp link to communicate before accepting | Click "Ask Customer" | Launches `wa.me` with prefilled draft | Phase 3 | `karigaar_partner_job_radar` |
+| **F-18** | Pre-Accept Masked Inquiry | Partner Ops | `karigaar_partner_job_radar` | Virtual telephony bridge & in-app chat proxy to clarify scope without exposing MSISDN | Click "Ask Customer" | Invokes `/api/v1/telephony/bridge-call` or in-app chat | Phase 3 | `karigaar_partner_job_radar` |
 | **F-19** | Broadcast Job Claiming | Partner Ops | `karigaar_partner_job_radar` | Nearby broadcast job feed with one-tap claim action | Click "Claim Job" | Locks job, transitions to "Locked & Assigned" | Phase 3 | `karigaar_partner_job_radar` |
 | **F-20** | Live Job Stopwatch | Invoicing & Execution | `partner_active_job_wallet` | Elapsed execution timer tracking on-site repair duration | Timer start event on arrival | Digital display (e.g. `28m 14s`) | Phase 4 | `partner_active_job_wallet` |
-| **F-21** | Dynamic Parts Bill Builder | Invoicing & Execution | `partner_active_job_wallet` | Addition of spare parts with receipt photo attachment | Part name, quantity, price, photo | Itemized line item + GST recalculation | Phase 4 | `partner_active_job_wallet` |
-| **F-22** | Completion OTP Verification | Invoicing & Execution | `partner_active_job_wallet` | 4-digit PIN verification to complete work and authorize payment | Customer verbal PIN input | Verifies code, triggers payment collection | Phase 4 | `partner_active_job_wallet` |
-| **F-23** | Instant IMPS Bank Withdrawal| Wallet & Settlement | `partner_active_job_wallet` | 24/7 zero-fee withdrawal from Guild Wallet to linked bank | Click "Withdraw to Bank" | IMPS payout initiated, ledger updated | Phase 4 | `partner_active_job_wallet` |
-| **F-24** | Guild Tier Level Progress | Wallet & Settlement | `partner_active_job_wallet` | Milestone progress tracking to unlock 0% commission tier | Completed job counter | Tier level badge, progress gauge (84%) | Phase 4 | `partner_active_job_wallet` |
-| **F-25** | Triple-Screened Guild Badge | Trust & Profile | `karigaar_profile_reviews` | Display of Govt ID, Police, NSDC, and ₹25k insurance cover | Profile view | Visual credential pods | Phase 2 | `karigaar_profile_reviews` |
+| **F-21** | Dynamic Parts Bill Builder & 2FA| Invoicing & Execution | `partner_active_job_wallet` | Spare parts addition with receipt photo, 2% PG surcharge, and RBI 2FA customer approval | Part name, price, receipt photo | Generates customer approval request + 2% PG fee | Phase 4 | `partner_active_job_wallet` |
+| **F-22** | Decoupled Invoicing & Verification| Invoicing & Execution | `partner_active_job_wallet` | Split workflow: Artisan submits invoice (`/submit-invoice`); customer verifies and inputs OTP | Bill submission, Customer OTP | Transitions to `INVOICE_SUBMITTED`, then `PAYMENT_RELEASED` | Phase 4 | `partner_active_job_wallet` |
+| **F-23** | Instant IMPS with Rolling Reserve| Wallet & Settlement | `partner_active_job_wallet` | 24/7 IMPS withdrawal protected by ₹2,000 rolling security reserve / 24h settlement hold | Click "Withdraw to Bank" | IMPS payout initiated (surplus balance above ₹2k) | Phase 4 | `partner_active_job_wallet` |
+| **F-24** | Guild Tier Level Progress | Wallet & Settlement | `partner_active_job_wallet` | Milestone tracking to unlock sustainable 5% commission floor or ₹999/mo Guild Elite pass | Completed job counter | Tier level badge, progress gauge (84%) | Phase 4 | `partner_active_job_wallet` |
+| **F-25** | Two-Tier Guild Damage Shield | Trust & Profile | `karigaar_profile_reviews` | Base ₹10,000 damage cover (in ₹29 fee) vs ₹25,000 Master cover; ₹250 customer deductible | Profile view | Visual credential pods, coverage limits | Phase 2 | `karigaar_profile_reviews` |
 | **F-26** | Cleanliness & Sawdust Score | Trust & Profile | `karigaar_profile_reviews` | Specific cleanliness rating alongside punctuality and craft | Post-service customer review | Score bar out of 5.0 | Phase 2 | `karigaar_profile_reviews` |
 | **F-27** | Bleeding Portfolio Showcase | Trust & Profile | `karigaar_profile_reviews` | Horizontal photo carousel of verified past residential work | Work gallery array | Full-bleed cards with duration & locality | Phase 2 | `karigaar_profile_reviews` |
 | **F-28** | Live Ops Pulse Stream | Super Admin Ops | `super_admin_portal` | Live counters for active dispatches, available artisans, disputes | Real-time WebSocket stream | Metric chips (Active: 142, Available: 89) | Phase 5 | `super_admin_portal` |
@@ -164,9 +168,10 @@ The following master feature inventory consolidates all components identified ac
 | **F-32** | WhatsApp Emergency Broadcast| Super Admin Ops | `super_admin_portal` | Blast push message to standby artisans in specific radius | Target zone, radius, bonus surcharge | WhatsApp broadcast sent to N technicians | Phase 5 | `super_admin_portal` |
 | **F-33** | Skeleton Shimmer & Radar Sync| Telemetry & UX | `skeleton_loading_radar_sync` | Custom CSS keyframe shimmer for loading radar cards | Data fetch lifecycle | Shimmering layout placeholders | Phase 1 | `skeleton_loading_radar_sync` |
 | **F-34** | Scalable Vector Brand Mark | Identity & Branding | `karigaar_app_icon_logo` | Precision SVG mark combining squircle, crest, check, plumb | SVG render call | Scalable 100x100 graphic asset | Phase 1 | `karigaar_app_icon_logo` |
-| **F-35** | Path A Direct Contact Action | Discovery & Trust | `karigaar_profile_reviews` | Direct call or WhatsApp link with upfront visit fee guarantee | User taps Call / Chat | Direct phone dialer or `wa.me` deep link | Phase 2 | `karigaar_profile_reviews` |
-| **F-36** | Path A to Path B Retroactive Lock| Booking & Escrow | `service_details_custom_quote` | Formalizing an on-site direct visit to activate ₹25k warranty | User or artisan taps "Lock Booking" | Generates formal escrow booking ticket | Phase 4 | `explorer_workflows/analysis.md` |
+| **F-35** | Path A Monetized Direct Contact | Discovery & Trust | `karigaar_profile_reviews` | Monetized direct contact (Directory Pass ₹499/mo, Pay-per-lead ₹49-99) via masked bridge | User taps Call / Chat | Invokes virtual bridge `/api/v1/telephony/bridge-call` | Phase 2 | `karigaar_profile_reviews` |
+| **F-36** | Path A to Path B Retroactive Lock| Booking & Escrow | `service_details_custom_quote` | Formalizing an on-site direct visit to activate ₹25k warranty & escrow protection | User or artisan taps "Lock Booking" | Generates formal escrow booking ticket | Phase 4 | `explorer_workflows/analysis.md` |
 | **F-37** | 3-Step Artisan Registration | Partner Onboarding | `create_account_artisan_registration`| Multi-step artisan KYC registration with Aadhaar OCR | Form inputs, Aadhaar photo | Profile submitted to Super Admin queue | Phase 1 | `create_account_artisan_registration` |
+| **F-38** | Doorstep Access Timeout Guard | Live Tracking & Escrow | `active_job_live_tracking` | 15-min doorstep wait timer; triggers `DOORSTEP_ACCESS_DENIED`, releasing ₹99 transit fee | Dwell time >15m at destination | Auto-captures ₹99 fee (₹80 to partner), closes job | Phase 3 | `active_job_live_tracking` |
 
 ---
 
