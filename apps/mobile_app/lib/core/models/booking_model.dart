@@ -150,6 +150,10 @@ class BookingModel {
 
   int get partsTotal => parts.fold(0, (sum, part) => sum + part.total);
   int get totalAmount => laborFee + safetyShieldFee + partsTotal;
+  int get totalFinalAmount => totalAmount;
+  String get issueTitle => '$tradeName Service & Diagnostic';
+  String get artisanName => assignedArtisanName ?? 'Ganesh Kadam';
+  String get customerAddress => address;
 
   bool verifyStartOtp(String code) => code.trim() == startOtp;
   bool verifyCompletionOtp(String code) => code.trim() == completionOtp;

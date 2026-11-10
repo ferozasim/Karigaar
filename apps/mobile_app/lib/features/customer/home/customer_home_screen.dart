@@ -7,6 +7,8 @@ import '../../../core/providers/app_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../shared/widgets/emergency_assist_banner.dart';
+import '../../shared/widgets/karigaar_brand_logo.dart';
+import '../../shared/widgets/karigaar_radar_sync_skeleton.dart';
 import '../../shared/widgets/trust_shield_badge.dart';
 import '../../shared/widgets/mode_switcher_pill.dart';
 import '../../shared/widgets/locality_selector_sheet.dart';
@@ -31,18 +33,8 @@ class CustomerHomeScreen extends ConsumerWidget {
                 padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
                 child: Row(
                   children: [
-                    // Squircle Logo
-                    Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: AppColors.primary,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Center(
-                        child: Icon(Icons.handyman_rounded, color: AppColors.secondary, size: 22),
-                      ),
-                    ),
+                    // Official Squircle Brand Logo (F-34)
+                    const KarigaarBrandLogo(size: 40),
                     const SizedBox(width: 12),
                     // Locality Selector (Pilot City: Nanded)
                     Expanded(
@@ -54,15 +46,21 @@ class CustomerHomeScreen extends ConsumerWidget {
                           children: [
                             Row(
                               children: [
-                                Text(
-                                  '${selectedLocality.name}, Nanded',
-                                  style: AppTypography.headlineSm.copyWith(fontSize: 16),
+                                Flexible(
+                                  child: Text(
+                                    '${selectedLocality.name}, Nanded',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: AppTypography.headlineSm.copyWith(fontSize: 15),
+                                  ),
                                 ),
                                 const Icon(Icons.keyboard_arrow_down_rounded, size: 20),
                               ],
                             ),
                             Text(
                               '${selectedLocality.marathiName} • ${selectedLocality.pincode}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
                             ),
                           ],
@@ -70,8 +68,14 @@ class CustomerHomeScreen extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    // Mode Switcher Pill Compact
-                    const ModeSwitcherPill(compact: true),
+                    // Mode Switcher (Homeowner <-> Karigaar)
+                    const Flexible(
+                      flex: 0,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: ModeSwitcherPill(compact: true),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -81,26 +85,32 @@ class CustomerHomeScreen extends ConsumerWidget {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                child: Container(
-                  height: 48,
-                  padding: const EdgeInsets.symmetric(horizontal: 14),
-                  decoration: BoxDecoration(
-                    color: AppColors.surfaceRaised,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.borderSubtle),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.search_rounded, color: AppColors.textMuted, size: 20),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          'Search electricians, carpenters, plumbers...',
-                          style: AppTypography.bodyMd.copyWith(color: AppColors.textSubtle),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(12),
+                  onTap: () => _showQuickTradeSearchSheet(context, tradesAsync.valueOrNull ?? []),
+                  child: Container(
+                    height: 48,
+                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                    decoration: BoxDecoration(
+                      color: AppColors.surfaceRaised,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: AppColors.borderSubtle),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.search_rounded, color: AppColors.textMuted, size: 20),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            'Search electricians, carpenters, plumbers...',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTypography.bodyMd.copyWith(color: AppColors.textSubtle),
+                          ),
                         ),
-                      ),
-                      const Icon(Icons.mic_rounded, color: AppColors.secondary, size: 20),
-                    ],
+                        const Icon(Icons.mic_rounded, color: AppColors.secondary, size: 20),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -126,7 +136,15 @@ class CustomerHomeScreen extends ConsumerWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('10 Launch Trades', style: AppTypography.headlineSm),
+                    Expanded(
+                      child: Text(
+                        '10 Launch Trades',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTypography.headlineSm,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
                     Text(
                       'Nanded Guild',
                       style: AppTypography.labelSm.copyWith(color: AppColors.secondary),
@@ -136,7 +154,7 @@ class CustomerHomeScreen extends ConsumerWidget {
               ),
             ),
 
-            // 10 Launch Trades Grid (5 columns x 2 rows or responsive)
+            // 10 Launch Trades Grid (5 columns x 2 rows with fixed mainAxisExtent for all screen widths)
             tradesAsync.when(
               data: (trades) => SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -145,7 +163,7 @@ class CustomerHomeScreen extends ConsumerWidget {
                     crossAxisCount: 5,
                     mainAxisSpacing: 12,
                     crossAxisSpacing: 8,
-                    childAspectRatio: 0.72,
+                    mainAxisExtent: 88,
                   ),
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
@@ -157,7 +175,7 @@ class CustomerHomeScreen extends ConsumerWidget {
                 ),
               ),
               loading: () => const SliverToBoxAdapter(
-                child: Center(child: CircularProgressIndicator()),
+                child: KarigaarRadarSyncSkeleton(),
               ),
               error: (err, _) => SliverToBoxAdapter(
                 child: Text('Error: $err'),
@@ -182,7 +200,9 @@ class CustomerHomeScreen extends ConsumerWidget {
                         children: [
                           const Icon(Icons.security_rounded, color: AppColors.tertiary, size: 20),
                           const SizedBox(width: 8),
-                          Text('The Karigaar Shield Commitment', style: AppTypography.labelLg),
+                          Expanded(
+                            child: Text('The Karigaar Shield Commitment', style: AppTypography.labelLg),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 12),
@@ -214,7 +234,9 @@ class CustomerHomeScreen extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    Text('Top Rated Artisans in Nanded', style: AppTypography.headlineSm),
+                    Expanded(
+                      child: Text('Top Rated Karigaars in Nanded', style: AppTypography.headlineSm),
+                    ),
                   ],
                 ),
               ),
@@ -246,10 +268,11 @@ class CustomerHomeScreen extends ConsumerWidget {
     return GestureDetector(
       onTap: () => context.push('/customer/service/${trade.tradeId}'),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 52,
-            height: 52,
+            width: 48,
+            height: 48,
             decoration: BoxDecoration(
               color: trade.surfaceTint,
               borderRadius: BorderRadius.circular(14),
@@ -258,10 +281,10 @@ class CustomerHomeScreen extends ConsumerWidget {
             child: Icon(
               _getIconData(trade.iconName),
               color: trade.accentColor,
-              size: 24,
+              size: 22,
             ),
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 4),
           Text(
             trade.name,
             textAlign: TextAlign.center,
@@ -302,84 +325,103 @@ class CustomerHomeScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Avatar
-              Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: AppColors.surfaceSubtle,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: AppColors.tertiary, width: 2),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Avatar
+                Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceSubtle,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: AppColors.tertiary, width: 2),
+                  ),
+                  child: const Icon(Icons.person_rounded, color: AppColors.textMuted, size: 30),
                 ),
-                child: const Icon(Icons.person_rounded, color: AppColors.textMuted, size: 30),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(artisan.name, style: AppTypography.headlineSm.copyWith(fontSize: 16)),
-                        const SizedBox(width: 6),
-                        const Icon(Icons.verified_rounded, color: AppColors.tertiary, size: 16),
-                      ],
-                    ),
-                    Text(
-                      '${artisan.tradeTitle} • ${artisan.yearsExperience} yrs exp',
-                      style: AppTypography.bodySm,
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        const Icon(Icons.star_rounded, size: 16, color: AppColors.secondary),
-                        const SizedBox(width: 4),
-                        Text(
-                          '${artisan.rating} (${artisan.reviewCount} reviews) • ${artisan.distanceKm} km away',
-                          style: AppTypography.labelSm.copyWith(color: AppColors.textMuted),
-                        ),
-                      ],
-                    ),
-                  ],
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              artisan.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTypography.headlineSm.copyWith(fontSize: 16),
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          const Icon(Icons.verified_rounded, color: AppColors.tertiary, size: 16),
+                        ],
+                      ),
+                      Text(
+                        '${artisan.tradeTitle} • ${artisan.yearsExperience} yrs exp',
+                        style: AppTypography.bodySm,
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          const Icon(Icons.star_rounded, size: 16, color: AppColors.secondary),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              '${artisan.rating} (${artisan.reviewCount} reviews) • ${artisan.distanceKm} km away',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTypography.labelSm.copyWith(color: AppColors.textMuted),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Text(
-            artisan.bio,
-            style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Diagnostic Inspection', style: AppTypography.labelSm),
-                  Text('₹${artisan.inspectionFee}', style: AppTypography.numericPrice.copyWith(fontSize: 18)),
-                ],
-              ),
-              ElevatedButton(
-                onPressed: () => context.push('/customer/service/${artisan.primaryTradeId}'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Text(
+              artisan.bio,
+              style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Diagnostic Inspection',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTypography.labelSm,
+                      ),
+                      Text('₹${artisan.inspectionFee}', style: AppTypography.numericPrice.copyWith(fontSize: 18)),
+                    ],
+                  ),
                 ),
-                child: Text('Book Artisan', style: AppTypography.labelMd.copyWith(color: Colors.white)),
-              ),
-            ],
-          ),
-        ],
+                const SizedBox(width: 8),
+                ElevatedButton(
+                  onPressed: () => context.push('/customer/service/${artisan.primaryTradeId}'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  ),
+                  child: Text('Book Artisan', style: AppTypography.labelMd.copyWith(color: Colors.white)),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
-    ),
-  );
+    );
   }
 
   Widget _buildBottomNav(BuildContext context) {
@@ -395,13 +437,69 @@ class CustomerHomeScreen extends ConsumerWidget {
           _buildNavItem(icon: Icons.explore_rounded, label: 'Explore', isActive: true),
           _buildNavItem(
             icon: Icons.assignment_rounded,
-            label: 'Active Job',
+            label: 'Bookings',
             isActive: false,
-            onTap: () => context.push('/customer/active-tracking/BK_NANDED_8821'),
+            onTap: () => context.go('/customer/bookings'),
           ),
-          _buildNavItem(icon: Icons.chat_bubble_outline_rounded, label: 'Messages', isActive: false),
-          _buildNavItem(icon: Icons.person_outline_rounded, label: 'Profile', isActive: false),
+          _buildNavItem(
+            icon: Icons.chat_bubble_outline_rounded,
+            label: 'Messages',
+            isActive: false,
+            onTap: () => context.go('/customer/messages'),
+          ),
+          _buildNavItem(
+            icon: Icons.person_outline_rounded,
+            label: 'Profile',
+            isActive: false,
+            onTap: () => context.go('/customer/profile'),
+          ),
         ],
+      ),
+    );
+  }
+
+  void _showQuickTradeSearchSheet(BuildContext context, List<TradeModel> trades) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Quick Trade Search', style: AppTypography.headlineSm),
+            const SizedBox(height: 6),
+            Text('Select a Nanded Guild trade to scope your issue:', style: AppTypography.bodySm),
+            const SizedBox(height: 12),
+            Flexible(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: trades.length,
+                itemBuilder: (_, idx) {
+                  final t = trades[idx];
+                  return ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: CircleAvatar(
+                      backgroundColor: t.surfaceTint,
+                      child: Icon(_getIconData(t.iconName), color: t.accentColor, size: 20),
+                    ),
+                    title: Text('${t.name} (${t.marathiName})', style: AppTypography.labelLg),
+                    subtitle: Text('Inspection ₹${t.baseInspectionFee} • ${t.guaranteeDays}d Warranty', style: AppTypography.bodySm),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () {
+                      Navigator.pop(ctx);
+                      context.push('/customer/service/${t.tradeId}');
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -412,25 +510,35 @@ class CustomerHomeScreen extends ConsumerWidget {
     required bool isActive,
     VoidCallback? onTap,
   }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            size: 22,
-            color: isActive ? AppColors.primary : AppColors.textSubtle,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: AppTypography.labelSm.copyWith(
+    return Expanded(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 22,
               color: isActive ? AppColors.primary : AppColors.textSubtle,
-              fontSize: 11,
             ),
-          ),
-        ],
+            const SizedBox(height: 4),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  style: AppTypography.labelSm.copyWith(
+                    color: isActive ? AppColors.primary : AppColors.textSubtle,
+                    fontSize: 11,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

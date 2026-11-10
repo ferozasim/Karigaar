@@ -23,7 +23,7 @@ enum UserRole {
   String get localizedTagline {
     switch (this) {
       case UserRole.customer:
-        return 'Book verified master artisans in 25 mins';
+        return 'Book verified master Karigaars in 25 mins';
       case UserRole.artisan:
         return 'Claim nearby emergency jobs & instant IMPS wallet';
       case UserRole.admin:

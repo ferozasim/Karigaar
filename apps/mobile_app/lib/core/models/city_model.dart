@@ -38,6 +38,8 @@ class LocalityModel {
     required this.emergencyHub,
   });
 
+  String get id => localityId;
+
   factory LocalityModel.fromJson(Map<String, dynamic> json) {
     return LocalityModel(
       localityId: json['localityId'] as String,

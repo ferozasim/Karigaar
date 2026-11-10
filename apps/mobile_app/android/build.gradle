@@ -2,10 +2,14 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url 'https://storage.googleapis.com/download.flutter.io'
+        }
     }
 }
 
-rootProject.buildDir = "../build"
+def tempBuildDir = new File(System.getProperty("java.io.tmpdir"), "karigaar_build").absolutePath
+rootProject.buildDir = tempBuildDir
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }

@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:karigaar_app/core/providers/app_providers.dart';
+import 'package:karigaar_app/core/theme/app_theme.dart';
 import 'package:karigaar_app/features/shared/widgets/locality_selector_sheet.dart';
 
 void main() {
   Widget createWidgetUnderTest() {
-    return const ProviderScope(
+    return ProviderScope(
       child: MaterialApp(
-        home: Scaffold(
+        theme: AppTheme.lightTheme,
+        home: const Scaffold(
           body: LocalitySelectorSheet(),
         ),
       ),
@@ -48,8 +50,9 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: const MaterialApp(
-            home: Scaffold(
+          child: MaterialApp(
+            theme: AppTheme.lightTheme,
+            home: const Scaffold(
               body: LocalitySelectorSheet(),
             ),
           ),

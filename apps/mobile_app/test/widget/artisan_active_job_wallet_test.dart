@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:karigaar_app/core/theme/app_theme.dart';
 import 'package:karigaar_app/features/artisan/active_job/artisan_active_job_screen.dart';
 
 void main() {
   Widget createWidgetUnderTest({String bookingId = 'BK_NANDED_8821'}) {
     return ProviderScope(
       child: MaterialApp(
+        theme: AppTheme.lightTheme,
         home: ArtisanActiveJobScreen(bookingId: bookingId),
       ),
     );

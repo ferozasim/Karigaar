@@ -17,6 +17,8 @@ class ServiceScopingScreen extends ConsumerStatefulWidget {
 
 class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
   final Set<String> _selectedPackageIds = {'pkg_elec_mcb'};
+  bool _hasInitializedTradeSelection = false;
+  bool _hasAttachedPhoto = false;
   bool _isRecordingAudio = false;
   int _audioSeconds = 0;
   String _selectedSlot = 'Morning (9:00 AM - 12:00 PM)';
@@ -39,6 +41,16 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
           orElse: () => trades.first,
         );
 
+        if (!_hasInitializedTradeSelection && trade.popularPackages.isNotEmpty) {
+          _hasInitializedTradeSelection = true;
+          final hasMatch = trade.popularPackages.any((p) => _selectedPackageIds.contains(p.packageId));
+          if (!hasMatch) {
+            _selectedPackageIds
+              ..clear()
+              ..add(trade.popularPackages.first.packageId);
+          }
+        }
+
         // Calculate dynamic total
         int laborTotal = 0;
         for (final pkg in trade.popularPackages) {
@@ -56,7 +68,13 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
             title: Text(trade.name),
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_rounded),
-              onPressed: () => context.pop(),
+              onPressed: () {
+                if (context.canPop()) {
+                  context.pop();
+                } else {
+                  context.go('/customer/home');
+                }
+              },
             ),
           ),
           body: Stack(
@@ -79,16 +97,29 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                         children: [
                           const Row(
                             children: [
-                              TrustShieldBadge(
-                                label: 'Verified Master Guild',
-                                icon: Icons.workspace_premium_rounded,
+                              Flexible(
+                                child: TrustShieldBadge(
+                                  label: 'Verified Master Guild',
+                                  icon: Icons.workspace_premium_rounded,
+                                ),
                               ),
-                              Spacer(),
-                              Icon(Icons.star_rounded, color: AppColors.secondary, size: 18),
-                              SizedBox(width: 4),
-                              Text(
-                                '4.9 (1.4k jobs in Nanded)',
-                                style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+                              SizedBox(width: 8),
+                              Expanded(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Icon(Icons.star_rounded, color: AppColors.secondary, size: 18),
+                                    SizedBox(width: 4),
+                                    Flexible(
+                                      child: Text(
+                                        '4.9 (1.4k jobs in Nanded)',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
@@ -188,7 +219,14 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                                       children: [
                                         Text('₹${pkg.estimatedPrice} Est.', style: AppTypography.numericPrice.copyWith(fontSize: 16)),
                                         const SizedBox(width: 8),
-                                        Text('• ~${pkg.estimatedMinutes} mins', style: AppTypography.bodySm),
+                                        Flexible(
+                                          child: Text(
+                                            '• ~${pkg.estimatedMinutes} mins',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: AppTypography.bodySm,
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ],
@@ -210,20 +248,52 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                       children: [
                         // Photo upload button
                         Expanded(
-                          child: Container(
-                            height: 60,
-                            decoration: BoxDecoration(
-                              color: AppColors.surfaceRaised,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: AppColors.borderSubtle),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(Icons.add_a_photo_rounded, color: AppColors.primary, size: 20),
-                                const SizedBox(width: 8),
-                                Text('Add Photo', style: AppTypography.labelMd),
-                              ],
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _hasAttachedPhoto = !_hasAttachedPhoto;
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    _hasAttachedPhoto
+                                        ? 'Issue photo attached for ${trade.name} inspection.'
+                                        : 'Removed attached photo.',
+                                  ),
+                                  duration: const Duration(seconds: 1),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              height: 60,
+                              decoration: BoxDecoration(
+                                color: _hasAttachedPhoto ? AppColors.tertiarySurfaceTint : AppColors.surfaceRaised,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: _hasAttachedPhoto ? AppColors.tertiary : AppColors.borderSubtle,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    _hasAttachedPhoto ? Icons.check_circle_rounded : Icons.add_a_photo_rounded,
+                                    color: _hasAttachedPhoto ? AppColors.tertiary : AppColors.primary,
+                                    size: 20,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Flexible(
+                                    child: Text(
+                                      _hasAttachedPhoto ? 'Photo Added' : 'Add Photo',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: AppTypography.labelMd.copyWith(
+                                        color: _hasAttachedPhoto ? AppColors.tertiary : AppColors.textPrimary,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -255,10 +325,14 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                                     size: 22,
                                   ),
                                   const SizedBox(width: 8),
-                                  Text(
-                                    _isRecordingAudio ? 'Stop (${_audioSeconds}s)' : '15s Audio Memo',
-                                    style: AppTypography.labelMd.copyWith(
-                                      color: _isRecordingAudio ? AppColors.error : AppColors.textPrimary,
+                                  Flexible(
+                                    child: Text(
+                                      _isRecordingAudio ? 'Stop (${_audioSeconds}s)' : '15s Audio Memo',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: AppTypography.labelMd.copyWith(
+                                        color: _isRecordingAudio ? AppColors.error : AppColors.textPrimary,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -296,7 +370,9 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                                 size: 20,
                               ),
                               const SizedBox(width: 12),
-                              Text(slot, style: AppTypography.labelMd),
+                              Expanded(
+                                child: Text(slot, style: AppTypography.labelMd),
+                              ),
                             ],
                           ),
                         ),
@@ -326,28 +402,42 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                   ),
                   child: Row(
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            children: [
-                              Text('₹$grandTotal', style: AppTypography.numericPrice),
-                              const SizedBox(width: 6),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: AppColors.tertiarySurfaceTint,
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                                child: Text('+₹29 Shield Fee', style: AppTypography.labelSm.copyWith(color: AppColors.tertiary)),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.centerLeft,
+                              child: Row(
+                                children: [
+                                  Text('₹$grandTotal', style: AppTypography.numericPrice),
+                                  const SizedBox(width: 6),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.tertiarySurfaceTint,
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: Text(
+                                      '+₹29 Shield Fee',
+                                      style: AppTypography.labelSm.copyWith(color: AppColors.tertiary),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                          Text('Adjustable on-site bill', style: AppTypography.bodySm),
-                        ],
+                            ),
+                            Text(
+                              'Adjustable on-site bill',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTypography.bodySm,
+                            ),
+                          ],
+                        ),
                       ),
-                      const Spacer(),
+                      const SizedBox(width: 8),
                       ElevatedButton(
                         onPressed: () {
                           // Navigate to live tracking for demo
@@ -356,11 +446,11 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,
                           foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                         ),
                         child: Text(
-                          'Request Artisan',
+                          'Request Karigaar',
                           style: AppTypography.labelLg.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
                         ),
                       ),

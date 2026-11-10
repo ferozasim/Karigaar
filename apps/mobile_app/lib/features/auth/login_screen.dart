@@ -6,6 +6,7 @@ import '../../../core/providers/app_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../shared/widgets/karigaar_button.dart';
+import '../shared/widgets/karigaar_brand_logo.dart';
 import '../shared/widgets/mode_switcher_pill.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -48,29 +49,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 20),
-              // Brand Mark
-              Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  color: AppColors.primary,
-                  borderRadius: BorderRadius.circular(18),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primary.withValues(alpha: 0.2),
-                      blurRadius: 16,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: const Center(
-                  child: Icon(
-                    Icons.handyman_rounded,
-                    size: 32,
-                    color: AppColors.secondary,
-                  ),
-                ),
-              ),
+              // Official Vector Brand Mark (F-34)
+              const KarigaarBrandLogo(size: 64),
               const SizedBox(height: 16),
               Text(
                 'Karigaar',
@@ -101,7 +81,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     Text(
                       currentRole == UserRole.customer
                           ? 'Login as Homeowner'
-                          : 'Artisan Guild Portal',
+                          : 'Karigaar Partner Portal',
                       style: AppTypography.headlineSm.copyWith(fontWeight: FontWeight.w800),
                     ),
                     const SizedBox(height: 6),
@@ -188,6 +168,25 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       variant: KarigaarButtonVariant.outline,
                       onPressed: _proceedToOtp,
                     ),
+
+                    if (currentRole == UserRole.artisan) ...[
+                      const SizedBox(height: 14),
+                      Center(
+                        child: TextButton.icon(
+                          onPressed: () => context.push('/artisan/register'),
+                          icon: const Icon(Icons.person_add_alt_1_rounded, size: 18, color: AppColors.secondary),
+                          label: Text(
+                            'New Karigaar? Join the Nanded Guild (0% Fee)',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTypography.labelMd.copyWith(
+                              color: AppColors.secondary,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -199,9 +198,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 children: [
                   const Icon(Icons.verified_user_rounded, size: 16, color: AppColors.tertiary),
                   const SizedBox(width: 6),
-                  Text(
-                    '100% Aadhaar & Police Verified Craftsmen • Pilot City: Nanded',
-                    style: AppTypography.labelSm.copyWith(color: AppColors.textMuted),
+                  Flexible(
+                    child: Text(
+                      '100% Aadhaar & Police Verified Craftsmen • Pilot City: Nanded',
+                      textAlign: TextAlign.center,
+                      style: AppTypography.labelSm.copyWith(color: AppColors.textMuted),
+                    ),
                   ),
                 ],
               ),

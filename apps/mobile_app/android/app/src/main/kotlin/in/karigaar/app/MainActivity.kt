@@ -1,4 +1,4 @@
-package in.karigaar.app
+package `in`.karigaar.app
 
 import io.flutter.embedding.android.FlutterActivity
 

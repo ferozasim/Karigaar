@@ -34,10 +34,18 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
 
   void _verifyStartOtp() {
     final code = _startOtpController.text.trim();
-    if (code == '4921') {
+    final booking = ref.read(activeBookingProvider);
+    final isValid = booking != null ? booking.verifyStartOtp(code) : code == '4921';
+    if (isValid) {
       setState(() => _startOtpVerified = true);
+      if (booking != null) {
+        ref.read(activeBookingProvider.notifier).state = booking.copyWith(
+          status: BookingStatus.workInProgress,
+          arrivalTime: DateTime.now(),
+        );
+      }
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Start Code 4921 verified! Stopwatch activated.')),
+        SnackBar(content: Text('Start Code $code verified! Stopwatch activated.')),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -47,16 +55,21 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
   }
 
   void _addPart() {
+    final newPart = BillPartItem(
+      id: 'p${_parts.length + 1}',
+      name: 'Finolex 2.5 sq mm Copper Wire (5m)',
+      unitPrice: 220,
+      quantity: 1,
+    );
     setState(() {
-      _parts.add(
-        BillPartItem(
-          id: 'p${_parts.length + 1}',
-          name: 'Finolex 2.5 sq mm Copper Wire (5m)',
-          unitPrice: 220,
-          quantity: 1,
-        ),
-      );
+      _parts.add(newPart);
     });
+    final booking = ref.read(activeBookingProvider);
+    if (booking != null) {
+      ref.read(activeBookingProvider.notifier).state = booking.copyWith(
+        parts: List<BillPartItem>.from(_parts),
+      );
+    }
   }
 
   @override
@@ -72,7 +85,13 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
         title: const Text('Active Job & Bill Builder'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.pop(),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/artisan/radar');
+            }
+          },
         ),
       ),
       body: SingleChildScrollView(
@@ -96,8 +115,8 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('ON-SITE REPAIR STOPWATCH', style: AppTypography.labelSm.copyWith(color: AppColors.secondary)),
-                        Text('28m 14s Elapsed', style: AppTypography.headlineMd.copyWith(color: Colors.white)),
+                        Text('ON-SITE REPAIR STOPWATCH', style: AppTypography.labelSm.copyWith(color: AppColors.secondary), maxLines: 1, overflow: TextOverflow.ellipsis),
+                        Text('28m 14s Elapsed', style: AppTypography.headlineMd.copyWith(color: Colors.white), maxLines: 1, overflow: TextOverflow.ellipsis),
                       ],
                     ),
                   ),
@@ -131,7 +150,9 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                       children: [
                         const Icon(Icons.security_rounded, color: AppColors.secondary, size: 20),
                         const SizedBox(width: 8),
-                        Text('Step 1: Enter Customer Start Code', style: AppTypography.labelLg),
+                        Expanded(
+                          child: Text('Step 1: Enter Customer Start Code', style: AppTypography.labelLg),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 8),
@@ -186,7 +207,14 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Dynamic Bill Builder', style: AppTypography.headlineSm),
+                Expanded(
+                  child: Text(
+                    'Dynamic Bill Builder',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTypography.headlineSm,
+                  ),
+                ),
                 TextButton.icon(
                   onPressed: _addPart,
                   icon: const Icon(Icons.add_rounded, size: 18),
@@ -235,18 +263,26 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(part.name, style: const TextStyle(fontWeight: FontWeight.w600)),
+                              Text(part.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w600)),
                               if (part.receiptPhotoUrl != null)
                                 const Row(
                                   children: [
                                     Icon(Icons.receipt_long_rounded, size: 14, color: AppColors.tertiary),
                                     SizedBox(width: 4),
-                                    Text('Receipt Photo Attached', style: TextStyle(fontSize: 11, color: AppColors.tertiary)),
+                                    Expanded(
+                                      child: Text(
+                                        'Receipt Photo Attached',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(fontSize: 11, color: AppColors.tertiary),
+                                      ),
+                                    ),
                                   ],
                                 ),
                             ],
                           ),
                         ),
+                        const SizedBox(width: 8),
                         Text('₹${part.total}', style: AppTypography.numericPrice.copyWith(fontSize: 16)),
                       ],
                     ),
@@ -266,7 +302,10 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Total Invoiced to Customer', style: AppTypography.labelLg),
+                  Expanded(
+                    child: Text('Total Invoiced to Customer', style: AppTypography.labelLg),
+                  ),
+                  const SizedBox(width: 8),
                   Text('₹$totalBill', style: AppTypography.numericPrice.copyWith(fontSize: 22)),
                 ],
               ),
@@ -297,7 +336,21 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
               variant: KarigaarButtonVariant.urgent,
               onPressed: () {
                 final pin = _completionOtpController.text.trim();
-                if (pin == '7294') {
+                final currentBooking = ref.read(activeBookingProvider);
+                final isPinValid = currentBooking != null
+                    ? currentBooking.verifyCompletionOtp(pin)
+                    : pin == '7294';
+                if (isPinValid) {
+                  if (currentBooking != null) {
+                    ref.read(activeBookingProvider.notifier).state = currentBooking.copyWith(
+                      status: BookingStatus.settled,
+                      parts: List<BillPartItem>.from(_parts),
+                      completionTime: DateTime.now(),
+                    );
+                  }
+                  ref.read(artisanWalletBalanceProvider.notifier).update(
+                        (balance) => balance + totalBill,
+                      );
                   showDialog<void>(
                     context: context,
                     builder: (ctx) => AlertDialog(
@@ -361,27 +414,42 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Container(
-                    width: 32,
-                    height: 32,
-                    decoration: BoxDecoration(
-                      color: AppColors.secondarySurfaceTint,
-                      borderRadius: BorderRadius.circular(8),
+              Expanded(
+                child: Row(
+                  children: [
+                    Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: AppColors.secondarySurfaceTint,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(Icons.workspace_premium_rounded, color: AppColors.secondary, size: 20),
                     ),
-                    child: const Icon(Icons.workspace_premium_rounded, color: AppColors.secondary, size: 20),
-                  ),
-                  const SizedBox(width: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Gold Guildsman', style: AppTypography.headlineSm.copyWith(fontSize: 16)),
-                      Text('Tier Level 4 Craftsman', style: AppTypography.labelSm.copyWith(color: AppColors.textMuted)),
-                    ],
-                  ),
-                ],
+                    const SizedBox(width: 10),
+                    Flexible(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Gold Guildsman',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTypography.headlineSm.copyWith(fontSize: 16),
+                          ),
+                          Text(
+                            'Tier Level 4 Craftsman',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTypography.labelSm.copyWith(color: AppColors.textMuted),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
+              const SizedBox(width: 8),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
@@ -402,7 +470,15 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Milestone: Master Guildsman', style: AppTypography.bodySm.copyWith(color: AppColors.textMuted)),
+              Expanded(
+                child: Text(
+                  'Milestone: Master Guildsman',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
+                ),
+              ),
+              const SizedBox(width: 8),
               Text('42 / 50 Jobs', style: AppTypography.labelMd.copyWith(fontWeight: FontWeight.w700)),
             ],
           ),
@@ -443,13 +519,23 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                const Icon(Icons.account_balance_wallet_rounded, color: AppColors.secondary, size: 22),
-                const SizedBox(width: 8),
-                Text('Guild Wallet', style: AppTypography.headlineSm.copyWith(fontSize: 18)),
-              ],
+            Expanded(
+              child: Row(
+                children: [
+                  const Icon(Icons.account_balance_wallet_rounded, color: AppColors.secondary, size: 22),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      'Guild Wallet',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTypography.headlineSm.copyWith(fontSize: 18),
+                    ),
+                  ),
+                ],
+              ),
             ),
+            const SizedBox(width: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
@@ -457,6 +543,7 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                 borderRadius: BorderRadius.circular(9999),
               ),
               child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
                     width: 6,
@@ -507,18 +594,18 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                 ),
               ),
               const SizedBox(height: 6),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.baseline,
-                textBaseline: TextBaseline.alphabetic,
+              Wrap(
+                spacing: 8,
+                runSpacing: 4,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   Text(
                     '₹${balance.toStringAsFixed(2)}',
                     style: AppTypography.displayLg.copyWith(
                       color: Colors.white,
-                      fontSize: 32,
+                      fontSize: 28,
                     ),
                   ),
-                  const SizedBox(width: 10),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
@@ -527,6 +614,8 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                     ),
                     child: Text(
                       '+₹$currentJobBill pending',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: AppTypography.labelSm.copyWith(
                         color: AppColors.tertiaryLight,
                         fontWeight: FontWeight.w700,
@@ -542,11 +631,15 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                 child: ElevatedButton.icon(
                   onPressed: () => _showInstantWithdrawalDialog(context, balance),
                   icon: const Icon(Icons.bolt_rounded, size: 20),
-                  label: const Text('Withdraw to Bank via UPI / IMPS (₹0 Fee)'),
+                  label: const Text(
+                    'Withdraw to Bank via UPI / IMPS (₹0 Fee)',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.secondary,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                     elevation: 0,
                     textStyle: AppTypography.labelLg.copyWith(fontWeight: FontWeight.w700),
@@ -570,11 +663,13 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                   icon: const Icon(Icons.forward_to_inbox_rounded, size: 18, color: AppColors.tertiaryLight),
                   label: Text(
                     'Send Weekly Earnings Summary to WhatsApp',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: AppTypography.labelMd.copyWith(color: Colors.white.withValues(alpha: 0.9)),
                   ),
                   style: TextButton.styleFrom(
                     backgroundColor: Colors.white.withValues(alpha: 0.08),
-                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                 ),
@@ -584,15 +679,26 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      const Icon(Icons.account_balance_rounded, color: Colors.white70, size: 16),
-                      const SizedBox(width: 6),
-                      Text('HDFC Bank •••• 2104', style: AppTypography.bodySm.copyWith(color: Colors.white70)),
-                    ],
+                  Expanded(
+                    child: Row(
+                      children: [
+                        const Icon(Icons.account_balance_rounded, color: Colors.white70, size: 16),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            'HDFC Bank •••• 2104',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTypography.bodySm.copyWith(color: Colors.white70),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
+                  const SizedBox(width: 8),
                   Text(
                     'Verified Guild Vault',
+                    maxLines: 1,
                     style: AppTypography.labelSm.copyWith(color: AppColors.tertiaryLight, fontWeight: FontWeight.w700),
                   ),
                 ],
@@ -605,6 +711,14 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
   }
 
   void _showInstantWithdrawalDialog(BuildContext context, double currentBalance) {
+    if (currentBalance <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No cleared balance available for withdrawal.'),
+        ),
+      );
+      return;
+    }
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -652,8 +766,8 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
               Navigator.pop(ctx);
               ref.read(artisanWalletBalanceProvider.notifier).state = 0.00;
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('₹4,620.00 transferred via IMPS! Ref #IMPS_NANDED_88291'),
+                SnackBar(
+                  content: Text('₹${currentBalance.toStringAsFixed(2)} transferred via IMPS! Ref #IMPS_NANDED_88291'),
                   backgroundColor: AppColors.tertiary,
                 ),
               );
@@ -683,7 +797,15 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Recent Activity', style: AppTypography.headlineSm.copyWith(fontSize: 16)),
+              Expanded(
+                child: Text(
+                  'Recent Activity',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTypography.headlineSm.copyWith(fontSize: 16),
+                ),
+              ),
+              const SizedBox(width: 8),
               Text('View Ledger', style: AppTypography.labelMd.copyWith(color: AppColors.secondary, fontWeight: FontWeight.w700)),
             ],
           ),

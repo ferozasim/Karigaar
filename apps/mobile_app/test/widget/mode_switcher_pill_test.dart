@@ -3,15 +3,17 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:karigaar_app/core/models/user_role.dart';
 import 'package:karigaar_app/core/providers/app_providers.dart';
+import 'package:karigaar_app/core/theme/app_theme.dart';
 import 'package:karigaar_app/features/shared/widgets/mode_switcher_pill.dart';
 
 void main() {
   group('ModeSwitcherPill Widget Tests', () {
     testWidgets('renders Homeowner and Artisan mode buttons', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(
+        ProviderScope(
           child: MaterialApp(
-            home: Scaffold(
+            theme: AppTheme.lightTheme,
+            home: const Scaffold(
               body: ModeSwitcherPill(),
             ),
           ),
@@ -25,9 +27,10 @@ void main() {
 
     testWidgets('renders compact labels when compact is true', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(
+        ProviderScope(
           child: MaterialApp(
-            home: Scaffold(
+            theme: AppTheme.lightTheme,
+            home: const Scaffold(
               body: ModeSwitcherPill(compact: true),
             ),
           ),
@@ -46,8 +49,9 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: const MaterialApp(
-            home: Scaffold(
+          child: MaterialApp(
+            theme: AppTheme.lightTheme,
+            home: const Scaffold(
               body: ModeSwitcherPill(),
             ),
           ),

@@ -47,11 +47,15 @@ class EmergencyAssistBanner extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    Text(
-                      'URGENT BREAKDOWN? (25 MINS)',
-                      style: AppTypography.labelSm.copyWith(
-                        color: Colors.white,
-                        letterSpacing: 0.5,
+                    Flexible(
+                      child: Text(
+                        'URGENT BREAKDOWN? (25 MINS)',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTypography.labelSm.copyWith(
+                          color: Colors.white,
+                          letterSpacing: 0.5,
+                        ),
                       ),
                     ),
                   ],

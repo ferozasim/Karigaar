@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:karigaar_app/core/theme/app_theme.dart';
 import 'package:karigaar_app/features/customer/profile/artisan_profile_screen.dart';
 
 void main() {
   Widget createWidgetUnderTest({String artisanId = 'art_nanded_01'}) {
     return ProviderScope(
       child: MaterialApp(
+        theme: AppTheme.lightTheme,
         home: ArtisanProfileScreen(artisanId: artisanId),
       ),
     );

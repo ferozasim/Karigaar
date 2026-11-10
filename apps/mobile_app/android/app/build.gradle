@@ -17,7 +17,8 @@ def flutterVersionName = localProperties.getProperty("flutter.versionName") ?: "
 
 android {
     namespace "in.karigaar.app"
-    compileSdkVersion 34
+    compileSdk = 36
+    compileSdkVersion 36
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -56,3 +57,37 @@ flutter {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.24"
 }
+
+configurations.all {
+    resolutionStrategy {
+        force "androidx.browser:browser:1.8.0"
+        force "androidx.activity:activity:1.9.3"
+        force "androidx.activity:activity-ktx:1.9.3"
+        force "androidx.core:core:1.13.1"
+        force "androidx.core:core-ktx:1.13.1"
+    }
+}
+
+tasks.matching { it.name.contains("KotlinToolingMetadata") }.configureEach {
+    enabled = false
+}
+
+tasks.register("copyReleaseApk") {
+    doLast {
+        def releaseApk = file("${project.buildDir}/outputs/apk/release/app-release.apk")
+        if (releaseApk.exists()) {
+            def destDir = file("${rootProject.projectDir}/../../build/app/outputs/flutter-apk")
+            destDir.mkdirs()
+            copy {
+                from releaseApk
+                into destDir
+            }
+            println("APK successfully copied to: ${destDir.absolutePath}/app-release.apk")
+        }
+    }
+}
+
+tasks.matching { it.name == "assembleRelease" }.configureEach {
+    finalizedBy("copyReleaseApk")
+}
+

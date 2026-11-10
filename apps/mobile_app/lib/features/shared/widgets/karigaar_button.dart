@@ -54,6 +54,7 @@ class KarigaarButton extends StatelessWidget {
     }
 
     return SizedBox(
+      width: double.infinity,
       height: height,
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
@@ -84,11 +85,15 @@ class KarigaarButton extends StatelessWidget {
                     icon!,
                     const SizedBox(width: 8),
                   ],
-                  Text(
-                    label,
-                    style: AppTypography.labelLg.copyWith(
-                      color: fgColor,
-                      fontWeight: FontWeight.w700,
+                  Flexible(
+                    child: Text(
+                      label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTypography.labelLg.copyWith(
+                        color: fgColor,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                 ],

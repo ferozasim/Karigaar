@@ -16,6 +16,12 @@ final pilotCityProvider = FutureProvider<CityConfigModel>((ref) async {
   return AppDataService.loadPilotCity();
 });
 
+/// Nanded Localities List Provider
+final nandedLocalitiesProvider = FutureProvider<List<LocalityModel>>((ref) async {
+  final city = await ref.watch(pilotCityProvider.future);
+  return city.localities;
+});
+
 /// 10 Launch Trades List
 final launchTradesProvider = FutureProvider<List<TradeModel>>((ref) async {
   return AppDataService.loadTrades();

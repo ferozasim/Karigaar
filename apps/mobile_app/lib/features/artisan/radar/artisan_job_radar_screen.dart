@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/providers/app_providers.dart';
+import '../../../core/services/contact_intent_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
-import '../../shared/widgets/mode_switcher_pill.dart';
 
 class ArtisanJobRadarScreen extends ConsumerStatefulWidget {
   const ArtisanJobRadarScreen({super.key});
@@ -39,33 +39,68 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            width: 10,
-                            height: 10,
-                            decoration: BoxDecoration(
-                              color: isOnline ? AppColors.tertiary : AppColors.error,
-                              shape: BoxShape.circle,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              width: 10,
+                              height: 10,
+                              decoration: BoxDecoration(
+                                color: isOnline ? AppColors.tertiary : AppColors.error,
+                                shape: BoxShape.circle,
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            isOnline ? 'RADAR ACTIVE' : 'DUTY PAUSED',
-                            style: AppTypography.labelSm.copyWith(
-                              color: isOnline ? AppColors.tertiary : AppColors.error,
-                              letterSpacing: 0.5,
+                            const SizedBox(width: 8),
+                            Flexible(
+                              child: Text(
+                                isOnline ? 'RADAR ACTIVE' : 'DUTY PAUSED',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: AppTypography.labelSm.copyWith(
+                                  color: isOnline ? AppColors.tertiary : AppColors.error,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      Text('Nanded Trade Guild', style: AppTypography.headlineSm),
-                    ],
+                          ],
+                        ),
+                        Text(
+                          'Nanded Trade Guild',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTypography.headlineSm,
+                        ),
+                      ],
+                    ),
                   ),
-                  const ModeSwitcherPill(compact: true),
+                  const SizedBox(width: 8),
+                  // Karigaar Partner Badge (Strict Role Separation)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: AppColors.secondarySurfaceTint,
+                      borderRadius: BorderRadius.circular(9999),
+                      border: Border.all(color: AppColors.secondary.withValues(alpha: 0.2)),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.handyman_rounded, size: 14, color: AppColors.secondary),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Karigaar Partner',
+                          style: AppTypography.labelSm.copyWith(
+                            color: AppColors.secondary,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
 
@@ -107,6 +142,9 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                       activeThumbColor: AppColors.secondary,
                       onChanged: (val) {
                         ref.read(artisanDutyOnlineProvider.notifier).state = val;
+                        if (val && ref.read(radarCountdownProvider) <= 0) {
+                          ref.read(radarCountdownProvider.notifier).startTimer();
+                        }
                       },
                     ),
                   ],
@@ -120,7 +158,7 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                 children: [
                   Expanded(
                     child: Container(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         color: AppColors.surfaceRaised,
                         borderRadius: BorderRadius.circular(16),
@@ -129,19 +167,23 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Today\'s Payout', style: AppTypography.labelSm),
+                          Text('Today\'s Payout', style: AppTypography.labelSm, maxLines: 1, overflow: TextOverflow.ellipsis),
                           const SizedBox(height: 4),
-                          Text('₹1,850', style: AppTypography.numericPrice.copyWith(fontSize: 24, color: AppColors.tertiary)),
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerLeft,
+                            child: Text('₹1,850', style: AppTypography.numericPrice.copyWith(fontSize: 22, color: AppColors.tertiary)),
+                          ),
                           const SizedBox(height: 4),
-                          Text('Instant IMPS Ready', style: AppTypography.bodySm.copyWith(fontSize: 11)),
+                          Text('Instant IMPS Ready', maxLines: 1, overflow: TextOverflow.ellipsis, style: AppTypography.bodySm.copyWith(fontSize: 10)),
                         ],
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: Container(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         color: AppColors.surfaceRaised,
                         borderRadius: BorderRadius.circular(16),
@@ -150,17 +192,24 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Master Guild Tier', style: AppTypography.labelSm),
+                          Text('Master Guild Tier', style: AppTypography.labelSm, maxLines: 1, overflow: TextOverflow.ellipsis),
                           const SizedBox(height: 4),
                           Row(
                             children: [
-                              Text('0%', style: AppTypography.numericPrice.copyWith(fontSize: 24, color: AppColors.primary)),
+                              Text('0%', style: AppTypography.numericPrice.copyWith(fontSize: 22, color: AppColors.primary)),
                               const SizedBox(width: 4),
-                              Text('Fee', style: AppTypography.labelSm),
+                              Expanded(
+                                child: Text(
+                                  'Fee',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: AppTypography.labelSm,
+                                ),
+                              ),
                             ],
                           ),
                           const SizedBox(height: 4),
-                          Text('4.9★ (340 jobs)', style: AppTypography.bodySm.copyWith(fontSize: 11)),
+                          Text('4.9★ (340 jobs)', maxLines: 1, overflow: TextOverflow.ellipsis, style: AppTypography.bodySm.copyWith(fontSize: 10)),
                         ],
                       ),
                     ),
@@ -241,19 +290,35 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Estimated Earnings', style: AppTypography.labelSm),
-                              Text('₹399 - ₹650', style: AppTypography.numericPrice.copyWith(fontSize: 20)),
-                            ],
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Estimated Earnings', style: AppTypography.labelSm, maxLines: 1, overflow: TextOverflow.ellipsis),
+                                FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  alignment: Alignment.centerLeft,
+                                  child: Text('₹399 - ₹650', style: AppTypography.numericPrice.copyWith(fontSize: 20)),
+                                ),
+                              ],
+                            ),
                           ),
+                          const SizedBox(width: 8),
                           // WhatsApp Pre-Accept inquiry
                           OutlinedButton.icon(
-                            onPressed: () {},
+                            onPressed: () {
+                              ContactIntentService.openWhatsAppChat(
+                                context,
+                                phoneNumber: '+919822199882',
+                                prefilledMessage:
+                                    'Namaste Asim Ji, I am Ganesh Kadam (Master Electrician) on Karigaar Radar. Can you share a photo of the MCB board?',
+                                contactName: 'Asim Farooqui',
+                              );
+                            },
                             icon: const Icon(Icons.chat_bubble_rounded, size: 16, color: Color(0xFF25D366)),
-                            label: const Text('Ask Customer'),
+                            label: const Text('Ask Customer', maxLines: 1, overflow: TextOverflow.ellipsis),
                             style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                               side: const BorderSide(color: Color(0xFF25D366)),
                               foregroundColor: const Color(0xFF16A34A),
                             ),
@@ -299,6 +364,15 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                         Text('Scanning Nanded for incoming requests...', style: AppTypography.labelLg),
                         const SizedBox(height: 4),
                         Text('Keep app active to receive 45s priority broadcasts', style: AppTypography.bodySm),
+                        const SizedBox(height: 16),
+                        OutlinedButton.icon(
+                          onPressed: () {
+                            ref.read(artisanDutyOnlineProvider.notifier).state = true;
+                            ref.read(radarCountdownProvider.notifier).startTimer();
+                          },
+                          icon: const Icon(Icons.refresh_rounded, size: 18),
+                          label: const Text('Simulate Incoming Broadcast'),
+                        ),
                       ],
                     ),
                   ),
@@ -307,6 +381,73 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: Container(
+        height: 64,
+        decoration: const BoxDecoration(
+          color: AppColors.surfaceRaised,
+          border: Border(top: BorderSide(color: AppColors.borderSubtle)),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: _buildArtisanNavItem(
+                icon: Icons.radar_rounded,
+                label: 'Job Radar',
+                isActive: true,
+                onTap: () {},
+              ),
+            ),
+            Expanded(
+              child: _buildArtisanNavItem(
+                icon: Icons.build_circle_outlined,
+                label: 'Active Job & Bill',
+                isActive: false,
+                onTap: () => context.push('/artisan/active-job/BK_NANDED_8821'),
+              ),
+            ),
+            Expanded(
+              child: _buildArtisanNavItem(
+                icon: Icons.account_balance_wallet_outlined,
+                label: 'Guild Wallet',
+                isActive: false,
+                onTap: () => context.push('/artisan/active-job/BK_NANDED_8821'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildArtisanNavItem({
+    required IconData icon,
+    required String label,
+    required bool isActive,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            icon,
+            size: 22,
+            color: isActive ? AppColors.secondary : AppColors.textSubtle,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: AppTypography.labelSm.copyWith(
+              color: isActive ? AppColors.secondary : AppColors.textSubtle,
+              fontSize: 11,
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/models/booking_model.dart';
 import '../../../core/providers/app_providers.dart';
 import '../../../core/services/contact_intent_service.dart';
 import '../../../core/theme/app_colors.dart';
@@ -23,13 +24,21 @@ class LiveTrackingScreen extends ConsumerWidget {
       );
     }
 
+    final activeStage = _stageForStatus(booking.status);
+
     return Scaffold(
       backgroundColor: AppColors.surfaceBase,
       appBar: AppBar(
         title: const Text('Live Dispatch Radar'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.pop(),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/customer/home');
+            }
+          },
         ),
       ),
       body: Stack(
@@ -167,11 +176,15 @@ class LiveTrackingScreen extends ConsumerWidget {
                         children: [
                           const Icon(Icons.lock_rounded, color: AppColors.secondary, size: 20),
                           const SizedBox(width: 8),
-                          Text(
-                            'DOORSTEP SECURITY START CODE',
-                            style: AppTypography.labelSm.copyWith(
-                              color: AppColors.secondary,
-                              letterSpacing: 1.0,
+                          Flexible(
+                            child: Text(
+                              'DOORSTEP SECURITY START CODE',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTypography.labelSm.copyWith(
+                                color: AppColors.secondary,
+                                letterSpacing: 1.0,
+                              ),
                             ),
                           ),
                         ],
@@ -187,7 +200,7 @@ class LiveTrackingScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        'Share this 4-digit code verbally ONLY when your artisan arrives at your doorstep.',
+                        'Share this 4-digit code verbally ONLY when your Karigaar arrives at your doorstep.',
                         textAlign: TextAlign.center,
                         style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
                       ),
@@ -263,32 +276,34 @@ class LiveTrackingScreen extends ConsumerWidget {
                 _buildMilestoneStep(
                   title: 'Booking Confirmed & Escrow Held',
                   time: '12 mins ago',
-                  isCompleted: true,
-                  isCurrent: false,
+                  isCompleted: activeStage > 0,
+                  isCurrent: activeStage == 0,
                 ),
                 _buildMilestoneStep(
                   title: 'Artisan Dispatched from Anand Nagar',
                   time: '8 mins ago',
-                  isCompleted: true,
-                  isCurrent: false,
+                  isCompleted: activeStage > 1,
+                  isCurrent: activeStage == 1,
                 ),
                 _buildMilestoneStep(
                   title: 'En Route to Doorstep (~6 mins)',
-                  time: 'Live tracking active',
-                  isCompleted: false,
-                  isCurrent: true,
+                  time: activeStage > 2 ? 'Arrived at doorstep' : 'Live tracking active',
+                  isCompleted: activeStage > 2,
+                  isCurrent: activeStage == 2,
                 ),
                 _buildMilestoneStep(
-                  title: 'Start Code 4921 Verified',
-                  time: 'Pending arrival',
-                  isCompleted: false,
-                  isCurrent: false,
+                  title: 'Start Code ${booking.startOtp} Verified',
+                  time: activeStage > 3 ? 'Handshake verified' : 'Pending arrival',
+                  isCompleted: activeStage > 3,
+                  isCurrent: activeStage == 3,
                 ),
                 _buildMilestoneStep(
                   title: 'Work Completed & Completion OTP',
-                  time: 'Pending finish',
-                  isCompleted: false,
-                  isCurrent: false,
+                  time: activeStage > 4
+                      ? 'IMPS payout settled'
+                      : (activeStage == 4 ? 'Repair in progress' : 'Pending finish'),
+                  isCompleted: activeStage > 4,
+                  isCurrent: activeStage == 4,
                   isLast: true,
                 ),
               ],
@@ -297,6 +312,32 @@ class LiveTrackingScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  int _stageForStatus(BookingStatus status) {
+    switch (status) {
+      case BookingStatus.draft:
+      case BookingStatus.broadcasting:
+        return 0;
+      case BookingStatus.claimed:
+      case BookingStatus.assigned:
+        return 1;
+      case BookingStatus.artisanEnRoute:
+        return 2;
+      case BookingStatus.artisanArrived:
+        return 3;
+      case BookingStatus.workInProgress:
+      case BookingStatus.partsPendingApproval:
+      case BookingStatus.completionPendingOtp:
+        return 4;
+      case BookingStatus.completed:
+      case BookingStatus.settled:
+        return 5;
+      case BookingStatus.cancelledByCustomer:
+      case BookingStatus.cancelledByArtisan:
+      case BookingStatus.disputed:
+        return 0;
+    }
   }
 
   Widget _buildMilestoneStep({

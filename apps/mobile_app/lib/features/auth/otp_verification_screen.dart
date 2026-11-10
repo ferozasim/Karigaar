@@ -88,112 +88,135 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
         title: const Text('OTP Verification'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.pop(),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/login');
+            }
+          },
         ),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 20),
-              Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFDCFCE7),
-                  borderRadius: BorderRadius.circular(16),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: (constraints.maxHeight - 32).clamp(0.0, double.infinity),
                 ),
-                child: const Icon(
-                  Icons.mark_chat_read_rounded,
-                  color: Color(0xFF16A34A),
-                  size: 28,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Verify WhatsApp Code',
-                style: AppTypography.headlineLg,
-              ),
-              const SizedBox(height: 8),
-              RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  style: AppTypography.bodyMd.copyWith(color: AppColors.textMuted),
-                  children: [
-                    const TextSpan(text: 'We sent a 6-digit verification code to\n'),
-                    TextSpan(
-                      text: '+91 ${widget.phone}',
-                      style: AppTypography.labelLg.copyWith(color: AppColors.textPrimary),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 32),
+                child: IntrinsicHeight(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 20),
+                      Container(
+                        width: 56,
+                        height: 56,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFDCFCE7),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: const Icon(
+                          Icons.mark_chat_read_rounded,
+                          color: Color(0xFF16A34A),
+                          size: 28,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Verify WhatsApp Code',
+                        style: AppTypography.headlineLg,
+                      ),
+                      const SizedBox(height: 8),
+                      RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                          style: AppTypography.bodyMd.copyWith(color: AppColors.textMuted),
+                          children: [
+                            const TextSpan(text: 'We sent a 6-digit verification code to\n'),
+                            TextSpan(
+                              text: '+91 ${widget.phone}',
+                              style: AppTypography.labelLg.copyWith(color: AppColors.textPrimary),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 32),
 
-              // Pinput 6-digit OTP
-              Pinput(
-                length: 6,
-                controller: _otpController,
-                defaultPinTheme: defaultPinTheme,
-                focusedPinTheme: focusedPinTheme,
-                onCompleted: (pin) => _verifyOtp(),
-              ),
+                      // Pinput 6-digit OTP
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Pinput(
+                          length: 6,
+                          controller: _otpController,
+                          defaultPinTheme: defaultPinTheme,
+                          focusedPinTheme: focusedPinTheme,
+                          onCompleted: (pin) => _verifyOtp(),
+                        ),
+                      ),
 
-              const SizedBox(height: 24),
-              // 42-Second Resend Countdown
-              if (!_canResend)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.timer_outlined, size: 16, color: AppColors.textMuted),
-                    const SizedBox(width: 6),
-                    Text(
-                      'Resend WhatsApp code in ${_secondsRemaining}s',
-                      style: AppTypography.labelMd.copyWith(color: AppColors.textMuted),
-                    ),
-                  ],
-                )
-              else
-                TextButton.icon(
-                  onPressed: _startCountdown,
-                  icon: const Icon(Icons.refresh_rounded, size: 16, color: AppColors.secondary),
-                  label: Text(
-                    'Resend Code via WhatsApp',
-                    style: AppTypography.labelMd.copyWith(
-                      color: AppColors.secondary,
-                      fontWeight: FontWeight.w700,
-                    ),
+                      const SizedBox(height: 24),
+                      // 42-Second Resend Countdown
+                      if (!_canResend)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.timer_outlined, size: 16, color: AppColors.textMuted),
+                            const SizedBox(width: 6),
+                            Flexible(
+                              child: Text(
+                                'Resend WhatsApp code in ${_secondsRemaining}s',
+                                style: AppTypography.labelMd.copyWith(color: AppColors.textMuted),
+                              ),
+                            ),
+                          ],
+                        )
+                      else
+                        TextButton.icon(
+                          onPressed: _startCountdown,
+                          icon: const Icon(Icons.refresh_rounded, size: 16, color: AppColors.secondary),
+                          label: Text(
+                            'Resend Code via WhatsApp',
+                            style: AppTypography.labelMd.copyWith(
+                              color: AppColors.secondary,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+
+                      const SizedBox(height: 16),
+                      // SMS Fallback
+                      TextButton(
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Fallback SMS sent via DLT gateway.')),
+                          );
+                        },
+                        child: Text(
+                          'Didn\'t receive on WhatsApp? Send via SMS',
+                          style: AppTypography.labelSm.copyWith(
+                            color: AppColors.textMuted,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
+
+                      const Spacer(),
+                      const SizedBox(height: 16),
+                      // Verify Button
+                      KarigaarButton(
+                        label: 'Verify & Continue',
+                        onPressed: _verifyOtp,
+                      ),
+                      const SizedBox(height: 16),
+                    ],
                   ),
                 ),
-
-              const SizedBox(height: 16),
-              // SMS Fallback
-              TextButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Fallback SMS sent via DLT gateway.')),
-                  );
-                },
-                child: Text(
-                  'Didn\'t receive on WhatsApp? Send via SMS',
-                  style: AppTypography.labelSm.copyWith(
-                    color: AppColors.textMuted,
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
               ),
-
-              const Spacer(),
-              // Verify Button
-              KarigaarButton(
-                label: 'Verify & Continue',
-                onPressed: _verifyOtp,
-              ),
-              const SizedBox(height: 16),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );

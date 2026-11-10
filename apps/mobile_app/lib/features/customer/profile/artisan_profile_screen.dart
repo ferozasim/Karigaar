@@ -33,10 +33,16 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded, color: AppColors.primary),
-          onPressed: () => context.pop(),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/customer/home');
+            }
+          },
         ),
         title: Text(
-          'Craftsman Profile',
+          'Karigaar Profile',
           style: AppTypography.headlineSm.copyWith(fontSize: 18),
         ),
         actions: [
@@ -254,33 +260,36 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
               borderRadius: BorderRadius.circular(9999),
               border: Border.all(color: AppColors.borderSubtle),
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.location_on_rounded, color: AppColors.secondary, size: 15),
-                const SizedBox(width: 4),
-                Text(
-                  'Anand Nagar • Within ${artisan.distanceKm} km',
-                  style: AppTypography.labelMd.copyWith(color: AppColors.primary),
-                ),
-                const SizedBox(width: 8),
-                Container(
-                  width: 6,
-                  height: 6,
-                  decoration: const BoxDecoration(
-                    color: AppColors.tertiary,
-                    shape: BoxShape.circle,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.location_on_rounded, color: AppColors.secondary, size: 15),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Anand Nagar • Within ${artisan.distanceKm} km',
+                    style: AppTypography.labelMd.copyWith(color: AppColors.primary),
                   ),
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  'Available Today',
-                  style: AppTypography.labelSm.copyWith(
-                    color: AppColors.tertiary,
-                    fontWeight: FontWeight.w700,
+                  const SizedBox(width: 8),
+                  Container(
+                    width: 6,
+                    height: 6,
+                    decoration: const BoxDecoration(
+                      color: AppColors.tertiary,
+                      shape: BoxShape.circle,
+                    ),
                   ),
-                ),
-              ],
+                  const SizedBox(width: 4),
+                  Text(
+                    'Available Today',
+                    style: AppTypography.labelSm.copyWith(
+                      color: AppColors.tertiary,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
 
@@ -339,9 +348,13 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                 Icon(icon, color: iconColor, size: 16),
                 const SizedBox(width: 3),
               ],
-              Text(
-                title,
-                style: AppTypography.headlineSm.copyWith(fontSize: 16),
+              Flexible(
+                child: Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTypography.headlineSm.copyWith(fontSize: 16),
+                ),
               ),
             ],
           ),
@@ -378,7 +391,7 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                 );
               },
               icon: const Icon(Icons.phone_in_talk_rounded, size: 18),
-              label: const Text('Call Artisan'),
+              label: const Text('Call Karigaar'),
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.primary,
                 side: const BorderSide(color: AppColors.primary, width: 1.5),
@@ -401,7 +414,7 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                 );
               },
               icon: const Icon(Icons.chat_bubble_rounded, size: 18, color: Colors.white),
-              label: const Text('WhatsApp Artisan'),
+              label: const Text('WhatsApp Karigaar'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF25D366),
                 foregroundColor: Colors.white,
@@ -513,7 +526,15 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Specializations & Skills', style: AppTypography.headlineSm.copyWith(fontSize: 17)),
+              Expanded(
+                child: Text(
+                  'Specializations & Skills',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTypography.headlineSm.copyWith(fontSize: 17),
+                ),
+              ),
+              const SizedBox(width: 8),
               Text('6 Certified', style: AppTypography.labelMd.copyWith(color: AppColors.secondary)),
             ],
           ),
@@ -574,16 +595,19 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Craftsmanship Showcase', style: AppTypography.headlineSm.copyWith(fontSize: 17)),
-                  Text(
-                    'Verified work photos from local homes',
-                    style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
-                  ),
-                ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Craftsmanship Showcase', style: AppTypography.headlineSm.copyWith(fontSize: 17)),
+                    Text(
+                      'Verified work photos from local homes',
+                      style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
+                    ),
+                  ],
+                ),
               ),
+              const SizedBox(width: 8),
               Text('View All (38)', style: AppTypography.labelMd.copyWith(color: AppColors.secondary)),
             ],
           ),
@@ -725,7 +749,15 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(label, style: AppTypography.labelMd),
+            Expanded(
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTypography.labelMd,
+              ),
+            ),
+            const SizedBox(width: 8),
             Text(
               '${score.toStringAsFixed(1)} / 5.0',
               style: AppTypography.labelMd.copyWith(fontWeight: FontWeight.w700),
@@ -755,7 +787,15 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Recent Client Feedback', style: AppTypography.headlineSm.copyWith(fontSize: 17)),
+              Expanded(
+                child: Text(
+                  'Recent Client Feedback',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTypography.headlineSm.copyWith(fontSize: 17),
+                ),
+              ),
+              const SizedBox(width: 8),
               Text('Verified Bookings', style: AppTypography.labelMd.copyWith(color: AppColors.secondary)),
             ],
           ),
@@ -805,28 +845,34 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 18,
-                    backgroundColor: AppColors.surfaceSubtle,
-                    child: Text(
-                      initials,
-                      style: AppTypography.headlineSm.copyWith(fontSize: 14),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(name, style: AppTypography.labelMd.copyWith(fontWeight: FontWeight.w700)),
-                      Text(
-                        localityAndDate,
-                        style: AppTypography.bodySm.copyWith(color: AppColors.textMuted, fontSize: 11),
+              Expanded(
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 18,
+                      backgroundColor: AppColors.surfaceSubtle,
+                      child: Text(
+                        initials,
+                        style: AppTypography.headlineSm.copyWith(fontSize: 14),
                       ),
-                    ],
-                  ),
-                ],
+                    ),
+                    const SizedBox(width: 10),
+                    Flexible(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(name, style: AppTypography.labelMd.copyWith(fontWeight: FontWeight.w700)),
+                          Text(
+                            localityAndDate,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTypography.bodySm.copyWith(color: AppColors.textMuted, fontSize: 11),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
               Row(
                 children: List.generate(
@@ -853,12 +899,16 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
               children: [
                 const Icon(Icons.check_circle_rounded, color: AppColors.tertiary, size: 14),
                 const SizedBox(width: 4),
-                Text(
-                  verifiedBadgeText,
-                  style: AppTypography.labelSm.copyWith(
-                    color: AppColors.tertiary,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
+                Flexible(
+                  child: Text(
+                    verifiedBadgeText,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTypography.labelSm.copyWith(
+                      color: AppColors.tertiary,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ],
@@ -890,43 +940,55 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
         child: Row(
           children: [
             // Left inspection price & warranty badge
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.baseline,
-                  textBaseline: TextBaseline.alphabetic,
-                  children: [
-                    Text(
-                      '₹${artisan.inspectionFee}',
-                      style: AppTypography.numericPrice.copyWith(fontSize: 22),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      textBaseline: TextBaseline.alphabetic,
+                      children: [
+                        Text(
+                          '₹${artisan.inspectionFee}',
+                          style: AppTypography.numericPrice.copyWith(fontSize: 22),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '/ visit',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTypography.labelSm.copyWith(color: AppColors.textMuted),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 4),
-                    Text(
-                      '/ visit',
-                      style: AppTypography.labelSm.copyWith(color: AppColors.textMuted),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 2),
-                Row(
-                  children: [
-                    const Icon(Icons.verified_rounded, color: AppColors.tertiary, size: 13),
-                    const SizedBox(width: 3),
-                    Text(
-                      'Includes ₹25k Guild Warranty',
-                      style: AppTypography.labelSm.copyWith(
-                        color: AppColors.tertiary,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
+                  ),
+                  const SizedBox(height: 2),
+                  Row(
+                    children: [
+                      const Icon(Icons.verified_rounded, color: AppColors.tertiary, size: 13),
+                      const SizedBox(width: 3),
+                      Flexible(
+                        child: Text(
+                          'Includes ₹25k Guild Warranty',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTypography.labelSm.copyWith(
+                            color: AppColors.tertiary,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
-            const Spacer(),
+            const SizedBox(width: 8),
             // Path B: Book Artisan Now Button
             ElevatedButton(
               onPressed: _isSecuringSlot

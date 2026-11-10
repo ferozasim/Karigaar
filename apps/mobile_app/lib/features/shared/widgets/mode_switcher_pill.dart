@@ -15,54 +15,57 @@ class ModeSwitcherPill extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentRole = ref.watch(userRoleProvider);
 
-    return Container(
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceSubtle,
-        borderRadius: BorderRadius.circular(9999),
-        border: Border.all(color: AppColors.borderSubtle),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildRoleTab(
-            context: context,
-            role: UserRole.customer,
-            isActive: currentRole == UserRole.customer,
-            label: compact ? 'Homeowner' : 'Homeowner Mode',
-            icon: Icons.home_rounded,
-            onTap: () {
-              ref.read(userRoleProvider.notifier).state = UserRole.customer;
-              try {
-                final location = GoRouterState.of(context).uri.path;
-                if (location.startsWith('/artisan')) {
-                  context.go('/customer/home');
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Container(
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          color: AppColors.surfaceSubtle,
+          borderRadius: BorderRadius.circular(9999),
+          border: Border.all(color: AppColors.borderSubtle),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildRoleTab(
+              context: context,
+              role: UserRole.customer,
+              isActive: currentRole == UserRole.customer,
+              label: compact ? 'Homeowner' : 'Homeowner Mode',
+              icon: Icons.home_rounded,
+              onTap: () {
+                ref.read(userRoleProvider.notifier).state = UserRole.customer;
+                try {
+                  final location = GoRouterState.of(context).uri.path;
+                  if (location.startsWith('/artisan')) {
+                    context.go('/customer/home');
+                  }
+                } catch (_) {
+                  // Not in router context
                 }
-              } catch (_) {
-                // Not in router context
-              }
-            },
-          ),
-          const SizedBox(width: 4),
-          _buildRoleTab(
-            context: context,
-            role: UserRole.artisan,
-            isActive: currentRole == UserRole.artisan,
-            label: compact ? 'Karigaar' : 'Artisan Mode',
-            icon: Icons.handyman_rounded,
-            onTap: () {
-              ref.read(userRoleProvider.notifier).state = UserRole.artisan;
-              try {
-                final location = GoRouterState.of(context).uri.path;
-                if (location.startsWith('/customer')) {
-                  context.go('/artisan/radar');
+              },
+            ),
+            const SizedBox(width: 4),
+            _buildRoleTab(
+              context: context,
+              role: UserRole.artisan,
+              isActive: currentRole == UserRole.artisan,
+              label: compact ? 'Karigaar' : 'Artisan Mode',
+              icon: Icons.handyman_rounded,
+              onTap: () {
+                ref.read(userRoleProvider.notifier).state = UserRole.artisan;
+                try {
+                  final location = GoRouterState.of(context).uri.path;
+                  if (location.startsWith('/customer')) {
+                    context.go('/artisan/radar');
+                  }
+                } catch (_) {
+                  // Not in router context
                 }
-              } catch (_) {
-                // Not in router context
-              }
-            },
-          ),
-        ],
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
