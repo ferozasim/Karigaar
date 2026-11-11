@@ -63,24 +63,29 @@ class _LocalitySelectorSheetState extends ConsumerState<LocalitySelectorSheet> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Select Locality', style: AppTypography.headlineSm),
-                  Consumer(
-                    builder: (context, ref, _) {
-                      final currentDistrict = ref.watch(selectedDistrictProvider);
-                      final isNanded = currentDistrict.name.toLowerCase().contains('nanded');
-                      return Text(
-                        isNanded
-                            ? 'Pilot City: Nanded-Waghala (Maharashtra)'
-                            : 'District: ${currentDistrict.fullName}',
-                        style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
-                      );
-                    },
-                  ),
-                ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Select Locality', style: AppTypography.headlineSm),
+                    Consumer(
+                      builder: (context, ref, _) {
+                        final currentDistrict = ref.watch(selectedDistrictProvider);
+                        final isNanded = currentDistrict.name.toLowerCase().contains('nanded');
+                        return Text(
+                          isNanded
+                              ? 'Pilot City: Nanded-Waghala (Maharashtra)'
+                              : 'District: ${currentDistrict.fullName}',
+                          style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
+              const SizedBox(width: 8),
               Consumer(
                 builder: (context, ref, _) {
                   final currentDistrict = ref.watch(selectedDistrictProvider);
@@ -215,7 +220,7 @@ class _LocalitySelectorSheetState extends ConsumerState<LocalitySelectorSheet> {
                       children: [
                         const Icon(Icons.location_off_rounded, size: 48, color: AppColors.textSubtle),
                         const SizedBox(height: 8),
-                        Text('No locality found in Nanded', style: AppTypography.bodyMd),
+                        Text('No locality found in ${city.name}', style: AppTypography.bodyMd),
                       ],
                     ),
                   );
@@ -276,10 +281,14 @@ class _LocalitySelectorSheetState extends ConsumerState<LocalitySelectorSheet> {
                 children: [
                   Row(
                     children: [
-                      Text(
-                        loc.name,
-                        style: AppTypography.labelLg.copyWith(
-                          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                      Flexible(
+                        child: Text(
+                          loc.name,
+                          style: AppTypography.labelLg.copyWith(
+                            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       if (loc.emergencyHub) ...[
@@ -305,9 +314,13 @@ class _LocalitySelectorSheetState extends ConsumerState<LocalitySelectorSheet> {
                   const SizedBox(height: 2),
                   Row(
                     children: [
-                      Text(
-                        loc.marathiName,
-                        style: AppTypography.bodySm.copyWith(color: AppColors.textMuted, fontSize: 12),
+                      Flexible(
+                        child: Text(
+                          loc.marathiName,
+                          style: AppTypography.bodySm.copyWith(color: AppColors.textMuted, fontSize: 12),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                       const SizedBox(width: 8),
                       Text(

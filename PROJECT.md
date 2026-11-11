@@ -173,6 +173,7 @@ The following master feature inventory consolidates all components identified ac
 | **F-37** | 3-Step Artisan Registration | Partner Onboarding | `create_account_artisan_registration`| Multi-step artisan KYC registration with Aadhaar OCR | Form inputs, Aadhaar photo | Profile submitted to Super Admin queue | Phase 1 | `create_account_artisan_registration` |
 | **F-38** | Doorstep Access Timeout Guard | Live Tracking & Escrow | `active_job_live_tracking` | 15-min doorstep wait timer; triggers `DOORSTEP_ACCESS_DENIED`, releasing ₹99 transit fee | Dwell time >15m at destination | Auto-captures ₹99 fee (₹80 to partner), closes job | Phase 3 | `active_job_live_tracking` |
 | **F-39** | Multi-District Regional Corridor Selector | Hyperlocal Discovery | `locality_selector_sheet` | 7-district horizontal corridor carousel (Nanded, Parbhani, Latur, Hingoli, Sambhajinagar, Nagpur, Nizamabad) with localized artisan rosters | District selection tap | Switches active district, localities, and localized craftsmen roster | Ticket T-01 | `regional_districts.json` |
+| **F-40** | Super Admin Regional Corridor & KYC Filter | Admin Ops | `super_admin_portal` | Multi-district corridor filter bar switching live ops telemetry, surge corridors, and priority KYC queues across 7 regional hubs | District pill filter click | Filters live telemetry, surge heatmap, and KYC review candidates | Ticket T-02 | `apps/admin_web` |
 
 ---
 
@@ -235,13 +236,14 @@ The following master feature inventory consolidates all components identified ac
   - Path A to Path B retroactive on-site formalization to lock ₹25,000 Guild Damage Cover.
 
 ### Phase 5: Super Admin Console, KYC Verification & Emergency Surge Dispatch
-- **Target Features**: F-28, F-29, F-30, F-31, F-32.
+- **Target Features**: F-28, F-29, F-30, F-31, F-32, F-40.
 - **Scope**:
   - Super Admin web console (`super_admin_portal`) with live ops pulse telemetry (active dispatches, available artisans, dispute rate).
   - 2x2 executive KPI bento grid and trade volume percentage breakdown.
   - Priority Guild Verification Queue with optimistic approval/rejection workflows for Aadhaar, Police clearance, and tool calibration audits.
   - Surge Grid Alert heatmap (Surge 1.4x) with radius-based outbound WhatsApp emergency blast tool.
   - Automated post-service CSAT telemetry and dispute arbitration workbench.
+  - **Ticket T-02 Multi-District Regional Corridor Dashboard**: District filter pill bar supporting 7 regional corridor districts, dynamic Live Ops telemetry & GMV calculation, regional surge corridor heatmaps, and filtered artisan KYC queue with interactive approval actions.
 
 ### Phase 6: E2E Verification, Security Audit & Gurugram Pilot Launch
 - **Scope**:

@@ -98,8 +98,17 @@ All **12 screens** and shared Stitch UI components are implemented, wired into `
 ## 4. Super Admin Web Console (`apps/admin_web`)
 
 - **Live URL**: `http://localhost:3000`
-- **Status**: **100% Working** — Displays Regional Corridor Telemetry, Active Dispatches, Escrow Hold Ledger, Artisan KYC Queue (Aadhaar + Police Verification approve/reject), Surge Radar Heatmap (`1.4x`), and Dispute Arbitration actions.
-- **Automated Foundation Suite**: **8 / 8 tests passing (100% PASS RATE)**.
+- **Status**: **100% Working (Ticket T-02 Completed)**
+- **Regional Corridor Dashboard Capabilities**:
+  - **7-District Corridor Filter Bar**: Quick switching between `All Corridor` and specific regional districts (`Nanded`, `Parbhani`, `Latur`, `Hingoli`, `Sambhajinagar`, `Nagpur`, `Nizamabad`) with active hub count indicators.
+  - **Dynamic Live Ops & 2x2 Bento KPIs**: Real-time GMV, completed jobs, turnaround times, active dispatches, and online artisans tailored dynamically to the selected district or aggregated corridor view.
+  - **Hyperlocal Surge Heatmap**: Displays active surge multipliers (1.1x–1.4x) and demand statuses for localized trade corridors across Maharashtra and Telangana.
+  - **Priority Guild KYC Verification Queue**: Lists pending artisan credential submissions across all 7 districts with district badges, priority SLA tags, Aadhaar/Police verification documents, and interactive 1-click Approve/Review actions.
+  - **WhatsApp Outbound Surge Trigger**: Context-aware outbound emergency surge broadcast targeted to the active district.
+- **Code Quality & Verification**:
+  - `next lint`: **✔ No ESLint warnings or errors**.
+  - `npm test`: **8 / 8 foundation deep tests passing (100% PASS RATE)**.
+  - `next build`: Generates static export production build cleanly.
 
 ---
 
