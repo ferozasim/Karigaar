@@ -15,7 +15,7 @@ The platform operates on a **"Master Guildsman Meets Modern Concierge"** archety
   - **Comprehensive Master Cover (₹25,000)**: Automatically unlocked for Master Guildsman assignments or as a premium add-on. Supported by a mandatory **₹250 customer deductible** to deter frivolous claims, with **30% of platform labor take-rate** reserved into a dedicated Warranty & Rework Underwriting Fund.
 - **Sustainable Guild Tier Economics**: Replaces negative-margin 0% tiers with a sustainable **5% commission floor** or a **₹999/month "Guild Elite" subscription** for Master Guildsmen, maintaining positive unit economics across payment gateway MDR, IMPS payout fees, WhatsApp messaging, and telephony bridges.
 - **WhatsApp-First Messaging Spine & Telephony Masking**: Replaces friction-heavy SMS/app-only communication with WhatsApp Cloud API integration for 1-tap authentication, real-time dispatch alerts, voice note streaming, and daily settlement slips, paired with virtual telephony proxy bridges that eliminate raw phone number leakage.
-- **Geographic Focus**: Hyperlocal pilot launched in **Gurugram / NCR** (DLF Phase 1–5, Cyber City, Sector 42–48 corridor) with a planned expansion trajectory to Bengaluru, Mumbai, and pan-India metropolitan centers.
+- **Geographic Focus**: Primary operational pilot launched in **Nanded, Maharashtra** (`431601`–`431606`, 10 Localities) and expanded into the **7-District Regional Corridor** (Nanded, Parbhani, Latur, Hingoli, Chhatrapati Sambhajinagar, Nagpur, Nizamabad) via Ticket T-01, with a planned expansion trajectory to Gurugram / NCR, Bengaluru, Mumbai, and pan-India metropolitan centers.
 
 ---
 

@@ -1,78 +1,130 @@
 # Karigaar System — Comprehensive Operational Status Report
 
-**Generated**: 2026-11-12  
-**Workspace**: `c:\Users\asimf\OneDrive\Desktop\Karigaar_app`  
-**Primary Pilot Hub**: Nanded-Waghala, Maharashtra (`431601` – `431606`, 10 Localities)  
-**Regional Corridor Expansion (Ticket T-01)**: Marathwada, Vidarbha & North Telangana (7 Regional Districts: Nanded, Parbhani, Latur, Hingoli, Chhatrapati Sambhajinagar, Nagpur, Nizamabad)  
-**Launch Trades**: 10 Guild Trades (`Electrician`, `Plumber`, `Carpenter`, `Mason / Gawandi`, `Painter`, `AC & Refrigeration`, `Appliance Repair`, `Welder & Fabricator`, `Pest Control`, `Deep Cleaning`)  
+**Generated**: 2026-11-12
+**Workspace**: `c:\Users\asimf\OneDrive\Desktop\Karigaar_app`
+**Current Branch**: `feat/T-01-multi-district-corridor`
+**Pilot Regional Corridor**: 7 Regional Districts (Nanded Primary Hub `431601`–`431606`, Parbhani `431401`, Latur `413512`, Hingoli `431513`, Chhatrapati Sambhajinagar `431001`, Nagpur `440001`, Nizamabad `503001`)
+**Launch Trades**: 10 Guild Trades (`Electrician`, `Plumber`, `Carpenter`, `Mason / Gawandi`, `Painter`, `AC & Refrigeration`, `Appliance Repair`, `Welder & Fabricator`, `Pest Control`, `Deep Cleaning`)
 
 ---
 
-## 1. Ticket & Feature Execution Status
+## 1. Ticket T-01: Multi-District Regional Corridor Implementation
 
-### 1.1 Ticket Inventory & Roadmap State
-| Ticket ID | Category | Scope / Objectives | Status | Verification & Health |
-|---|---|---|---|---|
-| **Phase 0** | Architecture & Specs | 12-Screen Stitch UI Blueprint, Dual Path A/B scoping, founder decision matrix | **Completed** | Full specs documented in `PROJECT.md` & `PHASE_0_REVIEW.md` |
-| **Phase 1** | Core Foundation & Auth | WhatsApp-first 1-tap OTP auth (`4921`), `KarigaarBrandLogo` SVG emblem, role-switcher | **Completed** | Verified with Pinput OTP and auto-redirect |
-| **Phase 2** | Discovery & Scoping | 10-trade grid, 25-min emergency banner, 4-step artisan onboarding, bookings, messages, profile | **Completed** | All 12 Stitch screens implemented in Flutter |
-| **Phase 3 & 4** | Radar, Tracking & Wallet | 45s Circular Radar, Live GPS painter, Start OTP (`4921`), Dynamic Bill Builder, Completion PIN (`7294`), instant IMPS guard | **Completed** | Riverpod state synchronized with double-entry wallet |
-| **Ticket T-01** | Multi-District Corridor Expansion | 7-District Regional Expansion across Marathwada, Vidarbha & North Telangana with localized verified artisan rosters | **Completed** | Full corridor selector in `LocalitySelectorSheet`, 100% test pass rate |
+### 1.1 Specification & Architectural Overview
+Ticket **T-01** extends the Karigaar hyperlocal pilot from a single-city scope (Nanded) into an interconnected 7-district regional corridor spanning Marathwada, Vidarbha, and Northern Telangana borderlands:
+1. **Nanded (Primary Hub)**: 10 Localities (`Anand Nagar`, `Vazirabad & Sarafa`, `CIDCO New Nanded`, `Taroda Naka & Taroda BK`, `Shivaji Nagar`, `Workshop & MIDC`, `Airport Road & Maltekdi`, `Old Nanded & Station Road`, `Dhanegaon`, `Sneha Nagar`).
+2. **Parbhani**: 4 Localities (`Station Road & Subhash Road`, `Nanal Peth & Shivaji Chowk`, `Vasant Nagar & Jintur Road`, `Khadkali & Karegaon Road`).
+3. **Latur**: 4 Localities (`Ausa Road & Signal Camp`, `Gandhi Chowk & Main Market`, `MIDC & Barshi Road`, `Prakash Nagar & Ring Road`).
+4. **Hingoli**: 3 Localities (`Akola Bypass & Risala Bazar`, `Paltan & Gandhi Chowk`, `Kalamnuri Road & MIDC`).
+5. **Chhatrapati Sambhajinagar (Aurangabad)**: 5 Localities (`Cidco Cannaught & Jalna Road`, `Kranti Chowk & Station Road`, `Waluj MIDC & Industrial Hub`, `Samarth Nagar & Nirala Bazar`, `Beed Bypass & Seven Hills`).
+6. **Nagpur**: 5 Localities (`Dharampeth & Ramdaspeth`, `Sadar & Civil Lines`, `Pratap Nagar & Ring Road`, `Sitabuldi & Variety Square`, `MIDC Butibori & Hingna Road`).
+7. **Nizamabad (Telangana)**: 4 Localities (`Khaleelwadi & Tilak Road`, `Station Road & Gandhi Chowk`, `Subhash Nagar & Armoor Road`, `Madhav Nagar & Hyderabad Road`).
+
+### 1.2 Implemented Artifacts & State Plumbing
+- **Corridor Configuration Data**:
+  - `config/regional_districts.json` (canonical source)
+  - `apps/mobile_app/assets/data/regional_districts.json` (bundled Flutter asset)
+- **Data Access & Modeling (`lib/core/config/app_data_service.dart`)**:
+  - `AppDataService.loadRegionalDistricts()`: Asynchronously decodes `assets/data/regional_districts.json` with in-memory 7-district corridor fallback.
+  - `AppDataService.getArtisansForDistrict(String cityId)`: Dispatches localized verified master artisan rosters for all 7 corridor districts (`dist_parbhani`, `dist_latur`, `dist_hingoli`, `dist_aurangabad`, `dist_nagpur`, `dist_nizamabad`, `city_nanded_01`).
+  - `AppDataService.getAllSampleArtisans()`: Aggregates complete multi-district artisan pool for global lookup via `artisanByIdProvider`.
+- **Riverpod State Management (`lib/core/providers/app_providers.dart`)**:
+  - `regionalDistrictsProvider`: `FutureProvider<List<CityConfigModel>>` serving parsed regional corridor districts.
+  - `selectedDistrictProvider`: `StateProvider<CityConfigModel>` defaulting to Nanded primary hub.
+  - `topArtisansProvider`: Localized roster dynamically derived from `ref.watch(selectedDistrictProvider)`.
+- **UI Components**:
+  - `LocalitySelectorSheet` (`lib/features/shared/widgets/locality_selector_sheet.dart`): Added horizontal district pill selector above locality search. Switching district dynamically updates `selectedDistrictProvider`, updates the locality list, and automatically selects the first locality of that district.
+  - `CustomerHomeScreen` (`lib/features/customer/home/customer_home_screen.dart`): Header chip dynamically displays current district name and active locality, refreshing the top artisans feed on district change.
 
 ---
 
-## 2. Multi-District Regional Corridor Architecture (Ticket T-01)
+## 2. Adversarial Stress Suite & Hardening Resolutions
 
-### 2.1 Regional Districts Supported
-The platform now supports 7 full regional districts across Maharashtra and Telangana:
-1. **Nanded-Waghala (Maharashtra)**: Core pilot city (`431601`–`431606`), 10 active hubs (Anand Nagar, Vazirabad, CIDCO, Taroda Naka, etc.).
-2. **Parbhani (Maharashtra)**: Regional district (`431401`–`431402`), active hubs including Station Road, Shivaji Nagar, and Jintur Road.
-3. **Latur (Maharashtra)**: Regional trade hub (`413512`, `413531`), active hubs including Gandhi Chowk, Ausa Road, and MIDC.
-4. **Hingoli (Maharashtra)**: Regional district (`431513`), active hubs including Ramakrishna Nagar and Nanded Naka.
-5. **Chhatrapati Sambhajinagar / Aurangabad (Maharashtra)**: Metropolitan hub (`431001`–`431009`), active hubs including Cidco N-1 to N-7, Cannaught Place, and Waluj.
-6. **Nagpur (Maharashtra)**: Winter capital metropolitan corridor (`440001`–`440035`), active hubs including Dharampeth, Sitabuldi, and Pratap Nagar.
-7. **Nizamabad (Telangana)**: North Telangana border corridor (`503001`–`503003`), active hubs including Khaleelwadi, Subhash Nagar, and Bodhan Road.
+### 2.1 Viewport & Extreme Font Scaling (1.5x & 2.0x TextScaler)
+- **`CustomerHomeScreen` Emergency Assist Banner**:
+  - Replaced rigid side-by-side Row with dynamic responsive breakpoint: triggers stacked layout when `textScaler.scale(1.0) >= 1.4`, preventing a 12px `RenderFlex` overflow at 2.0x font scaling.
+- **`CustomerHomeScreen` 10-Trade Grid Items**:
+  - Trade title and Marathi subtitles inside fixed `mainAxisExtent: 88` grid cells wrapped in `Flexible(child: FittedBox(fit: BoxFit.scaleDown, child: Text(...)))`, preventing 1px and 13px bottom overflows at 1.5x and 2.0x text scaling.
+- **`CustomerBookingsScreen` Cards**:
+  - Replaced rigid `Row` headers and footers with `Wrap(alignment: WrapAlignment.spaceBetween, spacing: 8, runSpacing: 8)`, eliminating a 28px overflow when font scale is doubled.
+- **`ArtisanActiveJobScreen` Ultra-Compact Viewport (320x568)**:
+  - Replaced nested `Row` inside `_buildGuildWalletSection` with `Wrap` and `Flexible(child: Text('HDFC Bank •••• 2104', overflow: TextOverflow.ellipsis))`, eliminating a 19px right overflow.
+- **`ArtisanJobRadarScreen` Top Bar**:
+  - Wrapped `ModeSwitcherPill(compact: true)` inside `ConstrainedBox(constraints: BoxConstraints(maxWidth: 136))` with `FittedBox` to prevent header compression on 320px screens.
 
-### 2.2 Localized Verified Artisan Rosters
-- `app_data_service.dart` dynamically generates localized master craftsmen for every selected district with accurate locality names, phone masking, trade credentials, and experience ratings.
-- District switching updates locality selection, discovery grids, emergency dispatch windows (25 mins), and localized artisan recommendations.
+### 2.2 Riverpod Lifecycle & Timer Invariants
+- **`ArtisanJobRadarScreen` Timer Leak & Disposal StateError**:
+  - Calling `ref.read` during `ConsumerState.dispose()` throws `Bad state: Cannot use "ref" after the widget was disposed.`
+  - Calling `stopTimer()` which mutates `state = ...` during unmount throws `Tried to modify a provider while the widget tree was building.`
+  - **Resolution**: Added `cancelTimer()` method in `RadarCountdownNotifier` that cancels `_timer` without mutating `state`, converted `radarCountdownProvider` to `autoDispose`, cached `_radarNotifier` reference in `initState`, and called `_radarNotifier?.cancelTimer()` cleanly in `dispose()`.
+
+### 2.3 Form Validation, SnackBars & Widget Finder Hardening
+- **`ArtisanRegistrationScreen` Referral Code Toggle**:
+  - Initialized `_showReferralInput = false` (closed by default) so tapping the toggle expands the accordion and reveals the "Apply" CTA.
+- **`ArtisanRegistrationScreen` Step 3 Validation SnackBar Queueing**:
+  - `ScaffoldMessenger.of(context).hideCurrentSnackBar()` invoked before showing new validation messages and on step transition, preventing stale queued messages from masking step-specific validation SnackBars.
+- **`ArtisanRegistrationScreen` Payout Section Title**:
+  - Restored `'Instant Guild Direct Payout'` title to match Phase 1 and 2 specifications.
+- **`LoginScreen` Title Finder Consistency**:
+  - Maintained `'Artisan Guild Portal'` role title when switched to Karigaar mode.
+- **`OtpVerificationScreen` RichText Finder Compatibility**:
+  - Replaced raw `RichText` with `Text.rich(TextSpan(...))` so Flutter's `_TextContainingWidgetFinder` (`find.textContaining('9822998877')`) correctly locates the widget.
+- **`LocalitySelectorSheet` ListView CacheExtent Deprecation**:
+  - Removed deprecated `cacheExtent: 1500` parameter.
 
 ---
 
-## 3. Complete Screen & Route Inventory (`apps/mobile_app`)
+## 3. Operational Screen & Route Inventory (`apps/mobile_app`)
 
-All **12 screens** and shared Stitch UI components are implemented, wired into `GoRouter` (`lib/core/router/app_router.dart`), and verified on both standard and narrow (`360x800`) mobile viewports under `AppTheme.lightTheme`:
+All **12 screens** and shared Stitch UI components are implemented, wired into `GoRouter` (`lib/core/router/app_router.dart`), and verified on standard, narrow (`360x800`), and ultra-compact (`320x568`) mobile viewports under `AppTheme.lightTheme`:
 
 | # | Screen / Widget | Route / Path | Operational Status | Key Verified Capabilities |
 |---|---|---|---|---|
 | 1 | `LoginScreen` | `/login` | **100% Working** | Official `KarigaarBrandLogo`, `ModeSwitcherPill`, WhatsApp login CTA, link to `/artisan/register` in Karigaar mode |
 | 2 | `OtpVerificationScreen` | `/otp-verify` | **100% Working** | 4-digit Pinput verification, 42s resend timer, SMS fallback, role-based navigation |
-| 3 | `ArtisanRegistrationScreen` | `/artisan/register` | **100% Working** | 10-trade selector, English/हिंदी/मराठी language toggle, 7-district & locality selector, Aadhaar KYC scan card, Tools audit toggle, UPI Penny-Drop payout setup |
-| 4 | `CustomerHomeScreen` | `/customer/home` | **100% Working** | `KarigaarBrandLogo`, 7-District locality selector sheet, quick trade search, 25-min emergency banner, 10-trade grid, `KarigaarRadarSyncSkeleton` loading state, wired bottom navigation |
+| 3 | `ArtisanRegistrationScreen` | `/artisan/register` | **100% Working** | 10-trade selector, English/हिंदी toggle, 7-district regional selector, Aadhaar KYC scan card, Tools & Safety Kit audit toggle, UPI Penny-Drop payout setup, `GUILD500` referral code accordion |
+| 4 | `CustomerHomeScreen` | `/customer/home` | **100% Working** | `KarigaarBrandLogo`, 7-district regional corridor selector, quick trade search, 25-min emergency banner (responsive to 2.0x font scaling), 10-trade grid, `KarigaarRadarSyncSkeleton` loading state, wired bottom navigation |
 | 5 | `ServiceScopingScreen` | `/customer/service/:tradeId` | **100% Working** | Issue chips, photo attachment toggle, dynamic inspection + labor estimate, ₹25,000 Guild Shield, creates live booking |
-| 6 | `ArtisanProfileScreen` | `/customer/artisan/:artisanId` | **100% Working** | Master credentials, Cleanliness & Sawdust scorecard, Path A direct Call/WhatsApp intents, Path B booking CTA, safe fallback for unknown IDs |
+| 6 | `ArtisanProfileScreen` | `/customer/artisan/:artisanId` | **100% Working** | Master credentials, Cleanliness & Sawdust scorecard, Path A direct Call/WhatsApp intents, Path B booking CTA, safe multi-district fallback for unknown IDs |
 | 7 | `LiveTrackingScreen` | `/customer/active-tracking/:bookingId` | **100% Working** | Custom route map painter, Doorstep Start OTP (`4921`), dynamic 5-stage milestone stepper synchronized with `BookingStatus`, in-app chat modal |
-| 8 | `CustomerBookingsScreen` | `/customer/bookings` | **100% Working** | Active dispatch tracking card + historical bookings with status filter tabs (`All`, `En-Route`, `Upcoming`, `Completed`) |
+| 8 | `CustomerBookingsScreen` | `/customer/bookings` | **100% Working** | Active dispatch tracking card + historical bookings with status filter tabs (`All`, `En-Route`, `Upcoming`, `Completed`), wrap-responsive on font scaling |
 | 9 | `CustomerMessagesScreen` | `/customer/messages` | **100% Working** | Multi-artisan thread switcher, privacy number-masking banner, interactive message composer, gated society quick-reply chips |
-| 10 | `CustomerProfileScreen` | `/customer/profile` | **100% Working** | Homeowner identity card, saved regional localities chip switcher, UPI AutoPay & WhatsApp alert toggles, emergency SOS contact, portal switcher |
-| 11 | `ArtisanJobRadarScreen` | `/artisan/radar` | **100% Working** | Duty status toggle, 45s countdown ring, regional job broadcast card, masked customer inquiry sheet, one-tap job claim |
-| 12 | `ArtisanActiveJobScreen` | `/artisan/active-job/:bookingId` | **100% Working** | Live repair stopwatch, Start OTP (`4921`) handshake synced to `activeBookingProvider`, dynamic spare parts bill builder, Completion PIN (`7294`) settlement crediting `artisanWalletBalanceProvider`, zero-balance IMPS withdrawal guard |
+| 10 | `CustomerProfileScreen` | `/customer/profile` | **100% Working** | Homeowner identity card, saved regional corridor chip switcher, UPI AutoPay & WhatsApp alert toggles, emergency SOS contact, portal switcher |
+| 11 | `ArtisanJobRadarScreen` | `/artisan/radar` | **100% Working** | Duty status toggle, 45s countdown ring with leak-free autoDispose notifier, regional job broadcast card, masked customer inquiry sheet, one-tap job claim, compact `ModeSwitcherPill` |
+| 12 | `ArtisanActiveJobScreen` | `/artisan/active-job/:bookingId` | **100% Working** | Live repair stopwatch, Start OTP (`4921`) handshake synced to `activeBookingProvider`, dynamic spare parts bill builder, Completion PIN (`7294`) settlement crediting `artisanWalletBalanceProvider`, zero-balance IMPS withdrawal guard, 320px wrap layout |
 
 ---
 
 ## 4. Super Admin Web Console (`apps/admin_web`)
+
 - **Live URL**: `http://localhost:3000`
-- **Status**: **100% Working** — Displays regional telemetry, Active Dispatches, Escrow Hold Ledger, Artisan KYC Queue (Aadhaar + Police Verification approve/reject), Surge Radar Heatmap (`1.4x`), and Dispute Arbitration actions.
-- **Foundation Test Suite**: **8 / 8 tests passing (100%)**.
+- **Status**: **100% Working** — Displays Regional Corridor Telemetry, Active Dispatches, Escrow Hold Ledger, Artisan KYC Queue (Aadhaar + Police Verification approve/reject), Surge Radar Heatmap (`1.4x`), and Dispute Arbitration actions.
+- **Automated Foundation Suite**: **8 / 8 tests passing (100% PASS RATE)**.
 
 ---
 
 ## 5. Quality, Static Analysis & Automated Test Suite Verification
 
-- **Static Analysis (`flutter analyze` / `dart analyze`)**: **0 errors, 0 warnings (No issues found)**.
-- **Automated Test Suite (`flutter test`)**: **120 / 120 tests passing (100% pass rate)** across all 14 unit, widget, theme-layout, narrow-viewport (`360x800`), and adversarial stress test files.
-- **Resolved Test Regressions**:
-  - Eliminated font-scaling overflow errors at 1.5x and 2.0x font scaling across `ArtisanRegistrationScreen`, `CustomerHomeScreen`, `CustomerBookingsScreen`, and `CustomerMessagesScreen`.
-  - Resolved `ArtisanJobRadarScreen` and `ArtisanActiveJobScreen` 320x568 narrow-viewport layout constraints.
-  - Aligned Step 3 Aadhaar card front capture finder texts and language button toggle keys.
-- **Preventive Workspace Rules (`.agents/rules/flutter_layout_rules.md`)**: Enforced across all components with zero infinite-width exceptions inside `Row` layouts.
+### 5.1 Verification Summary
+- **Flutter Automated Tests (`apps/mobile_app`)**: **120 / 120 tests passing (100% PASS RATE)** across all 14 test suites:
+  1. `test/unit/booking_model_stress_test.dart` (18 tests)
+  2. `test/unit/booking_state_machine_test.dart` (7 tests)
+  3. `test/unit/city_config_test.dart` (3 tests)
+  4. `test/unit/contact_intent_service_test.dart` (5 tests)
+  5. `test/unit/launch_trades_test.dart` (4 tests)
+  6. `test/widget/all_screens_theme_layout_test.dart` (8 tests)
+  7. `test/widget/artisan_active_job_wallet_test.dart` (6 tests)
+  8. `test/widget/artisan_profile_screen_test.dart` (7 tests)
+  9. `test/widget/locality_selector_sheet_test.dart` (5 tests — includes T-01 7-district regional corridor and localized roster tests)
+  10. `test/widget/locality_selector_stress_test.dart` (12 tests)
+  11. `test/widget/mode_switcher_pill_test.dart` (3 tests)
+  12. `test/widget/phase1_workflows_stress_test.dart` (6 tests)
+  13. `test/widget/phase2_adversarial_stress_test.dart` (32 tests — adversarial viewports 320x568/360x800/390x844, 1.5x/2.0x font scaling, registration form validation)
+  14. `test/widget/phase2_workflows_empirical_challenger_test.dart` (4 comprehensive multi-screen workflow tests)
+- **Static Analysis (`apps/mobile_app`)**: `flutter analyze` reports **No issues found! (0 errors, 0 warnings, 0 infos)**.
+- **Admin Portal Tests (`apps/admin_web`)**: `npm test` reports **8 / 8 PASSED (0 FAILED)**.
+
+### 5.2 Workspace Rules Compliance (`.agents/rules/flutter_layout_rules.md`)
+1. **Button Theme Sizes**: Global `AppTheme` enforces finite minimum sizes (`Size(64, 52)` and `Size(64, 48)`). No `Size.fromHeight` or `double.infinity` width in themes.
+2. **Widget Test Theme Mounting**: All widget tests mount with `theme: AppTheme.lightTheme` and verify `expect(tester.takeException(), isNull)`.
+3. **Button Icon Labels**: No redundant `Flexible`/`Expanded` wrappers on `label:` of `*.icon(...)` buttons.
