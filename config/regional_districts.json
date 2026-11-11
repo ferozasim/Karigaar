@@ -1,0 +1,433 @@
+{
+  "regionName": "Marathwada, Vidarbha & North Telangana Regional Corridor",
+  "districts": [
+    {
+      "cityId": "city_nanded_01",
+      "name": "Nanded",
+      "fullName": "Nanded-Waghala, Maharashtra",
+      "state": "Maharashtra",
+      "country": "India",
+      "pincodeRange": ["431601", "431602", "431603", "431604", "431605", "431606"],
+      "centerCoordinates": { "latitude": 19.1383, "longitude": 77.3210 },
+      "defaultDispatchRadiusKm": 5.0,
+      "emergencyDispatchWindowMins": 25,
+      "currencySymbol": "₹",
+      "localities": [
+        {
+          "localityId": "loc_vazirabad",
+          "name": "Vazirabad & Sarafa",
+          "marathiName": "वजिराबाद आणि सराफा",
+          "pincode": "431601",
+          "center": { "latitude": 19.1555, "longitude": 77.3190 },
+          "radiusKm": 2.5,
+          "density": "HIGH_COMMERCIAL_RESIDENTIAL",
+          "emergencyHub": true
+        },
+        {
+          "localityId": "loc_anand_nagar",
+          "name": "Anand Nagar",
+          "marathiName": "आनंद नगर",
+          "pincode": "431602",
+          "center": { "latitude": 19.1685, "longitude": 77.3090 },
+          "radiusKm": 2.0,
+          "density": "HIGH_RESIDENTIAL",
+          "emergencyHub": true
+        },
+        {
+          "localityId": "loc_taroda_naka",
+          "name": "Taroda Naka & Taroda BK",
+          "marathiName": "तरोडा नाका",
+          "pincode": "431605",
+          "center": { "latitude": 19.1820, "longitude": 77.2950 },
+          "radiusKm": 3.0,
+          "density": "RESIDENTIAL_EXPANSION",
+          "emergencyHub": true
+        },
+        {
+          "localityId": "loc_shivaji_nagar",
+          "name": "Shivaji Nagar",
+          "marathiName": "शिवाजी नगर",
+          "pincode": "431602",
+          "center": { "latitude": 19.1490, "longitude": 77.3060 },
+          "radiusKm": 2.0,
+          "density": "HIGH_RESIDENTIAL",
+          "emergencyHub": true
+        },
+        {
+          "localityId": "loc_cidco",
+          "name": "CIDCO New Nanded",
+          "marathiName": "सिडको",
+          "pincode": "431603",
+          "center": { "latitude": 19.1310, "longitude": 77.3380 },
+          "radiusKm": 3.5,
+          "density": "RESIDENTIAL_PLANNED",
+          "emergencyHub": true
+        },
+        {
+          "localityId": "loc_workshop_corner",
+          "name": "Workshop Corner & Khadgaon",
+          "marathiName": "वर्कशॉप कॉर्नर / खडगाव",
+          "pincode": "431605",
+          "center": { "latitude": 19.1760, "longitude": 77.3180 },
+          "radiusKm": 2.5,
+          "density": "MIXED_COMMERCIAL",
+          "emergencyHub": false
+        },
+        {
+          "localityId": "loc_baba_nagar",
+          "name": "Baba Nagar & Hyder Bagh",
+          "marathiName": "बाबा नगर / हैदर बाग",
+          "pincode": "431601",
+          "center": { "latitude": 19.1620, "longitude": 77.3290 },
+          "radiusKm": 2.0,
+          "density": "DENSE_URBAN",
+          "emergencyHub": false
+        },
+        {
+          "localityId": "loc_snehnagar",
+          "name": "Snehnagar & Bhagya Nagar",
+          "marathiName": "स्नेहनगर / भाग्य नगर",
+          "pincode": "431602",
+          "center": { "latitude": 19.1580, "longitude": 77.3020 },
+          "radiusKm": 2.0,
+          "density": "PREMIUM_RESIDENTIAL",
+          "emergencyHub": true
+        },
+        {
+          "localityId": "loc_vishnupuri",
+          "name": "Vishnupuri & SRTMUN Campus",
+          "marathiName": "विष्णुपुरी",
+          "pincode": "431606",
+          "center": { "latitude": 19.1020, "longitude": 77.2920 },
+          "radiusKm": 4.0,
+          "density": "INSTITUTIONAL_RESIDENTIAL",
+          "emergencyHub": false
+        },
+        {
+          "localityId": "loc_station_degloor",
+          "name": "Railway Station & Degloor Naka",
+          "marathiName": "रेल्वे स्टेशन / देगलूर नाका",
+          "pincode": "431601",
+          "center": { "latitude": 19.1440, "longitude": 77.3160 },
+          "radiusKm": 2.5,
+          "density": "TRANSIT_COMMERCIAL",
+          "emergencyHub": true
+        }
+      ]
+    },
+    {
+      "cityId": "dist_parbhani",
+      "name": "Parbhani",
+      "fullName": "Parbhani City, Maharashtra",
+      "state": "Maharashtra",
+      "country": "India",
+      "pincodeRange": ["431401", "431402"],
+      "centerCoordinates": { "latitude": 19.2644, "longitude": 76.7767 },
+      "defaultDispatchRadiusKm": 5.0,
+      "emergencyDispatchWindowMins": 25,
+      "currencySymbol": "₹",
+      "localities": [
+        {
+          "localityId": "loc_pb_shivaji_chowk",
+          "name": "Shivaji Chowk & Market",
+          "marathiName": "शिवाजी चौक",
+          "pincode": "431401",
+          "center": { "latitude": 19.2680, "longitude": 76.7740 },
+          "radiusKm": 2.5,
+          "density": "COMMERCIAL_HUB",
+          "emergencyHub": true
+        },
+        {
+          "localityId": "loc_pb_station_road",
+          "name": "Station Road & Subhash Road",
+          "marathiName": "स्टेशन रोड",
+          "pincode": "431401",
+          "center": { "latitude": 19.2610, "longitude": 76.7820 },
+          "radiusKm": 2.0,
+          "density": "MIXED",
+          "emergencyHub": true
+        },
+        {
+          "localityId": "loc_pb_vasmat_road",
+          "name": "Basmat Road & Shrikrishna Nagar",
+          "marathiName": "वसमत रोड",
+          "pincode": "431401",
+          "center": { "latitude": 19.2790, "longitude": 76.7910 },
+          "radiusKm": 3.0,
+          "density": "RESIDENTIAL",
+          "emergencyHub": false
+        },
+        {
+          "localityId": "loc_pb_kalyan_mandapam",
+          "name": "Dharmapuri Naka & Karegaon Road",
+          "marathiName": "कारेगाव रोड",
+          "pincode": "431402",
+          "center": { "latitude": 19.2510, "longitude": 76.7640 },
+          "radiusKm": 3.0,
+          "density": "RESIDENTIAL",
+          "emergencyHub": false
+        }
+      ]
+    },
+    {
+      "cityId": "dist_latur",
+      "name": "Latur",
+      "fullName": "Latur City, Maharashtra",
+      "state": "Maharashtra",
+      "country": "India",
+      "pincodeRange": ["413512", "413531"],
+      "centerCoordinates": { "latitude": 18.4088, "longitude": 76.5604 },
+      "defaultDispatchRadiusKm": 5.0,
+      "emergencyDispatchWindowMins": 25,
+      "currencySymbol": "₹",
+      "localities": [
+        {
+          "localityId": "loc_lt_gandhi_chowk",
+          "name": "Gandhi Chowk & Main Market",
+          "marathiName": "गांधी चौक",
+          "pincode": "413512",
+          "center": { "latitude": 18.4020, "longitude": 76.5750 },
+          "radiusKm": 2.0,
+          "density": "DENSE_MARKET",
+          "emergencyHub": true
+        },
+        {
+          "localityId": "loc_lt_ausa_road",
+          "name": "Ausa Road & Ring Road Naka",
+          "marathiName": "औसा रोड नाका",
+          "pincode": "413512",
+          "center": { "latitude": 18.3910, "longitude": 76.5620 },
+          "radiusKm": 3.0,
+          "density": "HIGH_RESIDENTIAL",
+          "emergencyHub": true
+        },
+        {
+          "localityId": "loc_lt_shivaji_chowk",
+          "name": "Chatrapati Shivaji Maharaj Chowk",
+          "marathiName": "शिवाजी चौक लातूर",
+          "pincode": "413512",
+          "center": { "latitude": 18.4095, "longitude": 76.5810 },
+          "radiusKm": 2.2,
+          "density": "COMMERCIAL",
+          "emergencyHub": true
+        },
+        {
+          "localityId": "loc_lt_midc",
+          "name": "MIDC & Barshi Road",
+          "marathiName": "एमआयडीसी लातूर",
+          "pincode": "413531",
+          "center": { "latitude": 18.4280, "longitude": 76.5430 },
+          "radiusKm": 4.0,
+          "density": "INDUSTRIAL_MIXED",
+          "emergencyHub": false
+        }
+      ]
+    },
+    {
+      "cityId": "dist_hingoli",
+      "name": "Hingoli",
+      "fullName": "Hingoli City, Maharashtra",
+      "state": "Maharashtra",
+      "country": "India",
+      "pincodeRange": ["431513"],
+      "centerCoordinates": { "latitude": 19.7196, "longitude": 77.1487 },
+      "defaultDispatchRadiusKm": 4.5,
+      "emergencyDispatchWindowMins": 25,
+      "currencySymbol": "₹",
+      "localities": [
+        {
+          "localityId": "loc_hn_gandhi_chowk",
+          "name": "Gandhi Chowk & Old Town",
+          "marathiName": "गांधी चौक हिंगोली",
+          "pincode": "431513",
+          "center": { "latitude": 19.7210, "longitude": 77.1450 },
+          "radiusKm": 2.0,
+          "density": "HISTORIC_MARKET",
+          "emergencyHub": true
+        },
+        {
+          "localityId": "loc_hn_nanded_naka",
+          "name": "Nanded Naka & Bypass Road",
+          "marathiName": "नांदेड नाका हिंगोली",
+          "pincode": "431513",
+          "center": { "latitude": 19.7120, "longitude": 77.1560 },
+          "radiusKm": 3.0,
+          "density": "RESIDENTIAL",
+          "emergencyHub": true
+        },
+        {
+          "localityId": "loc_hn_kalamnuri_road",
+          "name": "Kalamnuri Road & Civil Hospital Area",
+          "marathiName": "कळमनुरी रोड",
+          "pincode": "431513",
+          "center": { "latitude": 19.7300, "longitude": 77.1410 },
+          "radiusKm": 2.5,
+          "density": "RESIDENTIAL",
+          "emergencyHub": false
+        }
+      ]
+    },
+    {
+      "cityId": "dist_aurangabad",
+      "name": "Chhatrapati Sambhajinagar",
+      "fullName": "Chhatrapati Sambhajinagar (Aurangabad), Maharashtra",
+      "state": "Maharashtra",
+      "country": "India",
+      "pincodeRange": ["431001", "431002", "431003", "431004", "431005", "431009"],
+      "centerCoordinates": { "latitude": 19.8762, "longitude": 75.3433 },
+      "defaultDispatchRadiusKm": 6.0,
+      "emergencyDispatchWindowMins": 25,
+      "currencySymbol": "₹",
+      "localities": [
+        {
+          "localityId": "loc_csn_kranti_chowk",
+          "name": "Kranti Chowk & Nirala Bazar",
+          "marathiName": "क्रांती चौक",
+          "pincode": "431001",
+          "center": { "latitude": 19.8720, "longitude": 75.3280 },
+          "radiusKm": 2.5,
+          "density": "DENSE_URBAN_CORE",
+          "emergencyHub": true
+        },
+        {
+          "localityId": "loc_csn_cidco_cannaught",
+          "name": "CIDCO Connaught Place & Town Centre",
+          "marathiName": "सिडको कॅनॉट प्लेस",
+          "pincode": "431003",
+          "center": { "latitude": 19.8880, "longitude": 75.3620 },
+          "radiusKm": 3.0,
+          "density": "COMMERCIAL_RESIDENTIAL",
+          "emergencyHub": true
+        },
+        {
+          "localityId": "loc_csn_garkheda",
+          "name": "Garkheda Parisar & Sutgirni Chowk",
+          "marathiName": "गारेखेडा परिसर",
+          "pincode": "431005",
+          "center": { "latitude": 19.8590, "longitude": 75.3490 },
+          "radiusKm": 3.0,
+          "density": "HIGH_RESIDENTIAL",
+          "emergencyHub": true
+        },
+        {
+          "localityId": "loc_csn_waluj",
+          "name": "Waluj MIDC & Pandharpur Naka",
+          "marathiName": "वाळूज एमआयडीसी",
+          "pincode": "431136",
+          "center": { "latitude": 19.8320, "longitude": 75.2410 },
+          "radiusKm": 4.5,
+          "density": "INDUSTRIAL_TOWNSHIP",
+          "emergencyHub": true
+        }
+      ]
+    },
+    {
+      "cityId": "dist_nagpur",
+      "name": "Nagpur",
+      "fullName": "Nagpur City, Maharashtra",
+      "state": "Maharashtra",
+      "country": "India",
+      "pincodeRange": ["440001", "440010", "440022", "440025", "440035"],
+      "centerCoordinates": { "latitude": 21.1458, "longitude": 79.0882 },
+      "defaultDispatchRadiusKm": 6.5,
+      "emergencyDispatchWindowMins": 25,
+      "currencySymbol": "₹",
+      "localities": [
+        {
+          "localityId": "loc_ng_sitabuldi",
+          "name": "Sitabuldi & Zero Mile Metro",
+          "marathiName": "सीताबर्डी",
+          "pincode": "440012",
+          "center": { "latitude": 21.1460, "longitude": 79.0820 },
+          "radiusKm": 2.5,
+          "density": "METROPOLITAN_CORE",
+          "emergencyHub": true
+        },
+        {
+          "localityId": "loc_ng_dharampeth",
+          "name": "Dharampeth & Ram Nagar",
+          "marathiName": "धरमपेठ",
+          "pincode": "440010",
+          "center": { "latitude": 21.1410, "longitude": 79.0620 },
+          "radiusKm": 2.5,
+          "density": "PREMIUM_RESIDENTIAL",
+          "emergencyHub": true
+        },
+        {
+          "localityId": "loc_ng_manewada",
+          "name": "Manewada Ring Road & Besa",
+          "marathiName": "मानेवाडा रिंग रोड",
+          "pincode": "440027",
+          "center": { "latitude": 21.1020, "longitude": 79.0980 },
+          "radiusKm": 3.5,
+          "density": "HIGH_RESIDENTIAL",
+          "emergencyHub": true
+        },
+        {
+          "localityId": "loc_ng_itwari",
+          "name": "Itwari & Gandhibagh Wholesale Market",
+          "marathiName": "इतवारी बाजार",
+          "pincode": "440002",
+          "center": { "latitude": 21.1570, "longitude": 79.1120 },
+          "radiusKm": 2.5,
+          "density": "DENSE_COMMERCIAL",
+          "emergencyHub": true
+        }
+      ]
+    },
+    {
+      "cityId": "dist_nizamabad",
+      "name": "Nizamabad",
+      "fullName": "Nizamabad City, Telangana",
+      "state": "Telangana",
+      "country": "India",
+      "pincodeRange": ["503001", "503002", "503003"],
+      "centerCoordinates": { "latitude": 18.6725, "longitude": 78.0941 },
+      "defaultDispatchRadiusKm": 5.0,
+      "emergencyDispatchWindowMins": 25,
+      "currencySymbol": "₹",
+      "localities": [
+        {
+          "localityId": "loc_nzb_bodhan_road",
+          "name": "Bodhan Road & Gandhi Chowk",
+          "marathiName": "बोधन रोड चौक",
+          "pincode": "503001",
+          "center": { "latitude": 18.6780, "longitude": 78.0910 },
+          "radiusKm": 2.5,
+          "density": "COMMERCIAL_RESIDENTIAL",
+          "emergencyHub": true
+        },
+        {
+          "localityId": "loc_nzb_armoor_road",
+          "name": "Armoor X-Road & Pragathi Nagar",
+          "marathiName": "आरमूर रस्ता चौक",
+          "pincode": "503002",
+          "center": { "latitude": 18.6650, "longitude": 78.1090 },
+          "radiusKm": 3.0,
+          "density": "EXPANDING_RESIDENTIAL",
+          "emergencyHub": true
+        },
+        {
+          "localityId": "loc_nzb_station_road",
+          "name": "Railway Station Area & Khaleelwadi",
+          "marathiName": "खलीलवाडी व स्टेशन परिसर",
+          "pincode": "503001",
+          "center": { "latitude": 18.6730, "longitude": 78.1010 },
+          "radiusKm": 2.0,
+          "density": "DENSE_URBAN",
+          "emergencyHub": true
+        },
+        {
+          "localityId": "loc_nzb_vinayak_nagar",
+          "name": "Vinayak Nagar & Subhash Nagar",
+          "marathiName": "विनायक नगर",
+          "pincode": "503003",
+          "center": { "latitude": 18.6890, "longitude": 78.0820 },
+          "radiusKm": 2.5,
+          "density": "RESIDENTIAL",
+          "emergencyHub": false
+        }
+      ]
+    }
+  ]
+}

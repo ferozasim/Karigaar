@@ -438,20 +438,25 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      ElevatedButton(
-                        onPressed: () {
-                          // Navigate to live tracking for demo
-                          context.push('/customer/active-tracking/BK_NANDED_8821');
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        ),
-                        child: Text(
-                          'Request Karigaar',
-                          style: AppTypography.labelLg.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                      Flexible(
+                        flex: 0,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // Navigate to live tracking for demo
+                            context.push('/customer/active-tracking/BK_NANDED_8821');
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          ),
+                          child: Text(
+                            'Request Artisan',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTypography.labelLg.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ),
                     ],

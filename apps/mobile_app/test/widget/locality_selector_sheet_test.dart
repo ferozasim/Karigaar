@@ -71,5 +71,86 @@ void main() {
       // Now Vazirabad
       expect(container.read(selectedLocalityProvider).localityId, equals('loc_vazirabad'));
     });
+
+    testWidgets('T-01: renders 7-district regional corridor selector and switches district', (tester) async {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            theme: AppTheme.lightTheme,
+            home: const Scaffold(
+              body: LocalitySelectorSheet(),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Verify district options are rendered
+      expect(find.text('Nanded'), findsWidgets);
+      expect(find.text('Parbhani'), findsWidgets);
+      expect(find.text('Latur'), findsWidgets);
+      expect(find.text('Hingoli'), findsWidgets);
+      expect(find.text('Chhatrapati Sambhajinagar'), findsWidgets);
+      expect(find.text('Nagpur'), findsWidgets);
+      expect(find.text('Nizamabad'), findsWidgets);
+
+      // Tap on Parbhani district
+      await tester.tap(find.text('Parbhani').first);
+      await tester.pumpAndSettle();
+
+      // Verify district switched
+      expect(container.read(selectedDistrictProvider).name, equals('Parbhani'));
+    });
+
+    testWidgets('T-01: switching district updates topArtisansProvider to localized verified roster', (tester) async {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            theme: AppTheme.lightTheme,
+            home: const Scaffold(
+              body: LocalitySelectorSheet(),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Initially Nanded artisans
+      final nandedArtisans = container.read(topArtisansProvider);
+      expect(nandedArtisans.every((a) => a.cityId == 'city_nanded_01'), isTrue);
+      expect(nandedArtisans.first.name, equals('Ganesh Kadam'));
+
+      // Switch to Nagpur
+      final nagpurChip = find.text('Nagpur').first;
+      await tester.ensureVisible(nagpurChip);
+      await tester.pumpAndSettle();
+      await tester.tap(nagpurChip);
+      await tester.pumpAndSettle();
+
+      // Verify Nagpur roster
+      final nagpurArtisans = container.read(topArtisansProvider);
+      expect(nagpurArtisans.every((a) => a.cityId == 'dist_nagpur'), isTrue);
+      expect(nagpurArtisans.first.name, equals('Chetan Meshram'));
+
+      // Switch to Nizamabad
+      final nizamabadChip = find.text('Nizamabad').first;
+      await tester.ensureVisible(nizamabadChip);
+      await tester.pumpAndSettle();
+      await tester.tap(nizamabadChip);
+      await tester.pumpAndSettle();
+
+      // Verify Nizamabad roster
+      final nizamabadArtisans = container.read(topArtisansProvider);
+      expect(nizamabadArtisans.every((a) => a.cityId == 'dist_nizamabad'), isTrue);
+      expect(nizamabadArtisans.first.name, equals('K. Srinivas Rao'));
+    });
   });
 }

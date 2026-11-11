@@ -172,6 +172,7 @@ The following master feature inventory consolidates all components identified ac
 | **F-36** | Path A to Path B Retroactive Lock| Booking & Escrow | `service_details_custom_quote` | Formalizing an on-site direct visit to activate ₹25k warranty & escrow protection | User or artisan taps "Lock Booking" | Generates formal escrow booking ticket | Phase 4 | `explorer_workflows/analysis.md` |
 | **F-37** | 3-Step Artisan Registration | Partner Onboarding | `create_account_artisan_registration`| Multi-step artisan KYC registration with Aadhaar OCR | Form inputs, Aadhaar photo | Profile submitted to Super Admin queue | Phase 1 | `create_account_artisan_registration` |
 | **F-38** | Doorstep Access Timeout Guard | Live Tracking & Escrow | `active_job_live_tracking` | 15-min doorstep wait timer; triggers `DOORSTEP_ACCESS_DENIED`, releasing ₹99 transit fee | Dwell time >15m at destination | Auto-captures ₹99 fee (₹80 to partner), closes job | Phase 3 | `active_job_live_tracking` |
+| **F-39** | Multi-District Regional Corridor Selector | Hyperlocal Discovery | `locality_selector_sheet` | 7-district horizontal corridor carousel (Nanded, Parbhani, Latur, Hingoli, Sambhajinagar, Nagpur, Nizamabad) with localized artisan rosters | District selection tap | Switches active district, localities, and localized craftsmen roster | Ticket T-01 | `regional_districts.json` |
 
 ---
 
@@ -201,12 +202,13 @@ The following master feature inventory consolidates all components identified ac
   - Skeleton loading engine with custom 1.8s shimmer keyframes and telemetry connection status dock.
 
 ### Phase 2: Hyperlocal Discovery Engine & Structured Booking Scoping
-- **Target Features**: F-06, F-07, F-08, F-09, F-10, F-11, F-25, F-26, F-27, F-35.
+- **Target Features**: F-06, F-07, F-08, F-09, F-10, F-11, F-25, F-26, F-27, F-35, F-39.
 - **Scope**:
   - Customer app discovery shell (`home_discovery`) featuring 8-trade grid, Emergency 24x7 Quick-Assist banner, and Top Masters Nearby stack.
   - Master artisan profile (`karigaar_profile_reviews`) showcasing two-tier damage cover (Base ₹10,000 vs Master ₹25,000), bleeding portfolio carousel, and granular sawdust/cleanliness scorecard.
   - Path A direct contact actions via Virtual Masked Telephony (`/api/v1/telephony/bridge-call`) supported by founder monetization choices (Monthly Pass ₹499/mo or Pay-per-lead unlock ₹49–₹99).
   - Path B service configurator (`service_details_custom_quote`) with dynamic task math, photo upload, 15-second voice memo recording, arrival slot carousel, and upfront pre-authorization / UPI mandate dock (guaranteeing the ₹99 transit fee).
+  - **Ticket T-01 Regional Corridor Expansion**: Multi-district corridor selector (`locality_selector_sheet.dart`) supporting 7 regional districts (Nanded, Parbhani, Latur, Hingoli, Chhatrapati Sambhajinagar, Nagpur, Nizamabad) with localized verified master craftsmen rosters. Verified with 120 passing automated tests and zero layout constraint errors.
 
 ### Phase 3: Partner Job Radar, 45s Broadcast & Live GPS Telemetry
 - **Target Features**: F-12, F-13, F-14, F-15, F-16, F-17, F-18, F-19, F-38.

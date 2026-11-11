@@ -5,6 +5,7 @@ import '../../../core/providers/app_providers.dart';
 import '../../../core/services/contact_intent_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../shared/widgets/mode_switcher_pill.dart';
 
 class ArtisanJobRadarScreen extends ConsumerStatefulWidget {
   const ArtisanJobRadarScreen({super.key});
@@ -14,12 +15,22 @@ class ArtisanJobRadarScreen extends ConsumerStatefulWidget {
 }
 
 class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
+  RadarCountdownNotifier? _radarNotifier;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(radarCountdownProvider.notifier).startTimer();
+      if (!mounted) return;
+      _radarNotifier = ref.read(radarCountdownProvider.notifier);
+      _radarNotifier?.startTimer();
     });
+  }
+
+  @override
+  void dispose() {
+    _radarNotifier?.cancelTimer();
+    super.dispose();
   }
 
   @override
@@ -77,28 +88,12 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  // Karigaar Partner Badge (Strict Role Separation)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: AppColors.secondarySurfaceTint,
-                      borderRadius: BorderRadius.circular(9999),
-                      border: Border.all(color: AppColors.secondary.withValues(alpha: 0.2)),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.handyman_rounded, size: 14, color: AppColors.secondary),
-                        const SizedBox(width: 4),
-                        Text(
-                          'Karigaar Partner',
-                          style: AppTypography.labelSm.copyWith(
-                            color: AppColors.secondary,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 11,
-                          ),
-                        ),
-                      ],
+                  // Role Switcher (Homeowner <-> Karigaar)
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 136),
+                    child: const FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: ModeSwitcherPill(compact: true),
                     ),
                   ),
                 ],

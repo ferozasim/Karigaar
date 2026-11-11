@@ -676,29 +676,31 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
               ),
               const SizedBox(height: 14),
               // Verified Settlement Bank Details
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 8,
+                runSpacing: 4,
                 children: [
-                  Expanded(
-                    child: Row(
-                      children: [
-                        const Icon(Icons.account_balance_rounded, color: Colors.white70, size: 16),
-                        const SizedBox(width: 6),
-                        Expanded(
-                          child: Text(
-                            'HDFC Bank •••• 2104',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: AppTypography.bodySm.copyWith(color: Colors.white70),
-                          ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.account_balance_rounded, color: Colors.white70, size: 16),
+                      const SizedBox(width: 6),
+                      Flexible(
+                        child: Text(
+                          'HDFC Bank •••• 2104',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTypography.bodySm.copyWith(color: Colors.white70),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 8),
                   Text(
                     'Verified Guild Vault',
                     maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: AppTypography.labelSm.copyWith(color: AppColors.tertiaryLight, fontWeight: FontWeight.w700),
                   ),
                 ],

@@ -257,36 +257,36 @@ class _CustomerBookingsScreenState
           const SizedBox(height: 12),
           const TrustShieldBadge(label: '₹25,000 Guild Damage Shield Active'),
           const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 8,
+            runSpacing: 8,
             children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Start Handshake OTP: ${booking.startOtp}',
-                        style: AppTypography.labelMd.copyWith(
-                          color: AppColors.tertiary,
-                        ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Start Handshake OTP: ${booking.startOtp}',
+                      style: AppTypography.labelMd.copyWith(
+                        color: AppColors.tertiary,
                       ),
                     ),
-                    const SizedBox(height: 2),
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Total Estimate: ₹${booking.totalFinalAmount}',
-                        style: AppTypography.numericPrice.copyWith(fontSize: 18),
-                      ),
+                  ),
+                  const SizedBox(height: 2),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Total Estimate: ₹${booking.totalFinalAmount}',
+                      style: AppTypography.numericPrice.copyWith(fontSize: 18),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              const SizedBox(width: 8),
               ElevatedButton(
                 onPressed: () => context.push(
                   '/customer/active-tracking/${booking.bookingId}',
@@ -368,18 +368,18 @@ class _CustomerBookingsScreenState
             style: AppTypography.labelSm.copyWith(color: AppColors.tertiary),
           ),
           const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 8,
+            runSpacing: 8,
             children: [
-              Expanded(
-                child: Text(
-                  '₹${item['amount']}',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppTypography.numericPrice.copyWith(fontSize: 18),
-                ),
+              Text(
+                '₹${item['amount']}',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTypography.numericPrice.copyWith(fontSize: 18),
               ),
-              const SizedBox(width: 8),
               OutlinedButton(
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(

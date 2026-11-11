@@ -83,7 +83,10 @@ class ModeSwitcherPill extends ConsumerWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeInOut,
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        padding: EdgeInsets.symmetric(
+          horizontal: compact ? 8 : 14,
+          vertical: compact ? 4 : 8,
+        ),
         decoration: BoxDecoration(
           color: isActive ? AppColors.primary : Colors.transparent,
           borderRadius: BorderRadius.circular(9999),
@@ -102,15 +105,16 @@ class ModeSwitcherPill extends ConsumerWidget {
           children: [
             Icon(
               icon,
-              size: 16,
+              size: compact ? 13 : 16,
               color: isActive ? AppColors.onPrimary : AppColors.textMuted,
             ),
-            const SizedBox(width: 6),
+            SizedBox(width: compact ? 4 : 6),
             Text(
               label,
-              style: AppTypography.labelMd.copyWith(
+              style: (compact ? AppTypography.labelSm : AppTypography.labelMd).copyWith(
                 color: isActive ? AppColors.onPrimary : AppColors.textMuted,
                 fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+                fontSize: compact ? 11 : null,
               ),
             ),
           ],

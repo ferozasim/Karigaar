@@ -81,7 +81,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     Text(
                       currentRole == UserRole.customer
                           ? 'Login as Homeowner'
-                          : 'Karigaar Partner Portal',
+                          : 'Artisan Guild Portal',
                       style: AppTypography.headlineSm.copyWith(fontWeight: FontWeight.w800),
                     ),
                     const SizedBox(height: 6),

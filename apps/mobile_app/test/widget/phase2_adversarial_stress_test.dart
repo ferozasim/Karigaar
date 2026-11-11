@@ -149,11 +149,27 @@ void main() {
         await setViewport(tester, size);
         await tester.pumpWidget(wrapWithTheme(const ArtisanJobRadarScreen()));
         await tester.pump(const Duration(milliseconds: 200));
-        expect(tester.takeException(), isNull);
+        final excRadar = tester.takeException();
+        for (final el in tester.allElements) {
+          final ro = el.renderObject;
+          if (ro != null && ro.toString().contains('OVERFLOW')) {
+            // ignore: avoid_print
+            print('RADAR OVERFLOW: ${el.widget.runtimeType} -> $ro');
+          }
+        }
+        expect(excRadar, isNull);
 
         await tester.pumpWidget(wrapWithTheme(const ArtisanActiveJobScreen(bookingId: 'BK_NANDED_8821')));
         await tester.pumpAndSettle();
-        expect(tester.takeException(), isNull);
+        final excActive = tester.takeException();
+        for (final el in tester.allElements) {
+          final ro = el.renderObject;
+          if (ro != null && ro.toString().contains('OVERFLOW') && el.widget is Row) {
+            // ignore: avoid_print
+            print('ACTIVE JOB ROW OVERFLOW:\n${ro.toStringDeep()}');
+          }
+        }
+        expect(excActive, isNull);
       });
     }
   });

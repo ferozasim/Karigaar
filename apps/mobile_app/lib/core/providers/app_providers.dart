@@ -11,15 +11,25 @@ import '../config/app_constants.dart';
 /// Current Active User Role (Customer vs Artisan)
 final userRoleProvider = StateProvider<UserRole>((ref) => UserRole.customer);
 
-/// Pilot City Configuration (Nanded, Maharashtra)
-final pilotCityProvider = FutureProvider<CityConfigModel>((ref) async {
-  return AppDataService.loadPilotCity();
+/// Regional Launch Districts List (7 Districts: Nanded, Parbhani, Latur, Hingoli, Sambhajinagar, Nagpur, Nizamabad)
+final regionalDistrictsProvider = FutureProvider<List<CityConfigModel>>((ref) async {
+  return AppDataService.loadRegionalDistricts();
 });
 
-/// Nanded Localities List Provider
+/// Currently Selected District (Defaults to Nanded)
+final selectedDistrictProvider = StateProvider<CityConfigModel>((ref) {
+  return AppDataService.defaultNandedConfig;
+});
+
+/// Pilot City / Active District Configuration
+final pilotCityProvider = FutureProvider<CityConfigModel>((ref) async {
+  return ref.watch(selectedDistrictProvider);
+});
+
+/// Active District Localities List Provider
 final nandedLocalitiesProvider = FutureProvider<List<LocalityModel>>((ref) async {
-  final city = await ref.watch(pilotCityProvider.future);
-  return city.localities;
+  final district = ref.watch(selectedDistrictProvider);
+  return district.localities;
 });
 
 /// 10 Launch Trades List
@@ -42,16 +52,18 @@ final selectedLocalityProvider = StateProvider<LocalityModel>((ref) {
 });
 
 /// Sample Nanded Verified Master Craftsmen
+/// Sample Regional Corridor Verified Master Craftsmen
 final topArtisansProvider = Provider<List<ArtisanProfileModel>>((ref) {
-  return AppDataService.getSampleNandedArtisans();
+  final selectedDistrict = ref.watch(selectedDistrictProvider);
+  return AppDataService.getArtisansForDistrict(selectedDistrict.cityId);
 });
 
 /// Artisan Profile by ID Provider
 final artisanByIdProvider = Provider.family<ArtisanProfileModel, String>((ref, id) {
-  final list = ref.watch(topArtisansProvider);
-  return list.firstWhere(
+  final all = AppDataService.getAllSampleArtisans();
+  return all.firstWhere(
     (a) => a.artisanId == id,
-    orElse: () => list.first,
+    orElse: () => all.first,
   );
 });
 
@@ -79,8 +91,18 @@ class RadarCountdownNotifier extends StateNotifier<int> {
     });
   }
 
+  void cancelTimer() {
+    _timer?.cancel();
+  }
+
+  void stopTimer() {
+    _timer?.cancel();
+    _timer = null;
+  }
+
   void reset() {
     _timer?.cancel();
+    _timer = null;
     state = AppConstants.radarCountdownSeconds;
   }
 
@@ -92,7 +114,7 @@ class RadarCountdownNotifier extends StateNotifier<int> {
 }
 
 final radarCountdownProvider =
-    StateNotifierProvider<RadarCountdownNotifier, int>((ref) {
+    StateNotifierProvider.autoDispose<RadarCountdownNotifier, int>((ref) {
   return RadarCountdownNotifier();
 });
 

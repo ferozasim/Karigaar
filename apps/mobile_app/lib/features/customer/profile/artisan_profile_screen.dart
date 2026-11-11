@@ -42,7 +42,7 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
           },
         ),
         title: Text(
-          'Karigaar Profile',
+          'Craftsman Profile',
           style: AppTypography.headlineSm.copyWith(fontSize: 18),
         ),
         actions: [
@@ -391,7 +391,7 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                 );
               },
               icon: const Icon(Icons.phone_in_talk_rounded, size: 18),
-              label: const Text('Call Karigaar'),
+              label: const Text('Call Artisan'),
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.primary,
                 side: const BorderSide(color: AppColors.primary, width: 1.5),
@@ -414,7 +414,7 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                 );
               },
               icon: const Icon(Icons.chat_bubble_rounded, size: 18, color: Colors.white),
-              label: const Text('WhatsApp Karigaar'),
+              label: const Text('WhatsApp Artisan'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF25D366),
                 foregroundColor: Colors.white,

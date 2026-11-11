@@ -37,7 +37,7 @@ class _LocalitySelectorSheetState extends ConsumerState<LocalitySelectorSheet> {
     final selectedLocality = ref.watch(selectedLocalityProvider);
 
     return Container(
-      height: MediaQuery.of(context).size.height * 0.75,
+      height: MediaQuery.of(context).size.height * 0.85,
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -59,7 +59,7 @@ class _LocalitySelectorSheetState extends ConsumerState<LocalitySelectorSheet> {
           ),
           const SizedBox(height: 16),
 
-          // Title & City Info
+          // Title & District Info
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -67,27 +67,96 @@ class _LocalitySelectorSheetState extends ConsumerState<LocalitySelectorSheet> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Select Locality', style: AppTypography.headlineSm),
-                  Text(
-                    'Pilot City: Nanded-Waghala (Maharashtra)',
-                    style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
+                  Consumer(
+                    builder: (context, ref, _) {
+                      final currentDistrict = ref.watch(selectedDistrictProvider);
+                      final isNanded = currentDistrict.name.toLowerCase().contains('nanded');
+                      return Text(
+                        isNanded
+                            ? 'Pilot City: Nanded-Waghala (Maharashtra)'
+                            : 'District: ${currentDistrict.fullName}',
+                        style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
+                      );
+                    },
                   ),
                 ],
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: AppColors.secondarySurfaceTint,
-                  borderRadius: BorderRadius.circular(9999),
-                ),
-                child: Text(
-                  '10 Hubs Active',
-                  style: AppTypography.labelSm.copyWith(
-                    color: AppColors.secondary,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+              Consumer(
+                builder: (context, ref, _) {
+                  final currentDistrict = ref.watch(selectedDistrictProvider);
+                  final isNanded = currentDistrict.name.toLowerCase().contains('nanded');
+                  return Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: AppColors.secondarySurfaceTint,
+                      borderRadius: BorderRadius.circular(9999),
+                    ),
+                    child: Text(
+                      isNanded ? '10 Hubs Active' : '${currentDistrict.localities.length} Hubs Active',
+                      style: AppTypography.labelSm.copyWith(
+                        color: AppColors.secondary,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  );
+                },
               ),
             ],
+          ),
+
+          const SizedBox(height: 14),
+
+          // 7-District Regional Corridor Selector
+          Consumer(
+            builder: (context, ref, _) {
+              final districtsAsync = ref.watch(regionalDistrictsProvider);
+              final activeDistrict = ref.watch(selectedDistrictProvider);
+
+              return districtsAsync.when(
+                data: (districts) => SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: districts.map((dist) {
+                      final isSelected = dist.name.toLowerCase() == activeDistrict.name.toLowerCase();
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: InkWell(
+                          onTap: () {
+                            ref.read(selectedDistrictProvider.notifier).state = dist;
+                            if (dist.localities.isNotEmpty) {
+                              ref.read(selectedLocalityProvider.notifier).state = dist.localities.first;
+                            }
+                          },
+                          borderRadius: BorderRadius.circular(20),
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: isSelected ? AppColors.primary : AppColors.surfaceSubtle,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: isSelected ? AppColors.primary : AppColors.borderSubtle,
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                dist.name,
+                                style: AppTypography.labelSm.copyWith(
+                                  color: isSelected ? Colors.white : AppColors.textPrimary,
+                                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+                loading: () => const SizedBox.shrink(),
+                error: (_, __) => const SizedBox.shrink(),
+              );
+            },
           ),
 
           const SizedBox(height: 16),

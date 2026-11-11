@@ -21,6 +21,7 @@ class CustomerHomeScreen extends ConsumerWidget {
     final tradesAsync = ref.watch(launchTradesProvider);
     final artisans = ref.watch(topArtisansProvider);
     final selectedLocality = ref.watch(selectedLocalityProvider);
+    final selectedDistrict = ref.watch(selectedDistrictProvider);
 
     return Scaffold(
       backgroundColor: AppColors.surfaceBase,
@@ -30,12 +31,12 @@ class CustomerHomeScreen extends ConsumerWidget {
             // Top App Bar
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
+                padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
                 child: Row(
                   children: [
                     // Official Squircle Brand Logo (F-34)
-                    const KarigaarBrandLogo(size: 40),
-                    const SizedBox(width: 12),
+                    const KarigaarBrandLogo(size: 36),
+                    const SizedBox(width: 8),
                     // Locality Selector (Pilot City: Nanded)
                     Expanded(
                       child: InkWell(
@@ -46,9 +47,9 @@ class CustomerHomeScreen extends ConsumerWidget {
                           children: [
                             Row(
                               children: [
-                                Flexible(
+                                Expanded(
                                   child: Text(
-                                    '${selectedLocality.name}, Nanded',
+                                    '${selectedLocality.name}, ${selectedDistrict.name}',
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: AppTypography.headlineSm.copyWith(fontSize: 15),
@@ -69,9 +70,9 @@ class CustomerHomeScreen extends ConsumerWidget {
                     ),
                     const SizedBox(width: 8),
                     // Mode Switcher (Homeowner <-> Karigaar)
-                    const Flexible(
-                      flex: 0,
-                      child: FittedBox(
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 136),
+                      child: const FittedBox(
                         fit: BoxFit.scaleDown,
                         child: ModeSwitcherPill(compact: true),
                       ),
@@ -146,7 +147,7 @@ class CustomerHomeScreen extends ConsumerWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'Nanded Guild',
+                      '${selectedDistrict.name} Guild',
                       style: AppTypography.labelSm.copyWith(color: AppColors.secondary),
                     ),
                   ],
@@ -235,7 +236,7 @@ class CustomerHomeScreen extends ConsumerWidget {
                     ),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: Text('Top Rated Karigaars in Nanded', style: AppTypography.headlineSm),
+                      child: Text('Top Rated Karigaars in ${selectedDistrict.name}', style: AppTypography.headlineSm),
                     ),
                   ],
                 ),
@@ -267,45 +268,48 @@ class CustomerHomeScreen extends ConsumerWidget {
   Widget _buildTradeGridItem(BuildContext context, TradeModel trade) {
     return GestureDetector(
       onTap: () => context.push('/customer/service/${trade.tradeId}'),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: trade.surfaceTint,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: trade.accentColor.withValues(alpha: 0.3)),
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: trade.surfaceTint,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: trade.accentColor.withValues(alpha: 0.3)),
+              ),
+              child: Icon(
+                _getIconData(trade.iconName),
+                color: trade.accentColor,
+                size: 22,
+              ),
             ),
-            child: Icon(
-              _getIconData(trade.iconName),
-              color: trade.accentColor,
-              size: 22,
+            const SizedBox(height: 4),
+            Text(
+              trade.name,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: AppTypography.labelSm.copyWith(
+                fontSize: 10,
+                fontWeight: FontWeight.w700,
+              ),
             ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            trade.name,
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: AppTypography.labelSm.copyWith(
-              fontSize: 10,
-              fontWeight: FontWeight.w700,
+            Text(
+              trade.marathiName,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: AppTypography.bodySm.copyWith(
+                fontSize: 9,
+                color: AppColors.textMuted,
+              ),
             ),
-          ),
-          Text(
-            trade.marathiName,
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: AppTypography.bodySm.copyWith(
-              fontSize: 9,
-              color: AppColors.textMuted,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -388,24 +392,24 @@ class CustomerHomeScreen extends ConsumerWidget {
               style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
             ),
             const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 8,
+              runSpacing: 8,
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Diagnostic Inspection',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTypography.labelSm,
-                      ),
-                      Text('₹${artisan.inspectionFee}', style: AppTypography.numericPrice.copyWith(fontSize: 18)),
-                    ],
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Diagnostic Inspection',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTypography.labelSm,
+                    ),
+                    Text('₹${artisan.inspectionFee}', style: AppTypography.numericPrice.copyWith(fontSize: 18)),
+                  ],
                 ),
-                const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: () => context.push('/customer/service/${artisan.primaryTradeId}'),
                   style: ElevatedButton.styleFrom(

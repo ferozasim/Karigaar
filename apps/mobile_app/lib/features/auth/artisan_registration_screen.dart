@@ -36,7 +36,7 @@ class _ArtisanRegistrationScreenState
   bool _aadhaarUploaded = true;
   bool _upiPayoutVerified = true;
   bool _whatsAppOptIn = true;
-  bool _showReferralInput = true;
+  bool _showReferralInput = false;
 
   // Tool audit item states
   bool _toolMultimeter = true;
@@ -187,6 +187,7 @@ class _ArtisanRegistrationScreenState
       final name = _nameController.text.trim();
       final phone = _phoneController.text.trim();
       if (name.isEmpty || phone.length < 10) {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Please enter your full Aadhaar name and 10-digit mobile number.'),
@@ -196,6 +197,7 @@ class _ArtisanRegistrationScreenState
       }
     } else if (_currentStep == 2) {
       if (_selectedTradeId.isEmpty) {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Please select your primary trade from the 10 launch trades.'),
@@ -206,6 +208,7 @@ class _ArtisanRegistrationScreenState
     } else if (_currentStep == 3) {
       final aadhaar = _aadhaarController.text.replaceAll(' ', '').trim();
       if (aadhaar.length < 12) {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Please enter a valid 12-digit Aadhaar number.'),
@@ -215,6 +218,7 @@ class _ArtisanRegistrationScreenState
       }
     }
 
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
     if (_currentStep < 4) {
       setState(() => _currentStep++);
     } else {
@@ -242,11 +246,13 @@ class _ArtisanRegistrationScreenState
     final name = _nameController.text.trim();
     final phone = _phoneController.text.trim();
     if (name.isEmpty || phone.length < 10) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter your full Aadhaar name and 10-digit mobile number.'),
-        ),
-      );
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          const SnackBar(
+            content: Text('Please enter your full Aadhaar name and 10-digit mobile number.'),
+          ),
+        );
       return;
     }
     ref.read(userRoleProvider.notifier).state = UserRole.artisan;
@@ -291,20 +297,22 @@ class _ArtisanRegistrationScreenState
 
             const SizedBox(height: 16),
 
-            // Guild Welcome Header Card (Ambient Glow)
-            _buildGuildWelcomeCard(),
-
-            const SizedBox(height: 16),
-
-            // Visual Artisan Trust Highlight Banner
-            _buildTrustEarningsBanner(),
-
-            const SizedBox(height: 16),
-
             // Step Indicator Pills
             _buildStepSelectorStrip(),
 
             const SizedBox(height: 16),
+
+            if (_currentStep == 1) ...[
+              // Guild Welcome Header Card (Ambient Glow)
+              _buildGuildWelcomeCard(),
+
+              const SizedBox(height: 16),
+
+              // Visual Artisan Trust Highlight Banner
+              _buildTrustEarningsBanner(),
+
+              const SizedBox(height: 16),
+            ],
 
             // Progressive Step Body Content
             if (_currentStep == 1)
@@ -381,10 +389,9 @@ class _ArtisanRegistrationScreenState
             ],
           ),
         ),
-        const SizedBox(width: 6),
+        const SizedBox(width: 8),
         // Language Toggle Pill
         Flexible(
-          flex: 0,
           child: FittedBox(
             fit: BoxFit.scaleDown,
             child: Container(
@@ -397,9 +404,8 @@ class _ArtisanRegistrationScreenState
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _buildLangBtn('en', 'EN'),
-                  _buildLangBtn('hi', 'हि'),
-                  _buildLangBtn('mr', 'म'),
+                  _buildLangBtn('en', 'English'),
+                  _buildLangBtn('hi', 'हिंदी'),
                 ],
               ),
             ),
@@ -412,6 +418,7 @@ class _ArtisanRegistrationScreenState
   Widget _buildLangBtn(String code, String label) {
     final isSelected = _selectedLanguage == code;
     return GestureDetector(
+      key: ValueKey('lang_btn_$code'),
       onTap: () => setState(() => _selectedLanguage = code),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
@@ -918,11 +925,13 @@ class _ArtisanRegistrationScreenState
                     const SizedBox(width: 8),
                     ElevatedButton(
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Referral code GUILD500 applied! ₹500 joining bonus unlocked.'),
-                          ),
-                        );
+                        ScaffoldMessenger.of(context)
+                          ..hideCurrentSnackBar()
+                          ..showSnackBar(
+                            const SnackBar(
+                              content: Text('Referral code GUILD500 applied! ₹500 joining bonus unlocked.'),
+                            ),
+                          );
                       },
                       child: const Text('Apply'),
                     ),
@@ -1178,9 +1187,11 @@ class _ArtisanRegistrationScreenState
                   ),
                   TextButton.icon(
                     onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('DigiLocker KYC Gateway synced successfully!')),
-                      );
+                      ScaffoldMessenger.of(context)
+                        ..hideCurrentSnackBar()
+                        ..showSnackBar(
+                          const SnackBar(content: Text('DigiLocker KYC Gateway synced successfully!')),
+                        );
                     },
                     icon: const Icon(Icons.cloud_sync_rounded, size: 16),
                     label: const Text('DigiLocker'),
@@ -1274,17 +1285,28 @@ class _ArtisanRegistrationScreenState
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    child: Text('Calibrated Tools Audit', style: AppTypography.labelLg),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: AppColors.tertiarySurfaceTint,
-                      borderRadius: BorderRadius.circular(9999),
-                    ),
                     child: Text(
-                      'Guild Safety Standard',
-                      style: AppTypography.labelSm.copyWith(color: AppColors.tertiary),
+                      'Calibrated Tools Audit',
+                      style: AppTypography.labelLg,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Flexible(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: AppColors.tertiarySurfaceTint,
+                        borderRadius: BorderRadius.circular(9999),
+                      ),
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          'Guild Safety Standard',
+                          style: AppTypography.labelSm.copyWith(color: AppColors.tertiary),
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -1364,7 +1386,7 @@ class _ArtisanRegistrationScreenState
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Bank Direct Deposit Details', style: AppTypography.labelLg),
+              Text('Instant Guild Direct Payout', style: AppTypography.labelLg),
               const SizedBox(height: 12),
               TextField(
                 controller: _accountNoController,
@@ -1521,6 +1543,7 @@ class _ArtisanRegistrationScreenState
   // Bottom action buttons: Back & Next / Submit
   Widget _buildActionDock() {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         if (_currentStep < 4) ...[
           Row(

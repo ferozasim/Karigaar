@@ -130,9 +130,8 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                         style: AppTypography.headlineLg,
                       ),
                       const SizedBox(height: 8),
-                      RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
+                      Text.rich(
+                        TextSpan(
                           style: AppTypography.bodyMd.copyWith(color: AppColors.textMuted),
                           children: [
                             const TextSpan(text: 'We sent a 6-digit verification code to\n'),
@@ -142,6 +141,7 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                             ),
                           ],
                         ),
+                        textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 32),
 
