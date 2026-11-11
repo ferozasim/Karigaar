@@ -174,6 +174,7 @@ The following master feature inventory consolidates all components identified ac
 | **F-38** | Doorstep Access Timeout Guard | Live Tracking & Escrow | `active_job_live_tracking` | 15-min doorstep wait timer; triggers `DOORSTEP_ACCESS_DENIED`, releasing ₹99 transit fee | Dwell time >15m at destination | Auto-captures ₹99 fee (₹80 to partner), closes job | Phase 3 | `active_job_live_tracking` |
 | **F-39** | Multi-District Regional Corridor Selector | Hyperlocal Discovery | `locality_selector_sheet` | 7-district horizontal corridor carousel (Nanded, Parbhani, Latur, Hingoli, Sambhajinagar, Nagpur, Nizamabad) with localized artisan rosters | District selection tap | Switches active district, localities, and localized craftsmen roster | Ticket T-01 | `regional_districts.json` |
 | **F-40** | Super Admin Regional Corridor & KYC Filter | Admin Ops | `super_admin_portal` | Multi-district corridor filter bar switching live ops telemetry, surge corridors, and priority KYC queues across 7 regional hubs | District pill filter click | Filters live telemetry, surge heatmap, and KYC review candidates | Ticket T-02 | `apps/admin_web` |
+| **F-41** | Unified Microservice REST Client Engine | Backend Integration | `api_service.dart` | REST interface client implementing Section 5 contracts: WhatsApp OTP, masked telephony proxy, start code 4921, doorstep denial, decoupled invoice, and IMPS reserve | API call methods | Standardized response JSON and exception invariants | Ticket T-03 | `apps/mobile_app/lib/core/services/api_service.dart` |
 
 ---
 

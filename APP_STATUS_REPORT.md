@@ -93,6 +93,18 @@ All **12 screens** and shared Stitch UI components are implemented, wired into `
 | 11 | `ArtisanJobRadarScreen` | `/artisan/radar` | **100% Working** | Duty status toggle, 45s countdown ring with leak-free autoDispose notifier, regional job broadcast card, masked customer inquiry sheet, one-tap job claim, compact `ModeSwitcherPill` |
 | 12 | `ArtisanActiveJobScreen` | `/artisan/active-job/:bookingId` | **100% Working** | Live repair stopwatch, Start OTP (`4921`) handshake synced to `activeBookingProvider`, dynamic spare parts bill builder, Completion PIN (`7294`) settlement crediting `artisanWalletBalanceProvider`, zero-balance IMPS withdrawal guard, 320px wrap layout |
 
+### 3.1 Ticket T-03: Unified Microservice REST Client & Mock Backend Engine
+- Implemented `KarigaarApiService` (`lib/core/services/api_service.dart`) adhering to `PROJECT.md` Section 5 Interface Contracts:
+  1. **WhatsApp Authentication**: `/api/v1/auth/whatsapp/otp/request` & `verify` with 42s cooldown and phone number validation.
+  2. **Masked Telephony Bridge**: `/api/v1/telephony/bridge-call` generating virtual proxy bridge without raw phone number leakage.
+  3. **Partner Job Acceptance**: `/api/v1/dispatch/jobs/:id/accept` transitioning job to `ARTISAN_DISPATCHED`.
+  4. **Doorstep Security Handshake**: `/api/v1/bookings/:id/start-job` validating customer Start Code `4921` to trigger stopwatch.
+  5. **Doorstep Timeout & Denial**: `/api/v1/bookings/:id/doorstep-access-denied` enforcing >=15 min dwell and capturing ₹99 transit fee.
+  6. **Decoupled Bill Submission**: `/api/v1/bookings/:id/submit-invoice` calculating 2% parts surcharge and 18% GST.
+  7. **Escrow Completion Handshake**: `/api/v1/bookings/:id/verify-completion` releasing escrow funds upon OTP `7294`.
+  8. **Instant IMPS Payout**: `/api/v1/wallet/withdraw` strictly enforcing the ₹2,000 rolling security reserve invariant.
+- Verified with 14 isolated contract unit tests in `test/unit/api_service_test.dart` (100% passing).
+
 ---
 
 ## 4. Super Admin Web Console (`apps/admin_web`)
@@ -115,7 +127,7 @@ All **12 screens** and shared Stitch UI components are implemented, wired into `
 ## 5. Quality, Static Analysis & Automated Test Suite Verification
 
 ### 5.1 Verification Summary
-- **Flutter Automated Tests (`apps/mobile_app`)**: **120 / 120 tests passing (100% PASS RATE)** across all 14 test suites:
+- **Flutter Automated Tests (`apps/mobile_app`)**: **150 / 150 tests passing (100% PASS RATE)** across all 17 test suites:
   1. `test/unit/booking_model_stress_test.dart` (18 tests)
   2. `test/unit/booking_state_machine_test.dart` (7 tests)
   3. `test/unit/city_config_test.dart` (3 tests)
@@ -124,14 +136,18 @@ All **12 screens** and shared Stitch UI components are implemented, wired into `
   6. `test/widget/all_screens_theme_layout_test.dart` (8 tests)
   7. `test/widget/artisan_active_job_wallet_test.dart` (6 tests)
   8. `test/widget/artisan_profile_screen_test.dart` (7 tests)
-  9. `test/widget/locality_selector_sheet_test.dart` (5 tests — includes T-01 7-district regional corridor and localized roster tests)
+  9. `test/widget/locality_selector_sheet_test.dart` (5 tests)
   10. `test/widget/locality_selector_stress_test.dart` (12 tests)
   11. `test/widget/mode_switcher_pill_test.dart` (3 tests)
   12. `test/widget/phase1_workflows_stress_test.dart` (6 tests)
   13. `test/widget/phase2_adversarial_stress_test.dart` (32 tests — adversarial viewports 320x568/360x800/390x844, 1.5x/2.0x font scaling, registration form validation)
   14. `test/widget/phase2_workflows_empirical_challenger_test.dart` (4 comprehensive multi-screen workflow tests)
+  15. `test/unit/multi_district_corridor_empirical_test.dart` (8 tests — reactive district switching & regional fallback)
+  16. `test/widget/multi_district_corridor_widget_test.dart` (8 tests — 7-district step-by-step chip selection without overflow)
+  17. `test/unit/api_service_test.dart` (14 tests — WhatsApp OTP, masked telephony, start OTP, doorstep denial, decoupled invoicing, and IMPS reserve)
 - **Static Analysis (`apps/mobile_app`)**: `flutter analyze` reports **No issues found! (0 errors, 0 warnings, 0 infos)**.
 - **Admin Portal Tests (`apps/admin_web`)**: `npm test` reports **8 / 8 PASSED (0 FAILED)**.
+- **Admin Portal Linter (`apps/admin_web`)**: `next lint` reports **✔ No ESLint warnings or errors**.
 
 ### 5.2 Workspace Rules Compliance (`.agents/rules/flutter_layout_rules.md`)
 1. **Button Theme Sizes**: Global `AppTheme` enforces finite minimum sizes (`Size(64, 52)` and `Size(64, 48)`). No `Size.fromHeight` or `double.infinity` width in themes.
