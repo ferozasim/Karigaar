@@ -258,6 +258,12 @@ void main() {
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
 
+      final authBtn = find.text('Authorize ₹99 Mandate & Request Artisan');
+      if (authBtn.evaluate().isNotEmpty) {
+        await tester.tap(authBtn);
+        await tester.pumpAndSettle();
+      }
+
       // Now on /customer/active-tracking/BK_NANDED_8821
       expect(find.text('Live Dispatch Radar'), findsOneWidget);
       expect(find.text('4921'), findsOneWidget);

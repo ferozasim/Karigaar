@@ -41,10 +41,14 @@ void main() {
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pumpAndSettle();
 
+      final addPartBtn = find.text('Add Part');
+      await tester.ensureVisible(addPartBtn);
+      await tester.pumpAndSettle();
+
       expect(find.text('Dynamic Bill Builder'), findsOneWidget);
       expect(find.text('Havells 32A Double Pole MCB'), findsOneWidget);
 
-      await tester.tap(find.text('Add Part'));
+      await tester.tap(addPartBtn);
       await tester.pumpAndSettle();
 
       expect(find.text('Finolex 2.5 sq mm Copper Wire (5m)'), findsOneWidget);
@@ -104,7 +108,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
 
       expect(find.textContaining('transferred via IMPS!'), findsOneWidget);
-      expect(find.text('₹0.00'), findsOneWidget);
+      expect(find.text('₹2000.00'), findsOneWidget);
       await tester.pumpAndSettle();
     });
 

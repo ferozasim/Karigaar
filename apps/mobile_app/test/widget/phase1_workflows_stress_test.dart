@@ -51,8 +51,8 @@ void main() {
 
         expect(container.read(activeBookingProvider)?.parts.length, 2);
 
-        // Total bill = 249 (labor) + 380 (MCB) + 220 (Wire) = 849
-        expect(find.text('₹849'), findsOneWidget);
+        // Total bill with 2% parts surcharge and 18% GST = 1016
+        expect(find.text('₹1016'), findsOneWidget);
 
         // 3. Enter Completion PIN (7294) transitions status to settled and credits wallet
         final completionInput = find.widgetWithText(TextField, 'Enter 4-digit Completion PIN');
@@ -60,7 +60,7 @@ void main() {
         await tester.pumpAndSettle();
         await tester.enterText(completionInput, '7294');
 
-        final finishBtn = find.textContaining('Finish Job & Claim ₹849');
+        final finishBtn = find.textContaining('Finish Job & Claim ₹1016');
         await tester.ensureVisible(finishBtn);
         await tester.pumpAndSettle();
         await tester.tap(finishBtn);
@@ -68,7 +68,7 @@ void main() {
 
         expect(container.read(activeBookingProvider)?.status, BookingStatus.settled);
         expect(container.read(activeBookingProvider)?.completionTime, isNotNull);
-        expect(container.read(artisanWalletBalanceProvider), 4620.00 + 849.00);
+        expect(container.read(artisanWalletBalanceProvider), 4620.00 + 1016.00);
         expect(find.text('IMPS Payout Settled!'), findsOneWidget);
       },
     );

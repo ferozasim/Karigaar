@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/providers/app_providers.dart';
 import '../../../core/models/booking_model.dart';
+import '../../../core/services/api_service.dart';
 import '../../../core/services/contact_intent_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
@@ -19,6 +20,8 @@ class ArtisanActiveJobScreen extends ConsumerStatefulWidget {
 
 class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen> {
   bool _startOtpVerified = false;
+  int _dwellMinutes = 16;
+  bool _invoiceSubmitted = false;
   final TextEditingController _startOtpController = TextEditingController();
   final TextEditingController _completionOtpController = TextEditingController();
 
@@ -29,6 +32,9 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
       unitPrice: 380,
       quantity: 1,
       receiptPhotoUrl: 'hardware_receipt_01.jpg',
+      hardwareStoreName: 'Gupta Electricals, Sector 48',
+      isApproved: true,
+      is2FaApproved: true,
     ),
   ];
 
@@ -54,12 +60,77 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
     }
   }
 
-  void _addPart() {
+  Future<void> _triggerDoorstepDenial() async {
+    final booking = ref.read(activeBookingProvider);
+    final bookingId = booking?.bookingId ?? widget.bookingId;
+    final api = ref.read(apiServiceProvider);
+
+    try {
+      final res = await api.triggerDoorstepAccessDenied(
+        bookingId: bookingId,
+        dwellMinutes: _dwellMinutes,
+      );
+      final compensation = res['data']['transitCompensation'] as Map<String, dynamic>?;
+      final credited = (compensation?['creditedToArtisanGuildWallet'] as num?)?.toDouble() ?? 80.0;
+
+      ref.read(artisanWalletBalanceProvider.notifier).update((bal) => bal + credited);
+      if (booking != null) {
+        ref.read(activeBookingProvider.notifier).state = booking.copyWith(
+          status: BookingStatus.cancelledByCustomer,
+          dwellMinutesAtDestination: _dwellMinutes,
+        );
+      }
+
+      if (mounted) {
+        await showDialog<void>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: const Text('Doorstep Access Denied'),
+            content: Text(
+              'Doorstep access denial verified via dwell time (${_dwellMinutes}m >= 15m).\n\n₹${credited.toStringAsFixed(2)} transit fee has been credited to your Guild Wallet. Standby pre-auth captured.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(ctx);
+                  if (Navigator.of(context).canPop()) {
+                    Navigator.of(context).pop();
+                  } else {
+                    try {
+                      context.go('/artisan/radar');
+                    } catch (_) {}
+                  }
+                },
+                child: const Text('Close Job'),
+              ),
+            ],
+          ),
+        );
+      }
+    } on ApiException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.message),
+            backgroundColor: Colors.red.shade700,
+          ),
+        );
+      }
+    }
+  }
+
+  void _addPart({String? name, int? price, String? receiptUrl, String? storeName}) {
+    final partName = name ?? 'Finolex 2.5 sq mm Copper Wire (5m)';
+    final partPrice = price ?? 220;
     final newPart = BillPartItem(
       id: 'p${_parts.length + 1}',
-      name: 'Finolex 2.5 sq mm Copper Wire (5m)',
-      unitPrice: 220,
+      name: partName,
+      unitPrice: partPrice,
       quantity: 1,
+      receiptPhotoUrl: receiptUrl ?? 'hardware_receipt_02.jpg',
+      hardwareStoreName: storeName ?? 'Gupta Electricals, Anand Nagar',
+      isApproved: true,
+      is2FaApproved: true,
     );
     setState(() {
       _parts.add(newPart);
@@ -72,13 +143,137 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
     }
   }
 
+  void _showAddCustomPartDialog() {
+    final nameController = TextEditingController(text: 'Havells MCB 16A Single Pole');
+    final priceController = TextEditingController(text: '180');
+    final storeController = TextEditingController(text: 'Shree Balaji Hardware, Station Rd');
+    bool hasReceipt = true;
+
+    showDialog<void>(
+      context: context,
+      builder: (dialogCtx) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              title: const Text('Add Spare Part with 2FA'),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: nameController,
+                      decoration: const InputDecoration(labelText: 'Part Name & Specification'),
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: priceController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(labelText: 'Unit Price (₹)'),
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: storeController,
+                      decoration: const InputDecoration(labelText: 'Hardware Store Name'),
+                    ),
+                    const SizedBox(height: 8),
+                    CheckboxListTile(
+                      value: hasReceipt,
+                      title: const Text('Attach Hardware Store Receipt Photo', style: TextStyle(fontSize: 13)),
+                      contentPadding: EdgeInsets.zero,
+                      onChanged: (val) => setDialogState(() => hasReceipt = val ?? false),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceSubtle,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Text(
+                        'Pass-through spare parts include a 2% payment gateway surcharge and trigger an in-app customer RBI 2FA approval prompt.',
+                        style: TextStyle(fontSize: 11, color: AppColors.textMuted),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(dialogCtx),
+                  child: const Text('Cancel'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    final price = int.tryParse(priceController.text.trim()) ?? 180;
+                    _addPart(
+                      name: nameController.text.trim(),
+                      price: price,
+                      receiptUrl: hasReceipt ? 'hardware_receipt_${_parts.length + 1}.jpg' : null,
+                      storeName: storeController.text.trim(),
+                    );
+                    Navigator.pop(dialogCtx);
+                  },
+                  child: const Text('Add Part to Bill'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> _submitDecoupledInvoice() async {
+    final booking = ref.read(activeBookingProvider);
+    final bookingId = booking?.bookingId ?? widget.bookingId;
+    final labor = booking?.laborFee ?? 249;
+    final api = ref.read(apiServiceProvider);
+
+    try {
+      final res = await api.submitDecoupledInvoice(
+        bookingId: bookingId,
+        parts: _parts,
+        laborBase: labor,
+      );
+      final data = res['data'] as Map<String, dynamic>?;
+
+      setState(() => _invoiceSubmitted = true);
+      if (booking != null) {
+        ref.read(activeBookingProvider.notifier).state = booking.copyWith(
+          status: BookingStatus.completionPendingOtp,
+          parts: List<BillPartItem>.from(_parts),
+          partsGatewaySurcharge: data?['partsGatewaySurcharge2Percent'] as int?,
+          gstAmount: data?['gst18Percent'] as int?,
+          grandTotal: data?['grandTotal'] as int?,
+        );
+      }
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Itemized Invoice Submitted! Customer notified to verify bill and release PIN.'),
+            backgroundColor: AppColors.tertiary,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to submit invoice: $e')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final booking = ref.watch(activeBookingProvider);
     final telemetryStatus = ref.watch(artisanTelemetryStatusProvider);
     final labor = booking?.laborFee ?? 249;
     final partsTotal = _parts.fold(0, (sum, p) => sum + p.total);
-    final totalBill = labor + partsTotal;
+    final partsSurcharge = (partsTotal * 0.02).round();
+    final subtotal = labor + partsTotal + partsSurcharge;
+    final gst18 = (subtotal * 0.18).round();
+    final totalBill = subtotal + gst18;
 
     return Scaffold(
       backgroundColor: AppColors.surfaceBase,
@@ -292,7 +487,7 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
               const SizedBox(height: 10),
             ],
 
-            // Step 1: Start Code Verification
+            // Step 1: Start Code Verification & Doorstep Denial
             if (!_startOtpVerified) ...[
               Container(
                 padding: const EdgeInsets.all(14),
@@ -335,6 +530,80 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                       label: 'Verify Code & Begin Repair',
                       onPressed: _verifyStartOtp,
                     ),
+                    const SizedBox(height: 12),
+                    // Doorstep Access Denial & Dwell Time Guard
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceSubtle,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: AppColors.borderSubtle),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const Icon(Icons.timer_outlined, size: 16, color: AppColors.secondary),
+                              const SizedBox(width: 6),
+                              Expanded(
+                                child: Text(
+                                  'Doorstep Dwell: ${_dwellMinutes}m (Min 15m for denial)',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: AppTypography.labelSm.copyWith(fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    key: const Key('dwell_decrement_btn'),
+                                    icon: const Icon(Icons.remove_circle_outline, size: 18),
+                                    onPressed: () {
+                                      if (_dwellMinutes > 0) {
+                                        setState(() => _dwellMinutes--);
+                                      }
+                                    },
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  IconButton(
+                                    key: const Key('dwell_increment_btn'),
+                                    icon: const Icon(Icons.add_circle_outline, size: 18),
+                                    onPressed: () {
+                                      setState(() => _dwellMinutes++);
+                                    },
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 6),
+                          SizedBox(
+                            width: double.infinity,
+                            child: OutlinedButton.icon(
+                              key: const Key('doorstep_access_denied_btn'),
+                              onPressed: _triggerDoorstepDenial,
+                              icon: const Icon(Icons.door_front_door_outlined, size: 16, color: Color(0xFFDC2626)),
+                              label: const Text(
+                                'Doorstep Access Denied (Claim ₹80 Transit)',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(color: Color(0xFFDC2626), fontWeight: FontWeight.bold),
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                side: const BorderSide(color: Color(0xFFDC2626)),
+                                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -363,21 +632,33 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
             const SizedBox(height: 24),
 
             // Step 2: Dynamic Parts & Materials Bill Builder
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 8,
+              runSpacing: 4,
               children: [
-                Expanded(
-                  child: Text(
-                    'Dynamic Bill Builder',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: AppTypography.headlineSm,
+                Text(
+                  'Dynamic Bill Builder',
+                  style: AppTypography.headlineSm,
+                ),
+                TextButton.icon(
+                  onPressed: _showAddCustomPartDialog,
+                  icon: const Icon(Icons.playlist_add_rounded, size: 16),
+                  label: const Text('Custom Part'),
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                    visualDensity: VisualDensity.compact,
                   ),
                 ),
                 TextButton.icon(
                   onPressed: _addPart,
-                  icon: const Icon(Icons.add_rounded, size: 18),
+                  icon: const Icon(Icons.add_rounded, size: 16),
                   label: const Text('Add Part'),
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                    visualDensity: VisualDensity.compact,
+                  ),
                 ),
               ],
             ),
@@ -451,22 +732,101 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
             }),
 
             const SizedBox(height: 16),
-            // Bill Summary
+            // Bill Summary & Itemized Breakdown
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: AppColors.surfaceSubtle,
                 borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.borderSubtle),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: Text('Total Invoiced to Customer', style: AppTypography.labelLg),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(child: Text('Labor & Inspection Base', style: AppTypography.bodySm)),
+                      const SizedBox(width: 8),
+                      Text('₹$labor', style: AppTypography.labelMd),
+                    ],
                   ),
-                  const SizedBox(width: 8),
-                  Text('₹$totalBill', style: AppTypography.numericPrice.copyWith(fontSize: 22)),
+                  const SizedBox(height: 6),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(child: Text('Spare Parts (${_parts.length} items)', style: AppTypography.bodySm)),
+                      const SizedBox(width: 8),
+                      Text('₹$partsTotal', style: AppTypography.labelMd),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Flexible(child: Text('2% Parts Gateway Surcharge', style: AppTypography.bodySm, overflow: TextOverflow.ellipsis)),
+                            const SizedBox(width: 4),
+                            const Icon(Icons.info_outline_rounded, size: 12, color: AppColors.textMuted),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text('+₹$partsSurcharge', style: AppTypography.labelMd.copyWith(color: AppColors.secondary)),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(child: Text('18% GST (Labor & Surcharge)', style: AppTypography.bodySm)),
+                      const SizedBox(width: 8),
+                      Text('+₹$gst18', style: AppTypography.labelMd.copyWith(color: AppColors.textMuted)),
+                    ],
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    child: Divider(),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text('Total Invoiced to Customer', style: AppTypography.labelLg.copyWith(fontWeight: FontWeight.bold)),
+                      ),
+                      const SizedBox(width: 8),
+                      Text('₹$totalBill', style: AppTypography.numericPrice.copyWith(fontSize: 22)),
+                    ],
+                  ),
                 ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            // Decoupled Invoicing Submit Button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                key: const Key('submit_decoupled_invoice_btn'),
+                onPressed: _invoiceSubmitted ? null : _submitDecoupledInvoice,
+                icon: Icon(
+                  _invoiceSubmitted ? Icons.check_circle_outline_rounded : Icons.receipt_long_rounded,
+                  size: 18,
+                ),
+                label: Text(
+                  _invoiceSubmitted
+                      ? 'Itemized Invoice Submitted • Waiting Customer PIN'
+                      : 'Submit Itemized Invoice (Decoupled)',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: _invoiceSubmitted ? AppColors.tertiary : AppColors.primary,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
               ),
             ),
 
@@ -504,6 +864,9 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                     ref.read(activeBookingProvider.notifier).state = currentBooking.copyWith(
                       status: BookingStatus.settled,
                       parts: List<BillPartItem>.from(_parts),
+                      partsGatewaySurcharge: partsSurcharge,
+                      gstAmount: gst18,
+                      grandTotal: totalBill,
                       completionTime: DateTime.now(),
                     );
                   }
@@ -783,6 +1146,67 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                   ),
                 ],
               ),
+              const SizedBox(height: 12),
+              // Reserve Breakdown Pods
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'LOCKED RESERVE',
+                            style: AppTypography.labelSm.copyWith(
+                              color: Colors.white70,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            '₹2,000.00',
+                            style: AppTypography.labelMd.copyWith(
+                              color: AppColors.secondaryLight,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(width: 1, height: 28, color: Colors.white24),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'AVAILABLE PAYOUT',
+                            style: AppTypography.labelSm.copyWith(
+                              color: Colors.white70,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            '₹${(balance > 2000.0 ? balance - 2000.0 : 0.0).toStringAsFixed(2)}',
+                            style: AppTypography.labelMd.copyWith(
+                              color: AppColors.tertiaryLight,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               const SizedBox(height: 18),
               // Withdraw to Bank via IMPS Button
               SizedBox(
@@ -880,14 +1304,35 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
       );
       return;
     }
+
+    const double minReserve = 2000.0;
+    final double available = currentBalance > minReserve ? currentBalance - minReserve : 0.0;
+
+    if (available <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Cannot withdraw. A mandatory ₹2,000 security reserve must be maintained.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
+        actionsOverflowButtonSpacing: 8,
         title: Row(
           children: [
             const Icon(Icons.bolt_rounded, color: AppColors.secondary),
             const SizedBox(width: 8),
-            Text('Instant IMPS Payout', style: AppTypography.headlineSm.copyWith(fontSize: 18)),
+            Expanded(
+              child: Text(
+                'Instant IMPS Payout',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTypography.headlineSm.copyWith(fontSize: 18),
+              ),
+            ),
           ],
         ),
         content: Column(
@@ -895,8 +1340,20 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Withdraw available cleared balance of ₹${currentBalance.toStringAsFixed(2)} directly to verified HDFC vault?',
+              'Withdraw available cleared balance of ₹${available.toStringAsFixed(2)} directly to verified HDFC vault?',
               style: AppTypography.bodyMd,
+            ),
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFEF3C7),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                'Mandatory ₹2,000 rolling security reserve locked in Guild Vault.',
+                style: AppTypography.labelSm.copyWith(color: const Color(0xFF92400E), fontSize: 11),
+              ),
             ),
             const SizedBox(height: 12),
             Container(
@@ -923,15 +1380,32 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
             child: const Text('Cancel'),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(ctx);
-              ref.read(artisanWalletBalanceProvider.notifier).state = 0.00;
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('₹${currentBalance.toStringAsFixed(2)} transferred via IMPS! Ref #IMPS_NANDED_88291'),
-                  backgroundColor: AppColors.tertiary,
-                ),
-              );
+              try {
+                final api = ref.read(apiServiceProvider);
+                await api.withdrawWalletImps(
+                  artisanId: 'art_nanded_01',
+                  amount: available,
+                  currentWalletBalance: currentBalance,
+                  upiVpa: 'artisan@okaxis',
+                );
+                ref.read(artisanWalletBalanceProvider.notifier).state = currentBalance - available;
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('₹${available.toStringAsFixed(2)} transferred via IMPS! Ref #IMPS_NANDED_88291'),
+                      backgroundColor: AppColors.tertiary,
+                    ),
+                  );
+                }
+              } on ApiException catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(e.message), backgroundColor: Colors.red),
+                  );
+                }
+              }
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,

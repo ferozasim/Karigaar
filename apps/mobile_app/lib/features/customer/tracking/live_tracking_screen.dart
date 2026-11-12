@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/models/booking_model.dart';
 import '../../../core/providers/app_providers.dart';
+import '../../../core/services/api_service.dart';
 import '../../../core/services/contact_intent_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
@@ -258,6 +259,43 @@ class LiveTrackingScreen extends ConsumerWidget {
                   ),
                 ],
 
+                // Doorstep Arrival Dwell Warning Notice
+                if (feed.isGeofenceTriggered || booking.status == BookingStatus.artisanArrived) ...[
+                  const SizedBox(height: 12),
+                  Container(
+                    key: const Key('doorstep_dwell_warning_card'),
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFEF2F2),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: const Color(0xFFF87171), width: 1.2),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.warning_amber_rounded, color: Color(0xFFDC2626), size: 24),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Doorstep Arrival Dwell Warning (${booking.dwellMinutesAtDestination}m)',
+                                style: AppTypography.labelMd.copyWith(color: const Color(0xFF991B1B), fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                'Artisan is waiting outside. Standby ₹99 transit fee applies if doorstep entry is unreachable or denied for >15 mins.',
+                                style: AppTypography.bodySm.copyWith(color: const Color(0xFFB91C1C), fontSize: 11),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+
                 const SizedBox(height: 20),
 
                 // Security Start Code Display (4921)
@@ -436,11 +474,422 @@ class LiveTrackingScreen extends ConsumerWidget {
                   isCurrent: activeStage == 4,
                   isLast: true,
                 ),
+
+                const SizedBox(height: 24),
+
+                // Customer Invoice Review & Completion OTP Card
+                Container(
+                  key: const Key('customer_invoice_review_card'),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceRaised,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: AppColors.borderSubtle),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Row(
+                              children: [
+                                const Icon(Icons.receipt_long_rounded, color: AppColors.primary, size: 20),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    'Customer Invoice Review',
+                                    style: AppTypography.headlineSm.copyWith(fontSize: 16),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: booking.status == BookingStatus.completed || booking.status == BookingStatus.settled
+                                  ? AppColors.tertiarySurfaceTint
+                                  : AppColors.surfaceSubtle,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              booking.status == BookingStatus.completed || booking.status == BookingStatus.settled
+                                  ? 'Paid & Settled'
+                                  : 'Pending Review',
+                              style: AppTypography.labelSm.copyWith(
+                                color: booking.status == BookingStatus.completed || booking.status == BookingStatus.settled
+                                    ? AppColors.tertiary
+                                    : AppColors.textMuted,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(child: Text('Labor & Diagnostic Inspection', style: AppTypography.bodySm)),
+                          const SizedBox(width: 8),
+                          Text('₹${booking.laborFee}', style: AppTypography.labelMd),
+                        ],
+                      ),
+                      if (booking.parts.isNotEmpty) ...[
+                        const SizedBox(height: 6),
+                        ...booking.parts.map((p) => Padding(
+                              padding: const EdgeInsets.only(bottom: 4),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      '${p.name} (Receipt Attached)',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: AppTypography.bodySm,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text('₹${p.total}', style: AppTypography.labelMd),
+                                ],
+                              ),
+                            )),
+                        const SizedBox(height: 4),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(child: Text('2% Parts Gateway Surcharge', style: AppTypography.bodySm)),
+                            const SizedBox(width: 8),
+                            Text('+₹${booking.partsGatewaySurcharge}', style: AppTypography.labelMd.copyWith(color: AppColors.secondary)),
+                          ],
+                        ),
+                      ],
+                      const SizedBox(height: 6),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(child: Text('18% GST (Labor & Surcharge)', style: AppTypography.bodySm)),
+                          const SizedBox(width: 8),
+                          Text('+₹${booking.gstAmount}', style: AppTypography.labelMd.copyWith(color: AppColors.textMuted)),
+                        ],
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 8),
+                        child: Divider(),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(child: Text('Grand Total Payable', style: AppTypography.labelLg.copyWith(fontWeight: FontWeight.bold))),
+                          const SizedBox(width: 8),
+                          Text('₹${booking.grandTotal}', style: AppTypography.numericPrice.copyWith(fontSize: 20)),
+                        ],
+                      ),
+                      const SizedBox(height: 14),
+                      // Completion OTP Reveal Box
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppColors.secondarySurfaceTint,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: AppColors.secondaryContainer),
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              'YOUR 4-DIGIT COMPLETION OTP',
+                              style: AppTypography.labelSm.copyWith(
+                                color: AppColors.secondary,
+                                letterSpacing: 0.8,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              booking.completionOtp,
+                              style: AppTypography.displayLg.copyWith(
+                                fontSize: 32,
+                                letterSpacing: 6,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Share verbally with artisan only after satisfactory completion.',
+                              textAlign: TextAlign.center,
+                              style: AppTypography.bodySm.copyWith(fontSize: 11, color: AppColors.textMuted),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () => _showCustomerInvoiceReviewSheet(context, ref, booking),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          ),
+                          child: const Text(
+                            'Review Detailed Invoice & Release OTP',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  void _showCustomerInvoiceReviewSheet(BuildContext context, WidgetRef ref, BookingModel booking) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (sheetCtx) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: 20,
+            bottom: MediaQuery.of(sheetCtx).viewInsets.bottom + 24,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: AppColors.borderSubtle,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryContainer,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Icon(Icons.receipt_long_rounded, color: Colors.white, size: 22),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Itemized Service Invoice', style: AppTypography.headlineSm.copyWith(fontSize: 18)),
+                          Text('Booking #${booking.bookingId}', style: AppTypography.labelSm.copyWith(color: AppColors.textMuted)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceSubtle,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.borderSubtle),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(child: Text('Labor & Diagnostic Inspection', style: AppTypography.bodySm)),
+                          const SizedBox(width: 8),
+                          Text('₹${booking.laborFee}', style: AppTypography.labelMd),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      if (booking.parts.isNotEmpty) ...[
+                        Text('Spare Parts & Materials', style: AppTypography.labelSm.copyWith(fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 4),
+                        ...booking.parts.map((p) => Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 2),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        const Icon(Icons.inventory_2_outlined, size: 14, color: AppColors.secondary),
+                                        const SizedBox(width: 4),
+                                        Expanded(
+                                          child: Text(
+                                            '${p.name} (Receipt Attached)',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: AppTypography.bodySm.copyWith(fontSize: 12),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text('₹${p.total}', style: AppTypography.labelSm),
+                                ],
+                              ),
+                            )),
+                        const SizedBox(height: 6),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(child: Text('2% Parts Payment Gateway Surcharge', style: AppTypography.bodySm)),
+                            const SizedBox(width: 8),
+                            Text('+₹${booking.partsGatewaySurcharge}', style: AppTypography.labelMd.copyWith(color: AppColors.secondary)),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                      ],
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(child: Text('18% GST (Labor & Gateway Surcharge)', style: AppTypography.bodySm)),
+                          const SizedBox(width: 8),
+                          Text('+₹${booking.gstAmount}', style: AppTypography.labelMd.copyWith(color: AppColors.textMuted)),
+                        ],
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 8),
+                        child: Divider(),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(child: Text('Grand Total', style: AppTypography.labelLg.copyWith(fontWeight: FontWeight.bold))),
+                          const SizedBox(width: 8),
+                          Text('₹${booking.grandTotal}', style: AppTypography.numericPrice.copyWith(fontSize: 22)),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.secondarySurfaceTint,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.secondaryContainer),
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        'RELEASE COMPLETION OTP TO ARTISAN',
+                        style: AppTypography.labelSm.copyWith(
+                          color: AppColors.secondary,
+                          letterSpacing: 0.8,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        booking.completionOtp,
+                        style: AppTypography.displayLg.copyWith(
+                          fontSize: 32,
+                          letterSpacing: 6,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'By revealing and releasing this OTP, you verify job completion and authorize escrow release.',
+                        textAlign: TextAlign.center,
+                        style: AppTypography.bodySm.copyWith(fontSize: 11, color: AppColors.textMuted),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      try {
+                        final api = ref.read(apiServiceProvider);
+                        await api.verifyCustomerCompletion(
+                          bookingId: booking.bookingId,
+                          completionOtp: booking.completionOtp,
+                          customerRating: 5,
+                          feedbackNote: 'Service completed satisfactorily.',
+                        );
+                        await api.releaseUpiMandate(
+                          bookingId: booking.bookingId,
+                          mandateId: booking.mandateId ?? 'man_preauth_9981',
+                        );
+
+                        ref.read(activeBookingProvider.notifier).state = booking.copyWith(
+                          status: BookingStatus.completed,
+                          mandateStatus: UpiMandateStatus.released,
+                        );
+
+                        if (sheetCtx.mounted) {
+                          Navigator.pop(sheetCtx);
+                        }
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Completion Verified! Standby ₹99 mandate released, escrow settled.'),
+                              backgroundColor: AppColors.tertiary,
+                            ),
+                          );
+                        }
+                      } catch (e) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Verification error: $e')),
+                          );
+                        }
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    child: Text(
+                      'Verify & Release Completion OTP (${booking.completionOtp})',
+                      style: AppTypography.labelLg.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 

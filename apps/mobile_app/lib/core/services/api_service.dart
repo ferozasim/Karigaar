@@ -199,10 +199,40 @@ class KarigaarApiService {
     };
   }
 
+  /// Contract 4: Request Customer 2FA Approval for Spare Part (`POST /api/v1/bookings/:id/invoice/items/2fa-request`)
+  Future<Map<String, dynamic>> requestPart2FaApproval({
+    required String bookingId,
+    required String partName,
+    required int price,
+  }) async {
+    final cleanPartName = partName.trim();
+    if (cleanPartName.isEmpty || price <= 0) {
+      throw const ApiException('Part name and valid price are required for 2FA approval.', code: 'INVALID_PART_DETAILS', statusCode: 422);
+    }
+
+    final approvalToken = 'appr_2fa_${DateTime.now().millisecondsSinceEpoch}';
+    final convenienceFee = (price * 0.02).round();
+    return {
+      'status': 'SUCCESS',
+      'data': {
+        'approvalToken': approvalToken,
+        'bookingId': bookingId,
+        'partName': cleanPartName,
+        'price': price,
+        'approvalStatus': 'PENDING_CUSTOMER_2FA_APPROVAL',
+        'customerApprovalPromptDispatched': true,
+        'partsGatewayConvenienceFee': convenienceFee,
+        'message': 'Customer 2FA approval prompt dispatched for ₹$price spare part.',
+      },
+    };
+  }
+
   /// Contract 4: Decoupled Verification & OTP Release (`POST /api/v1/bookings/:id/verify-completion`)
   Future<Map<String, dynamic>> verifyCustomerCompletion({
     required String bookingId,
     required String completionOtp,
+    int customerRating = 5,
+    String feedbackNote = '',
   }) async {
     final cleanCode = completionOtp.trim();
     if (cleanCode != '7294') {
@@ -215,6 +245,8 @@ class KarigaarApiService {
         'bookingId': bookingId,
         'state': 'PAYMENT_RELEASED',
         'escrowSettled': true,
+        'customerRating': customerRating,
+        'feedbackNote': feedbackNote,
         'warrantyActiveDays': 30,
         'masterShieldCover': 25000,
         'completedAt': DateTime.now().toUtc().toIso8601String(),
@@ -225,11 +257,17 @@ class KarigaarApiService {
   /// Contract 4: Instant IMPS Payout (`POST /api/v1/wallet/withdraw`)
   Future<Map<String, dynamic>> withdrawWalletImps({
     required String artisanId,
-    required int amount,
-    required int currentWalletBalance,
-    required String upiVpa,
+    required num amount,
+    required num currentWalletBalance,
+    String? upiId,
+    String? upiVpa,
   }) async {
-    const minReserve = 2000;
+    final effectiveVpa = (upiId ?? upiVpa ?? '').trim();
+    if (effectiveVpa.isEmpty) {
+      throw const ApiException('UPI ID / VPA is required for IMPS withdrawal.', code: 'MISSING_UPI_ID', statusCode: 422);
+    }
+
+    const double minReserve = 2000.0;
     if (amount <= 0) {
       throw const ApiException('Withdrawal amount must be greater than zero.', code: 'INVALID_AMOUNT', statusCode: 422);
     }
@@ -251,10 +289,103 @@ class KarigaarApiService {
         'artisanId': artisanId,
         'amountDebited': amount,
         'remainingBalance': currentWalletBalance - amount,
-        'upiVpa': upiVpa,
+        'upiVpa': effectiveVpa,
+        'upiId': effectiveVpa,
         'channel': 'IMPS_INSTANT_24X7',
         'status': 'TRANSFERRED',
         'bankReferenceNumber': 'RRN${DateTime.now().millisecondsSinceEpoch}',
+      },
+    };
+  }
+
+  /// Contract 5: Upfront UPI Pre-Authorization Mandate (`POST /api/v1/payments/mandates/create`)
+  Future<Map<String, dynamic>> createUpiPreAuthMandate({
+    required String bookingId,
+    required String customerId,
+    required String upiVpa,
+    int amount = 99,
+  }) async {
+    final cleanVpa = upiVpa.trim();
+    final vpaRegex = RegExp(r'^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$');
+    if (!vpaRegex.hasMatch(cleanVpa)) {
+      throw const ApiException(
+        'Invalid UPI VPA format. Expected user@bank format.',
+        code: 'INVALID_VPA',
+        statusCode: 422,
+      );
+    }
+
+    final mandateId = 'man_${DateTime.now().millisecondsSinceEpoch}';
+    return {
+      'status': 'SUCCESS',
+      'data': {
+        'mandateId': mandateId,
+        'bookingId': bookingId,
+        'customerId': customerId,
+        'upiVpa': cleanVpa,
+        'amount': amount,
+        'currency': 'INR',
+        'mandateStatus': 'AUTHORIZED',
+        'gateway': 'RAZORPAY_UPI_AUTOPAY_SANDBOX',
+        'transitFeeProtected': true,
+        'authorizedAt': DateTime.now().toUtc().toIso8601String(),
+      },
+    };
+  }
+
+  /// Contract 5: Capture UPI Pre-Auth Mandate on Doorstep Denial (`POST /api/v1/payments/mandates/:id/capture`)
+  Future<Map<String, dynamic>> captureUpiMandate({
+    required String bookingId,
+    required String mandateId,
+    String reason = 'DOORSTEP_ACCESS_DENIED',
+  }) async {
+    return {
+      'status': 'SUCCESS',
+      'data': {
+        'mandateId': mandateId,
+        'bookingId': bookingId,
+        'mandateStatus': 'CAPTURED',
+        'debitedAmount': 99.0,
+        'creditedToArtisan': 80.0,
+        'platformFee': 19.0,
+        'reason': reason,
+        'capturedAt': DateTime.now().toUtc().toIso8601String(),
+        'message': '₹99 transit fee captured. ₹80 credited to artisan wallet, ₹19 platform fee retained.',
+      },
+    };
+  }
+
+  /// Contract 5: Release UPI Pre-Auth Mandate on Completion (`POST /api/v1/payments/mandates/:id/release`)
+  Future<Map<String, dynamic>> releaseUpiMandate({
+    required String bookingId,
+    required String mandateId,
+  }) async {
+    return {
+      'status': 'SUCCESS',
+      'data': {
+        'mandateId': mandateId,
+        'bookingId': bookingId,
+        'mandateStatus': 'RELEASED',
+        'holdAmountReleased': 99.0,
+        'releasedAt': DateTime.now().toUtc().toIso8601String(),
+        'message': 'Standby ₹99 pre-auth hold released successfully upon job completion.',
+      },
+    };
+  }
+
+  /// Contract 5: Revoke UPI Pre-Auth Mandate (`POST /api/v1/payments/mandates/:id/revoke`)
+  Future<Map<String, dynamic>> revokeUpiMandate({
+    required String bookingId,
+    required String mandateId,
+  }) async {
+    return {
+      'status': 'SUCCESS',
+      'data': {
+        'mandateId': mandateId,
+        'bookingId': bookingId,
+        'mandateStatus': 'REVOKED',
+        'revokedAt': DateTime.now().toUtc().toIso8601String(),
+        'message': 'UPI pre-authorization mandate revoked.',
       },
     };
   }

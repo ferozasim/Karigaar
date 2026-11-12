@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/models/booking_model.dart';
+import '../../../core/services/api_service.dart';
 import '../../../core/providers/app_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
@@ -442,8 +444,7 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                         flex: 0,
                         child: ElevatedButton(
                           onPressed: () {
-                            // Navigate to live tracking for demo
-                            context.push('/customer/active-tracking/BK_NANDED_8821');
+                            _showUpiPreAuthMandateSheet(context, grandTotal);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primary,
@@ -469,6 +470,225 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
       },
       loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (e, _) => Scaffold(body: Center(child: Text('Error: $e'))),
+    );
+  }
+
+  void _showUpiPreAuthMandateSheet(BuildContext context, int grandTotal) {
+    final vpaController = TextEditingController(text: 'customer@okaxis');
+    String? errorMessage;
+
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (sheetContext) {
+        return StatefulBuilder(
+          builder: (context, setSheetState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                left: 20,
+                right: 20,
+                top: 20,
+                bottom: MediaQuery.of(sheetContext).viewInsets.bottom + 24,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 40,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: AppColors.borderSubtle,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: AppColors.primaryContainer,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Icon(Icons.security_rounded, color: Colors.white, size: 22),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Upfront ₹99 Standby Mandate',
+                                style: AppTypography.headlineSm.copyWith(fontSize: 17),
+                              ),
+                              Text(
+                                'Razorpay / Cashfree UPI Autopay Protected',
+                                style: AppTypography.labelSm.copyWith(color: AppColors.tertiary, fontWeight: FontWeight.w600),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceSubtle,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: AppColors.borderSubtle),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const Icon(Icons.info_outline_rounded, size: 16, color: AppColors.primary),
+                              const SizedBox(width: 6),
+                              Expanded(
+                                child: Text('Why is a ₹99 pre-authorization required?', style: AppTypography.labelSm.copyWith(fontWeight: FontWeight.bold)),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Secures ₹99 standby transit fee hold to protect artisan fuel and travel. The hold is RELEASED upon job completion and debited ONLY if doorstep access is denied for >15 minutes.',
+                            style: AppTypography.bodySm.copyWith(fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text('Quick Select UPI App', style: AppTypography.labelMd.copyWith(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        ActionChip(
+                          avatar: const Icon(Icons.account_balance_wallet_rounded, size: 16, color: Color(0xFF1A73E8)),
+                          label: const Text('GPay'),
+                          onPressed: () {
+                            setSheetState(() {
+                              vpaController.text = 'customer@okaxis';
+                              errorMessage = null;
+                            });
+                          },
+                        ),
+                        ActionChip(
+                          avatar: const Icon(Icons.account_balance_wallet_rounded, size: 16, color: Color(0xFF5F259F)),
+                          label: const Text('PhonePe'),
+                          onPressed: () {
+                            setSheetState(() {
+                              vpaController.text = 'customer@ybl';
+                              errorMessage = null;
+                            });
+                          },
+                        ),
+                        ActionChip(
+                          avatar: const Icon(Icons.account_balance_wallet_rounded, size: 16, color: Color(0xFF002970)),
+                          label: const Text('Paytm'),
+                          onPressed: () {
+                            setSheetState(() {
+                              vpaController.text = 'customer@paytm';
+                              errorMessage = null;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+                    Text('Enter UPI ID / VPA', style: AppTypography.labelMd.copyWith(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 6),
+                    TextField(
+                      controller: vpaController,
+                      decoration: InputDecoration(
+                        hintText: 'e.g. mobile@okaxis',
+                        prefixIcon: const Icon(Icons.alternate_email_rounded, size: 20),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        errorText: errorMessage,
+                      ),
+                      onChanged: (_) {
+                        if (errorMessage != null) {
+                          setSheetState(() {
+                            errorMessage = null;
+                          });
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                        onPressed: () async {
+                          final vpa = vpaController.text.trim();
+                          final vpaRegex = RegExp(r'^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$');
+                          if (!vpaRegex.hasMatch(vpa)) {
+                            setSheetState(() {
+                              errorMessage = 'Please enter a valid UPI VPA (e.g. name@bank)';
+                            });
+                            return;
+                          }
+
+                          try {
+                            final api = ref.read(apiServiceProvider);
+                            final res = await api.createUpiPreAuthMandate(
+                              bookingId: 'BK_NANDED_8821',
+                              customerId: 'cust_01',
+                              upiVpa: vpa,
+                              amount: 99,
+                            );
+                            final mandateData = res['data'] as Map<String, dynamic>?;
+
+                            final currentBooking = ref.read(activeBookingProvider);
+                            if (currentBooking != null) {
+                              ref.read(activeBookingProvider.notifier).state = currentBooking.copyWith(
+                                mandateStatus: UpiMandateStatus.authorized,
+                                mandateId: mandateData?['mandateId'] as String?,
+                                upiVpa: vpa,
+                              );
+                            }
+
+                            if (sheetContext.mounted) {
+                              Navigator.pop(sheetContext);
+                            }
+                            if (context.mounted) {
+                              await context.push('/customer/active-tracking/BK_NANDED_8821');
+                            }
+                          } catch (e) {
+                            setSheetState(() {
+                              errorMessage = e.toString();
+                            });
+                          }
+                        },
+                        child: Text(
+                          'Authorize ₹99 Mandate & Request Artisan',
+                          style: AppTypography.labelLg.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }
