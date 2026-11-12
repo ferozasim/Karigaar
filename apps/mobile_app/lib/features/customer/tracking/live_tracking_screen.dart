@@ -24,7 +24,16 @@ class LiveTrackingScreen extends ConsumerWidget {
       );
     }
 
-    final activeStage = _stageForStatus(booking.status);
+    final effectiveBookingId =
+        booking.bookingId.isNotEmpty ? booking.bookingId : bookingId;
+    final feedAsync = ref.watch(liveTrackingFeedProvider(effectiveBookingId));
+    final feed = feedAsync.valueOrNull ??
+        ref.watch(telemetryServiceProvider).getLatestFeed(effectiveBookingId);
+
+    final effectiveStatus = feed.isGeofenceTriggered
+        ? BookingStatus.artisanArrived
+        : booking.status;
+    final activeStage = _stageForStatus(effectiveStatus);
 
     return Scaffold(
       backgroundColor: AppColors.surfaceBase,
@@ -93,8 +102,14 @@ class LiveTrackingScreen extends ConsumerWidget {
                       ),
                       // Artisan Motorcycle Marker (Moving)
                       Positioned(
-                        left: 60,
-                        bottom: 60,
+                        left: (60.0 +
+                                (1.0 - (feed.remainingDistanceKm / 2.0).clamp(0.0, 1.0)) *
+                                    140.0)
+                            .clamp(20.0, 260.0),
+                        bottom: (60.0 +
+                                (1.0 - (feed.remainingDistanceKm / 2.0).clamp(0.0, 1.0)) *
+                                    60.0)
+                            .clamp(30.0, 160.0),
                         child: Column(
                           children: [
                             Container(
@@ -119,7 +134,10 @@ class LiveTrackingScreen extends ConsumerWidget {
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(4),
                               ),
-                              child: Text('Ganesh • 6 mins away', style: AppTypography.labelSm.copyWith(color: AppColors.secondary)),
+                              child: Text(
+                                '${booking.assignedArtisanName?.split(' ').first ?? 'Ganesh'} • ${feed.isGeofenceTriggered ? "Arrived" : "${feed.etaMinutes} mins away"}',
+                                style: AppTypography.labelSm.copyWith(color: AppColors.secondary),
+                              ),
                             ),
                           ],
                         ),
@@ -143,13 +161,48 @@ class LiveTrackingScreen extends ConsumerWidget {
                               Container(
                                 width: 8,
                                 height: 8,
-                                decoration: const BoxDecoration(
-                                  color: AppColors.tertiary,
+                                decoration: BoxDecoration(
+                                  color: feed.isGeofenceTriggered
+                                      ? AppColors.tertiary
+                                      : AppColors.secondary,
                                   shape: BoxShape.circle,
                                 ),
                               ),
                               const SizedBox(width: 8),
-                              Text('Arriving in ~6 mins', style: AppTypography.labelMd.copyWith(fontWeight: FontWeight.bold)),
+                              Text(
+                                feed.isGeofenceTriggered
+                                    ? 'Arrived at Doorstep (0 km)'
+                                    : 'Arriving in ~${feed.etaMinutes} mins (${feed.remainingDistanceKm.toStringAsFixed(1)} km)',
+                                style: AppTypography.labelMd.copyWith(fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      // Live Speed & Telemetry Tag
+                      Positioned(
+                        left: 16,
+                        bottom: 12,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.65),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.speed_rounded, size: 14, color: Colors.white),
+                              const SizedBox(width: 4),
+                              Text(
+                                feed.isGeofenceTriggered
+                                    ? 'Stationary • At Destination'
+                                    : '${feed.currentLocationLabel} • 45° NE',
+                                style: AppTypography.labelSm.copyWith(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -157,6 +210,53 @@ class LiveTrackingScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
+
+                // 200m Doorstep Geofence Arrival Alert Banner
+                if (feed.isGeofenceTriggered) ...[
+                  const SizedBox(height: 16),
+                  Container(
+                    key: const Key('geofence_arrival_banner'),
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFEF3C7),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: const Color(0xFFF59E0B), width: 1.5),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: const BoxDecoration(
+                            color: Color(0xFFF59E0B),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(Icons.near_me_rounded, color: Colors.white, size: 22),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Karigaar within 200m of doorstep! Ready your Start Code ${booking.startOtp}.',
+                                style: AppTypography.labelMd.copyWith(
+                                  color: const Color(0xFF92400E),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                'Artisan has arrived in your vicinity. Provide code once at your door.',
+                                style: AppTypography.bodySm.copyWith(color: const Color(0xFFB45309)),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
 
                 const SizedBox(height: 20),
 
@@ -269,6 +369,32 @@ class LiveTrackingScreen extends ConsumerWidget {
                   ),
                 ),
 
+                const SizedBox(height: 20),
+
+                // Canned Quick Chips for Landmark & Doorstep Navigation (Contract 3)
+                Text('Quick Doorstep Directions', style: AppTypography.headlineSm),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: feed.cannedQuickChips.map((chip) {
+                    return ActionChip(
+                      avatar: const Icon(Icons.chat_bubble_outline_rounded, size: 16, color: AppColors.primary),
+                      label: Text(chip, style: AppTypography.labelSm),
+                      backgroundColor: Colors.white,
+                      side: const BorderSide(color: AppColors.borderSubtle),
+                      onPressed: () {
+                        ContactIntentService.openWhatsAppChat(
+                          context,
+                          phoneNumber: booking.assignedArtisanPhone ?? '+919822012345',
+                          prefilledMessage: chip,
+                          contactName: booking.assignedArtisanName,
+                        );
+                      },
+                    );
+                  }).toList(),
+                ),
+
                 const SizedBox(height: 24),
                 // 5-Stage Milestone Progress
                 Text('Booking Milestones', style: AppTypography.headlineSm),
@@ -286,8 +412,12 @@ class LiveTrackingScreen extends ConsumerWidget {
                   isCurrent: activeStage == 1,
                 ),
                 _buildMilestoneStep(
-                  title: 'En Route to Doorstep (~6 mins)',
-                  time: activeStage > 2 ? 'Arrived at doorstep' : 'Live tracking active',
+                  title: feed.isGeofenceTriggered
+                      ? 'Arrived at Doorstep (Within 200m)'
+                      : 'En Route to Doorstep (~${feed.etaMinutes} mins)',
+                  time: feed.isGeofenceTriggered
+                      ? 'Arrived at doorstep'
+                      : (activeStage > 2 ? 'Arrived at doorstep' : 'Live tracking active'),
                   isCompleted: activeStage > 2,
                   isCurrent: activeStage == 2,
                 ),

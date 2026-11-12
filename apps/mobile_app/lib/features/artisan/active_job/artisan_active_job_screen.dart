@@ -75,6 +75,7 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
   @override
   Widget build(BuildContext context) {
     final booking = ref.watch(activeBookingProvider);
+    final telemetryStatus = ref.watch(artisanTelemetryStatusProvider);
     final labor = booking?.laborFee ?? 249;
     final partsTotal = _parts.fold(0, (sum, p) => sum + p.total);
     final totalBill = labor + partsTotal;
@@ -102,45 +103,202 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
             // Elapsed Stopwatch Banner
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
                 color: AppColors.primary,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.timer_rounded, color: AppColors.secondary, size: 28),
-                  const SizedBox(width: 12),
+                  const Icon(Icons.timer_rounded, color: AppColors.secondary, size: 24),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('ON-SITE REPAIR STOPWATCH', style: AppTypography.labelSm.copyWith(color: AppColors.secondary), maxLines: 1, overflow: TextOverflow.ellipsis),
-                        Text('28m 14s Elapsed', style: AppTypography.headlineMd.copyWith(color: Colors.white), maxLines: 1, overflow: TextOverflow.ellipsis),
+                        Text('ON-SITE REPAIR STOPWATCH', style: AppTypography.labelSm.copyWith(color: AppColors.secondary, fontSize: 10), maxLines: 1, overflow: TextOverflow.ellipsis),
+                        Text('28m 14s Elapsed', style: AppTypography.headlineSm.copyWith(color: Colors.white, fontSize: 18), maxLines: 1, overflow: TextOverflow.ellipsis),
                       ],
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(6),
                     ),
-                    child: Text('Live Log', style: AppTypography.labelSm.copyWith(color: Colors.white)),
+                    child: Text('Live Log', style: AppTypography.labelSm.copyWith(color: Colors.white, fontSize: 11)),
                   ),
                 ],
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
+
+            // En-Route Telemetry Streaming HUD (Contract 3)
+            if (booking?.status == BookingStatus.artisanEnRoute || !_startOtpVerified) ...[
+              Container(
+                key: const Key('enroute_telemetry_hud'),
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceRaised,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: telemetryStatus.isGeofenceTriggered
+                        ? const Color(0xFFF59E0B)
+                        : AppColors.secondary,
+                    width: 1.5,
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          width: 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            color: telemetryStatus.isStreaming
+                                ? const Color(0xFF10B981)
+                                : AppColors.textMuted,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            'LIVE GPS TELEMETRY STREAMING (CONTRACT 3)',
+                            style: AppTypography.labelSm.copyWith(
+                              color: AppColors.secondary,
+                              letterSpacing: 0.5,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: telemetryStatus.isForeground
+                                ? AppColors.secondary.withValues(alpha: 0.1)
+                                : Colors.grey.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            telemetryStatus.isForeground ? 'Foreground (3s)' : 'Background (15s)',
+                            style: AppTypography.labelSm.copyWith(
+                              fontSize: 10,
+                              color: telemetryStatus.isForeground
+                                  ? AppColors.secondary
+                                  : AppColors.textMuted,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildTelemetryMetric(
+                            icon: Icons.speed_rounded,
+                            label: 'Speed',
+                            value: '${telemetryStatus.currentSpeedKmph.toStringAsFixed(0)} km/h',
+                          ),
+                        ),
+                        Expanded(
+                          child: _buildTelemetryMetric(
+                            icon: Icons.navigation_rounded,
+                            label: 'Heading',
+                            value: '${telemetryStatus.headingDegrees.toStringAsFixed(0)}° NE',
+                          ),
+                        ),
+                        Expanded(
+                          child: _buildTelemetryMetric(
+                            icon: Icons.battery_charging_full_rounded,
+                            label: 'Battery',
+                            value: '${telemetryStatus.batteryPercent}%',
+                          ),
+                        ),
+                        Expanded(
+                          child: _buildTelemetryMetric(
+                            icon: Icons.route_rounded,
+                            label: 'Remaining',
+                            value: '${telemetryStatus.remainingDistanceKm.toStringAsFixed(1)} km',
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    // Foreground vs. Background Toggle Row
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Streaming Mode: ${telemetryStatus.isForeground ? "High-Accuracy Foreground" : "Battery-Saver Background"}',
+                            style: AppTypography.bodySm.copyWith(color: AppColors.textMuted, fontSize: 11),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 24,
+                          child: Switch.adaptive(
+                            key: const Key('telemetry_streaming_mode_toggle'),
+                            value: telemetryStatus.isForeground,
+                            activeThumbColor: AppColors.secondary,
+                            onChanged: (bool isFg) {
+                              ref.read(artisanTelemetryStatusProvider.notifier).state =
+                                  telemetryStatus.copyWith(
+                                isForeground: isFg,
+                                pingIntervalSeconds: isFg ? 3 : 15,
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (telemetryStatus.isGeofenceTriggered) ...[
+                      const SizedBox(height: 4),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFEF3C7),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.near_me_rounded, size: 14, color: Color(0xFFB45309)),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                'Doorstep 200m Geofence Triggered! Ready for Start Code.',
+                                style: AppTypography.labelSm.copyWith(color: const Color(0xFF92400E), fontSize: 10),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+            ],
 
             // Step 1: Start Code Verification
             if (!_startOtpVerified) ...[
               Container(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
                   color: AppColors.surfaceRaised,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(14),
                   border: Border.all(color: AppColors.borderSubtle),
                 ),
                 child: Column(
@@ -148,19 +306,19 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                   children: [
                     Row(
                       children: [
-                        const Icon(Icons.security_rounded, color: AppColors.secondary, size: 20),
-                        const SizedBox(width: 8),
+                        const Icon(Icons.security_rounded, color: AppColors.secondary, size: 18),
+                        const SizedBox(width: 6),
                         Expanded(
-                          child: Text('Step 1: Enter Customer Start Code', style: AppTypography.labelLg),
+                          child: Text('Step 1: Enter Customer Start Code', style: AppTypography.labelLg.copyWith(fontSize: 15)),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 4),
                     Text(
                       'Ask homeowner for their 4-digit security code (Demo: 4921) to confirm doorstep arrival.',
-                      style: AppTypography.bodySm,
+                      style: AppTypography.bodySm.copyWith(fontSize: 12),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 8),
                     TextField(
                       controller: _startOtpController,
                       keyboardType: TextInputType.number,
@@ -169,9 +327,10 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                       decoration: const InputDecoration(
                         hintText: 'Enter 4-digit Start Code',
                         counterText: '',
+                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 8),
                     KarigaarButton(
                       label: 'Verify Code & Begin Repair',
                       onPressed: _verifyStartOtp,
@@ -896,6 +1055,21 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
             Text(status, style: AppTypography.labelSm.copyWith(color: AppColors.textMuted, fontSize: 10)),
           ],
         ),
+      ],
+    );
+  }
+
+  Widget _buildTelemetryMetric({
+    required IconData icon,
+    required String label,
+    required String value,
+  }) {
+    return Column(
+      children: [
+        Icon(icon, size: 18, color: AppColors.secondary),
+        const SizedBox(height: 2),
+        Text(value, style: AppTypography.labelSm.copyWith(fontWeight: FontWeight.bold)),
+        Text(label, style: AppTypography.bodySm.copyWith(fontSize: 10, color: AppColors.textMuted)),
       ],
     );
   }

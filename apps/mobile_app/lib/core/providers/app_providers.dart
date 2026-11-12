@@ -5,6 +5,8 @@ import '../models/city_model.dart';
 import '../models/trade_model.dart';
 import '../models/booking_model.dart';
 import '../models/artisan_profile_model.dart';
+import '../models/telemetry_model.dart';
+import '../services/telemetry_service.dart';
 import '../config/app_data_service.dart';
 import '../config/app_constants.dart';
 
@@ -151,3 +153,21 @@ final activeBookingProvider = StateProvider<BookingModel?>((ref) {
     createdAt: DateTime.now().subtract(const Duration(minutes: 12)),
   );
 });
+
+/// Karigaar Telemetry & Geospatial Service Provider (Contract 3)
+final telemetryServiceProvider = Provider<KarigaarTelemetryService>((ref) {
+  final service = KarigaarTelemetryService();
+  ref.onDispose(() => service.dispose());
+  return service;
+});
+
+/// Live Tracking Feed Provider streaming real-time telemetry updates for a booking
+final liveTrackingFeedProvider =
+    StreamProvider.family<LiveTrackingFeed, String>((ref, bookingId) {
+  final service = ref.watch(telemetryServiceProvider);
+  return service.subscribeToLiveTracking(bookingId);
+});
+
+/// Artisan En-Route Telemetry HUD Status Provider (Foreground vs Background toggle)
+final artisanTelemetryStatusProvider =
+    StateProvider<ArtisanTelemetryStatus>((ref) => const ArtisanTelemetryStatus());
