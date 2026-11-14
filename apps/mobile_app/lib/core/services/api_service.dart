@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:karigaar_app/core/models/booking_model.dart';
+import 'package:karigaar_app/core/models/whatsapp_template_model.dart';
+import 'package:karigaar_app/core/services/whatsapp_telephony_service.dart';
 
 /// Service exception thrown when an API request violates validation or business invariants.
 class ApiException implements Exception {
@@ -79,19 +81,114 @@ class KarigaarApiService {
       throw const ApiException('Caller number and Callee ID are required.', code: 'MISSING_TELEPHONY_PARAMS', statusCode: 422);
     }
 
-    final sessionId = 'tel_${DateTime.now().millisecondsSinceEpoch}';
+    try {
+      final session = await KarigaarWhatsAppTelephonyService.instance.bridgeTelephonyCall(
+        callerNumber: callerNumber,
+        calleeId: calleeId,
+        role: role,
+        bookingId: bookingId,
+      );
+      return {
+        'status': 'SUCCESS',
+        'data': {
+          'bridgeSessionId': session.sessionId,
+          'bookingId': session.bookingId,
+          'callerRole': session.callerRole,
+          'virtualProxyNumber': session.virtualProxyNumber,
+          'sessionStatus': session.sessionStatus,
+          'zeroRawMsisdnLeakageGuaranteed': session.zeroRawMsisdnLeakageGuaranteed,
+          'expiresInSeconds': session.expiresInSeconds,
+        },
+      };
+    } catch (e) {
+      if (e is ArgumentError) {
+        throw ApiException(e.message.toString(), code: 'INVALID_TELEPHONY_PARAM', statusCode: 422);
+      }
+      rethrow;
+    }
+  }
+
+  /// Get status of active telephony bridge session (`GET /api/v1/telephony/sessions/:id`)
+  Future<Map<String, dynamic>> getTelephonyBridgeSession({required String sessionId}) async {
+    final session = KarigaarWhatsAppTelephonyService.instance.getTelephonyBridgeSession(sessionId);
+    if (session == null) {
+      throw const ApiException('Telephony session not found.', code: 'SESSION_NOT_FOUND', statusCode: 404);
+    }
     return {
       'status': 'SUCCESS',
-      'data': {
-        'bridgeSessionId': sessionId,
-        'bookingId': bookingId,
-        'callerRole': role,
-        'virtualProxyNumber': '+91-11-4084-2190',
-        'sessionStatus': 'BRIDGED',
-        'zeroRawMsisdnLeakageGuaranteed': true,
-        'expiresInSeconds': 600,
-      },
+      'data': session.toJson(),
     };
+  }
+
+  /// Terminate active telephony bridge session (`POST /api/v1/telephony/sessions/:id/terminate`)
+  Future<Map<String, dynamic>> terminateTelephonyBridgeSession({required String sessionId}) async {
+    try {
+      final session = KarigaarWhatsAppTelephonyService.instance.terminateTelephonyBridgeSession(sessionId);
+      return {
+        'status': 'SUCCESS',
+        'data': session.toJson(),
+      };
+    } catch (e) {
+      throw const ApiException('Telephony session not found or already terminated.', code: 'SESSION_NOT_FOUND', statusCode: 404);
+    }
+  }
+
+  /// Meta WhatsApp Cloud API outbound template dispatch (`POST /api/v1/notifications/whatsapp/template`)
+  Future<Map<String, dynamic>> dispatchWhatsAppTemplate({
+    required String recipientPhone,
+    required String templateName,
+    String languageCode = 'en_US',
+    List<WhatsAppTemplateComponent> components = const [],
+  }) async {
+    try {
+      return await KarigaarWhatsAppTelephonyService.instance.dispatchWhatsAppTemplate(
+        recipientPhone: recipientPhone,
+        templateName: templateName,
+        languageCode: languageCode,
+        components: components,
+      );
+    } catch (e) {
+      if (e is ArgumentError) {
+        throw ApiException(e.message.toString(), code: 'INVALID_WHATSAPP_PARAM', statusCode: 422);
+      }
+      rethrow;
+    }
+  }
+
+  /// Dual-Sync Dispatch Payload (`POST /api/v1/dispatch/dual-sync`)
+  Future<Map<String, dynamic>> syncDualDispatchPayload({
+    required String bookingId,
+    required String artisanPhone,
+    required String customerAddress,
+    required String landmarkOrSocietyCode,
+    required double latitude,
+    required double longitude,
+    String? audioMemoUrl,
+    required int guaranteedBasePayout,
+    String languageCode = 'en_US',
+  }) async {
+    try {
+      final result = await KarigaarWhatsAppTelephonyService.instance.syncDualDispatchPayload(
+        bookingId: bookingId,
+        artisanPhone: artisanPhone,
+        customerAddress: customerAddress,
+        landmarkOrSocietyCode: landmarkOrSocietyCode,
+        latitude: latitude,
+        longitude: longitude,
+        audioMemoUrl: audioMemoUrl,
+        guaranteedBasePayout: guaranteedBasePayout,
+        languageCode: languageCode,
+      );
+      return {
+        'status': 'SUCCESS',
+        'data': result.toJson(),
+      };
+    } catch (e) {
+      if (e is ArgumentError) {
+        throw ApiException(e.message.toString(), code: 'INVALID_DUAL_SYNC_PARAM', statusCode: 422);
+      }
+      rethrow;
+    }
   }
 
   /// Contract 2: Partner Accept Job Request (`POST /api/v1/dispatch/jobs/:id/accept`)

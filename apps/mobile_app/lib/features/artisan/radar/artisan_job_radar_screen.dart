@@ -301,13 +301,15 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                           const SizedBox(width: 8),
                           // WhatsApp Pre-Accept inquiry
                           OutlinedButton.icon(
+                            key: const Key('radar_ask_customer_btn'),
                             onPressed: () {
-                              ContactIntentService.openWhatsAppChat(
+                              ContactIntentService.initiateMaskedWhatsAppChat(
                                 context,
-                                phoneNumber: '+919822199882',
-                                prefilledMessage:
+                                calleeId: 'cust_asim_01',
+                                bookingId: 'BK_NANDED_8821',
+                                message:
                                     'Namaste Asim Ji, I am Ganesh Kadam (Master Electrician) on Karigaar Radar. Can you share a photo of the MCB board?',
-                                contactName: 'Asim Farooqui',
+                                contactName: 'Customer (Asim Ji)',
                               );
                             },
                             icon: const Icon(Icons.chat_bubble_rounded, size: 16, color: Color(0xFF25D366)),
