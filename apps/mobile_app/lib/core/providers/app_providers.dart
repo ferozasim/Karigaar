@@ -6,8 +6,10 @@ import '../models/trade_model.dart';
 import '../models/booking_model.dart';
 import '../models/artisan_profile_model.dart';
 import '../models/telemetry_model.dart';
+import '../models/radar_broadcast_model.dart';
 import 'package:karigaar_app/core/services/telemetry_service.dart';
 import 'package:karigaar_app/core/services/whatsapp_telephony_service.dart';
+import 'package:karigaar_app/core/services/radar_broadcast_service.dart';
 import '../config/app_data_service.dart';
 import '../config/app_constants.dart';
 
@@ -74,51 +76,172 @@ final artisanByIdProvider = Provider.family<ArtisanProfileModel, String>((ref, i
 final artisanWalletBalanceProvider = StateProvider<double>((ref) => 4620.00);
 
 /// Artisan Duty Status Toggle (Active vs Paused)
-final artisanDutyOnlineProvider = StateProvider<bool>((ref) => true);
+final artisanDutyOnlineProvider = StateProvider<bool>((ref) {
+  return true;
+});
 
-/// 45-Second Radar Countdown Timer Notifier for Artisan
-class RadarCountdownNotifier extends StateNotifier<int> {
-  Timer? _timer;
+/// Karigaar Radar Broadcast Broker Service Provider (Contract 2)
+final radarBroadcastServiceProvider = Provider<KarigaarRadarBroadcastService>((ref) {
+  final service = KarigaarRadarBroadcastService.instance;
+  final duty = ref.watch(artisanDutyOnlineProvider);
+  service.setArtisanDutyOnline(duty);
+  return service;
+});
 
-  RadarCountdownNotifier() : super(AppConstants.radarCountdownSeconds);
+/// Active Incoming Radar Broadcast State
+class ActiveRadarBroadcastNotifier extends StateNotifier<JobRadarBroadcastModel?> {
+  final KarigaarRadarBroadcastService _service;
+  StreamSubscription<JobRadarBroadcastModel?>? _sub;
 
-  void startTimer() {
-    _timer?.cancel();
-    state = AppConstants.radarCountdownSeconds;
-    _timer = Timer.periodic(const Duration(seconds: 1), (t) {
-      if (state > 0) {
-        state--;
-      } else {
-        _timer?.cancel();
+  ActiveRadarBroadcastNotifier(this._service) : super(_service.activeBroadcast) {
+    _sub = _service.broadcastStream.listen((broadcast) {
+      state = broadcast;
+    });
+  }
+
+  void setBroadcast(JobRadarBroadcastModel? broadcast) {
+    state = broadcast;
+  }
+
+  @override
+  void dispose() {
+    _sub?.cancel();
+    super.dispose();
+  }
+}
+
+final activeRadarBroadcastProvider =
+    StateNotifierProvider<ActiveRadarBroadcastNotifier, JobRadarBroadcastModel?>((ref) {
+  final service = ref.watch(radarBroadcastServiceProvider);
+  return ActiveRadarBroadcastNotifier(service);
+});
+
+/// Current Search Radius Tier Notifier
+class RadarRadiusTierNotifier extends StateNotifier<RadarRadiusTier> {
+  final KarigaarRadarBroadcastService _service;
+  StreamSubscription<JobRadarBroadcastModel?>? _sub;
+
+  RadarRadiusTierNotifier(this._service) : super(_service.currentRadiusTier) {
+    _sub = _service.broadcastStream.listen((broadcast) {
+      if (broadcast != null) {
+        state = broadcast.radiusTier;
       }
     });
   }
 
+  void setTier(RadarRadiusTier tier) {
+    state = tier;
+  }
+
+  @override
+  void dispose() {
+    _sub?.cancel();
+    super.dispose();
+  }
+}
+
+final radarRadiusTierProvider =
+    StateNotifierProvider<RadarRadiusTierNotifier, RadarRadiusTier>((ref) {
+  final service = ref.watch(radarBroadcastServiceProvider);
+  return RadarRadiusTierNotifier(service);
+});
+
+/// Latest Unfulfilled Expiry / Escalation Event Notifier
+class RadarUnfulfilledNotifier extends StateNotifier<RadarUnfulfilledEvent?> {
+  final KarigaarRadarBroadcastService _service;
+  StreamSubscription<RadarUnfulfilledEvent>? _sub;
+
+  RadarUnfulfilledNotifier(this._service) : super(null) {
+    _sub = _service.unfulfilledStream.listen((event) {
+      state = event;
+    });
+  }
+
+  void clear() {
+    state = null;
+  }
+
+  @override
+  void dispose() {
+    _sub?.cancel();
+    super.dispose();
+  }
+}
+
+final radarUnfulfilledEventProvider =
+    StateNotifierProvider<RadarUnfulfilledNotifier, RadarUnfulfilledEvent?>((ref) {
+  final service = ref.watch(radarBroadcastServiceProvider);
+  return RadarUnfulfilledNotifier(service);
+});
+
+/// 45-Second Radar Countdown Timer Notifier for Artisan
+class RadarCountdownNotifier extends StateNotifier<int> {
+  final KarigaarRadarBroadcastService? _service;
+  StreamSubscription<int>? _sub;
+  Timer? _timer;
+
+  RadarCountdownNotifier([this._service])
+      : super(_service?.currentCountdown ?? AppConstants.radarCountdownSeconds) {
+    if (_service != null) {
+      _sub = _service.countdownStream.listen((count) {
+        state = count;
+      });
+    }
+  }
+
+  void startTimer() {
+    if (_service != null) {
+      if (_service.activeBroadcast == null) {
+        _service.startBroadcast(KarigaarRadarBroadcastService.createSampleBroadcast());
+      } else {
+        _service.startBroadcast(_service.activeBroadcast!);
+      }
+    } else {
+      _timer?.cancel();
+      state = AppConstants.radarCountdownSeconds;
+      _timer = Timer.periodic(const Duration(seconds: 1), (t) {
+        if (state > 0) {
+          state--;
+        } else {
+          _timer?.cancel();
+        }
+      });
+    }
+  }
+
   void cancelTimer() {
     _timer?.cancel();
+    _timer = null;
+    _service?.cancelTimer();
   }
 
   void stopTimer() {
     _timer?.cancel();
     _timer = null;
+    _service?.cancelTimer();
   }
 
   void reset() {
     _timer?.cancel();
     _timer = null;
     state = AppConstants.radarCountdownSeconds;
+    _service?.reset();
   }
 
   @override
   void dispose() {
     _timer?.cancel();
+    _timer = null;
+    _sub?.cancel();
+    _service?.cancelTimer();
     super.dispose();
   }
 }
 
 final radarCountdownProvider =
     StateNotifierProvider.autoDispose<RadarCountdownNotifier, int>((ref) {
-  return RadarCountdownNotifier();
+  final service = ref.watch(radarBroadcastServiceProvider);
+  return RadarCountdownNotifier(service);
 });
 
 /// Active Live Booking State

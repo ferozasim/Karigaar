@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/models/booking_model.dart';
+import '../../../core/models/radar_broadcast_model.dart';
 import '../../../core/providers/app_providers.dart';
 import '../../../core/services/contact_intent_service.dart';
+import '../../../core/services/radar_broadcast_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../shared/widgets/mode_switcher_pill.dart';
@@ -16,6 +19,7 @@ class ArtisanJobRadarScreen extends ConsumerStatefulWidget {
 
 class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
   RadarCountdownNotifier? _radarNotifier;
+  bool _isClaiming = false;
 
   @override
   void initState() {
@@ -23,13 +27,19 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       _radarNotifier = ref.read(radarCountdownProvider.notifier);
-      _radarNotifier?.startTimer();
+      final service = ref.read(radarBroadcastServiceProvider);
+      if (service.activeBroadcast == null && ref.read(artisanDutyOnlineProvider)) {
+        service.startBroadcast(KarigaarRadarBroadcastService.createSampleBroadcast());
+      } else {
+        _radarNotifier?.startTimer();
+      }
     });
   }
 
   @override
   void dispose() {
     _radarNotifier?.cancelTimer();
+    KarigaarRadarBroadcastService.instance.cancelTimer();
     super.dispose();
   }
 
@@ -37,6 +47,14 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
   Widget build(BuildContext context) {
     final isOnline = ref.watch(artisanDutyOnlineProvider);
     final countdown = ref.watch(radarCountdownProvider);
+    final activeBroadcast = ref.watch(activeRadarBroadcastProvider);
+    final radiusTier = ref.watch(radarRadiusTierProvider);
+
+    final showCard = isOnline &&
+        countdown > 0 &&
+        activeBroadcast != null &&
+        activeBroadcast.state != RadarDispatchState.claimed &&
+        activeBroadcast.state != RadarDispatchState.unfulfilled;
 
     return Scaffold(
       backgroundColor: AppColors.surfaceBase,
@@ -126,7 +144,7 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                             style: AppTypography.labelLg,
                           ),
                           Text(
-                            'Dispatch Radius: 4.5 km • Anand Nagar Hub',
+                            'Dispatch Radius: ${radiusTier == RadarRadiusTier.tier2Expanded ? '6.0' : '4.5'} km • Anand Nagar Hub',
                             style: AppTypography.bodySm,
                           ),
                         ],
@@ -137,8 +155,11 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                       activeThumbColor: AppColors.secondary,
                       onChanged: (val) {
                         ref.read(artisanDutyOnlineProvider.notifier).state = val;
-                        if (val && ref.read(radarCountdownProvider) <= 0) {
-                          ref.read(radarCountdownProvider.notifier).startTimer();
+                        ref.read(radarBroadcastServiceProvider).setArtisanDutyOnline(val);
+                        if (val) {
+                          ref.read(radarBroadcastServiceProvider).startBroadcast(
+                                KarigaarRadarBroadcastService.createSampleBroadcast(),
+                              );
                         }
                       },
                     ),
@@ -215,23 +236,33 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
               const SizedBox(height: 24),
 
               // Incoming 45-Second Dispatch Radar Card
-              if (isOnline && countdown > 0) ...[
+              if (showCard) ...[
                 Container(
+                  key: const Key('radar_broadcast_card'),
                   width: double.infinity,
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     color: AppColors.surfaceRaised,
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppColors.secondary, width: 2),
+                    border: Border.all(
+                      color: radiusTier == RadarRadiusTier.tier2Expanded
+                          ? const Color(0xFFF59E0B)
+                          : AppColors.secondary,
+                      width: 2,
+                    ),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.secondary.withValues(alpha: 0.12),
+                        color: (radiusTier == RadarRadiusTier.tier2Expanded
+                                ? const Color(0xFFF59E0B)
+                                : AppColors.secondary)
+                            .withValues(alpha: 0.12),
                         blurRadius: 16,
                         offset: const Offset(0, 4),
                       ),
                     ],
                   ),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
@@ -243,17 +274,23 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                                 width: 52,
                                 height: 52,
                                 child: CircularProgressIndicator(
-                                  value: countdown / 45.0,
+                                  value: (countdown / 45.0).clamp(0.0, 1.0),
                                   strokeWidth: 4,
                                   backgroundColor: AppColors.secondarySurfaceTint,
-                                  valueColor: const AlwaysStoppedAnimation<Color>(AppColors.secondary),
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    radiusTier == RadarRadiusTier.tier2Expanded
+                                        ? const Color(0xFFF59E0B)
+                                        : AppColors.secondary,
+                                  ),
                                 ),
                               ),
                               Text(
                                 '${countdown}s',
                                 style: AppTypography.labelMd.copyWith(
                                   fontWeight: FontWeight.w800,
-                                  color: AppColors.secondary,
+                                  color: radiusTier == RadarRadiusTier.tier2Expanded
+                                      ? const Color(0xFFB45309)
+                                      : AppColors.secondary,
                                 ),
                               ),
                             ],
@@ -263,22 +300,112 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFFFEE2E2),
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                  child: Text('EMERGENCY BREAKDOWN', style: AppTypography.labelSm.copyWith(color: AppColors.error)),
+                                Wrap(
+                                  spacing: 6,
+                                  runSpacing: 4,
+                                  children: [
+                                    if (activeBroadcast.isEmergency)
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFFFEE2E2),
+                                          borderRadius: BorderRadius.circular(4),
+                                        ),
+                                        child: Text(
+                                          'EMERGENCY BREAKDOWN',
+                                          style: AppTypography.labelSm.copyWith(color: AppColors.error),
+                                        ),
+                                      ),
+                                    Container(
+                                      key: const Key('radar_radius_tier_chip'),
+                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: radiusTier == RadarRadiusTier.tier2Expanded
+                                            ? const Color(0xFFFEF3C7)
+                                            : const Color(0xFFF1F5F9),
+                                        borderRadius: BorderRadius.circular(4),
+                                        border: Border.all(
+                                          color: radiusTier == RadarRadiusTier.tier2Expanded
+                                              ? const Color(0xFFF59E0B)
+                                              : const Color(0xFFCBD5E1),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        radiusTier.label,
+                                        style: AppTypography.labelSm.copyWith(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          color: radiusTier == RadarRadiusTier.tier2Expanded
+                                              ? const Color(0xFFB45309)
+                                              : AppColors.textMuted,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 const SizedBox(height: 4),
-                                Text('Short Circuit & MCB Trip', style: AppTypography.headlineSm.copyWith(fontSize: 17)),
-                                Text('1.2 km away • Anand Nagar, Nanded', style: AppTypography.bodySm),
+                                Text(
+                                  activeBroadcast.title,
+                                  style: AppTypography.headlineSm.copyWith(fontSize: 17),
+                                ),
+                                Text(
+                                  '${activeBroadcast.customer.distanceKm.toStringAsFixed(1)} km away • ${activeBroadcast.customer.locality}',
+                                  style: AppTypography.bodySm,
+                                ),
                               ],
                             ),
                           ),
                         ],
                       ),
+
+                      // Attachments Row (Photo & Voice Note)
+                      if (activeBroadcast.attachments.hasPhoto || activeBroadcast.attachments.hasVoiceMemo) ...[
+                        const SizedBox(height: 12),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 4,
+                          children: [
+                            if (activeBroadcast.attachments.hasPhoto)
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                decoration: BoxDecoration(
+                                  color: AppColors.surfaceBase,
+                                  borderRadius: BorderRadius.circular(6),
+                                  border: Border.all(color: AppColors.borderSubtle),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(Icons.camera_alt_outlined, size: 14, color: AppColors.secondary),
+                                    const SizedBox(width: 4),
+                                    Text('1 Photo', style: AppTypography.labelSm.copyWith(fontSize: 11)),
+                                  ],
+                                ),
+                              ),
+                            if (activeBroadcast.attachments.hasVoiceMemo)
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                decoration: BoxDecoration(
+                                  color: AppColors.surfaceBase,
+                                  borderRadius: BorderRadius.circular(6),
+                                  border: Border.all(color: AppColors.borderSubtle),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(Icons.mic_outlined, size: 14, color: AppColors.secondary),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      '${activeBroadcast.attachments.voiceMemoDurationSeconds ?? 14}s Audio',
+                                      style: AppTypography.labelSm.copyWith(fontSize: 11),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                          ],
+                        ),
+                      ],
+
                       const SizedBox(height: 16),
                       const Divider(),
                       const SizedBox(height: 12),
@@ -293,7 +420,10 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                                 FittedBox(
                                   fit: BoxFit.scaleDown,
                                   alignment: Alignment.centerLeft,
-                                  child: Text('₹399 - ₹650', style: AppTypography.numericPrice.copyWith(fontSize: 20)),
+                                  child: Text(
+                                    '₹${activeBroadcast.payout.guaranteedBase.toStringAsFixed(0)} - ₹${(activeBroadcast.payout.guaranteedBase * 1.5).toStringAsFixed(0)}',
+                                    style: AppTypography.numericPrice.copyWith(fontSize: 20),
+                                  ),
                                 ),
                               ],
                             ),
@@ -306,10 +436,10 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                               ContactIntentService.initiateMaskedWhatsAppChat(
                                 context,
                                 calleeId: 'cust_asim_01',
-                                bookingId: 'BK_NANDED_8821',
+                                bookingId: activeBroadcast.bookingId,
                                 message:
-                                    'Namaste Asim Ji, I am Ganesh Kadam (Master Electrician) on Karigaar Radar. Can you share a photo of the MCB board?',
-                                contactName: 'Customer (Asim Ji)',
+                                    'Namaste ${activeBroadcast.customer.firstName}, I am Ganesh Kadam (Master Electrician) on Karigaar Radar. Can you share a photo of the MCB board?',
+                                contactName: 'Customer (${activeBroadcast.customer.firstName})',
                               );
                             },
                             icon: const Icon(Icons.chat_bubble_rounded, size: 16, color: Color(0xFF25D366)),
@@ -328,16 +458,43 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                         width: double.infinity,
                         height: 52,
                         child: ElevatedButton(
-                          onPressed: () {
-                            context.push('/artisan/active-job/BK_NANDED_8821');
-                          },
+                          key: const Key('radar_claim_job_btn'),
+                          onPressed: _isClaiming
+                              ? null
+                              : () async {
+                                  setState(() => _isClaiming = true);
+                                  try {
+                                    final current = activeBroadcast;
+                                    await ref.read(radarBroadcastServiceProvider).acceptBroadcastJob(
+                                          broadcastId: current.broadcastId,
+                                          artisanId: 'art_nanded_01',
+                                        );
+
+                                    final currentBooking = ref.read(activeBookingProvider);
+                                    if (currentBooking != null) {
+                                      ref.read(activeBookingProvider.notifier).state = currentBooking.copyWith(
+                                            status: BookingStatus.artisanEnRoute,
+                                            assignedArtisanId: 'art_nanded_01',
+                                          );
+                                    }
+
+                                    if (!context.mounted) return;
+                                    await context.push('/artisan/active-job/${current.bookingId}');
+                                  } finally {
+                                    if (mounted) {
+                                      setState(() => _isClaiming = false);
+                                    }
+                                  }
+                                },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.secondary,
+                            backgroundColor: radiusTier == RadarRadiusTier.tier2Expanded
+                                ? const Color(0xFFD97706)
+                                : AppColors.secondary,
                             foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                           ),
                           child: Text(
-                            'CLAIM JOB NOW (${countdown}s)',
+                            _isClaiming ? 'CLAIMING JOB...' : 'CLAIM JOB NOW (${countdown}s)',
                             style: AppTypography.labelLg.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -345,8 +502,10 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                     ],
                   ),
                 ),
-              ] else ...[
+              ] else if (activeBroadcast?.state == RadarDispatchState.unfulfilled) ...[
+                // Unfulfilled / Timeout State
                 Container(
+                  key: const Key('radar_unfulfilled_state_card'),
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
                     color: AppColors.surfaceRaised,
@@ -358,17 +517,65 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                       children: [
                         const Icon(Icons.radar_rounded, size: 48, color: AppColors.textSubtle),
                         const SizedBox(height: 12),
-                        Text('Scanning Nanded for incoming requests...', style: AppTypography.labelLg),
+                        Text(
+                          'No active broadcasts in your 6 km corridor',
+                          style: AppTypography.labelLg,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Broadcast timed out without acceptance. Search expanded to regional guild.',
+                          style: AppTypography.bodySm,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 16),
+                        OutlinedButton.icon(
+                          key: const Key('radar_refresh_btn'),
+                          onPressed: () {
+                            ref.read(radarBroadcastServiceProvider).startBroadcast(
+                                  KarigaarRadarBroadcastService.createSampleBroadcast(),
+                                );
+                          },
+                          icon: const Icon(Icons.refresh_rounded, size: 18),
+                          label: const Text('Refresh Radar', maxLines: 1, overflow: TextOverflow.ellipsis),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ] else ...[
+                // Empty / Scanning Standby State
+                Container(
+                  key: const Key('radar_scanning_state_card'),
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceRaised,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: AppColors.borderSubtle),
+                  ),
+                  child: Center(
+                    child: Column(
+                      children: [
+                        const Icon(Icons.radar_rounded, size: 48, color: AppColors.textSubtle),
+                        const SizedBox(height: 12),
+                        Text(
+                          isOnline ? 'Scanning Nanded for incoming requests...' : 'Duty paused. Go online to receive jobs.',
+                          style: AppTypography.labelLg,
+                        ),
                         const SizedBox(height: 4),
                         Text('Keep app active to receive 45s priority broadcasts', style: AppTypography.bodySm),
                         const SizedBox(height: 16),
                         OutlinedButton.icon(
+                          key: const Key('radar_simulate_broadcast_btn'),
                           onPressed: () {
                             ref.read(artisanDutyOnlineProvider.notifier).state = true;
-                            ref.read(radarCountdownProvider.notifier).startTimer();
+                            ref.read(radarBroadcastServiceProvider).setArtisanDutyOnline(true);
+                            ref.read(radarBroadcastServiceProvider).startBroadcast(
+                                  KarigaarRadarBroadcastService.createSampleBroadcast(),
+                                );
                           },
                           icon: const Icon(Icons.refresh_rounded, size: 18),
-                          label: const Text('Simulate Incoming Broadcast'),
+                          label: const Text('Simulate Incoming Broadcast', maxLines: 1, overflow: TextOverflow.ellipsis),
                         ),
                       ],
                     ),

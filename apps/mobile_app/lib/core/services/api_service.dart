@@ -19,6 +19,8 @@ class ApiException implements Exception {
 /// Unified Microservice REST Client & Mock Backend Engine for Karigaar
 /// Implementing Interface Contracts from PROJECT.md Section 5.
 class KarigaarApiService {
+  static const KarigaarApiService instance = KarigaarApiService();
+
   const KarigaarApiService();
 
   /// Contract 1: WhatsApp Authentication Request OTP (`POST /api/v1/auth/whatsapp/otp/request`)
@@ -203,6 +205,13 @@ class KarigaarApiService {
       throw const ApiException('Booking ID and Artisan ID are required to accept a job.', code: 'MISSING_ASSIGNMENT_PARAMS');
     }
 
+    final isGurugram = bookingId.contains('8842') || bookingId.startsWith('KG-');
+    final destLat = isGurugram ? 28.4722 : 19.1415;
+    final destLng = isGurugram ? 77.0381 : 77.3242;
+    final address = isGurugram
+        ? '42 Green Valley, Sector 4, Gurugram'
+        : 'Plot 14, Near Water Tank, Anand Nagar, Nanded';
+
     return {
       'status': 'SUCCESS',
       'data': {
@@ -210,6 +219,11 @@ class KarigaarApiService {
         'broadcastId': broadcastId,
         'state': 'ARTISAN_DISPATCHED',
         'assignedArtisanId': artisanId,
+        'navigationCoordinates': {
+          'destinationLatitude': destLat,
+          'destinationLongitude': destLng,
+          'addressText': address,
+        },
         'startOtpVerificationRequired': true,
         'doorstepStartOtpExpected': '4921',
       },
