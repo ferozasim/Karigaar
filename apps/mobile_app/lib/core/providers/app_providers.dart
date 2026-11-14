@@ -6,7 +6,8 @@ import '../models/trade_model.dart';
 import '../models/booking_model.dart';
 import '../models/artisan_profile_model.dart';
 import '../models/telemetry_model.dart';
-import '../services/telemetry_service.dart';
+import 'package:karigaar_app/core/services/telemetry_service.dart';
+import 'package:karigaar_app/core/services/whatsapp_telephony_service.dart';
 import '../config/app_data_service.dart';
 import '../config/app_constants.dart';
 
@@ -171,3 +172,8 @@ final liveTrackingFeedProvider =
 /// Artisan En-Route Telemetry HUD Status Provider (Foreground vs Background toggle)
 final artisanTelemetryStatusProvider =
     StateProvider<ArtisanTelemetryStatus>((ref) => const ArtisanTelemetryStatus());
+
+/// WhatsApp & Telephony Cloud Proxy Service Provider (Ticket T-06)
+final whatsappTelephonyServiceProvider = Provider<KarigaarWhatsAppTelephonyService>((ref) {
+  return KarigaarWhatsAppTelephonyService.instance;
+});

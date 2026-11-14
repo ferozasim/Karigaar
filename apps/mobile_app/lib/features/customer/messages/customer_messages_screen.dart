@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/providers/app_providers.dart';
+import '../../../core/services/contact_intent_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 
@@ -110,6 +111,17 @@ class _CustomerMessagesScreenState
         ),
         actions: [
           IconButton(
+            key: const Key('masked_call_action_btn'),
+            tooltip: 'Masked Call Bridge',
+            icon: const Icon(Icons.phone_in_talk_rounded),
+            onPressed: () => ContactIntentService.initiateMaskedTelephonyCall(
+              context,
+              calleeId: selectedArtisan.artisanId,
+              role: 'CUSTOMER',
+              contactName: selectedArtisan.name,
+            ),
+          ),
+          IconButton(
             tooltip: 'View Artisan Profile',
             icon: const Icon(Icons.info_outline_rounded),
             onPressed: () =>
@@ -184,20 +196,21 @@ class _CustomerMessagesScreenState
 
           // Privacy & Masked Bridge Notice
           Container(
+            key: const Key('masked_privacy_notice_banner'),
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             color: AppColors.tertiarySurfaceTint,
             child: Row(
               children: [
                 const Icon(
-                  Icons.lock_outline_rounded,
+                  Icons.shield_outlined,
                   size: 16,
                   color: AppColors.tertiary,
                 ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'Number Masking Active • Connected with ${selectedArtisan.name} (${selectedArtisan.tradeTitle})',
+                    'Number Masking Active • Zero Raw MSISDN Leakage • Connected with ${selectedArtisan.name} (${selectedArtisan.tradeTitle})',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: AppTypography.labelSm.copyWith(
@@ -273,6 +286,19 @@ class _CustomerMessagesScreenState
                 _buildQuickChip('Share Live Pin'),
                 const SizedBox(width: 8),
                 _buildQuickChip('Call on Arrival'),
+                const SizedBox(width: 8),
+                ActionChip(
+                  key: const Key('whatsapp_cloud_relay_chip'),
+                  avatar: const Icon(Icons.chat_bubble_rounded, size: 14, color: Color(0xFF25D366)),
+                  label: const Text('WhatsApp Relay', style: TextStyle(fontSize: 12)),
+                  backgroundColor: AppColors.surfaceRaised,
+                  onPressed: () => ContactIntentService.initiateMaskedWhatsAppChat(
+                    context,
+                    calleeId: selectedArtisan.artisanId,
+                    message: 'Namaskar ${selectedArtisan.name}, connecting via WhatsApp Cloud Relay.',
+                    contactName: selectedArtisan.name,
+                  ),
+                ),
               ],
             ),
           ),

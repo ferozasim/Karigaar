@@ -195,6 +195,7 @@ class BookingModel {
   int get totalAmount => laborFee + safetyShieldFee + partsTotal;
   int get totalFinalAmount => grandTotal > 0 ? grandTotal : calculatedGrandTotal;
   String get issueTitle => '$tradeName Service & Diagnostic';
+  String get artisanId => assignedArtisanId ?? 'art_nanded_01';
   String get artisanName => assignedArtisanName ?? 'Ganesh Kadam';
   String get customerAddress => address;
 

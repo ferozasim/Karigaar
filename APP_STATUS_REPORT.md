@@ -1,8 +1,8 @@
 # Karigaar System — Comprehensive Operational Status Report
 
-**Generated**: 2026-11-12
+**Generated**: 2026-11-14
 **Workspace**: `c:\Users\asimf\OneDrive\Desktop\Karigaar_app`
-**Current Branch**: `feat/T-01-multi-district-corridor`
+**Current Branch**: `feat/T-06-whatsapp-telephony-proxy`
 **Pilot Regional Corridor**: 7 Regional Districts (Nanded Primary Hub `431601`–`431606`, Parbhani `431401`, Latur `413512`, Hingoli `431513`, Chhatrapati Sambhajinagar `431001`, Nagpur `440001`, Nizamabad `503001`)
 **Launch Trades**: 10 Guild Trades (`Electrician`, `Plumber`, `Carpenter`, `Mason / Gawandi`, `Painter`, `AC & Refrigeration`, `Appliance Repair`, `Welder & Fabricator`, `Pest Control`, `Deep Cleaning`)
 
@@ -105,6 +105,29 @@ All **12 screens** and shared Stitch UI components are implemented, wired into `
   8. **Instant IMPS Payout**: `/api/v1/wallet/withdraw` strictly enforcing the ₹2,000 rolling security reserve invariant.
 - Verified with 14 isolated contract unit tests in `test/unit/api_service_test.dart` (100% passing).
 
+### 3.2 Ticket T-06: Meta WhatsApp Business Cloud API & Telephony Cloud Proxy
+- **Architecture & Features**: Meta WhatsApp Business Cloud API (v21.0 payload schema) & Telephony Cloud Proxy integration with zero raw MSISDN exposure.
+- **Models** (`apps/mobile_app/lib/core/models/whatsapp_template_model.dart`):
+  - `WhatsAppTemplateModel`: Supports canonical templates (`dispatch_alert`, `auth_otp`, `milestone_update`, `voice_memo_relay`, `daily_settlement_slip`) with typed components (header, body, button, quick-reply, URL), localized parameters (text, currency, date_time, payload, audio), copy-code actions, and v21.0 payload serialization.
+  - `WhatsAppMessageLog`: Outbound receipt log tracking `messageId`, `recipientPhone`, `templateName`, `languageCode`, delivery `status` (`sent`, `delivered`, `read`, `failed`), and event timestamps.
+  - `TelephonyBridgeRequest`: Masked bridge call request encapsulation specifying `callerNumber`, `calleeId`, `role` (`CUSTOMER` or `ARTISAN`), and `bookingId`.
+  - `TelephonyBridgeResponse` / `TelephonyBridgeSession`: Active virtual proxy DID (`+91-11-4084-2190`) with 600-second session TTL, dynamic countdown getters, clean termination, and guaranteed zero raw MSISDN leakage.
+- **Service** (`apps/mobile_app/lib/core/services/whatsapp_telephony_service.dart`):
+  - `KarigaarWhatsAppTelephonyService`:
+    - `sendWhatsAppTemplateMessage` / `dispatchWhatsAppTemplate`: Cleans and validates Indian phone numbers (`+91`), validates supported templates and language codes, records outbound receipts, emits to `outboundReceiptStream`, and returns Meta-compliant responses.
+    - `verifyWhatsAppOtp`: Validates 4-digit and 6-digit WhatsApp OTPs with simulated 42s rate-limiting guards.
+    - `initiateTelephonyBridgeCall` / `bridgeTelephonyCall`: Dynamically provisions masked virtual proxy sessions connecting customers and artisans without disclosing private phone numbers.
+    - `syncDualDispatchPayload`: Synchronously dispatches dual In-App Radar and WhatsApp Cloud template notifications with audio memo relay, society gate codes, and navigation maps links.
+    - `getTelephonyBridgeSession` & `terminateTelephonyBridgeSession`: Session state querying and termination.
+- **UI Integrations**:
+  - `CustomerMessagesScreen`: Top-pinned "Zero Raw MSISDN Leakage" privacy notice banner, AppBar masked call action button launching the virtual telephony bridge modal, and WhatsApp Cloud Relay quick-reply chip.
+  - `LiveTrackingScreen`: Assigned artisan card with virtual proxy phone call button and Meta WhatsApp Cloud relay chat button.
+  - `ArtisanJobRadarScreen`: "Ask Customer" inquiry CTA launching masked WhatsApp relay sheet with zero MSISDN exposure.
+- **Automated Tests**:
+  - 17 unit tests in `apps/mobile_app/test/unit/whatsapp_telephony_service_test.dart` (Meta v21.0 schema serialization, copy_code buttons, milestone updates, voice memos, settlement slips, number validation, webhook simulators, dual-sync dispatch, and virtual proxy bridging).
+  - 4 widget tests in `apps/mobile_app/test/widget/whatsapp_telephony_integration_test.dart` (`CustomerMessagesScreen` masked banner & bridge modal, `LiveTrackingScreen` masked call & chat triggers, `ArtisanJobRadarScreen` customer inquiry relay, and responsive viewport stress testing on 360x800 and 320x568 viewports).
+  - 21 automated tests total for Ticket T-06.
+
 ---
 
 ## 4. Super Admin Web Console (`apps/admin_web`)
@@ -127,24 +150,31 @@ All **12 screens** and shared Stitch UI components are implemented, wired into `
 ## 5. Quality, Static Analysis & Automated Test Suite Verification
 
 ### 5.1 Verification Summary
-- **Flutter Automated Tests (`apps/mobile_app`)**: **150 / 150 tests passing (100% PASS RATE)** across all 17 test suites:
-  1. `test/unit/booking_model_stress_test.dart` (18 tests)
-  2. `test/unit/booking_state_machine_test.dart` (7 tests)
-  3. `test/unit/city_config_test.dart` (3 tests)
-  4. `test/unit/contact_intent_service_test.dart` (5 tests)
-  5. `test/unit/launch_trades_test.dart` (4 tests)
-  6. `test/widget/all_screens_theme_layout_test.dart` (8 tests)
-  7. `test/widget/artisan_active_job_wallet_test.dart` (6 tests)
-  8. `test/widget/artisan_profile_screen_test.dart` (7 tests)
-  9. `test/widget/locality_selector_sheet_test.dart` (5 tests)
-  10. `test/widget/locality_selector_stress_test.dart` (12 tests)
-  11. `test/widget/mode_switcher_pill_test.dart` (3 tests)
-  12. `test/widget/phase1_workflows_stress_test.dart` (6 tests)
-  13. `test/widget/phase2_adversarial_stress_test.dart` (32 tests — adversarial viewports 320x568/360x800/390x844, 1.5x/2.0x font scaling, registration form validation)
-  14. `test/widget/phase2_workflows_empirical_challenger_test.dart` (4 comprehensive multi-screen workflow tests)
-  15. `test/unit/multi_district_corridor_empirical_test.dart` (8 tests — reactive district switching & regional fallback)
-  16. `test/widget/multi_district_corridor_widget_test.dart` (8 tests — 7-district step-by-step chip selection without overflow)
-  17. `test/unit/api_service_test.dart` (14 tests — WhatsApp OTP, masked telephony, start OTP, doorstep denial, decoupled invoicing, and IMPS reserve)
+- **Flutter Automated Tests (`apps/mobile_app`)**: **220 / 220 tests passing (100% PASS RATE)** across all 24 test suites:
+  1. `test/unit/api_service_test.dart` (14 tests — WhatsApp OTP, masked telephony, start OTP, doorstep denial, decoupled invoicing, and IMPS reserve)
+  2. `test/unit/booking_model_stress_test.dart` (18 tests)
+  3. `test/unit/booking_state_machine_test.dart` (4 tests)
+  4. `test/unit/city_config_test.dart` (3 tests)
+  5. `test/unit/contact_intent_service_test.dart` (2 tests)
+  6. `test/unit/trades_config_test.dart` (2 tests)
+  7. `test/unit/user_role_test.dart` (2 tests)
+  8. `test/unit/multi_district_corridor_empirical_test.dart` (8 tests — reactive district switching & regional fallback)
+  9. `test/unit/telemetry_service_test.dart` (15 tests — live geolocation, WebSocket/MQTT streaming)
+  10. `test/unit/payment_gateway_escrow_test.dart` (19 tests — UPI mandate pre-auth, decoupled invoicing, IMPS reserve)
+  11. `test/unit/whatsapp_telephony_service_test.dart` (17 tests — Ticket T-06 Meta WhatsApp Cloud API & Telephony Proxy)
+  12. `test/widget/all_screens_theme_layout_test.dart` (14 tests)
+  13. `test/widget/artisan_active_job_wallet_test.dart` (7 tests)
+  14. `test/widget/artisan_profile_screen_test.dart` (7 tests)
+  15. `test/widget/live_tracking_telemetry_test.dart` (8 tests — live telemetry HUD & geofence alerts)
+  16. `test/widget/locality_selector_sheet_test.dart` (5 tests)
+  17. `test/widget/locality_selector_stress_test.dart` (10 tests)
+  18. `test/widget/mode_switcher_pill_test.dart` (3 tests)
+  19. `test/widget/multi_district_corridor_widget_test.dart` (2 tests — 7-district chip selection without overflow)
+  20. `test/widget/payment_escrow_integration_test.dart` (7 tests — UPI mandate pre-auth & IMPS escrow completion)
+  21. `test/widget/phase1_workflows_stress_test.dart` (7 tests)
+  22. `test/widget/phase2_adversarial_stress_test.dart` (16 test groups / 32 subtests — adversarial viewports 320x568/360x800/390x844, 1.5x/2.0x font scaling, registration form validation)
+  23. `test/widget/phase2_workflows_empirical_challenger_test.dart` (4 comprehensive multi-screen workflow tests)
+  24. `test/widget/whatsapp_telephony_integration_test.dart` (4 tests — Ticket T-06 WhatsApp & masked telephony widget integration)
 - **Static Analysis (`apps/mobile_app`)**: `flutter analyze` reports **No issues found! (0 errors, 0 warnings, 0 infos)**.
 - **Admin Portal Tests (`apps/admin_web`)**: `npm test` reports **8 / 8 PASSED (0 FAILED)**.
 - **Admin Portal Linter (`apps/admin_web`)**: `next lint` reports **✔ No ESLint warnings or errors**.

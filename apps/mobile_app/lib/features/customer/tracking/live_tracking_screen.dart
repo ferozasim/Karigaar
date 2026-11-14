@@ -382,11 +382,14 @@ class LiveTrackingScreen extends ConsumerWidget {
                       ),
                       // WhatsApp Chat & Call Buttons
                       IconButton(
+                        key: const Key('tracking_whatsapp_chat_btn'),
+                        tooltip: 'Masked WhatsApp Channel',
                         onPressed: () {
-                          ContactIntentService.openWhatsAppChat(
+                          ContactIntentService.initiateMaskedWhatsAppChat(
                             context,
-                            phoneNumber: booking.assignedArtisanPhone ?? '+919822012345',
-                            prefilledMessage:
+                            calleeId: booking.artisanId,
+                            bookingId: booking.bookingId,
+                            message:
                                 'Hello ${booking.assignedArtisanName ?? "Karigaar"}, tracking your arrival for Booking #${booking.bookingId}',
                             contactName: booking.assignedArtisanName,
                           );
@@ -394,10 +397,14 @@ class LiveTrackingScreen extends ConsumerWidget {
                         icon: const Icon(Icons.chat_bubble_rounded, color: Color(0xFF25D366)),
                       ),
                       IconButton(
+                        key: const Key('tracking_phone_call_btn'),
+                        tooltip: 'Masked Telephony Bridge',
                         onPressed: () {
-                          ContactIntentService.makePhoneCall(
+                          ContactIntentService.initiateMaskedTelephonyCall(
                             context,
-                            phoneNumber: booking.assignedArtisanPhone ?? '+919822012345',
+                            calleeId: booking.artisanId,
+                            role: 'CUSTOMER',
+                            bookingId: booking.bookingId,
                             contactName: booking.assignedArtisanName,
                           );
                         },
@@ -422,10 +429,11 @@ class LiveTrackingScreen extends ConsumerWidget {
                       backgroundColor: Colors.white,
                       side: const BorderSide(color: AppColors.borderSubtle),
                       onPressed: () {
-                        ContactIntentService.openWhatsAppChat(
+                        ContactIntentService.initiateMaskedWhatsAppChat(
                           context,
-                          phoneNumber: booking.assignedArtisanPhone ?? '+919822012345',
-                          prefilledMessage: chip,
+                          calleeId: booking.artisanId,
+                          bookingId: booking.bookingId,
+                          message: chip,
                           contactName: booking.assignedArtisanName,
                         );
                       },
