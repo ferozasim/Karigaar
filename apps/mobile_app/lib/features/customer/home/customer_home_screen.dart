@@ -22,6 +22,7 @@ class CustomerHomeScreen extends ConsumerWidget {
     final artisans = ref.watch(topArtisansProvider);
     final selectedLocality = ref.watch(selectedLocalityProvider);
     final selectedDistrict = ref.watch(selectedDistrictProvider);
+    final unfulfilledEvent = ref.watch(radarUnfulfilledEventProvider);
 
     return Scaffold(
       backgroundColor: AppColors.surfaceBase,
@@ -116,6 +117,36 @@ class CustomerHomeScreen extends ConsumerWidget {
                 ),
               ),
             ),
+
+            if (unfulfilledEvent != null)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFEF3C7),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFF59E0B)),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.radar_rounded, size: 20, color: Color(0xFFB45309)),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            unfulfilledEvent.customerNotification,
+                            style: AppTypography.bodySm.copyWith(
+                              color: const Color(0xFF92400E),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
 
             // Emergency Quick-Assist Banner (25 mins dispatch)
             SliverToBoxAdapter(

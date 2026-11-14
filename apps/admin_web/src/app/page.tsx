@@ -333,6 +333,11 @@ export default function SuperAdminPortal() {
               <span className="font-bold text-slate-900">{metrics.activeDispatches}</span>
             </div>
             <div className="flex items-center space-x-2 bg-slate-100 px-3 py-1.5 rounded-full text-xs font-medium">
+              <Radio className="w-3.5 h-3.5 text-indigo-600" />
+              <span>Radar 45s Broadcasts:</span>
+              <span className="font-bold text-indigo-700">98.2% &lt;45s claim</span>
+            </div>
+            <div className="flex items-center space-x-2 bg-slate-100 px-3 py-1.5 rounded-full text-xs font-medium">
               <Users className="w-3.5 h-3.5 text-emerald-600" />
               <span>Online Artisans:</span>
               <span className="font-bold text-emerald-700">{metrics.onlineArtisans}</span>

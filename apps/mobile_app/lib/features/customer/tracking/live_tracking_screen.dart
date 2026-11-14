@@ -30,6 +30,7 @@ class LiveTrackingScreen extends ConsumerWidget {
     final feedAsync = ref.watch(liveTrackingFeedProvider(effectiveBookingId));
     final feed = feedAsync.valueOrNull ??
         ref.watch(telemetryServiceProvider).getLatestFeed(effectiveBookingId);
+    final unfulfilledEvent = ref.watch(radarUnfulfilledEventProvider);
 
     final effectiveStatus = feed.isGeofenceTriggered
         ? BookingStatus.artisanArrived
@@ -58,6 +59,33 @@ class LiveTrackingScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if (unfulfilledEvent != null)
+                  Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.only(bottom: 12),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFEF3C7),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFF59E0B)),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.radar_rounded, size: 20, color: Color(0xFFB45309)),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            unfulfilledEvent.customerNotification,
+                            style: AppTypography.bodySm.copyWith(
+                              color: const Color(0xFF92400E),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
                 // Simulated Vector Map Card with Route Polyline
                 Container(
                   height: 220,
