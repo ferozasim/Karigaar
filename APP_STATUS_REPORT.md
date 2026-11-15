@@ -1,8 +1,8 @@
 # Karigaar System — Comprehensive Operational Status Report
 
-**Generated**: 2026-11-14
+**Generated**: 2026-11-15
 **Workspace**: `c:\Users\asimf\OneDrive\Desktop\Karigaar_app`
-**Current Branch**: `feat/T-06-whatsapp-telephony-proxy`
+**Current Branch**: `main` (HEAD `1e3b674` — PR #1 `T-06` and PR #2 `T-07` merged)
 **Pilot Regional Corridor**: 7 Regional Districts (Nanded Primary Hub `431601`–`431606`, Parbhani `431401`, Latur `413512`, Hingoli `431513`, Chhatrapati Sambhajinagar `431001`, Nagpur `440001`, Nizamabad `503001`)
 **Launch Trades**: 10 Guild Trades (`Electrician`, `Plumber`, `Carpenter`, `Mason / Gawandi`, `Painter`, `AC & Refrigeration`, `Appliance Repair`, `Welder & Fabricator`, `Pest Control`, `Deep Cleaning`)
 
@@ -128,15 +128,30 @@ All **12 screens** and shared Stitch UI components are implemented, wired into `
   - 4 widget tests in `apps/mobile_app/test/widget/whatsapp_telephony_integration_test.dart` (`CustomerMessagesScreen` masked banner & bridge modal, `LiveTrackingScreen` masked call & chat triggers, `ArtisanJobRadarScreen` customer inquiry relay, and responsive viewport stress testing on 360x800 and 320x568 viewports).
   - 21 automated tests total for Ticket T-06.
 
+### 3.3 Ticket T-07: Partner Dispatch Radar Broadcast Engine, 45s Auto-Cascading Dispatch & Radius Fallback
+- **Architecture & Features**: Implements `PROJECT.md` Section 5 Contract 2 (`JOB_RADAR_BROADCAST` & `JOB_RADAR_UNFULFILLED`) with automated 45-second countdown, Tier 1 (`2.0 km`) to Tier 2 (`6.0 km`) radius escalation, and `DISPATCH_UNFULFILLED` fallback.
+- **Models** (`apps/mobile_app/lib/core/models/radar_broadcast_model.dart`):
+  - `JobRadarBroadcastModel`, `RadarCustomerInfo`, `RadarPayoutInfo`, `RadarAttachmentInfo`, `RadarRadiusTier` (`tier1Local` 2.0 km vs `tier2Expanded` 6.0 km), `RadarDispatchState`, `RadarUnfulfilledEvent`, and `BroadcastAcceptResult`.
+- **Service** (`apps/mobile_app/lib/core/services/radar_broadcast_service.dart`):
+  - `KarigaarRadarBroadcastService`: Broadcast stream broker managing 45s countdown ticks, automatic Tier 1 (`2 km`) expiry escalation to Tier 2 (`6 km`), `RadarUnfulfilledEvent` customer notifications, duty status suppression when offline, and `acceptBroadcastJob` handshake returning destination navigation coordinates.
+- **UI Integrations**:
+  - `ArtisanJobRadarScreen`: Dynamic broadcast card with 45s circular countdown ring, `Primary Corridor • 2 km` / `Expanded Radar • 6 km` radius tier pill, emergency & media attachment badges (`Photo` / `15s Audio`), one-tap `CLAIM JOB NOW` action, and `Refresh Radar` unfulfilled recovery state.
+  - `CustomerHomeScreen` & `LiveTrackingScreen`: Live radius escalation banner when Tier 1 (`2 km`) expires without claim (*"Searching expanded radius (6 km) for available Master Electricians..."*).
+  - `apps/admin_web/src/app/page.tsx`: Active Radar Broadcasts & 45s Cascade KPI monitor in the Super Admin Live Ops console.
+- **Automated Tests**:
+  - 14 unit tests in `apps/mobile_app/test/unit/radar_broadcast_service_test.dart`.
+  - 9 widget tests in `apps/mobile_app/test/widget/artisan_job_radar_broadcast_test.dart`.
+  - 23 automated tests total for Ticket T-07 (merged to `main` in PR #2, commit `1e3b674`).
+
 ---
 
 ## 4. Super Admin Web Console (`apps/admin_web`)
 
 - **Live URL**: `http://localhost:3000`
-- **Status**: **100% Working (Ticket T-02 Completed)**
+- **Status**: **100% Working (Tickets T-02 & T-07 Completed)**
 - **Regional Corridor Dashboard Capabilities**:
   - **7-District Corridor Filter Bar**: Quick switching between `All Corridor` and specific regional districts (`Nanded`, `Parbhani`, `Latur`, `Hingoli`, `Sambhajinagar`, `Nagpur`, `Nizamabad`) with active hub count indicators.
-  - **Dynamic Live Ops & 2x2 Bento KPIs**: Real-time GMV, completed jobs, turnaround times, active dispatches, and online artisans tailored dynamically to the selected district or aggregated corridor view.
+  - **Dynamic Live Ops & 2x2 Bento KPIs**: Real-time GMV, completed jobs, turnaround times, active dispatches, online artisans, and Radar 45s Broadcast cascade telemetry tailored dynamically to the selected district or aggregated corridor view.
   - **Hyperlocal Surge Heatmap**: Displays active surge multipliers (1.1x–1.4x) and demand statuses for localized trade corridors across Maharashtra and Telangana.
   - **Priority Guild KYC Verification Queue**: Lists pending artisan credential submissions across all 7 districts with district badges, priority SLA tags, Aadhaar/Police verification documents, and interactive 1-click Approve/Review actions.
   - **WhatsApp Outbound Surge Trigger**: Context-aware outbound emergency surge broadcast targeted to the active district.
@@ -150,7 +165,7 @@ All **12 screens** and shared Stitch UI components are implemented, wired into `
 ## 5. Quality, Static Analysis & Automated Test Suite Verification
 
 ### 5.1 Verification Summary
-- **Flutter Automated Tests (`apps/mobile_app`)**: **220 / 220 tests passing (100% PASS RATE)** across all 24 test suites:
+- **Flutter Automated Tests (`apps/mobile_app`)**: **243 / 243 tests passing (100% PASS RATE)** across all 26 test suites:
   1. `test/unit/api_service_test.dart` (14 tests — WhatsApp OTP, masked telephony, start OTP, doorstep denial, decoupled invoicing, and IMPS reserve)
   2. `test/unit/booking_model_stress_test.dart` (18 tests)
   3. `test/unit/booking_state_machine_test.dart` (4 tests)
@@ -159,22 +174,24 @@ All **12 screens** and shared Stitch UI components are implemented, wired into `
   6. `test/unit/trades_config_test.dart` (2 tests)
   7. `test/unit/user_role_test.dart` (2 tests)
   8. `test/unit/multi_district_corridor_empirical_test.dart` (8 tests — reactive district switching & regional fallback)
-  9. `test/unit/telemetry_service_test.dart` (15 tests — live geolocation, WebSocket/MQTT streaming)
-  10. `test/unit/payment_gateway_escrow_test.dart` (19 tests — UPI mandate pre-auth, decoupled invoicing, IMPS reserve)
+  9. `test/unit/telemetry_service_test.dart` (15 tests — Ticket T-04 live geolocation, WebSocket/MQTT streaming)
+  10. `test/unit/payment_gateway_escrow_test.dart` (19 tests — Ticket T-05 UPI mandate pre-auth, decoupled invoicing, IMPS reserve)
   11. `test/unit/whatsapp_telephony_service_test.dart` (17 tests — Ticket T-06 Meta WhatsApp Cloud API & Telephony Proxy)
-  12. `test/widget/all_screens_theme_layout_test.dart` (14 tests)
-  13. `test/widget/artisan_active_job_wallet_test.dart` (7 tests)
-  14. `test/widget/artisan_profile_screen_test.dart` (7 tests)
-  15. `test/widget/live_tracking_telemetry_test.dart` (8 tests — live telemetry HUD & geofence alerts)
-  16. `test/widget/locality_selector_sheet_test.dart` (5 tests)
-  17. `test/widget/locality_selector_stress_test.dart` (10 tests)
-  18. `test/widget/mode_switcher_pill_test.dart` (3 tests)
-  19. `test/widget/multi_district_corridor_widget_test.dart` (2 tests — 7-district chip selection without overflow)
-  20. `test/widget/payment_escrow_integration_test.dart` (7 tests — UPI mandate pre-auth & IMPS escrow completion)
-  21. `test/widget/phase1_workflows_stress_test.dart` (7 tests)
-  22. `test/widget/phase2_adversarial_stress_test.dart` (16 test groups / 32 subtests — adversarial viewports 320x568/360x800/390x844, 1.5x/2.0x font scaling, registration form validation)
-  23. `test/widget/phase2_workflows_empirical_challenger_test.dart` (4 comprehensive multi-screen workflow tests)
-  24. `test/widget/whatsapp_telephony_integration_test.dart` (4 tests — Ticket T-06 WhatsApp & masked telephony widget integration)
+  12. `test/unit/radar_broadcast_service_test.dart` (14 tests — Ticket T-07 Partner Radar 45s Broadcast & 2km→6km Cascade)
+  13. `test/widget/all_screens_theme_layout_test.dart` (14 tests)
+  14. `test/widget/artisan_active_job_wallet_test.dart` (7 tests)
+  15. `test/widget/artisan_profile_screen_test.dart` (7 tests)
+  16. `test/widget/live_tracking_telemetry_test.dart` (8 tests — Ticket T-04 live telemetry HUD & geofence alerts)
+  17. `test/widget/locality_selector_sheet_test.dart` (5 tests)
+  18. `test/widget/locality_selector_stress_test.dart` (10 tests)
+  19. `test/widget/mode_switcher_pill_test.dart` (3 tests)
+  20. `test/widget/multi_district_corridor_widget_test.dart` (2 tests — 7-district chip selection without overflow)
+  21. `test/widget/payment_escrow_integration_test.dart` (7 tests — Ticket T-05 UPI mandate pre-auth & IMPS escrow completion)
+  22. `test/widget/phase1_workflows_stress_test.dart` (7 tests)
+  23. `test/widget/phase2_adversarial_stress_test.dart` (16 test groups / 32 subtests — adversarial viewports 320x568/360x800/390x844, 1.5x/2.0x font scaling, registration form validation)
+  24. `test/widget/phase2_workflows_empirical_challenger_test.dart` (4 comprehensive multi-screen workflow tests)
+  25. `test/widget/whatsapp_telephony_integration_test.dart` (4 tests — Ticket T-06 WhatsApp & masked telephony widget integration)
+  26. `test/widget/artisan_job_radar_broadcast_test.dart` (9 tests — Ticket T-07 Partner Job Radar broadcast, 45s countdown, radius escalation & claiming)
 - **Static Analysis (`apps/mobile_app`)**: `flutter analyze` reports **No issues found! (0 errors, 0 warnings, 0 infos)**.
 - **Admin Portal Tests (`apps/admin_web`)**: `npm test` reports **8 / 8 PASSED (0 FAILED)**.
 - **Admin Portal Linter (`apps/admin_web`)**: `next lint` reports **✔ No ESLint warnings or errors**.
@@ -183,3 +200,23 @@ All **12 screens** and shared Stitch UI components are implemented, wired into `
 1. **Button Theme Sizes**: Global `AppTheme` enforces finite minimum sizes (`Size(64, 52)` and `Size(64, 48)`). No `Size.fromHeight` or `double.infinity` width in themes.
 2. **Widget Test Theme Mounting**: All widget tests mount with `theme: AppTheme.lightTheme` and verify `expect(tester.takeException(), isNull)`.
 3. **Button Icon Labels**: No redundant `Flexible`/`Expanded` wrappers on `label:` of `*.icon(...)` buttons.
+
+---
+
+## 6. Complete Master Ticket Registry & Execution Status (`T-01` – `T-13`)
+
+| Ticket | Title | Branch | Status | Verification / Scope |
+|---|---|---|---|---|
+| **T-01** | Multi-District Regional Corridor Expansion (7 Districts) | `feat/T-01-multi-district-corridor` | ✅ **CLOSED & IN `main`** | `c67f5e7` / `836a47a` (120 mobile tests) |
+| **T-02** | Super Admin Regional Corridor & KYC Filter Bar | `feat/T-02-admin-corridor-sync` | ✅ **CLOSED & IN `main`** | `eaea81b` (8/8 Admin Web tests, 0 lint warnings) |
+| **T-03** | Unified Microservice REST Client Engine | `feat/T-03-rest-mock-contracts` | ✅ **CLOSED & IN `main`** | `b05511c` (150 mobile tests, 14 API contract tests) |
+| **T-04** | Live Geolocation & Real-Time Telemetry Streaming + 200m Geofence | `feat/T-04-live-geolocation-telemetry` | ✅ **CLOSED & IN `main`** | `9fde829` (173 mobile tests, 23 telemetry tests) |
+| **T-05** | Payment Gateway, Upfront ₹99 UPI Mandate & Escrow Engine | `feat/T-05-payment-escrow-integration` | ✅ **CLOSED & IN `main`** | `57a7f1d` (199 mobile tests, 26 escrow/UPI tests) |
+| **T-06** | Meta WhatsApp Business Cloud API v21.0 & Telephony Cloud Proxy | `feat/T-06-whatsapp-telephony-proxy` | ✅ **CLOSED & IN `main`** | `459bcaf` / PR #1 `e69d4e7` (220 mobile tests, 21 WA/telephony tests) |
+| **T-07** | Partner Dispatch Radar 45s Broadcast & 2km→6km Radius Cascade | `feat/T-07-partner-dispatch-radar-cascade` | ✅ **CLOSED & IN `main`** | `a55f503` / PR #2 `1e3b674` (243 mobile tests, 23 radar broadcast tests) |
+| **T-08** | **Pre-Login Karigaar Guild Gate & Tap-First Mistri/Labour/Dihadi Onboarding** | `feat/T-08-karigaar-prelogin-onboarding` | 📋 **APPROVED — NEXT** | Dark Guild Gate on `/login`, tap-first Mistri/Labour/Dihadi chips, live district directory sync |
+| **T-09** | **Strict Homeowner vs. Karigaar UI & Route Isolation** | `feat/T-09-strict-role-ui-isolation` | 📋 **APPROVED** | `GoRouter.redirect` role guards, remove post-login switchers, industrial dark header |
+| **T-10** | **Karigaar Partner Profile (`/artisan/profile`), Wallet (`/artisan/wallet`) & Bottom Nav** | `feat/T-10-karigaar-partner-profile-wallet` | 📋 **APPROVED** | New `ArtisanPartnerProfileScreen`, `ArtisanWalletHistoryScreen`, and `ArtisanBottomNav` |
+| **T-11** | **Dual-Mode Firebase (`karigaar-ba812`) + Local Fallback Repositories** | `feat/T-11-firebase-firestore-backend` | 📋 **APPROVED** | Firestore & Storage adapters (`users`, `artisans`, `bookings`, `mandates`, `wallets`) + offline fallback |
+| **T-12** | **Cloud Functions & Webhook Gateways (WhatsApp, Razorpay, Telephony)** | `feat/T-12-cloud-functions-webhooks` | 📋 **APPROVED** | Serverless webhook handlers for Meta WA v21.0, Razorpay AutoPay/IMPS, and virtual DID proxy |
+| **T-13** | **Multi-Modal Scoping (15s Voice Memo & Slot Picker), Path A/B Lock & Admin Warranty/Disputes** | `feat/T-13-multimodal-scoping-dispute-ops` | 📋 **APPROVED** | 15s audio memo, slot picker, ₹49/₹499 Path A unlock, Path A→B retroactive lock, 30% warranty reserve & Admin dispute queue |

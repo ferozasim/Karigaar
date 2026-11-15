@@ -229,6 +229,9 @@ runTest('Admin Web portal Next.js structure and production export are in place',
   assert.ok(pageContent.includes('HQ Ops Stream'));
   assert.ok(pageContent.includes('Nanded Surge Corridors'));
   assert.ok(pageContent.includes('Priority Guild Verification Queue'));
+  assert.ok(pageContent.includes('Active Bookings & Dispatch Console'));
+  assert.ok(pageContent.includes('15s Audio Memo Scoping'));
+  assert.ok(pageContent.includes('Scheduled Arrival Slot'));
 
   // Static export check
   const outIndexPath = path.join(rootDir, 'apps', 'admin_web', 'out', 'index.html');
@@ -257,6 +260,15 @@ runTest('Root config and mobile app bundled assets are perfectly synchronized', 
       `${rootRel} and ${mobileRel} JSON contents must be identical`
     );
   }
+});
+
+// Test 9: Active Bookings & Audio Memo Dispatch Console Verification (Ticket T-08 F-10/F-11)
+runTest('Admin Web portal includes Active Bookings & Dispatch Console with Audio Memo and Arrival Slots', () => {
+  const pagePath = path.join(rootDir, 'apps', 'admin_web', 'src', 'app', 'page.tsx');
+  const pageContent = fs.readFileSync(pagePath, 'utf8');
+  assert.ok(pageContent.includes('Active Bookings & Dispatch Console'), 'Must contain Active Bookings & Dispatch Console');
+  assert.ok(pageContent.includes('15s Audio Memo Scoping'), 'Must contain 15s Audio Memo Scoping');
+  assert.ok(pageContent.includes('Scheduled Arrival Slot'), 'Must contain Scheduled Arrival Slot');
 });
 
 console.log('\n-------------------------------------------------------');

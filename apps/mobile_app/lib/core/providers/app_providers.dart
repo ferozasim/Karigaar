@@ -7,6 +7,10 @@ import '../models/booking_model.dart';
 import '../models/artisan_profile_model.dart';
 import '../models/telemetry_model.dart';
 import '../models/radar_broadcast_model.dart';
+import '../models/audio_memo_model.dart';
+import '../models/arrival_slot_model.dart';
+import '../models/preventive_bundle_model.dart';
+import 'package:karigaar_app/core/services/audio_service.dart';
 import 'package:karigaar_app/core/services/telemetry_service.dart';
 import 'package:karigaar_app/core/services/whatsapp_telephony_service.dart';
 import 'package:karigaar_app/core/services/radar_broadcast_service.dart';
@@ -40,6 +44,11 @@ final nandedLocalitiesProvider = FutureProvider<List<LocalityModel>>((ref) async
 /// 10 Launch Trades List
 final launchTradesProvider = FutureProvider<List<TradeModel>>((ref) async {
   return AppDataService.loadTrades();
+});
+
+/// Curated Preventive Maintenance Bundles Catalog (F-08)
+final curatedBundlesProvider = Provider<List<PreventiveBundleModel>>((ref) {
+  return AppDataService.getCuratedBundles();
 });
 
 /// Selected Locality in Pilot City (Nanded)
@@ -244,6 +253,37 @@ final radarCountdownProvider =
   return RadarCountdownNotifier(service);
 });
 
+/// Audio Recording & Preview Service Provider (Ticket T-08 F-10)
+final audioServiceProvider = Provider<KarigaarAudioService>((ref) {
+  return KarigaarAudioService.instance;
+});
+
+/// Customer-recorded Audio Memo for the active scoping session
+final recordedAudioMemoProvider = StateProvider<AudioMemoModel?>((ref) => null);
+
+/// Selected Arrival Date for Service Scoping (Defaults to Today)
+final selectedArrivalDateProvider = StateProvider<DateTime>((ref) {
+  final now = DateTime.now();
+  return DateTime(now.year, now.month, now.day);
+});
+
+/// Selected Arrival Slot for Service Scoping (Ticket T-08 F-11)
+final selectedArrivalSlotProvider = StateProvider<ScheduledArrivalSlot?>((ref) {
+  final now = DateTime.now();
+  final defaultSlots = ArrivalSlotModel.defaultSlotsForDate(now);
+  // Default to first available slot (or morning if available)
+  return defaultSlots.firstWhere(
+    (s) => s.isAvailable && !s.isEmergency,
+    orElse: () => defaultSlots.first,
+  );
+});
+
+/// Available Arrival Slots for Selected Date
+final arrivalSlotsForDateProvider =
+    FutureProvider.family<List<ScheduledArrivalSlot>, DateTime>((ref, date) async {
+  return ArrivalSlotModel.defaultSlotsForDate(date);
+});
+
 /// Active Live Booking State
 final activeBookingProvider = StateProvider<BookingModel?>((ref) {
   return BookingModel(
@@ -274,6 +314,16 @@ final activeBookingProvider = StateProvider<BookingModel?>((ref) {
         isApproved: true,
       ),
     ],
+    audioMemoUrl: 'https://cdn.karigaar.in/audio/memo_8821.aac',
+    audioMemoDurationSeconds: 14,
+    audioMemoWaveform: const [
+      0.15, 0.42, 0.68, 0.85, 0.92, 0.74, 0.61, 0.88, 0.95, 0.72, 0.54, 0.38, 0.22, 0.10
+    ],
+    audioMemoTranscript: 'MCB switch sparks when turning on AC. Need 32A replacement.',
+    scheduledDate: DateTime.now(),
+    scheduledSlot: 'Morning (9:00 AM - 12:00 PM)',
+    scheduledSlotId: 'slot_morning',
+    isEmergencyDispatch: false,
     createdAt: DateTime.now().subtract(const Duration(minutes: 12)),
   );
 });

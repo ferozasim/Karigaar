@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:karigaar_app/core/models/booking_model.dart';
+import 'package:karigaar_app/core/models/audio_memo_model.dart';
+import 'package:karigaar_app/core/models/arrival_slot_model.dart';
 import 'package:karigaar_app/core/models/whatsapp_template_model.dart';
 import 'package:karigaar_app/core/services/whatsapp_telephony_service.dart';
 
@@ -497,6 +499,134 @@ class KarigaarApiService {
         'mandateStatus': 'REVOKED',
         'revokedAt': DateTime.now().toUtc().toIso8601String(),
         'message': 'UPI pre-authorization mandate revoked.',
+      },
+    };
+  }
+
+  /// Contract 8: Audio Memo Scoping Upload (`POST /api/v1/media/audio-memo/upload`)
+  Future<Map<String, dynamic>> uploadAudioMemo({
+    required String bookingId,
+    required String tradeId,
+    required int durationSeconds,
+    String format = 'aac',
+    String? audioBase64,
+    List<double>? waveform,
+  }) async {
+    if (durationSeconds > 15) {
+      throw const ApiException(
+        'Audio memo exceeds maximum 15 seconds limit.',
+        code: 'AUDIO_EXCEEDS_MAX_DURATION',
+        statusCode: 422,
+      );
+    }
+    if (durationSeconds < 1) {
+      throw const ApiException(
+        'Audio memo duration must be at least 1 second.',
+        code: 'AUDIO_TOO_SHORT',
+        statusCode: 422,
+      );
+    }
+
+    final memoId = 'memo_${DateTime.now().millisecondsSinceEpoch}_audio';
+    final computedWaveform = waveform != null && waveform.isNotEmpty
+        ? waveform
+        : AudioMemoModel.generateSimulatedWaveform(24);
+
+    return {
+      'status': 'SUCCESS',
+      'data': {
+        'memoId': memoId,
+        'bookingId': bookingId,
+        'audioMemoUrl': 'https://cdn.karigaar.in/audio/$memoId.aac',
+        'durationSeconds': durationSeconds,
+        'waveform': computedWaveform,
+        'fileSizeBytes': durationSeconds * 2560,
+        'uploadedAt': DateTime.now().toUtc().toIso8601String(),
+        'transcript': 'Customer voice scoping memo: Defect diagnosed for $tradeId. Urgent repair needed.',
+      },
+    };
+  }
+
+  /// Contract 9: Arrival Slot Query (`GET /api/v1/dispatch/slots`)
+  Future<Map<String, dynamic>> getArrivalSlots({
+    required String tradeId,
+    required String localityId,
+    required dynamic date, // DateTime or String YYYY-MM-DD
+    DateTime? now,
+  }) async {
+    if (tradeId.trim().isEmpty) {
+      throw const ApiException('tradeId is required.', code: 'MISSING_TRADE_ID', statusCode: 422);
+    }
+    if (localityId.trim().isEmpty) {
+      throw const ApiException('localityId is required.', code: 'MISSING_LOCALITY_ID', statusCode: 422);
+    }
+
+    final DateTime parsedDate;
+    if (date is DateTime) {
+      parsedDate = date;
+    } else if (date is String) {
+      parsedDate = DateTime.tryParse(date) ?? DateTime.now();
+    } else {
+      parsedDate = DateTime.now();
+    }
+
+    final slots = ArrivalSlotModel.defaultSlotsForDate(parsedDate, now);
+    final dateStr =
+        '${parsedDate.year.toString().padLeft(4, '0')}-${parsedDate.month.toString().padLeft(2, '0')}-${parsedDate.day.toString().padLeft(2, '0')}';
+
+    return {
+      'status': 'SUCCESS',
+      'data': {
+        'date': dateStr,
+        'tradeId': tradeId,
+        'localityId': localityId,
+        'slots': slots.map((s) => s.toJson()).toList(),
+      },
+    };
+  }
+
+  /// Contract 9: Arrival Slot Reservation (`POST /api/v1/dispatch/slots/reserve`)
+  Future<Map<String, dynamic>> reserveArrivalSlot({
+    required String bookingId,
+    required String tradeId,
+    required dynamic date,
+    required String slotId,
+  }) async {
+    if (bookingId.trim().isEmpty) {
+      throw const ApiException('bookingId is required.', code: 'MISSING_BOOKING_ID', statusCode: 422);
+    }
+    if (slotId.trim().isEmpty) {
+      throw const ApiException('slotId is required.', code: 'INVALID_SLOT_ID', statusCode: 422);
+    }
+
+    final DateTime parsedDate;
+    if (date is DateTime) {
+      parsedDate = date;
+    } else if (date is String) {
+      parsedDate = DateTime.tryParse(date) ?? DateTime.now();
+    } else {
+      parsedDate = DateTime.now();
+    }
+
+    final dateStr =
+        '${parsedDate.year.toString().padLeft(4, '0')}-${parsedDate.month.toString().padLeft(2, '0')}-${parsedDate.day.toString().padLeft(2, '0')}';
+
+    final category = SlotCategory.fromString(slotId);
+    final timeWindow = category.defaultTimeWindow;
+    final scheduledSlotLabel = '${category.label} ($timeWindow)';
+
+    final reservationId = 'res_slot_${DateTime.now().millisecondsSinceEpoch.toString().substring(5)}';
+
+    return {
+      'status': 'SUCCESS',
+      'data': {
+        'reservationId': reservationId,
+        'bookingId': bookingId,
+        'tradeId': tradeId,
+        'slotId': slotId,
+        'scheduledDate': dateStr,
+        'scheduledSlot': scheduledSlotLabel,
+        'lockExpiresAt': DateTime.now().add(const Duration(minutes: 10)).toUtc().toIso8601String(),
       },
     };
   }

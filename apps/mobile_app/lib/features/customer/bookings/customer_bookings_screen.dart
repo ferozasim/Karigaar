@@ -256,6 +256,88 @@ class _CustomerBookingsScreenState
           ),
           const SizedBox(height: 12),
           const TrustShieldBadge(label: '₹25,000 Guild Damage Shield Active'),
+          const SizedBox(height: 10),
+          // Scheduled Slot & Audio Memo Badges (Ticket T-08 F-10/F-11)
+          Wrap(
+            spacing: 8,
+            runSpacing: 6,
+            children: [
+              if (booking.scheduledSlot != null || booking.isEmergencyDispatch)
+                Container(
+                  key: const Key('active_booking_slot_badge'),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: booking.isEmergencyDispatch
+                        ? const Color(0xFFFEF2F2)
+                        : AppColors.surfaceSubtle,
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(
+                      color: booking.isEmergencyDispatch
+                          ? AppColors.errorContainer
+                          : AppColors.borderSubtle,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        booking.isEmergencyDispatch
+                            ? Icons.bolt_rounded
+                            : Icons.access_time_filled_rounded,
+                        size: 13,
+                        color: booking.isEmergencyDispatch
+                            ? AppColors.error
+                            : AppColors.secondary,
+                      ),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          booking.scheduledSlot ?? 'Scheduled Window',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTypography.labelSm.copyWith(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: booking.isEmergencyDispatch
+                                ? AppColors.error
+                                : AppColors.textPrimary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              if (booking.audioMemoUrl != null || booking.audioMemoDurationSeconds != null)
+                Container(
+                  key: const Key('active_booking_audio_badge'),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: AppColors.secondarySurfaceTint,
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(color: AppColors.secondary.withValues(alpha: 0.3)),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.mic_rounded, size: 13, color: AppColors.secondary),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          '${booking.audioMemoDurationSeconds ?? 14}s Voice Note',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTypography.labelSm.copyWith(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.secondary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
           const SizedBox(height: 12),
           Wrap(
             alignment: WrapAlignment.spaceBetween,
@@ -365,6 +447,8 @@ class _CustomerBookingsScreenState
           const SizedBox(height: 4),
           Text(
             '${item['scheduledSlot']} • ${item['warranty']}',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: AppTypography.labelSm.copyWith(color: AppColors.tertiary),
           ),
           const SizedBox(height: 12),
