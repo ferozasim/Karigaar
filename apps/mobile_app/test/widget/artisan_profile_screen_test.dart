@@ -1,12 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:karigaar_app/core/providers/app_providers.dart';
 import 'package:karigaar_app/core/theme/app_theme.dart';
 import 'package:karigaar_app/features/customer/profile/artisan_profile_screen.dart';
 
 void main() {
-  Widget createWidgetUnderTest({String artisanId = 'art_nanded_01'}) {
+  Widget createWidgetUnderTest({
+    String artisanId = 'art_nanded_01',
+    bool isUnlocked = false,
+  }) {
     return ProviderScope(
+      overrides: [
+        if (isUnlocked)
+          contactUnlockProvider.overrideWith((ref) {
+            final notifier = ContactUnlockNotifier();
+            notifier.unlockPayPerLead(artisanId);
+            return notifier;
+          }),
+      ],
       child: MaterialApp(
         theme: AppTheme.lightTheme,
         home: ArtisanProfileScreen(artisanId: artisanId),
@@ -107,8 +119,8 @@ void main() {
       expect(find.text('Saved Ganesh Kadam to favorites!'), findsOneWidget);
     });
 
-    testWidgets('tapping Path A Call Artisan opens simulated intent modal on test harness', (tester) async {
-      await tester.pumpWidget(createWidgetUnderTest());
+    testWidgets('tapping Path A Call Artisan when locked opens DirectContactUnlockSheet', (tester) async {
+      await tester.pumpWidget(createWidgetUnderTest(isUnlocked: false));
       await tester.pumpAndSettle();
 
       final callBtn = find.text('Call Artisan');
@@ -116,18 +128,33 @@ void main() {
       await tester.tap(callBtn);
       await tester.pumpAndSettle();
 
-      expect(find.text('Direct Telephony Call Dispatched'), findsOneWidget);
+      expect(find.text('Unlock Direct Contact'), findsOneWidget);
+      expect(find.text('Pay-Per-Lead'), findsOneWidget);
+      expect(find.text('Unlimited Directory Pass'), findsOneWidget);
+      expect(find.text('Unlock for ₹49'), findsOneWidget);
+    });
+
+    testWidgets('tapping Path A Call Artisan when unlocked opens masked virtual telephony intent modal', (tester) async {
+      await tester.pumpWidget(createWidgetUnderTest(isUnlocked: true));
+      await tester.pumpAndSettle();
+
+      final callBtn = find.text('Call Artisan');
+      await tester.ensureVisible(callBtn);
+      await tester.tap(callBtn);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Virtual Telephony Bridge Active'), findsOneWidget);
       final dismissBtn = find.text('Dismiss Intent Simulation');
       expect(dismissBtn, findsOneWidget);
 
       await tester.ensureVisible(dismissBtn);
       await tester.tap(dismissBtn);
       await tester.pumpAndSettle();
-      expect(find.text('Direct Telephony Call Dispatched'), findsNothing);
+      expect(find.text('Virtual Telephony Bridge Active'), findsNothing);
     });
 
-    testWidgets('tapping Path A WhatsApp Artisan opens simulated intent modal on test harness', (tester) async {
-      await tester.pumpWidget(createWidgetUnderTest());
+    testWidgets('tapping Path A WhatsApp Artisan when unlocked opens masked WhatsApp intent modal', (tester) async {
+      await tester.pumpWidget(createWidgetUnderTest(isUnlocked: true));
       await tester.pumpAndSettle();
 
       final waBtn = find.text('WhatsApp Artisan');
@@ -135,14 +162,30 @@ void main() {
       await tester.tap(waBtn);
       await tester.pumpAndSettle();
 
-      expect(find.text('WhatsApp Conversation Dispatched'), findsOneWidget);
+      expect(find.text('Meta WhatsApp Cloud Relay Active'), findsOneWidget);
       final dismissBtn = find.text('Dismiss Intent Simulation');
       expect(dismissBtn, findsOneWidget);
 
       await tester.ensureVisible(dismissBtn);
       await tester.tap(dismissBtn);
       await tester.pumpAndSettle();
-      expect(find.text('WhatsApp Conversation Dispatched'), findsNothing);
+      expect(find.text('Meta WhatsApp Cloud Relay Active'), findsNothing);
+    });
+
+    testWidgets('renders One-tap Upgrade to Protected Guild Booking banner and opens sheet', (tester) async {
+      await tester.pumpWidget(createWidgetUnderTest());
+      await tester.pumpAndSettle();
+
+      final upgradeBtn = find.byKey(const Key('upgrade_to_protected_guild_booking_btn'));
+      await tester.ensureVisible(upgradeBtn);
+      expect(upgradeBtn, findsOneWidget);
+
+      await tester.tap(upgradeBtn);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Upgrade to Protected Guild Booking'), findsWidgets);
+      expect(find.text('Start Handshake OTP: 4921'), findsOneWidget);
+      expect(find.text('Confirm & Lock Escrow (₹29 Shield)'), findsOneWidget);
     });
   });
 }

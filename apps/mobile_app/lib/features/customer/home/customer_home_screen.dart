@@ -379,23 +379,36 @@ class CustomerHomeScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
+                      Wrap(
+                        alignment: WrapAlignment.spaceBetween,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        spacing: 4,
+                        runSpacing: 4,
                         children: [
-                          Flexible(
-                            child: Text(
-                              artisan.name,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: AppTypography.headlineSm.copyWith(fontSize: 16),
-                            ),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  artisan.name,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: AppTypography.headlineSm.copyWith(fontSize: 16),
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              const Icon(Icons.verified_rounded, color: AppColors.tertiary, size: 16),
+                            ],
                           ),
-                          const SizedBox(width: 6),
-                          const Icon(Icons.verified_rounded, color: AppColors.tertiary, size: 16),
+                          _buildRoleBadge(artisan.roleType),
                         ],
                       ),
+                      const SizedBox(height: 2),
                       Text(
-                        '${artisan.tradeTitle} • ${artisan.yearsExperience} yrs exp',
+                        '${artisan.localizedRoleTitle} • ${artisan.yearsExperience} yrs exp',
                         style: AppTypography.bodySm,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 4),
                       Row(
@@ -454,6 +467,41 @@ class CustomerHomeScreen extends ConsumerWidget {
               ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRoleBadge(KarigaarRoleType roleType) {
+    Color bg;
+    Color fg;
+    switch (roleType) {
+      case KarigaarRoleType.headMistry:
+        bg = AppColors.secondary.withValues(alpha: 0.15);
+        fg = AppColors.secondary;
+        break;
+      case KarigaarRoleType.skilledKarigaar:
+        bg = AppColors.primary.withValues(alpha: 0.12);
+        fg = AppColors.primary;
+        break;
+      case KarigaarRoleType.helperAssistant:
+        bg = AppColors.textMuted.withValues(alpha: 0.15);
+        fg = AppColors.textMuted;
+        break;
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        roleType.badgeText,
+        style: AppTypography.labelSm.copyWith(
+          color: fg,
+          fontWeight: FontWeight.w700,
+          fontSize: 10,
         ),
       ),
     );

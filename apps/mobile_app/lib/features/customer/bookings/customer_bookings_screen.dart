@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/models/booking_model.dart';
+import '../../../core/config/app_data_service.dart';
 import '../../../core/providers/app_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../shared/widgets/trust_shield_badge.dart';
+import '../profile/widgets/retroactive_escrow_lock_sheet.dart';
 
 class CustomerBookingsScreen extends ConsumerStatefulWidget {
   const CustomerBookingsScreen({super.key});
@@ -162,6 +164,9 @@ class _CustomerBookingsScreenState
                   ),
                   const SizedBox(height: 20),
                 ],
+                // Direct On-Site Visits & Inquiries (F-25 & F-36)
+                _buildDirectOnSiteLeadCard(context),
+                const SizedBox(height: 20),
                 Text(
                   'UPCOMING & PAST ORDERS',
                   style: AppTypography.labelSm.copyWith(
@@ -255,7 +260,46 @@ class _CustomerBookingsScreenState
             style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
           ),
           const SizedBox(height: 12),
-          const TrustShieldBadge(label: '₹25,000 Guild Damage Shield Active'),
+          Wrap(
+            spacing: 8,
+            runSpacing: 6,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              TrustShieldBadge(
+                label: booking.damageCoverAmount >= 25000
+                    ? '₹25,000 Guild Damage Shield Active'
+                    : '₹10,000 Guild Damage Shield Active',
+              ),
+              if (booking.isRetroactiveOnSiteLock)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.tertiarySurfaceTint,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    'ON-SITE ESCROW LOCKED',
+                    style: AppTypography.labelSm.copyWith(
+                      color: AppColors.tertiary,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 10,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            booking.damageCoverLabel,
+            style: AppTypography.bodySm.copyWith(
+              color: AppColors.tertiary,
+              fontWeight: FontWeight.w600,
+              fontSize: 12,
+            ),
+          ),
           const SizedBox(height: 12),
           Wrap(
             alignment: WrapAlignment.spaceBetween,
@@ -302,6 +346,96 @@ class _CustomerBookingsScreenState
                 child: const Text('Track Live'),
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDirectOnSiteLeadCard(BuildContext context) {
+    final directArtisan = AppDataService.getAllSampleArtisans().firstWhere(
+      (a) => a.artisanId == 'art_nanded_02',
+      orElse: () => AppDataService.getAllSampleArtisans().first,
+    );
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceRaised,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppColors.tertiary.withValues(alpha: 0.3),
+          width: 1.5,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 8,
+            runSpacing: 4,
+            children: [
+              Text(
+                'DIRECT ON-SITE LEAD • ${directArtisan.tradeTitle}',
+                style: AppTypography.labelSm.copyWith(
+                  color: AppColors.textMuted,
+                  letterSpacing: 0.5,
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: AppColors.secondarySurfaceTint,
+                  borderRadius: BorderRadius.circular(9999),
+                ),
+                child: Text(
+                  'Direct Visit (Unprotected)',
+                  style: AppTypography.labelSm.copyWith(
+                    color: AppColors.secondary,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            '${directArtisan.name} (On-Site Diagnostic)',
+            style: AppTypography.headlineSm.copyWith(fontSize: 16),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Artisan present on-site. Upgrade now to activate Start OTP (4921), ₹29 Safety Shield & ₹25k Master Cover.',
+            style: AppTypography.bodySm.copyWith(
+              color: AppColors.textMuted,
+              fontSize: 12,
+            ),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              key: const Key('upgrade_booking_direct_lead_btn'),
+              onPressed: () =>
+                  RetroactiveEscrowLockSheet.show(context, directArtisan),
+              icon: const Icon(Icons.shield_outlined, size: 16),
+              label: const Text(
+                'Upgrade to Protected Guild Booking',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.tertiary,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
           ),
         ],
       ),

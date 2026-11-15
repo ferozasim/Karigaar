@@ -103,6 +103,8 @@ class AppDataService {
       cityId: 'city_nanded_01',
       localityId: 'loc_anand_nagar',
       tier: GuildTier.masterGuildsman,
+      isGuildElite: true,
+      roleType: KarigaarRoleType.headMistry,
       totalJobsCompleted: 512,
     ),
     ArtisanProfileModel(
@@ -120,6 +122,7 @@ class AppDataService {
       cityId: 'city_nanded_01',
       localityId: 'loc_vazirabad',
       tier: GuildTier.masterGuildsman,
+      roleType: KarigaarRoleType.headMistry,
       totalJobsCompleted: 420,
     ),
     ArtisanProfileModel(
@@ -137,6 +140,7 @@ class AppDataService {
       cityId: 'city_nanded_01',
       localityId: 'loc_cidco',
       tier: GuildTier.guildVerifiedPro,
+      roleType: KarigaarRoleType.headMistry,
       totalJobsCompleted: 190,
     ),
     ArtisanProfileModel(
@@ -154,6 +158,7 @@ class AppDataService {
       cityId: 'city_nanded_01',
       localityId: 'loc_taroda_naka',
       tier: GuildTier.guildVerifiedPro,
+      roleType: KarigaarRoleType.skilledKarigaar,
       totalJobsCompleted: 165,
     ),
   ];

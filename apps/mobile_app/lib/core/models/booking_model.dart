@@ -152,6 +152,11 @@ class BookingModel {
   final int grandTotal;
   final int dwellMinutesAtDestination;
 
+  // Ticket T-09 Fields: Two-Tier Guild Damage Shield & Retroactive On-Site Lock
+  final int damageCoverAmount;
+  final int customerDeductible;
+  final bool isRetroactiveOnSiteLock;
+
   const BookingModel({
     required this.bookingId,
     required this.customerId,
@@ -184,6 +189,9 @@ class BookingModel {
     this.gstAmount = 115,
     this.grandTotal = 752,
     this.dwellMinutesAtDestination = 16,
+    this.damageCoverAmount = 25000,
+    this.customerDeductible = 250,
+    this.isRetroactiveOnSiteLock = false,
   });
 
   int get partsTotal => parts.fold(0, (sum, part) => sum + part.total);
@@ -198,6 +206,9 @@ class BookingModel {
   String get artisanId => assignedArtisanId ?? 'art_nanded_01';
   String get artisanName => assignedArtisanName ?? 'Ganesh Kadam';
   String get customerAddress => address;
+
+  String get damageCoverLabel =>
+      '₹${(damageCoverAmount / 1000).round()}k ${damageCoverAmount >= 25000 ? "Master" : "Base"} Cover (₹$customerDeductible Deductible)';
 
   bool verifyStartOtp(String code) => code.trim() == startOtp;
   bool verifyCompletionOtp(String code) => code.trim() == completionOtp;
@@ -217,6 +228,9 @@ class BookingModel {
     int? gstAmount,
     int? grandTotal,
     int? dwellMinutesAtDestination,
+    int? damageCoverAmount,
+    int? customerDeductible,
+    bool? isRetroactiveOnSiteLock,
   }) {
     return BookingModel(
       bookingId: bookingId,
@@ -250,6 +264,9 @@ class BookingModel {
       gstAmount: gstAmount ?? this.gstAmount,
       grandTotal: grandTotal ?? this.grandTotal,
       dwellMinutesAtDestination: dwellMinutesAtDestination ?? this.dwellMinutesAtDestination,
+      damageCoverAmount: damageCoverAmount ?? this.damageCoverAmount,
+      customerDeductible: customerDeductible ?? this.customerDeductible,
+      isRetroactiveOnSiteLock: isRetroactiveOnSiteLock ?? this.isRetroactiveOnSiteLock,
     );
   }
 }

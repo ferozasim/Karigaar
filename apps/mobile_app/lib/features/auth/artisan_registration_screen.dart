@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/models/user_role.dart';
+import '../../../core/models/karigaar_role_type.dart';
 import '../../../core/providers/app_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
@@ -31,6 +32,7 @@ class _ArtisanRegistrationScreenState
     extends ConsumerState<ArtisanRegistrationScreen> {
   late int _currentStep;
   String _selectedTradeId = 'trade_electrician';
+  KarigaarRoleType _selectedRoleType = KarigaarRoleType.skilledKarigaar;
   String _selectedExperience = '3 - 5 Years';
   String _selectedLanguage = 'en'; // 'en', 'hi', 'mr'
   bool _aadhaarUploaded = true;
@@ -481,7 +483,7 @@ class _ArtisanRegistrationScreenState
                   borderRadius: BorderRadius.circular(9999),
                 ),
                 child: Text(
-                  '0% Commission Offer',
+                  '5% Commission Floor Guarantee',
                   style: AppTypography.labelSm.copyWith(color: AppColors.secondary),
                 ),
               ),
@@ -1090,6 +1092,73 @@ class _ArtisanRegistrationScreenState
             );
           }).toList(),
         ),
+        const SizedBox(height: 18),
+        Text(
+          'Karigaar Role Type',
+          style: AppTypography.labelMd,
+        ),
+        const SizedBox(height: 8),
+        ...KarigaarRoleType.values.map((role) {
+          final isSelected = _selectedRoleType == role;
+          final localizedTitle = role.getLocalizedTitle(_selectedTradeId);
+          return Container(
+            margin: const EdgeInsets.only(bottom: 8),
+            decoration: BoxDecoration(
+              color: isSelected ? AppColors.surfaceRaised : AppColors.surfaceSubtle,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: isSelected ? AppColors.secondary : AppColors.borderSubtle,
+                width: isSelected ? 1.5 : 1.0,
+              ),
+            ),
+            child: Material(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(12),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(12),
+                onTap: () => setState(() => _selectedRoleType = role),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  child: Row(
+                    children: [
+                      Text(
+                        role == KarigaarRoleType.headMistry
+                            ? '👑'
+                            : (role == KarigaarRoleType.skilledKarigaar ? '🔧' : '🤝'),
+                        style: const TextStyle(fontSize: 20),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              localizedTitle,
+                              style: AppTypography.labelMd.copyWith(
+                                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                                color: isSelected ? AppColors.secondary : AppColors.textPrimary,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              '${role.standardLabel} • ${(role.rateMultiplier * 100).round()}% standard labor rate',
+                              style: AppTypography.bodySm.copyWith(color: AppColors.textMuted, fontSize: 11),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Icon(
+                        isSelected ? Icons.check_circle_rounded : Icons.circle_outlined,
+                        color: isSelected ? AppColors.secondary : AppColors.textMuted,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        }),
       ],
     );
   }
@@ -1530,7 +1599,7 @@ class _ArtisanRegistrationScreenState
               ),
               const SizedBox(height: 6),
               Text(
-                'Karigaar covers accidental on-site property damage up to ₹25,000. You earn with zero liability and 0% commission on your first 50 jobs.',
+                'Karigaar covers accidental on-site property damage up to ₹25,000. You earn with zero liability and sustainable 5% commission floor guarantee (Guild Elite).',
                 style: AppTypography.bodySm.copyWith(color: Colors.white70),
               ),
             ],
