@@ -4,16 +4,28 @@ import 'package:go_router/go_router.dart';
 import '../../../core/models/booking_model.dart';
 import '../../../core/models/trade_model.dart';
 import '../../../core/models/karigaar_role_type.dart';
+import '../../../core/models/preventive_bundle_model.dart';
 import '../../../core/services/api_service.dart';
 import '../../../core/providers/app_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../shared/widgets/trust_shield_badge.dart';
+import 'widgets/audio_memo_recorder_widget.dart';
+import 'widgets/arrival_slot_picker_widget.dart';
 
 class ServiceScopingScreen extends ConsumerStatefulWidget {
   final String tradeId;
+  final List<String>? initialPackageIds;
+  final String? bundleId;
+  final PreventiveBundleModel? bundle;
 
-  const ServiceScopingScreen({super.key, required this.tradeId});
+  const ServiceScopingScreen({
+    super.key,
+    required this.tradeId,
+    this.initialPackageIds,
+    this.bundleId,
+    this.bundle,
+  });
 
   @override
   ConsumerState<ServiceScopingScreen> createState() => _ServiceScopingScreenState();
@@ -24,16 +36,6 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
   KarigaarRoleType _selectedRoleTier = KarigaarRoleType.skilledKarigaar;
   bool _hasInitializedTradeSelection = false;
   bool _hasAttachedPhoto = false;
-  bool _isRecordingAudio = false;
-  int _audioSeconds = 0;
-  String _selectedSlot = 'Morning (9:00 AM - 12:00 PM)';
-
-  final List<String> _availableSlots = [
-    'Emergency (Within 25 Mins)',
-    'Morning (9:00 AM - 12:00 PM)',
-    'Afternoon (1:00 PM - 4:00 PM)',
-    'Evening (5:00 PM - 8:00 PM)',
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -48,22 +50,42 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
 
         if (!_hasInitializedTradeSelection && trade.popularPackages.isNotEmpty) {
           _hasInitializedTradeSelection = true;
-          final hasMatch = trade.popularPackages.any((p) => _selectedPackageIds.contains(p.packageId));
-          if (!hasMatch) {
+          if (widget.initialPackageIds != null && widget.initialPackageIds!.isNotEmpty) {
             _selectedPackageIds
               ..clear()
-              ..add(trade.popularPackages.first.packageId);
+              ..addAll(widget.initialPackageIds!);
+          } else {
+            final hasMatch = trade.popularPackages.any((p) => _selectedPackageIds.contains(p.packageId));
+            if (!hasMatch) {
+              _selectedPackageIds
+                ..clear()
+                ..add(trade.popularPackages.first.packageId);
+            }
           }
         }
 
-        // Calculate dynamic total with role rate multiplier
+        // Calculate dynamic total
         int baseLaborTotal = 0;
-        for (final pkg in trade.popularPackages) {
-          if (_selectedPackageIds.contains(pkg.packageId)) {
-            baseLaborTotal += pkg.estimatedPrice;
+        final hasBundleApplied = widget.bundle != null &&
+            widget.bundle!.includedPackageIds.every((id) => _selectedPackageIds.contains(id));
+
+        if (hasBundleApplied) {
+          baseLaborTotal = widget.bundle!.discountedPrice;
+          for (final pkg in trade.popularPackages) {
+            if (_selectedPackageIds.contains(pkg.packageId) &&
+                !widget.bundle!.includedPackageIds.contains(pkg.packageId)) {
+              baseLaborTotal += pkg.estimatedPrice;
+            }
           }
+        } else {
+          for (final pkg in trade.popularPackages) {
+            if (_selectedPackageIds.contains(pkg.packageId)) {
+              baseLaborTotal += pkg.estimatedPrice;
+            }
+          }
+          if (baseLaborTotal == 0) baseLaborTotal = trade.baseInspectionFee;
         }
-        if (baseLaborTotal == 0) baseLaborTotal = trade.baseInspectionFee;
+
         final laborTotal = (baseLaborTotal * _selectedRoleTier.rateMultiplier).round();
         final safetyShieldFee = trade.safetyShieldFee;
         final grandTotal = laborTotal + safetyShieldFee;
@@ -169,6 +191,95 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                     Text('Choose all relevant problems for accurate tooling', style: AppTypography.bodySm),
                     const SizedBox(height: 16),
 
+                    if (widget.bundle != null) ...[
+                      Container(
+                        key: const Key('curated_bundle_applied_banner'),
+                        margin: const EdgeInsets.only(bottom: 16),
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: widget.bundle!.surfaceTint,
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color: widget.bundle!.accentColor.withValues(alpha: 0.4),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: widget.bundle!.accentColor,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.auto_awesome_rounded,
+                                color: Colors.white,
+                                size: 16,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          'Curated Bundle Applied',
+                                          style: AppTypography.labelSm.copyWith(
+                                            color: widget.bundle!.accentColor,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Flexible(
+                                        fit: FlexFit.loose,
+                                        child: FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 6,
+                                              vertical: 2,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: widget.bundle!.accentColor,
+                                              borderRadius: BorderRadius.circular(4),
+                                            ),
+                                            child: Text(
+                                              widget.bundle!.discountTag,
+                                              style: AppTypography.labelSm.copyWith(
+                                                color: Colors.white,
+                                                fontSize: 9,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    '${widget.bundle!.title} (Save ₹${widget.bundle!.savingsAmount})',
+                                    style: AppTypography.headlineSm.copyWith(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+
                     // Issues Checklist
                     ...trade.popularPackages.map((pkg) {
                       final isSelected = _selectedPackageIds.contains(pkg.packageId);
@@ -221,15 +332,22 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                                       style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
                                     ),
                                     const SizedBox(height: 8),
-                                    Row(
+                                    Wrap(
+                                      spacing: 8,
+                                      runSpacing: 4,
+                                      crossAxisAlignment: WrapCrossAlignment.center,
                                       children: [
-                                        Text('₹${pkg.estimatedPrice} Est.', style: AppTypography.numericPrice.copyWith(fontSize: 16)),
-                                        const SizedBox(width: 8),
-                                        Flexible(
+                                        FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          child: Text(
+                                            '₹${pkg.estimatedPrice} Est.',
+                                            style: AppTypography.numericPrice.copyWith(fontSize: 16),
+                                          ),
+                                        ),
+                                        FittedBox(
+                                          fit: BoxFit.scaleDown,
                                           child: Text(
                                             '• ~${pkg.estimatedMinutes} mins',
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
                                             style: AppTypography.bodySm,
                                           ),
                                         ),
@@ -254,140 +372,70 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                     const SizedBox(height: 6),
                     Text('Help your craftsman bring the exact spares from the hardware store', style: AppTypography.bodySm),
                     const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        // Photo upload button
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _hasAttachedPhoto = !_hasAttachedPhoto;
-                              });
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    _hasAttachedPhoto
-                                        ? 'Issue photo attached for ${trade.name} inspection.'
-                                        : 'Removed attached photo.',
-                                  ),
-                                  duration: const Duration(seconds: 1),
-                                ),
-                              );
-                            },
-                            child: Container(
-                              height: 60,
-                              decoration: BoxDecoration(
-                                color: _hasAttachedPhoto ? AppColors.tertiarySurfaceTint : AppColors.surfaceRaised,
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: _hasAttachedPhoto ? AppColors.tertiary : AppColors.borderSubtle,
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    _hasAttachedPhoto ? Icons.check_circle_rounded : Icons.add_a_photo_rounded,
-                                    color: _hasAttachedPhoto ? AppColors.tertiary : AppColors.primary,
-                                    size: 20,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Flexible(
-                                    child: Text(
-                                      _hasAttachedPhoto ? 'Photo Added' : 'Add Photo',
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: AppTypography.labelMd.copyWith(
-                                        color: _hasAttachedPhoto ? AppColors.tertiary : AppColors.textPrimary,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                    // Photo upload button
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _hasAttachedPhoto = !_hasAttachedPhoto;
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              _hasAttachedPhoto
+                                  ? 'Issue photo attached for ${trade.name} inspection.'
+                                  : 'Removed attached photo.',
                             ),
+                            duration: const Duration(seconds: 1),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        height: 52,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: _hasAttachedPhoto ? AppColors.tertiarySurfaceTint : AppColors.surfaceRaised,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: _hasAttachedPhoto ? AppColors.tertiary : AppColors.borderSubtle,
                           ),
                         ),
-                        const SizedBox(width: 12),
-                        // 15s voice note record button
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _isRecordingAudio = !_isRecordingAudio;
-                                if (_isRecordingAudio) _audioSeconds = 15;
-                              });
-                            },
-                            child: Container(
-                              height: 60,
-                              decoration: BoxDecoration(
-                                color: _isRecordingAudio ? const Color(0xFFFEE2E2) : AppColors.surfaceRaised,
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: _isRecordingAudio ? AppColors.error : AppColors.borderSubtle,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              _hasAttachedPhoto ? Icons.check_circle_rounded : Icons.add_a_photo_rounded,
+                              color: _hasAttachedPhoto ? AppColors.tertiary : AppColors.primary,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 8),
+                            Flexible(
+                              child: Text(
+                                _hasAttachedPhoto ? 'Defect Photo Attached' : 'Add Issue Photo (Optional)',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: AppTypography.labelMd.copyWith(
+                                  color: _hasAttachedPhoto ? AppColors.tertiary : AppColors.textPrimary,
                                 ),
                               ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    _isRecordingAudio ? Icons.stop_rounded : Icons.mic_rounded,
-                                    color: _isRecordingAudio ? AppColors.error : AppColors.secondary,
-                                    size: 22,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Flexible(
-                                    child: Text(
-                                      _isRecordingAudio ? 'Stop (${_audioSeconds}s)' : '15s Audio Memo',
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: AppTypography.labelMd.copyWith(
-                                        color: _isRecordingAudio ? AppColors.error : AppColors.textPrimary,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 14),
+
+                    // Interactive 15s Audio Memo Recorder
+                    const AudioMemoRecorderWidget(
+                      key: Key('audio_memo_recorder_widget'),
                     ),
 
                     const SizedBox(height: 24),
-                    // Arrival Slot
-                    Text('Select Arrival Slot', style: AppTypography.headlineSm),
-                    const SizedBox(height: 12),
-                    ..._availableSlots.map((slot) {
-                      final isSelected = _selectedSlot == slot;
-                      return GestureDetector(
-                        onTap: () => setState(() => _selectedSlot = slot),
-                        child: Container(
-                          margin: const EdgeInsets.only(bottom: 8),
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                          decoration: BoxDecoration(
-                            color: isSelected ? AppColors.surfaceSubtle : AppColors.surfaceRaised,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: isSelected ? AppColors.primary : AppColors.borderSubtle,
-                              width: isSelected ? 1.5 : 1,
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                isSelected ? Icons.radio_button_checked_rounded : Icons.radio_button_off_rounded,
-                                color: isSelected ? AppColors.primary : AppColors.textSubtle,
-                                size: 20,
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Text(slot, style: AppTypography.labelMd),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }),
+
+                    // Scheduled Arrival Slot Picker (7-day carousel + time windows)
+                    const ArrivalSlotPickerWidget(
+                      key: Key('arrival_slot_picker_widget'),
+                    ),
                   ],
                 ),
               ),
@@ -449,22 +497,28 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                       ),
                       const SizedBox(width: 8),
                       Flexible(
-                        flex: 0,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            _showUpiPreAuthMandateSheet(context, grandTotal);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          ),
-                          child: Text(
-                            'Request Artisan',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: AppTypography.labelLg.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                        fit: FlexFit.loose,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerRight,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _showUpiPreAuthMandateSheet(context, grandTotal);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            ),
+                            child: Text(
+                              'Request Artisan',
+                              maxLines: 1,
+                              style: AppTypography.labelLg.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -794,12 +848,69 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                             );
                             final mandateData = res['data'] as Map<String, dynamic>?;
 
+                            final audioMemo = ref.read(recordedAudioMemoProvider);
+                            final selectedSlot = ref.read(selectedArrivalSlotProvider);
+                            final selectedDate = ref.read(selectedArrivalDateProvider);
+
+                            String? audioUrl;
+                            int? audioDuration;
+                            List<double>? audioWf;
+                            String? audioTranscript;
+
+                            if (audioMemo != null) {
+                              try {
+                                final uploadRes = await api.uploadAudioMemo(
+                                  bookingId: 'BK_NANDED_8821',
+                                  tradeId: widget.tradeId,
+                                  durationSeconds: audioMemo.durationSeconds,
+                                  waveform: audioMemo.waveform,
+                                );
+                                final uploadData = uploadRes['data'] as Map<String, dynamic>?;
+                                audioUrl = uploadData?['audioMemoUrl'] as String? ?? audioMemo.url;
+                                audioDuration = (uploadData?['durationSeconds'] as num?)?.toInt() ?? audioMemo.durationSeconds;
+                                audioWf = (uploadData?['waveform'] as List<dynamic>?)
+                                    ?.map((e) => (e as num).toDouble())
+                                    .toList() ?? audioMemo.waveform;
+                                audioTranscript = uploadData?['transcript'] as String? ?? audioMemo.transcript;
+                              } catch (_) {
+                                audioUrl = audioMemo.url;
+                                audioDuration = audioMemo.durationSeconds;
+                                audioWf = audioMemo.waveform;
+                                audioTranscript = audioMemo.transcript;
+                              }
+                            }
+
+                            final slotLabel = selectedSlot != null
+                                ? '${selectedSlot.category.label} (${selectedSlot.timeWindow})'
+                                : null;
+                            final slotId = selectedSlot?.slotId;
+                            final isEmergency = selectedSlot?.isEmergency ?? false;
+
+                            if (selectedSlot != null) {
+                              try {
+                                await api.reserveArrivalSlot(
+                                  bookingId: 'BK_NANDED_8821',
+                                  tradeId: widget.tradeId,
+                                  date: selectedDate,
+                                  slotId: selectedSlot.slotId,
+                                );
+                              } catch (_) {}
+                            }
+
                             final currentBooking = ref.read(activeBookingProvider);
                             if (currentBooking != null) {
                               ref.read(activeBookingProvider.notifier).state = currentBooking.copyWith(
                                 mandateStatus: UpiMandateStatus.authorized,
                                 mandateId: mandateData?['mandateId'] as String?,
                                 upiVpa: vpa,
+                                audioMemoUrl: audioUrl,
+                                audioMemoDurationSeconds: audioDuration,
+                                audioMemoWaveform: audioWf,
+                                audioMemoTranscript: audioTranscript,
+                                scheduledDate: selectedDate,
+                                scheduledSlot: slotLabel,
+                                scheduledSlotId: slotId,
+                                isEmergencyDispatch: isEmergency,
                               );
                             }
 

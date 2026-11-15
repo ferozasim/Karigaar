@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -383,23 +384,35 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                                 ),
                               ),
                             if (activeBroadcast.attachments.hasVoiceMemo)
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                                decoration: BoxDecoration(
-                                  color: AppColors.surfaceBase,
-                                  borderRadius: BorderRadius.circular(6),
-                                  border: Border.all(color: AppColors.borderSubtle),
+                              GestureDetector(
+                                key: const Key('voice_memo_radar_badge'),
+                                onTap: () => _showAudioPreviewModal(
+                                  context,
+                                  activeBroadcast.attachments.voiceMemoDurationSeconds ?? 14,
+                                  activeBroadcast.attachments.voiceMemoUrl,
                                 ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(Icons.mic_outlined, size: 14, color: AppColors.secondary),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      '${activeBroadcast.attachments.voiceMemoDurationSeconds ?? 14}s Audio',
-                                      style: AppTypography.labelSm.copyWith(fontSize: 11),
-                                    ),
-                                  ],
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.secondarySurfaceTint,
+                                    borderRadius: BorderRadius.circular(6),
+                                    border: Border.all(color: AppColors.secondary.withValues(alpha: 0.4)),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(Icons.mic_outlined, size: 14, color: AppColors.secondary),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        '${activeBroadcast.attachments.voiceMemoDurationSeconds ?? 14}s Audio',
+                                        style: AppTypography.labelSm.copyWith(
+                                          fontSize: 11,
+                                          color: AppColors.secondary,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                           ],
@@ -621,6 +634,184 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showAudioPreviewModal(BuildContext context, int durationSeconds, String? url) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) {
+        bool isPlaying = false;
+        double progress = 0.0;
+        Timer? playbackTimer;
+
+        return StatefulBuilder(
+          builder: (modalContext, setModalState) {
+            void togglePlay() {
+              if (isPlaying) {
+                playbackTimer?.cancel();
+                setModalState(() {
+                  isPlaying = false;
+                });
+              } else {
+                setModalState(() {
+                  isPlaying = true;
+                });
+                playbackTimer = Timer.periodic(const Duration(milliseconds: 100), (t) {
+                  if (progress >= 1.0) {
+                    t.cancel();
+                    setModalState(() {
+                      isPlaying = false;
+                      progress = 0.0;
+                    });
+                  } else {
+                    setModalState(() {
+                      progress = (progress + (1.0 / (durationSeconds * 10))).clamp(0.0, 1.0);
+                    });
+                  }
+                });
+              }
+            }
+
+            return Container(
+              padding: const EdgeInsets.all(20),
+              decoration: const BoxDecoration(
+                color: AppColors.surfaceRaised,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              ),
+              child: SafeArea(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(6),
+                                decoration: const BoxDecoration(
+                                  color: AppColors.secondarySurfaceTint,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(Icons.mic_rounded, color: AppColors.secondary, size: 20),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
+                                  'Customer Audio Scoping (${durationSeconds}s)',
+                                  style: AppTypography.headlineSm.copyWith(fontSize: 16),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.close_rounded),
+                          onPressed: () {
+                            playbackTimer?.cancel();
+                            Navigator.pop(modalContext);
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+                    // Waveform visual
+                    Container(
+                      height: 48,
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceSubtle,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: List.generate(24, (index) {
+                          final h = ((index % 5 + 2) * 6.0).clamp(6.0, 36.0);
+                          final passed = (index / 24) <= progress;
+                          return Container(
+                            width: 4,
+                            height: h,
+                            decoration: BoxDecoration(
+                              color: passed ? AppColors.secondary : AppColors.borderSubtle,
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          );
+                        }),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '0:${(progress * durationSeconds).round().toString().padLeft(2, '0')}',
+                          style: AppTypography.labelSm.copyWith(color: AppColors.secondary, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          '0:${durationSeconds.toString().padLeft(2, '0')}',
+                          style: AppTypography.labelSm.copyWith(color: AppColors.textMuted),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+                    // Transcript
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceSubtle,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Icon(Icons.subtitles_rounded, size: 16, color: AppColors.tertiary),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Customer Voice Note: "MCB switch sparking when turning on AC. Need 32A replacement."',
+                              style: AppTypography.bodySm.copyWith(color: AppColors.textPrimary, fontStyle: FontStyle.italic),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        key: const Key('radar_modal_play_button'),
+                        onPressed: togglePlay,
+                        icon: Icon(isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded, size: 20),
+                        label: Text(
+                          isPlaying ? 'Pause Preview' : 'Listen to Customer Audio Memo',
+                          style: AppTypography.labelMd.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.secondary,
+                          foregroundColor: Colors.white,
+                          minimumSize: const Size(120, 48),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 

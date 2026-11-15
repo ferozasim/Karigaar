@@ -175,6 +175,15 @@ The following master feature inventory consolidates all components identified ac
 | **F-39** | Multi-District Regional Corridor Selector | Hyperlocal Discovery | `locality_selector_sheet` | 7-district horizontal corridor carousel (Nanded, Parbhani, Latur, Hingoli, Sambhajinagar, Nagpur, Nizamabad) with localized artisan rosters | District selection tap | Switches active district, localities, and localized craftsmen roster | Ticket T-01 | `regional_districts.json` |
 | **F-40** | Super Admin Regional Corridor & KYC Filter | Admin Ops | `super_admin_portal` | Multi-district corridor filter bar switching live ops telemetry, surge corridors, and priority KYC queues across 7 regional hubs | District pill filter click | Filters live telemetry, surge heatmap, and KYC review candidates | Ticket T-02 | `apps/admin_web` |
 | **F-41** | Unified Microservice REST Client Engine | Backend Integration | `api_service.dart` | REST interface client implementing Section 5 contracts: WhatsApp OTP, masked telephony proxy, start code 4921, doorstep denial, decoupled invoice, and IMPS reserve | API call methods | Standardized response JSON and exception invariants | Ticket T-03 | `apps/mobile_app/lib/core/services/api_service.dart` |
+| **F-42** | Live Geolocation & 200m Geofence Telemetry | Live Tracking | `telemetry_service.dart` | WebSocket/MQTT streaming, Haversine distance with 1.3x road tortuosity, foreground/background GPS modes, and 200m doorstep arrival geofence | GPS telemetry ticks | Live map marker updates, ETA HUD, and 200m arrival banner | Ticket T-04 | `apps/mobile_app/lib/core/services/telemetry_service.dart` |
+| **F-43** | UPI ₹99 Pre-Auth Mandate & Escrow Engine | Payments & Escrow | `payment_escrow_service` | Upfront ₹99 UPI AutoPay mandate hold (₹0 debited upfront), 15-min doorstep denial capture, RBI 2FA spare parts approval, and ₹2,000 IMPS reserve | Mandate & OTP events | Double-entry escrow release and rolling reserve protection | Ticket T-05 | `apps/mobile_app/lib/core/services/api_service.dart` |
+| **F-44** | Meta WhatsApp Cloud API v21.0 & DID Proxy | Telephony & Comms | `whatsapp_telephony_service.dart` | Meta v21.0 template serialization, dual-sync dispatch relay, and masked virtual DID (`+91-11-4084-2190`) with 600s TTL and zero raw MSISDN leakage | Template & call actions | Outbound WA receipts and masked telephony bridge sessions | Ticket T-06 | `apps/mobile_app/lib/core/services/whatsapp_telephony_service.dart` |
+| **F-45** | Partner Radar 45s Broadcast & 2km→6km Cascade | Partner Dispatch | `radar_broadcast_service.dart` | Contract 2 `JOB_RADAR_BROADCAST` stream, 45s countdown ring, automatic Tier 1 (2 km) to Tier 2 (6 km) radius escalation, and `DISPATCH_UNFULFILLED` fallback | Broadcast & timer ticks | Auto-cascading radar card, customer radius banner, and Admin KPI | Ticket T-07 | `apps/mobile_app/lib/core/services/radar_broadcast_service.dart` |
+| **F-46** | Pre-Login Karigaar Guild Gate & Tap-First Mistri/Labour/Dihadi Onboarding | Partner Onboarding | `login_screen.dart` & `artisan_registration_screen.dart` | Dark Guild Slate & Amber pre-login gate + 100% tap-friendly 4-step wizard (`Head Mistri`, `Skilled Karigaar`, `Helper/Labour`, `Thekedar`, Experience chips, Trade specialty chips, Per-Visit `₹150–₹399` & Daily Dihadi `₹500–₹1,200/day` presets, Tools & Vehicle toggles) | Tap-first chip selections & OTP | Immediate Tier 1 portal access + live district public directory & Admin KYC sync | Ticket T-08 | `apps/mobile_app/lib/features/auth/` |
+| **F-47** | Strict Homeowner vs. Karigaar UI & Route Isolation | Security & Navigation | `app_router.dart` | Complete post-login UI and `GoRouter.redirect` separation: Homeowners only access `/customer/*`; Karigaars only access `/artisan/*`; all post-login role switchers removed | Route navigation | Enforced role boundary; switching roles requires `Sign Out` to `/login` | Ticket T-09 | `apps/mobile_app/lib/core/router/app_router.dart` |
+| **F-48** | Karigaar Partner Profile, Standalone Wallet & 3-Tab Bottom Nav | Partner Portal | `artisan_partner_profile_screen.dart` | Dedicated `/artisan/profile` (Guild ID card, editable rate card/bio/skills, Cleanliness & Sawdust scorecard, portfolio gallery, bank/UPI), standalone `/artisan/wallet` ledger, and 3-tab `ArtisanBottomNav` | Partner tab navigation & profile edit | Live profile updates synced to homeowner directory and standalone IMPS wallet | Ticket T-10 | `apps/mobile_app/lib/features/artisan/` |
+| **F-49** | Dual-Mode Firebase (`karigaar-ba812`) + Local Fallback Backend | Cloud Backend | `firestore` & `storage` | Firestore & Cloud Storage repositories (`users`, `artisans`, `bookings`, `mandates`, `wallets`) with automatic offline/in-memory fallback for zero-key CI testing, plus Cloud Functions webhook gateways | Repository read/write & webhooks | Live cloud persistence with deterministic offline test execution | Ticket T-11 & T-12 | `firestore.rules` & `apps/mobile_app/lib/core/services/` |
+| **F-50** | Multi-Modal Scoping, Path A/B Lock & Admin Warranty/Dispute Workbench | Scoping, Escrow & Ops | `service_scoping_screen.dart` & `apps/admin_web` | 15s voice memo recorder & arrival slot picker (`F-10`/`F-11`), seasonal bundle cart (`F-08`), Path A `₹49` lead unlock / `₹499/mo` pass (`F-35`), Path A→B retroactive escrow lock (`F-36`), 30% take-rate Warranty Reserve (`₹250` deductible), and Admin Dispute Arbitration queue | Voice/slot selection, upgrade CTA, claim arbitration | End-to-end scoping, retroactive warranty lock, and Admin payout/rework/reject resolution | Ticket T-13 | `apps/mobile_app` & `apps/admin_web` |
 
 ---
 
@@ -713,8 +722,155 @@ Karigaar_app/
 │   ├── specs/                            # Architecture design records
 │   └── runbooks/                         # Ops incident response & dispute runbooks
 ├── PROJECT.md                            # Master System Blueprint (This Document)
+├── APP_STATUS_REPORT.md                  # Operational Status, Test Inventory & Ticket Verification Report
 └── PHASE_0_REVIEW.md                     # Comprehensive Phase 0 Review & Founder Requirements
 ```
 
 ---
-*Authored by Teamwork Worker (`worker_phase0`). Approved for Phase 0 baseline verification.*
+
+## 7. Master Ticket Backlog, Pre-Login Karigaar Onboarding & Execution Status (`T-01` – `T-13`)
+
+### 7.1 Complete Master Ticket Registry
+
+| Ticket | Title | Feature IDs | Branch | Status | Commit / Verification Baseline |
+|---|---|---|---|---|---|
+| **T-01** | Multi-District Regional Corridor Expansion (7 Districts: Nanded, Parbhani, Latur, Hingoli, Sambhajinagar, Nagpur, Nizamabad) | `F-39` | `feat/T-01-multi-district-corridor` | ✅ **CLOSED & IN `main`** | `c67f5e7` / `836a47a` (120 mobile tests passing) |
+| **T-02** | Super Admin Regional Corridor Filter Bar, Dynamic Bento KPIs, Surge Heatmap & KYC Queue | `F-28`–`F-32`, `F-40` | `feat/T-02-admin-corridor-sync` | ✅ **CLOSED & IN `main`** | `eaea81b` (8/8 Admin Web tests, 0 lint warnings) |
+| **T-03** | Unified Microservice REST Client Engine (Section 5 Contracts 1–4) | `F-41` | `feat/T-03-rest-mock-contracts` | ✅ **CLOSED & IN `main`** | `b05511c` (150 mobile tests, 14 API contract tests) |
+| **T-04** | Live Geolocation & WebSocket/MQTT Telemetry Streaming + 200m Doorstep Geofence | `F-12`, `F-14`, `F-42` | `feat/T-04-live-geolocation-telemetry` | ✅ **CLOSED & IN `main`** | `9fde829` (173 mobile tests, 23 telemetry unit/widget tests) |
+| **T-05** | Payment Gateway, Upfront ₹99 UPI Pre-Auth Mandate, 15m Doorstep Denial & ₹2,000 IMPS Reserve | `F-21`–`F-23`, `F-38`, `F-43` | `feat/T-05-payment-escrow-integration` | ✅ **CLOSED & IN `main`** | `57a7f1d` (199 mobile tests, 26 payment/escrow tests) |
+| **T-06** | Meta WhatsApp Business Cloud API v21.0 & Masked Virtual Telephony Proxy (`+91-11-4084-2190`) | `F-01`–`F-03`, `F-18`, `F-44` | `feat/T-06-whatsapp-telephony-proxy` | ✅ **CLOSED & IN `main`** | `459bcaf` / PR #1 `e69d4e7` (220 mobile tests, 21 WA/telephony tests) |
+| **T-07** | Partner Dispatch Radar 45s Broadcast Engine, Auto-Cascading (2 km → 6 km) & Unfulfilled Fallback | `F-16`, `F-17`, `F-19`, `F-45` | `feat/T-07-partner-dispatch-radar-cascade` | ✅ **CLOSED & IN `main`** | `a55f503` / PR #2 `1e3b674` (243 mobile tests, 23 radar broadcast tests) |
+| **T-08** | **Pre-Login Karigaar Guild Gate & Tap-First Mistri/Labour/Dihadi 4-Step Onboarding** | `F-37`, `F-46` | `feat/T-08-karigaar-prelogin-onboarding` | 📋 **APPROVED & LOCKED** | Dark Guild Gate on `/login`, tap-first Mistri/Labour/Dihadi chips, live district directory sync |
+| **T-09** | **Strict Homeowner vs. Karigaar UI & Route Isolation** | `F-47` | `feat/T-09-strict-role-ui-isolation` | 📋 **APPROVED & LOCKED** | `GoRouter.redirect` role guards, remove post-login switchers, industrial dark header |
+| **T-10** | **Karigaar Partner Profile (`/artisan/profile`), Standalone Wallet (`/artisan/wallet`) & 3-Tab Bottom Nav** | `F-24`–`F-27`, `F-48` | `feat/T-10-karigaar-partner-profile-wallet` | 📋 **APPROVED & LOCKED** | New `ArtisanPartnerProfileScreen`, `ArtisanWalletHistoryScreen`, and `ArtisanBottomNav` |
+| **T-11** | **Dual-Mode Firebase (`karigaar-ba812`) + Local Fallback Repositories** | `F-49` | `feat/T-11-firebase-firestore-backend` | 📋 **APPROVED & LOCKED** | Firestore & Storage adapters (`users`, `artisans`, `bookings`, `mandates`, `wallets`) + offline fallback |
+| **T-12** | **Stage 1B Backend: Cloud Functions & Webhook Gateways (WhatsApp, Razorpay, Telephony)** | `F-49` | `feat/T-12-cloud-functions-webhooks` | 📋 **APPROVED & LOCKED** | Serverless webhook handlers for Meta WA v21.0, Razorpay AutoPay/IMPS, and virtual DID proxy |
+| **T-13** | **Multi-Modal Scoping (15s Voice Memo & Slot Picker), Path A/B Lock & Admin Warranty/Dispute Workbench** | `F-08`, `F-10`, `F-11`, `F-25`, `F-35`, `F-36`, `F-50` | `feat/T-13-multimodal-scoping-dispute-ops` | 📋 **APPROVED & LOCKED** | 15s audio memo, slot picker, ₹49/₹499 Path A unlock, Path A→B retroactive lock, 30% warranty reserve & Admin dispute queue |
+
+---
+
+### 7.2 Locked-In Design Specifications for Tickets `T-08` – `T-13`
+
+```mermaid
+flowchart TD
+    Entry["Pre-Login Screen (/login)<br/>Role Selected Before Authentication"]
+    Entry -->|Homeowner Tab| HomeCard["🏠 Light Concierge Login Card<br/>+91 Mobile -> WhatsApp / SMS OTP"]
+    Entry -->|Karigaar Tab| GuildCard["🛠️ Dark Guild Slate & Amber Portal Card<br/>Language Toggle: EN | हिंदी | मराठी"]
+
+    GuildCard -->|Primary CTA: New Karigaar| Wizard["4-Step Pre-Login Karigaar Onboarding (/artisan/register)<br/>Step 1: Role Type (Mistri/Karigaar/Helper/Thekedar), Experience & Localities<br/>Step 2: Trade, Specialty Chips, Visit Fee + Daily Dihadi Chips & Portfolio<br/>Step 3: Aadhaar KYC & Tool Kit / Mobility Toggles<br/>Step 4: Bank / UPI Penny-Drop & OTP Verification"]
+    GuildCard -->|Secondary CTA: Existing Guildsman| ArtOTP["Karigaar OTP Verification (/otp-verify)"]
+
+    Wizard --> SaveProfile["Persist to currentArtisanProfileProvider<br/>Sync to District Public Directory & Admin KYC Queue<br/>Set isArtisanOnboarded = true"]
+    ArtOTP --> CheckOnboard{"isArtisanOnboarded?"}
+    CheckOnboard -->|No| Wizard
+    CheckOnboard -->|Yes| ArtApp["🛠️ KARIGAAR PARTNER APP ONLY<br/>/artisan/radar • /artisan/active-job<br/>/artisan/wallet • /artisan/profile<br/>(All /customer/* routes blocked)"]
+    SaveProfile --> ArtApp
+
+    HomeCard --> CustOTP["Homeowner OTP Verification"] --> CustApp["🏠 HOMEOWNER APP ONLY<br/>/customer/home • /customer/bookings<br/>/customer/messages • /customer/profile<br/>(All /artisan/* routes blocked)"]
+```
+
+#### 1. Ticket T-08: Pre-Login Karigaar Guild Gate & Tap-First Mistri/Labour/Dihadi Onboarding (`feat/T-08-karigaar-prelogin-onboarding`)
+- **Pre-Login Entry Flow (`LoginScreen`)**:
+  - Selecting **Karigaar Mode** on `/login` renders a distinct **Dark Guild Slate (`#0F172A`) & Artisan Amber (`#D97706`) Guild Gate** with an inline `EN / हिंदी / मराठी` language pill and two actions:
+    1. **Primary CTA**: `"New Karigaar? Fill Profile & Onboard First"` (launches the 4-step tap-friendly onboarding wizard `/artisan/register` before OTP).
+    2. **Returning Karigaar Sign-In**: 10-digit mobile number + WhatsApp/SMS OTP (if `artisanOnboardingCompletedProvider == false`, `OtpVerificationScreen` automatically routes to `/artisan/register` first).
+- **100% Tap-Friendly Onboarding Form (`ArtisanRegistrationScreen`)**:
+  - Designed so any Karigaar (Mistri, Skilled Technician, Helper/Labour, or Team Contractor) can onboard primarily by **tapping visual chips and cards** instead of typing long text:
+    - **Karigaar Role Type (`KarigaarRoleType`)**:
+      - `Head Mistri / Master Karigaar (मुख्य मिस्त्री / वस्ताद)`
+      - `Skilled Karigaar / Technician (कुशल कारीगर)`
+      - `Helper / Naka Labour / Assistant (मदतनीस / लेबर / हेल्पर)`
+      - `Thekedar / Team Contractor (ठेकेदार / टीम लीडर — With 2–5 Helpers)`
+    - **Experience Chips**: `< 1 Year (Fresher)`, `1 - 3 Years`, `3 - 5 Years`, `5 - 10 Years`, `10+ Years (Senior / Ustad)`.
+    - **Dynamic Trade-Specific Specialty Chips**: Selecting any of the 10 launch trades dynamically populates 8–10 tap-to-select specialty chips tailored to that craft (e.g., Mason/Mistri -> `Brickwork / बांधकाम`, `Plastering / प्लास्टर`, `Tiles & Granite / टाईल्स`, `Waterproofing`, `RCC / Slab`).
+    - **Work Mode & Rate Presets (`Visit` + `Daily Dihadi`)**:
+      - Work Mode selector: `Per-Visit / Repair Point`, `Daily Wage / Dihadi (रोजी / दिहाडी)`, or `Both Visit & Daily Dihadi`.
+      - Tap-to-select **Visit Fee Chips**: `₹150`, `₹200`, `₹249`, `₹300`, `₹399`.
+      - Tap-to-select **Daily Dihadi Chips**: `₹500/day (Helper)`, `₹700/day`, `₹900/day (Mistri)`, `₹1,200/day (Master)`.
+    - **Tools & Mobility Toggles**:
+      - Own Tools (`स्वतःचे टूल्स`) checklist + Travel Mode (`Two-Wheeler / Bike`, `Cycle`, `Auto / Public Transport`) + Multi-locality chips across the 7 regional corridor districts.
+- **Immediate Portal Access + Live District Directory Sync**:
+  - Completing the 4-step wizard + OTP grants immediate access to `/artisan/radar` and `/artisan/profile` (`KYC Verified • Tier 1 Active`), dynamically adds the newly onboarded Karigaar to that district's public Homeowner discovery roster (`topArtisansProvider`), and queues them in the Super Admin KYC Console for Master tier upgrade.
+
+#### 2. Ticket T-09: Strict Homeowner vs. Karigaar UI & Route Isolation (`feat/T-09-strict-role-ui-isolation`)
+- **Zero Cross-Role Visibility Post-Login**:
+  - Once logged in, Homeowners **never** see or access `/artisan/*` UI, and Karigaars **never** see or access `/customer/*` UI.
+  - Remove `ModeSwitcherPill` from the top bar of `ArtisanJobRadarScreen` (replace with a **Guild KYC Verified Pill** + **`EN / हिं / मरा`** language toggle).
+  - Remove the `"Switch to Artisan Guild Portal"` `ListTile` from `CustomerProfileScreen`.
+  - Keep `ModeSwitcherPill` **strictly on `/login`** (pre-authentication).
+- **Router-Level Guard (`GoRouter.redirect` in `app_router.dart`)**:
+  - Track `authenticatedSessionRoleProvider` (`UserRole?`).
+  - When `authenticatedSessionRole == UserRole.customer`, any attempt to navigate to `/artisan/*` or `/karigaar/*` redirects immediately to `/customer/home` (while allowing `/customer/artisan/:artisanId`, the homeowner's read-only view of an artisan's public profile).
+  - When `authenticatedSessionRole == UserRole.artisan`, any attempt to navigate to `/customer/*` redirects immediately to `/artisan/radar`.
+  - Role switching is only possible after tapping **Sign Out** (resetting `authenticatedSessionRoleProvider = null` and returning to `/login`).
+
+#### 3. Ticket T-10: Karigaar Partner Profile (`/artisan/profile`), Standalone Wallet (`/artisan/wallet`) & 3-Tab Bottom Nav (`feat/T-10-karigaar-partner-profile-wallet`)
+- **New Screen 1 — `ArtisanPartnerProfileScreen` (`/artisan/profile`)**:
+  - **Guild Identity Header (Dark Slate `#0F172A` & Amber `#D97706`)**: Karigaar photo, legal name, Guild ID (`KG-ND-2026-089`), KYC badge (`Aadhaar & Police Verified`), Role Type badge (`Head Mistri / Skilled Karigaar / Helper / Thekedar`), and Guild Tier gauge (`Tier 3: Master Guildsman • 5% Commission Floor` or `₹999/mo Guild Elite Pass`).
+  - **Editable Professional & Rate Card**: Primary Trade, Experience Tier, Visit Fee (`₹249`) & Daily Dihadi (`₹900/day`), Active District & Service Localities, Work Bio, and an `"Edit Profile & Rate Card"` bottom sheet that updates `currentArtisanProfileProvider` and syncs to the district directory live.
+  - **Craftsmanship & Cleanliness Scorecard**: Overall Rating (`4.9 ★`), Cleanliness & Sawdust Score (`4.9 / 5.0`), On-Time Arrival (`98%`), Completed Jobs (`142`).
+  - **Verified Tool Kit & Portfolio Gallery**: Audited safety tools + horizontal portfolio cards with `"Add New Work Photo"` action.
+  - **Payout Bank & Security Reserve Card**: Linked Bank (`HDFC Bank •••• 2104`), UPI ID (`ramesh.karigaar@okaxis`), ₹2,000 Rolling Security Reserve status, and **`Sign Out of Guild Portal`** button.
+- **New Screen 2 — `ArtisanWalletHistoryScreen` (`/artisan/wallet`)**:
+  - Standalone Partner Earnings & Completed Jobs Ledger accessible anytime from the bottom navigation bar without needing an active job ID.
+  - Displays **Cleared Available Balance**, **Locked Security Reserve (`₹2,000`)**, **Today / Weekly Earnings Bento**, **Instant IMPS Bank Withdrawal CTA**, and the **Completed Job Settlement Ledger** (itemized labor, parts pass-through, 5%/12% commission, net payout).
+- **New Shared Widget — `ArtisanBottomNav`**:
+  - 3-tab industrial partner bottom navigation bar (`Job Radar`, `Wallet & Jobs`, `My Profile`) wired across `/artisan/radar`, `/artisan/wallet`, and `/artisan/profile`.
+
+#### 4. Ticket T-11 & Ticket T-12: Dual-Mode Firebase (`karigaar-ba812`) + Local Fallback Backend & Webhook Gateways
+- **Ticket T-11 (`feat/T-11-firebase-firestore-backend`)**:
+  - Wire Firestore & Cloud Storage repositories (`users`, `artisans`, `bookings`, `mandates`, `wallets`) bound to Firebase project `karigaar-ba812` (`.firebaserc`, `firestore.rules`, `storage.rules`) with automatic local/in-memory fallback so live cloud sync works seamlessly while all 240+ automated tests execute offline at full speed without secret keys.
+- **Ticket T-12 (`feat/T-12-cloud-functions-webhooks`)**:
+  - Serverless Cloud Functions / API webhook gateways for Meta WhatsApp Cloud API v21.0 (`auth_otp`, `dispatch_alert`, `daily_settlement_slip` + delivery receipts), Razorpay UPI AutoPay (`₹99` mandate hold/capture/release) & RazorpayX IMPS (`₹2,000` reserve guard), and Exotel/Twilio masked virtual DID (`+91-11-4084-2190`) session binding.
+
+#### 5. Ticket T-13: Multi-Modal Scoping (15s Voice Memo & Slot Picker), Path A/B Monetization & Admin Warranty/Dispute Workbench (`feat/T-13-multimodal-scoping-dispute-ops`)
+- **Multi-Modal Scoping & Seasonal Bundles (`F-08`, `F-10`, `F-11`)**:
+  - `ServiceScopingScreen`: Interactive 15-second Audio Voice Memo countdown recorder (`15s → 0s`), animated waveform preview, playback/delete controls, and horizontal Scheduled Arrival Slot Picker (`Fastest: Today 45m`, `Tomorrow`, `+2 Days` with Morning `09–11 AM`, Afternoon `02–04 PM Popular`, Evening `05–07 PM` time windows), persisted into `BookingModel` and `RadarAttachmentInfo`.
+  - `CustomerHomeScreen`: Wire `"Add +"` on Seasonal Bundles (*AC Deep Service & Jet Clean ₹599*, *Full Home Electrical Audit ₹799*) into `ServiceScopingScreen` with pre-selected bundle pricing.
+- **Path A Direct Contact Monetization & Path A → Path B Retroactive Escrow Lock (`F-25`, `F-35`, `F-36`)**:
+  - `ArtisanProfileScreen`: Pay-Per-Lead Unlock (`₹49` per artisan contact) + `₹499/mo` Unlimited Directory Pass toggle, routing unlocked calls/chats through the Masked Virtual Telephony Bridge (`+91-11-4084-2190`).
+  - One-tap **"Upgrade to Protected Guild Booking (Lock ₹25k Warranty & Escrow)"** CTA on `ArtisanProfileScreen` and `CustomerBookingsScreen` (`convertPathAToPathBBooking`), converting a Path A direct inspection visit into an active Path B escrow-protected booking with Start OTP (`4921`), `₹29` Safety Shield, and Two-Tier Guild Damage Shield (`₹10,000` Base / `₹25,000` Master cover with `₹250` deductible).
+- **Warranty Underwriting Reserve Ledger, CSAT & Super Admin Dispute Arbitration Workbench (`Phase 4` & `Phase 5`)**:
+  - `KarigaarApiService`: Allocate **30% of platform labor take-rate** from every completed job into `warrantyReservePoolProvider`, and expose `submitPostJobCsat` and `raiseWarrantyClaim` (enforcing the `₹250` customer deductible and `₹10k`/`₹25k` tier cap).
+  - `CustomerBookingsScreen`: 5-star post-job CSAT + Cleanliness/Sawdust rating sheet and `"Raise 30-Day Warranty / Damage Claim (₹250 deductible)"` drawer on completed bookings.
+  - `apps/admin_web/src/app/page.tsx`: Dedicated **Warranty Underwriting Reserve Pool KPI** + **Post-Service CSAT Monitor** + interactive **Dispute & Warranty Claim Arbitration Queue** with `Approve Claim Payout`, `Schedule Free Rework`, and `Reject Claim` actions.
+
+---
+
+### 7.3 Verbatim Record of November 14, 2026 Design & `/grill-me` Discussions
+
+#### Session A: November 14, 2026 (14:20–14:44 IST) — Pre-Login Karigaar Onboarding, Profile & Backend (`bf3ceb96-b8be-43ff-b736-cc55ea7b8f97`)
+1. **Founder Requirement (Pre-Login Karigaar Flow & UI Isolation)**:
+   - *"how you plan do the backend and what about the karigaar profile as i said you for onboard the karigaar i want diffrent before the login?"*
+   - *"First plan the every thing how the karigaar login and and how the karigaar profile looks how he fill the details about him hi's exp and all how much new screens we need to create and how much diffrence looks the UI from the homeowner to karigaar homeowner cant be see karigaar UI and karigaar can't be see homeowner"*
+2. **`/grill-me` Decision 1 — Pre-Login Entry Flow (`LoginScreen`)**:
+   - **Selected**: Show a **Dark Guild Gate** on `/login` when Karigaar mode is selected with two clear actions:
+     1. `"New Karigaar? Fill Profile & Onboard First"` (4-step wizard before OTP)
+     2. `"Registered Karigaar Sign-In"` (10-digit phone + WhatsApp/SMS OTP)
+3. **`/grill-me` Decision 2 — Post-Onboarding Portal Access**:
+   - **Selected**: Allow immediate access to the Karigaar Portal (`/artisan/radar` & `/artisan/profile`) with a `"KYC Verified / Tier 1 Active"` status while syncing their submission to the Super Admin KYC Queue for Master tier upgrade.
+4. **`/grill-me` Decision 3 & 4 — Easy Tap-First Mistri / Labour / Dihadi Profile Form**:
+   - **Founder Direction**: *"we need to give the form to fill for karigaar he fill the form whats hi's expirence what he's spacility mean if his mistory or labore or other we need to give him options to select we need easy way so they can onboard but we need to take full details about them"*
+   - **Selected**: 100% tap-friendly chips (`English / हिंदी / मराठी`) covering:
+     - **Role Type**: `Head Mistri / Master Karigaar`, `Skilled Karigaar / Technician`, `Helper / Naka Labour / Assistant`, `Thekedar / Team Contractor (With 2–5 Helpers)`
+     - **Experience Chips**: `< 1 Year (Fresher)`, `1 - 3 Years`, `3 - 5 Years`, `5 - 10 Years`, `10+ Years (Senior / Ustad)`
+     - **Dynamic Trade-Specific Specialty Chips**: 8–10 tap-to-select chips per trade
+     - **Work Mode & Rate Chips**: `Per-Visit` (`₹150`, `₹200`, `₹249`, `₹300`, `₹399`) + `Daily Dihadi` (`₹500/day Helper`, `₹700/day`, `₹900/day Mistri`, `₹1,200/day Master`)
+     - **Tools & Mobility Toggles**: Own tools checklist + travel mode (`Bike`, `Cycle`, `Auto/Public`) + multi-locality chips
+     - **Directory Sync**: Immediately sync completed profiles to that district's public Homeowner discovery directory.
+5. **`/grill-me` Decision 5 — Backend Storage & Sync (`T-11` / `T-12`)**:
+   - **Selected**: **Dual-Mode Firebase (`karigaar-ba812`) + Local Fallback** — wire Firestore & Cloud Storage repositories with automatic local/offline fallback so live sync works and all automated tests run fast without secret keys.
+
+#### Session B: November 14, 2026 (23:41–00:30 IST) — Scoping, Path A/B Monetization & Warranty Arbitration (`13f023c8-fc98-4301-923a-48f8b4bbe5ef`)
+1. **`/grill-me` Decision 1 — Remaining Scope Execution**:
+   - **Selected**: Complete all remaining `PROJECT.md` items to achieve 100% blueprint coverage.
+2. **`/grill-me` Decision 2 — Path A Direct Contact Monetization (`F-35`)**:
+   - **Selected**: **Pay-Per-Lead Unlock (`₹49` per artisan contact) + `₹499/mo` Unlimited Directory Pass toggle** on `ArtisanProfileScreen`, routing unlocked calls/chats through the Masked Virtual Telephony Bridge (`+91-11-4084-2190`).
+3. **`/grill-me` Decision 3 — Path A $\rightarrow$ Path B Retroactive On-Site Escrow Lock (`F-25` & `F-36`)**:
+   - **Selected**: One-tap **"Upgrade to Protected Guild Booking"** CTA on `ArtisanProfileScreen` and `CustomerBookingsScreen` that converts a Path A inspection visit into an active Path B booking with Start OTP (`4921`), `₹29` Safety Shield, and Two-Tier Guild Damage Cover (`₹10k` Base / `₹25k` Master cover with `₹250` deductible).
+4. **`/grill-me` Decision 4 — Warranty Underwriting Reserve, CSAT & Dispute Arbitration (`Phase 4` & `Phase 5`)**:
+   - **Selected**: End-to-end synchronized flow — 5-star post-job CSAT + `"Raise Warranty / Damage Claim (₹250 deductible)"` drawer on `CustomerBookingsScreen`, 30% of platform labor take-rate allocated to the Warranty Reserve pool in `api_service.dart`, and a dedicated Warranty Reserve KPI + Dispute Arbitration queue (`Approve Payout` / `Schedule Rework` / `Reject`) in `apps/admin_web/src/app/page.tsx`.
+
+---
+*Authored by Teamwork Worker (`worker_phase0`) and updated with Master Ticket Backlog (`T-01`–`T-13`) and November 14, 2026 Design Decisions.*

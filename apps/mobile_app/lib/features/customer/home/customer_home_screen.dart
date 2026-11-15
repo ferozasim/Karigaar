@@ -12,6 +12,7 @@ import '../../shared/widgets/karigaar_radar_sync_skeleton.dart';
 import '../../shared/widgets/trust_shield_badge.dart';
 import '../../shared/widgets/mode_switcher_pill.dart';
 import '../../shared/widgets/locality_selector_sheet.dart';
+import 'widgets/curated_bundles_carousel.dart';
 
 class CustomerHomeScreen extends ConsumerWidget {
   const CustomerHomeScreen({super.key});
@@ -211,6 +212,16 @@ class CustomerHomeScreen extends ConsumerWidget {
               ),
               error: (err, _) => SliverToBoxAdapter(
                 child: Text('Error: $err'),
+              ),
+            ),
+
+            // Curated Preventive Maintenance Bundles Carousel (F-08)
+            const SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.only(top: 24, bottom: 4),
+                child: CuratedBundlesCarousel(
+                  key: Key('curated_bundles_carousel'),
+                ),
               ),
             ),
 

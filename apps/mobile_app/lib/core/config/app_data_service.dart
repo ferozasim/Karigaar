@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import '../models/city_model.dart';
 import '../models/trade_model.dart';
 import '../models/artisan_profile_model.dart';
+import '../models/preventive_bundle_model.dart';
 
 class AppDataService {
   static CityConfigModel? _cachedCity;
@@ -52,6 +53,99 @@ class AppDataService {
       return _cachedTrades!;
     }
   }
+
+  static List<PreventiveBundleModel> getCuratedBundles() => _curatedBundles;
+
+  static const List<PreventiveBundleModel> _curatedBundles = [
+    PreventiveBundleModel(
+      bundleId: 'bundle_monsoon_elec',
+      title: 'Monsoon Electrical Shield',
+      marathiTitle: 'पावसाळी विद्युत सुरक्षा',
+      subtitle: 'Prevent short circuits, MCB trips & moisture leakage shocks',
+      tradeId: 'trade_electrician',
+      originalPrice: 699,
+      discountedPrice: 499,
+      discountTag: 'SAVE 28%',
+      includedPackageIds: ['pkg_elec_mcb', 'pkg_elec_switchboard', 'pkg_elec_fan'],
+      includedTasks: [
+        'MCB trip diagnosis & fuse load calibration',
+        'Switchboard moisture & earthing leakage check',
+        'Ceiling fan & backup wiring tightening',
+      ],
+      estimatedMinutes: 60,
+      badgeText: 'Monsoon Ready',
+      iconName: 'bolt',
+      accentColorHex: '#D97706',
+      surfaceTintHex: '#FEF3C7',
+      guaranteeDays: 30,
+    ),
+    PreventiveBundleModel(
+      bundleId: 'bundle_plumb_health',
+      title: 'Full Home Plumbing Health Check',
+      marathiTitle: 'घरगुती प्लंबिंग आरोग्य तपासणी',
+      subtitle: 'Concealed pipe seepage scan, overhead tank valve test & trap unclogging',
+      tradeId: 'trade_plumber',
+      originalPrice: 649,
+      discountedPrice: 459,
+      discountTag: 'SAVE 29%',
+      includedPackageIds: ['pkg_plumb_leak', 'pkg_plumb_drain', 'pkg_plumb_tap'],
+      includedTasks: [
+        'Concealed pipe joint acoustic seepage audit',
+        'Kitchen sink & bathroom mechanical drain auger cleaning',
+        'Quarter-turn angle valves & ceramic spindle tune-up',
+      ],
+      estimatedMinutes: 55,
+      badgeText: 'Prevent Seepage',
+      iconName: 'plumbing',
+      accentColorHex: '#0284C7',
+      surfaceTintHex: '#E0F2FE',
+      guaranteeDays: 30,
+    ),
+    PreventiveBundleModel(
+      bundleId: 'bundle_ac_summer',
+      title: 'Pre-Summer AC Super Cool',
+      marathiTitle: 'उन्हाळापूर्व एसी सुपर कुल सर्व्हिसिंग',
+      subtitle: 'Antibacterial foam jet deep wash, cooling test & gas pressure audit',
+      tradeId: 'trade_ac_refrig',
+      originalPrice: 899,
+      discountedPrice: 649,
+      discountTag: 'SAVE 28%',
+      includedPackageIds: ['pkg_ac_deep_clean', 'pkg_fridge_cooling'],
+      includedTasks: [
+        'Indoor cooling coil high-pressure foam jet wash',
+        'Outdoor unit condenser rinse & compressor vibration damping',
+        'R32/R410A gas pressure measurement & filter disinfection',
+      ],
+      estimatedMinutes: 65,
+      badgeText: 'Power Saver',
+      iconName: 'mode_fan',
+      accentColorHex: '#0891B2',
+      surfaceTintHex: '#CFFAFE',
+      guaranteeDays: 30,
+    ),
+    PreventiveBundleModel(
+      bundleId: 'bundle_carpenter_care',
+      title: 'Modular Kitchen & Door Alignment',
+      marathiTitle: 'मॉड्यूलर किचन व दरवाजा अलाइनमेंट',
+      subtitle: 'Hydraulic soft-close hinge tightening & swollen door planing',
+      tradeId: 'trade_carpenter',
+      originalPrice: 749,
+      discountedPrice: 529,
+      discountTag: 'SAVE 29%',
+      includedPackageIds: ['pkg_carp_hinge', 'pkg_carp_door_trim', 'pkg_carp_lock'],
+      includedTasks: [
+        'Hydraulic cabinet & wardrobe soft-close tension adjustment',
+        'Swollen door frame planing & bottom clearance trimming',
+        'Main door deadbolt & Godrej lock cylinder servicing',
+      ],
+      estimatedMinutes: 50,
+      badgeText: 'Smooth Fit',
+      iconName: 'carpenter',
+      accentColorHex: '#EA580C',
+      surfaceTintHex: '#FFEDD5',
+      guaranteeDays: 30,
+    ),
+  ];
 
   static List<ArtisanProfileModel> getSampleNandedArtisans() => _sampleNandedArtisans;
 
