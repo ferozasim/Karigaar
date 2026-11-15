@@ -138,10 +138,19 @@ class BookingModel {
   final int safetyShieldFee;
   final List<BillPartItem> parts;
   final String? audioMemoUrl;
+  final int? audioMemoDurationSeconds;
+  final List<double>? audioMemoWaveform;
+  final String? audioMemoTranscript;
   final List<String> defectPhotoUrls;
   final DateTime createdAt;
   final DateTime? arrivalTime;
   final DateTime? completionTime;
+
+  // Scheduled Arrival Slot Fields (Ticket T-08 F-11)
+  final DateTime? scheduledDate;
+  final String? scheduledSlot;
+  final String? scheduledSlotId;
+  final bool isEmergencyDispatch;
 
   // Ticket T-05 Fields: Upfront Mandate, Financial Breakdown, and Dwell Tracking
   final UpiMandateStatus mandateStatus;
@@ -173,10 +182,17 @@ class BookingModel {
     this.safetyShieldFee = 29,
     this.parts = const [],
     this.audioMemoUrl,
+    this.audioMemoDurationSeconds,
+    this.audioMemoWaveform,
+    this.audioMemoTranscript,
     this.defectPhotoUrls = const [],
     required this.createdAt,
     this.arrivalTime,
     this.completionTime,
+    this.scheduledDate,
+    this.scheduledSlot,
+    this.scheduledSlotId,
+    this.isEmergencyDispatch = false,
     this.mandateStatus = UpiMandateStatus.authorized,
     this.mandateId = 'man_preauth_9981',
     this.upiVpa = 'customer@okaxis',
@@ -208,8 +224,17 @@ class BookingModel {
     String? assignedArtisanName,
     String? assignedArtisanPhone,
     List<BillPartItem>? parts,
+    String? audioMemoUrl,
+    int? audioMemoDurationSeconds,
+    List<double>? audioMemoWaveform,
+    String? audioMemoTranscript,
+    List<String>? defectPhotoUrls,
     DateTime? arrivalTime,
     DateTime? completionTime,
+    DateTime? scheduledDate,
+    String? scheduledSlot,
+    String? scheduledSlotId,
+    bool? isEmergencyDispatch,
     UpiMandateStatus? mandateStatus,
     String? mandateId,
     String? upiVpa,
@@ -238,11 +263,18 @@ class BookingModel {
       laborFee: laborFee,
       safetyShieldFee: safetyShieldFee,
       parts: parts ?? this.parts,
-      audioMemoUrl: audioMemoUrl,
-      defectPhotoUrls: defectPhotoUrls,
+      audioMemoUrl: audioMemoUrl ?? this.audioMemoUrl,
+      audioMemoDurationSeconds: audioMemoDurationSeconds ?? this.audioMemoDurationSeconds,
+      audioMemoWaveform: audioMemoWaveform ?? this.audioMemoWaveform,
+      audioMemoTranscript: audioMemoTranscript ?? this.audioMemoTranscript,
+      defectPhotoUrls: defectPhotoUrls ?? this.defectPhotoUrls,
       createdAt: createdAt,
       arrivalTime: arrivalTime ?? this.arrivalTime,
       completionTime: completionTime ?? this.completionTime,
+      scheduledDate: scheduledDate ?? this.scheduledDate,
+      scheduledSlot: scheduledSlot ?? this.scheduledSlot,
+      scheduledSlotId: scheduledSlotId ?? this.scheduledSlotId,
+      isEmergencyDispatch: isEmergencyDispatch ?? this.isEmergencyDispatch,
       mandateStatus: mandateStatus ?? this.mandateStatus,
       mandateId: mandateId ?? this.mandateId,
       upiVpa: upiVpa ?? this.upiVpa,
@@ -252,4 +284,114 @@ class BookingModel {
       dwellMinutesAtDestination: dwellMinutesAtDestination ?? this.dwellMinutesAtDestination,
     );
   }
+
+  factory BookingModel.fromJson(Map<String, dynamic> json) {
+    return BookingModel(
+      bookingId: json['bookingId'] as String,
+      customerId: json['customerId'] as String,
+      customerName: json['customerName'] as String,
+      customerPhone: json['customerPhone'] as String,
+      assignedArtisanId: json['assignedArtisanId'] as String?,
+      assignedArtisanName: json['assignedArtisanName'] as String?,
+      assignedArtisanPhone: json['assignedArtisanPhone'] as String?,
+      tradeId: json['tradeId'] as String,
+      tradeName: json['tradeName'] as String,
+      localityId: json['localityId'] as String,
+      localityName: json['localityName'] as String,
+      address: json['address'] as String,
+      status: BookingStatus.values.firstWhere(
+        (s) => s.name == json['status'],
+        orElse: () => BookingStatus.draft,
+      ),
+      startOtp: json['startOtp'] as String? ?? '4921',
+      completionOtp: json['completionOtp'] as String? ?? '7294',
+      baseInspectionFee: (json['baseInspectionFee'] as num?)?.toInt() ?? 199,
+      laborFee: (json['laborFee'] as num?)?.toInt() ?? 249,
+      safetyShieldFee: (json['safetyShieldFee'] as num?)?.toInt() ?? 29,
+      parts: (json['parts'] as List<dynamic>?)
+              ?.map((p) => BillPartItem.fromJson(p as Map<String, dynamic>))
+              .toList() ??
+          const [],
+      audioMemoUrl: json['audioMemoUrl'] as String?,
+      audioMemoDurationSeconds: (json['audioMemoDurationSeconds'] as num?)?.toInt(),
+      audioMemoWaveform: (json['audioMemoWaveform'] as List<dynamic>?)
+          ?.map((e) => (e as num).toDouble())
+          .toList(),
+      audioMemoTranscript: json['audioMemoTranscript'] as String?,
+      defectPhotoUrls: (json['defectPhotoUrls'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'] as String)
+          : DateTime.now(),
+      arrivalTime: json['arrivalTime'] != null
+          ? DateTime.parse(json['arrivalTime'] as String)
+          : null,
+      completionTime: json['completionTime'] != null
+          ? DateTime.parse(json['completionTime'] as String)
+          : null,
+      scheduledDate: json['scheduledDate'] != null
+          ? DateTime.parse(json['scheduledDate'] as String)
+          : null,
+      scheduledSlot: json['scheduledSlot'] as String?,
+      scheduledSlotId: json['scheduledSlotId'] as String?,
+      isEmergencyDispatch: json['isEmergencyDispatch'] as bool? ?? false,
+      mandateStatus: UpiMandateStatus.values.firstWhere(
+        (m) => m.name == json['mandateStatus'],
+        orElse: () => UpiMandateStatus.authorized,
+      ),
+      mandateId: json['mandateId'] as String? ?? 'man_preauth_9981',
+      upiVpa: json['upiVpa'] as String? ?? 'customer@okaxis',
+      partsGatewaySurcharge: (json['partsGatewaySurcharge'] as num?)?.toInt() ?? 8,
+      gstAmount: (json['gstAmount'] as num?)?.toInt() ?? 115,
+      grandTotal: (json['grandTotal'] as num?)?.toInt() ?? 752,
+      dwellMinutesAtDestination: (json['dwellMinutesAtDestination'] as num?)?.toInt() ?? 16,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'bookingId': bookingId,
+        'customerId': customerId,
+        'customerName': customerName,
+        'customerPhone': customerPhone,
+        if (assignedArtisanId != null) 'assignedArtisanId': assignedArtisanId,
+        if (assignedArtisanName != null) 'assignedArtisanName': assignedArtisanName,
+        if (assignedArtisanPhone != null) 'assignedArtisanPhone': assignedArtisanPhone,
+        'tradeId': tradeId,
+        'tradeName': tradeName,
+        'localityId': localityId,
+        'localityName': localityName,
+        'address': address,
+        'status': status.name,
+        'startOtp': startOtp,
+        'completionOtp': completionOtp,
+        'baseInspectionFee': baseInspectionFee,
+        'laborFee': laborFee,
+        'safetyShieldFee': safetyShieldFee,
+        'parts': parts.map((p) => p.toJson()).toList(),
+        if (audioMemoUrl != null) 'audioMemoUrl': audioMemoUrl,
+        if (audioMemoDurationSeconds != null)
+          'audioMemoDurationSeconds': audioMemoDurationSeconds,
+        if (audioMemoWaveform != null) 'audioMemoWaveform': audioMemoWaveform,
+        if (audioMemoTranscript != null)
+          'audioMemoTranscript': audioMemoTranscript,
+        'defectPhotoUrls': defectPhotoUrls,
+        'createdAt': createdAt.toIso8601String(),
+        if (arrivalTime != null) 'arrivalTime': arrivalTime!.toIso8601String(),
+        if (completionTime != null)
+          'completionTime': completionTime!.toIso8601String(),
+        if (scheduledDate != null)
+          'scheduledDate': scheduledDate!.toIso8601String(),
+        if (scheduledSlot != null) 'scheduledSlot': scheduledSlot,
+        if (scheduledSlotId != null) 'scheduledSlotId': scheduledSlotId,
+        'isEmergencyDispatch': isEmergencyDispatch,
+        'mandateStatus': mandateStatus.name,
+        if (mandateId != null) 'mandateId': mandateId,
+        if (upiVpa != null) 'upiVpa': upiVpa,
+        'partsGatewaySurcharge': partsGatewaySurcharge,
+        'gstAmount': gstAmount,
+        'grandTotal': grandTotal,
+        'dwellMinutesAtDestination': dwellMinutesAtDestination,
+      };
 }

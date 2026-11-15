@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import '../models/preventive_bundle_model.dart';
 import '../../features/auth/artisan_registration_screen.dart';
 import '../../features/auth/login_screen.dart';
 import '../../features/auth/otp_verification_screen.dart';
@@ -60,7 +61,15 @@ final appRouter = GoRouter(
       path: '/customer/service/:tradeId',
       builder: (context, state) {
         final tradeId = state.pathParameters['tradeId'] ?? 'trade_electrician';
-        return ServiceScopingScreen(tradeId: tradeId);
+        final extra = state.extra as Map<String, dynamic>?;
+        return ServiceScopingScreen(
+          tradeId: tradeId,
+          initialPackageIds: (extra?['packageIds'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList(),
+          bundleId: extra?['bundleId'] as String?,
+          bundle: extra?['bundle'] as PreventiveBundleModel?,
+        );
       },
     ),
     GoRoute(

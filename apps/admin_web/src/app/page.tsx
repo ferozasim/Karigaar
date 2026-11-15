@@ -21,7 +21,68 @@ import {
   Flame,
   Globe,
   Filter,
+  Play,
+  Pause,
+  Mic,
+  Calendar,
+  Volume2,
 } from 'lucide-react';
+
+interface ActiveBookingDispatch {
+  id: string;
+  trade: string;
+  customerName: string;
+  artisanName: string;
+  locality: string;
+  scheduledSlot: string;
+  isEmergency: boolean;
+  status: string;
+  audioMemoDurationSeconds: number;
+  audioMemoWaveform: number[];
+  audioMemoTranscript: string;
+}
+
+const ACTIVE_BOOKINGS_DATA: ActiveBookingDispatch[] = [
+  {
+    id: 'BK_NANDED_8821',
+    trade: 'Electrician',
+    customerName: 'Asim Farooqui',
+    artisanName: 'Ganesh Kadam (Master Guildsman)',
+    locality: 'Anand Nagar, Nanded',
+    scheduledSlot: 'Morning (9:00 AM - 12:00 PM)',
+    isEmergency: false,
+    status: 'Artisan En Route',
+    audioMemoDurationSeconds: 14,
+    audioMemoWaveform: [0.2, 0.45, 0.7, 0.85, 0.95, 0.75, 0.6, 0.88, 0.92, 0.7, 0.5, 0.35, 0.2, 0.15],
+    audioMemoTranscript: 'MCB switch sparks when turning on AC. Need 32A replacement.',
+  },
+  {
+    id: 'BK_NANDED_8904',
+    trade: 'Master Plumber',
+    customerName: 'Rahul Deshmukh',
+    artisanName: 'Suresh Jadhav',
+    locality: 'Vazirabad, Nanded',
+    scheduledSlot: 'Emergency (Within 25 Mins)',
+    isEmergency: true,
+    status: 'Dispatched (Priority)',
+    audioMemoDurationSeconds: 11,
+    audioMemoWaveform: [0.3, 0.6, 0.8, 0.9, 0.65, 0.4, 0.7, 0.85, 0.6, 0.35, 0.2],
+    audioMemoTranscript: 'Concealed diverter leaking behind master bathroom tile wall.',
+  },
+  {
+    id: 'BK_NANDED_8412',
+    trade: 'Master Carpenter',
+    customerName: 'Priya Sharma',
+    artisanName: 'Abdul Shaikh',
+    locality: 'CIDCO, Nanded',
+    scheduledSlot: 'Afternoon (1:00 PM - 4:00 PM)',
+    isEmergency: false,
+    status: 'Radar Broadcast Claimed',
+    audioMemoDurationSeconds: 15,
+    audioMemoWaveform: [0.15, 0.35, 0.55, 0.8, 0.9, 0.75, 0.65, 0.85, 0.7, 0.5, 0.4, 0.3, 0.2, 0.1],
+    audioMemoTranscript: 'Modular kitchen soft-close hinge broken on overhead cabinet.',
+  },
+];
 
 interface DistrictOption {
   id: string;
@@ -219,6 +280,16 @@ export default function SuperAdminPortal() {
   const [selectedDistrict, setSelectedDistrict] = useState<string>('all');
   const [broadcastSent, setBroadcastSent] = useState(false);
   const [verifiedList, setVerifiedList] = useState<string[]>([]);
+  const [playingAudioId, setPlayingAudioId] = useState<string | null>(null);
+  const [expandedTranscriptId, setExpandedTranscriptId] = useState<string | null>(null);
+
+  const togglePlayAudio = (id: string) => {
+    setPlayingAudioId((prev) => (prev === id ? null : id));
+  };
+
+  const toggleTranscript = (id: string) => {
+    setExpandedTranscriptId((prev) => (prev === id ? null : id));
+  };
 
   const handleApprove = (id: string) => {
     setVerifiedList((prev) => [...prev, id]);
@@ -522,6 +593,135 @@ export default function SuperAdminPortal() {
                 </tbody>
               </table>
             </div>
+          </div>
+        </div>
+
+        {/* Active Bookings & Dispatch Console (Ticket T-08 F-10/F-11) */}
+        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
+            <div>
+              <div className="flex items-center space-x-2">
+                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                <h3 className="text-sm font-bold text-slate-900">Active Bookings & Dispatch Console</h3>
+              </div>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Live 15s Audio Memo Scoping, Scheduled Arrival Slots & Radar Dispatch Monitoring (F-10 / F-11)
+              </p>
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className="text-xs bg-slate-100 text-slate-700 font-bold px-2.5 py-1 rounded-md border border-slate-200">
+                3 Active Scoped Jobs
+              </span>
+              <span className="text-xs bg-emerald-50 text-emerald-700 font-bold px-2.5 py-1 rounded-md border border-emerald-200">
+                ₹99 Upfront Mandate Verified
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {ACTIVE_BOOKINGS_DATA.map((booking) => {
+              const isPlaying = playingAudioId === booking.id;
+              const isTranscriptOpen = expandedTranscriptId === booking.id;
+
+              return (
+                <div
+                  key={booking.id}
+                  className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white hover:border-amber-300 transition-all flex flex-col justify-between space-y-3"
+                >
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-slate-900">{booking.id}</span>
+                      <span className="text-[11px] bg-slate-200 text-slate-700 font-semibold px-2 py-0.5 rounded">
+                        {booking.status}
+                      </span>
+                    </div>
+
+                    <div>
+                      <div className="text-sm font-bold text-slate-800">{booking.trade}</div>
+                      <div className="text-xs text-slate-500">{booking.customerName} • {booking.locality}</div>
+                      <div className="text-xs text-slate-600 font-medium mt-0.5">
+                        Artisan: <span className="text-slate-900">{booking.artisanName}</span>
+                      </div>
+                    </div>
+
+                    {/* Scheduled Arrival Slot Badge */}
+                    <div className="pt-1">
+                      <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Scheduled Arrival Slot</div>
+                      <div
+                        className={`mt-1 inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-md text-xs font-semibold border ${
+                          booking.isEmergency
+                            ? 'bg-red-50 text-red-700 border-red-200'
+                            : 'bg-amber-50 text-amber-800 border-amber-200'
+                        }`}
+                      >
+                        <Calendar className="w-3.5 h-3.5" />
+                        <span>{booking.scheduledSlot}</span>
+                      </div>
+                    </div>
+
+                    {/* Interactive 15s Audio Memo Scoping Player */}
+                    <div className="pt-1">
+                      <div className="flex items-center justify-between text-[10px] uppercase font-bold text-slate-400 tracking-wider">
+                        <span>15s Audio Memo Scoping</span>
+                        <span className="text-amber-700">{booking.audioMemoDurationSeconds}s Voice Note</span>
+                      </div>
+
+                      <div className="mt-1.5 p-2.5 rounded-lg bg-white border border-slate-200 space-y-2">
+                        <div className="flex items-center space-x-2">
+                          <button
+                            onClick={() => togglePlayAudio(booking.id)}
+                            className={`w-7 h-7 rounded-full flex items-center justify-center transition-colors text-white ${
+                              isPlaying ? 'bg-amber-600 hover:bg-amber-500' : 'bg-slate-900 hover:bg-slate-800'
+                            }`}
+                            title={isPlaying ? 'Pause Memo' : 'Play Memo'}
+                          >
+                            {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 ml-0.5" />}
+                          </button>
+
+                          {/* Waveform Bars */}
+                          <div className="flex-1 flex items-center justify-between h-6 px-1">
+                            {booking.audioMemoWaveform.map((amp, wIdx) => {
+                              const barHeight = Math.max(4, Math.round(amp * 20));
+                              return (
+                                <div
+                                  key={wIdx}
+                                  style={{ height: `${barHeight}px` }}
+                                  className={`w-1 rounded-full transition-all ${
+                                    isPlaying ? 'bg-amber-500' : 'bg-slate-300'
+                                  }`}
+                                />
+                              );
+                            })}
+                          </div>
+
+                          <div className="text-[11px] font-mono text-slate-500">
+                            {isPlaying ? `0:${booking.audioMemoDurationSeconds}` : '0:00'}
+                          </div>
+                        </div>
+
+                        {/* Transcript Toggle */}
+                        <div className="pt-1 border-t border-slate-100 flex items-center justify-between">
+                          <button
+                            onClick={() => toggleTranscript(booking.id)}
+                            className="text-[11px] text-slate-600 hover:text-slate-900 font-medium flex items-center space-x-1"
+                          >
+                            <Mic className="w-3 h-3 text-amber-600" />
+                            <span>{isTranscriptOpen ? 'Hide Transcript' : 'View Transcript'}</span>
+                          </button>
+                          <span className="text-[10px] text-slate-400">CDN AAC Audio</span>
+                        </div>
+
+                        {isTranscriptOpen && (
+                          <div className="text-xs text-slate-600 italic bg-slate-50 p-2 rounded border border-slate-200">
+                            &quot;{booking.audioMemoTranscript}&quot;
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </main>
