@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/models/booking_model.dart';
+import '../../../core/models/trade_model.dart';
+import '../../../core/models/karigaar_role_type.dart';
 import '../../../core/models/preventive_bundle_model.dart';
 import '../../../core/services/api_service.dart';
 import '../../../core/providers/app_providers.dart';
@@ -31,6 +33,7 @@ class ServiceScopingScreen extends ConsumerStatefulWidget {
 
 class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
   final Set<String> _selectedPackageIds = {'pkg_elec_mcb'};
+  KarigaarRoleType _selectedRoleTier = KarigaarRoleType.skilledKarigaar;
   bool _hasInitializedTradeSelection = false;
   bool _hasAttachedPhoto = false;
 
@@ -62,26 +65,28 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
         }
 
         // Calculate dynamic total
-        int laborTotal = 0;
+        int baseLaborTotal = 0;
         final hasBundleApplied = widget.bundle != null &&
             widget.bundle!.includedPackageIds.every((id) => _selectedPackageIds.contains(id));
 
         if (hasBundleApplied) {
-          laborTotal = widget.bundle!.discountedPrice;
+          baseLaborTotal = widget.bundle!.discountedPrice;
           for (final pkg in trade.popularPackages) {
             if (_selectedPackageIds.contains(pkg.packageId) &&
                 !widget.bundle!.includedPackageIds.contains(pkg.packageId)) {
-              laborTotal += pkg.estimatedPrice;
+              baseLaborTotal += pkg.estimatedPrice;
             }
           }
         } else {
           for (final pkg in trade.popularPackages) {
             if (_selectedPackageIds.contains(pkg.packageId)) {
-              laborTotal += pkg.estimatedPrice;
+              baseLaborTotal += pkg.estimatedPrice;
             }
           }
-          if (laborTotal == 0) laborTotal = trade.baseInspectionFee;
+          if (baseLaborTotal == 0) baseLaborTotal = trade.baseInspectionFee;
         }
+
+        final laborTotal = (baseLaborTotal * _selectedRoleTier.rateMultiplier).round();
         final safetyShieldFee = trade.safetyShieldFee;
         final grandTotal = laborTotal + safetyShieldFee;
 
@@ -358,6 +363,10 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                     }),
 
                     const SizedBox(height: 20),
+                    // Craftsperson Skill Tier Selection (KarigaarRoleType)
+                    _buildRoleRateTierSelector(trade),
+
+                    const SizedBox(height: 20),
                     // Media & Voice Scoping (15s Audio Memo)
                     Text('Photo & 15-Second Voice Note', style: AppTypography.headlineSm),
                     const SizedBox(height: 6),
@@ -523,6 +532,137 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
       },
       loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (e, _) => Scaffold(body: Center(child: Text('Error: $e'))),
+    );
+  }
+
+  Widget _buildRoleRateTierSelector(TradeModel trade) {
+    final activeTitle = _selectedRoleTier.getLocalizedTitle(trade.tradeId);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceRaised,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.borderSubtle),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  'Craftsperson Skill Tier',
+                  style: AppTypography.headlineSm.copyWith(fontSize: 16),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  _selectedRoleTier.badgeText,
+                  style: AppTypography.labelSm.copyWith(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 10,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Active: $activeTitle',
+            style: AppTypography.bodySm.copyWith(
+              color: AppColors.primary,
+              fontWeight: FontWeight.w600,
+              fontSize: 12,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 12),
+          ...KarigaarRoleType.values.map((role) {
+            final isSelected = _selectedRoleTier == role;
+            final localizedTitle = role.getLocalizedTitle(trade.tradeId);
+            final multText = role == KarigaarRoleType.headMistry
+                ? '1.25x (+25% Master Tier)'
+                : (role == KarigaarRoleType.skilledKarigaar
+                    ? '1.0x (Standard Rate)'
+                    : '0.65x (-35% Helper Tier)');
+
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: InkWell(
+                key: Key('role_tier_${role.id}'),
+                onTap: () => setState(() => _selectedRoleTier = role),
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? AppColors.primary.withValues(alpha: 0.05)
+                        : AppColors.surfaceSubtle,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: isSelected ? AppColors.primary : AppColors.borderSubtle,
+                      width: isSelected ? 1.5 : 1.0,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 20,
+                        height: 20,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: isSelected
+                                ? AppColors.primary
+                                : AppColors.borderSubtle,
+                            width: isSelected ? 6 : 2,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              localizedTitle,
+                              style: AppTypography.labelMd.copyWith(
+                                fontWeight:
+                                    isSelected ? FontWeight.w700 : FontWeight.w500,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text(
+                              multText,
+                              style: AppTypography.bodySm.copyWith(
+                                color: AppColors.textMuted,
+                                fontSize: 11,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }),
+        ],
+      ),
     );
   }
 

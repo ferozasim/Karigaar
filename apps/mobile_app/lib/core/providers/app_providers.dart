@@ -350,3 +350,53 @@ final artisanTelemetryStatusProvider =
 final whatsappTelephonyServiceProvider = Provider<KarigaarWhatsAppTelephonyService>((ref) {
   return KarigaarWhatsAppTelephonyService.instance;
 });
+
+/// Feature F-35: Contact Unlock State for Path A Monetization
+class ContactUnlockState {
+  final Set<String> unlockedArtisanIds;
+  final bool hasDirectoryPass;
+
+  const ContactUnlockState({
+    this.unlockedArtisanIds = const {},
+    this.hasDirectoryPass = false,
+  });
+
+  bool isUnlocked(String artisanId) =>
+      hasDirectoryPass || unlockedArtisanIds.contains(artisanId);
+
+  ContactUnlockState copyWith({
+    Set<String>? unlockedArtisanIds,
+    bool? hasDirectoryPass,
+  }) {
+    return ContactUnlockState(
+      unlockedArtisanIds: unlockedArtisanIds ?? this.unlockedArtisanIds,
+      hasDirectoryPass: hasDirectoryPass ?? this.hasDirectoryPass,
+    );
+  }
+}
+
+class ContactUnlockNotifier extends StateNotifier<ContactUnlockState> {
+  ContactUnlockNotifier() : super(const ContactUnlockState());
+
+  void unlockPayPerLead(String artisanId) {
+    state = state.copyWith(
+      unlockedArtisanIds: {...state.unlockedArtisanIds, artisanId},
+    );
+  }
+
+  void activateDirectoryPass() {
+    state = state.copyWith(hasDirectoryPass: true);
+  }
+
+  void reset() {
+    state = const ContactUnlockState();
+  }
+}
+
+final contactUnlockProvider =
+    StateNotifierProvider<ContactUnlockNotifier, ContactUnlockState>((ref) {
+  return ContactUnlockNotifier();
+});
+
+/// Feature F-24: Guild Elite Partner Subscription Provider
+final guildEliteSubscriptionProvider = StateProvider<bool>((ref) => false);

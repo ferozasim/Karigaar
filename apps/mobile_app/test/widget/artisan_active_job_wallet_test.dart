@@ -67,9 +67,35 @@ void main() {
       expect(find.text('Top 5% Partner'), findsOneWidget);
       expect(find.text('42 / 50 Jobs'), findsOneWidget);
       expect(
-        find.text('Only 8 jobs remaining to unlock 0% commission master tier!'),
+        find.text(
+          'Complete 8 more jobs for 8% Master tier, or subscribe to Guild Elite for the 5% commission floor!',
+        ),
         findsOneWidget,
       );
+      expect(find.byKey(const Key('guild_elite_subscription_card')), findsOneWidget);
+    });
+
+    testWidgets('subscribes to Guild Elite with 1-tap wallet deduction and activates 5% commission floor', (tester) async {
+      await tester.pumpWidget(createWidgetUnderTest());
+      await tester.pumpAndSettle();
+
+      final upgradeBtn = find.byKey(const Key('upgrade_to_guild_elite_btn'));
+      await tester.ensureVisible(upgradeBtn);
+      await tester.tap(upgradeBtn);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Subscribe to Guild Elite'), findsOneWidget);
+      expect(find.text('₹999.00'), findsOneWidget);
+      expect(find.text('₹4620.00'), findsWidgets);
+      expect(find.text('₹3621.00'), findsOneWidget);
+
+      final confirmBtn = find.byKey(const Key('confirm_guild_elite_subscription_btn'));
+      await tester.tap(confirmBtn);
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('guild_elite_active_badge')), findsOneWidget);
+      expect(find.textContaining('5% Commission Floor Locked'), findsOneWidget);
+      expect(find.text('₹3621.00'), findsWidgets);
     });
 
     testWidgets('renders Guild Wallet hero card with available balance and bank vault info', (tester) async {

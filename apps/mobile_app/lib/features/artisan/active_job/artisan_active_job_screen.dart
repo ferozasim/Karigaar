@@ -922,6 +922,9 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
   }
 
   Widget _buildGuildTierProgressCard() {
+    final isElite = ref.watch(guildEliteSubscriptionProvider);
+    final walletBalance = ref.watch(artisanWalletBalanceProvider);
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
@@ -946,7 +949,11 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                         color: AppColors.secondarySurfaceTint,
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Icon(Icons.workspace_premium_rounded, color: AppColors.secondary, size: 20),
+                      child: const Icon(
+                        Icons.workspace_premium_rounded,
+                        color: AppColors.secondary,
+                        size: 20,
+                      ),
                     ),
                     const SizedBox(width: 10),
                     Flexible(
@@ -954,16 +961,21 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Gold Guildsman',
+                            isElite ? 'Guild Elite Partner' : 'Gold Guildsman',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: AppTypography.headlineSm.copyWith(fontSize: 16),
                           ),
                           Text(
-                            'Tier Level 4 Craftsman',
+                            isElite
+                                ? '5% Commission Floor Active'
+                                : 'Tier Level 4 Craftsman',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: AppTypography.labelSm.copyWith(color: AppColors.textMuted),
+                            style: AppTypography.labelSm.copyWith(
+                              color: isElite ? AppColors.tertiary : AppColors.textMuted,
+                              fontWeight: isElite ? FontWeight.w700 : FontWeight.w500,
+                            ),
                           ),
                         ],
                       ),
@@ -975,13 +987,15 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: AppColors.secondarySurfaceTint,
+                  color: isElite
+                      ? AppColors.tertiarySurfaceTint
+                      : AppColors.secondarySurfaceTint,
                   borderRadius: BorderRadius.circular(9999),
                 ),
                 child: Text(
-                  'Top 5% Partner',
+                  isElite ? '💎 5% Take-Rate' : 'Top 5% Partner',
                   style: AppTypography.labelSm.copyWith(
-                    color: AppColors.secondary,
+                    color: isElite ? AppColors.tertiary : AppColors.secondary,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -989,46 +1003,432 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
             ],
           ),
           const SizedBox(height: 14),
+
+          // 4-Node Milestone Progression Track
+          Row(
+            children: [
+              _buildTierNode('Apprentice\n(15%)', isCompleted: true),
+              _buildTierConnector(isCompleted: true),
+              _buildTierNode('Pro\n(12%)', isCompleted: true),
+              _buildTierConnector(isCompleted: false),
+              _buildTierNode('Master\n(8%)', isCurrent: !isElite, isCompleted: isElite),
+              _buildTierConnector(isCompleted: isElite),
+              _buildTierNode('Elite\n(5% Floor)', isElite: true, isCurrent: isElite, isCompleted: isElite),
+            ],
+          ),
+          const SizedBox(height: 14),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
                 child: Text(
-                  'Milestone: Master Guildsman',
+                  isElite
+                      ? 'Guild Elite Milestone: Unlocked'
+                      : 'Milestone: Master Guildsman (8%)',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
                 ),
               ),
               const SizedBox(width: 8),
-              Text('42 / 50 Jobs', style: AppTypography.labelMd.copyWith(fontWeight: FontWeight.w700)),
+              Text(
+                '42 / 50 Jobs',
+                style: AppTypography.labelMd.copyWith(fontWeight: FontWeight.w700),
+              ),
             ],
           ),
           const SizedBox(height: 8),
           ClipRRect(
             borderRadius: BorderRadius.circular(9999),
-            child: const LinearProgressIndicator(
-              value: 0.84, // 42/50
+            child: LinearProgressIndicator(
+              value: isElite ? 1.0 : 0.84, // 42/50
               minHeight: 10,
               backgroundColor: AppColors.surfaceSubtle,
-              valueColor: AlwaysStoppedAnimation<Color>(AppColors.secondary),
+              valueColor: AlwaysStoppedAnimation<Color>(
+                isElite ? AppColors.tertiary : AppColors.secondary,
+              ),
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
           Row(
             children: [
-              const Icon(Icons.stars_rounded, color: AppColors.secondary, size: 16),
+              Icon(
+                Icons.stars_rounded,
+                color: isElite ? AppColors.tertiary : AppColors.secondary,
+                size: 16,
+              ),
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
-                  'Only 8 jobs remaining to unlock 0% commission master tier!',
-                  style: AppTypography.bodySm.copyWith(color: AppColors.secondary, fontWeight: FontWeight.w500),
+                  isElite
+                      ? 'Guild Elite active! You keep 95% of job billings with a 5% commission floor.'
+                      : 'Complete 8 more jobs for 8% Master tier, or subscribe to Guild Elite for the 5% commission floor!',
+                  style: AppTypography.bodySm.copyWith(
+                    color: isElite ? AppColors.tertiary : AppColors.secondary,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
             ],
           ),
+          const SizedBox(height: 16),
+
+          // Guild Elite Subscription Card
+          Container(
+            key: const Key('guild_elite_subscription_card'),
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: isElite
+                    ? [
+                        AppColors.tertiarySurfaceTint,
+                        AppColors.surfaceRaised,
+                      ]
+                    : [
+                        AppColors.surfaceRaised,
+                        AppColors.surfaceSubtle,
+                      ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: isElite
+                    ? AppColors.tertiary.withValues(alpha: 0.5)
+                    : AppColors.secondary.withValues(alpha: 0.3),
+                width: 1.5,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 6,
+                  runSpacing: 4,
+                  children: [
+                    Text(
+                      'Karigaar Guild Elite Partner',
+                      style: AppTypography.headlineSm.copyWith(fontSize: 15),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: AppColors.secondary.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        '5% Commission Floor (Keep 95%)',
+                        style: AppTypography.labelSm.copyWith(
+                          color: AppColors.secondary,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 10,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '₹999 / month • Instant 1-tap wallet deduction',
+                  style: AppTypography.bodySm.copyWith(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '• 5% Commission Floor (Save up to ₹4,500/mo in platform fees)\n'
+                  '• Priority 10s Radar Dispatch blast before standard partners\n'
+                  '• ₹0 Instant IMPS Payout Fee (platform covers gateway charges)\n'
+                  '• Golden Guild Elite badge displayed to customers',
+                  style: AppTypography.bodySm.copyWith(
+                    color: AppColors.textMuted,
+                    fontSize: 11,
+                    height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                if (!isElite)
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      key: const Key('upgrade_to_guild_elite_btn'),
+                      onPressed: () => _showGuildEliteModal(context, walletBalance),
+                      icon: const Icon(Icons.workspace_premium_rounded, size: 16),
+                      label: const Text(
+                        'Upgrade to Guild Elite (₹999/mo)',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.secondary,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  )
+                else
+                  Container(
+                    key: const Key('guild_elite_active_badge'),
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: AppColors.tertiarySurfaceTint,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: AppColors.tertiary.withValues(alpha: 0.4),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.verified_rounded,
+                          color: AppColors.tertiary,
+                          size: 16,
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            '💎 Guild Elite Active • 5% Commission Floor Locked • Next billing in 30 days',
+                            style: AppTypography.labelSm.copyWith(
+                              color: AppColors.tertiary,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 11,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+          ),
         ],
       ),
+    );
+  }
+
+  Widget _buildTierNode(
+    String label, {
+    bool isCompleted = false,
+    bool isCurrent = false,
+    bool isElite = false,
+  }) {
+    Color nodeColor;
+    if (isCompleted) {
+      nodeColor = isElite ? AppColors.tertiary : AppColors.secondary;
+    } else if (isCurrent) {
+      nodeColor = AppColors.primary;
+    } else {
+      nodeColor = AppColors.borderSubtle;
+    }
+
+    return Expanded(
+      child: Column(
+        children: [
+          Container(
+            width: 22,
+            height: 22,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: nodeColor.withValues(alpha: 0.15),
+              border: Border.all(color: nodeColor, width: 2),
+            ),
+            child: Center(
+              child: isCompleted
+                  ? Icon(Icons.check, size: 12, color: nodeColor)
+                  : (isCurrent
+                      ? Container(
+                          width: 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: nodeColor,
+                          ),
+                        )
+                      : null),
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            style: AppTypography.labelSm.copyWith(
+              fontSize: 9,
+              color: (isCompleted || isCurrent)
+                  ? AppColors.textPrimary
+                  : AppColors.textMuted,
+              fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTierConnector({bool isCompleted = false}) {
+    return Container(
+      width: 14,
+      height: 2,
+      color: isCompleted ? AppColors.secondary : AppColors.borderSubtle,
+      margin: const EdgeInsets.only(bottom: 22),
+    );
+  }
+
+  void _showGuildEliteModal(BuildContext context, double currentBalance) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          decoration: const BoxDecoration(
+            color: AppColors.surfaceRaised,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: SafeArea(
+            top: false,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 44,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: AppColors.borderSubtle,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppColors.secondary.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Icon(
+                        Icons.workspace_premium_rounded,
+                        color: AppColors.secondary,
+                        size: 22,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Subscribe to Guild Elite',
+                            style: AppTypography.headlineSm.copyWith(fontSize: 18),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            'Lock in sustainable 5% commission floor',
+                            style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceRaised,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: AppColors.borderSubtle),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Monthly Subscription Fee', style: AppTypography.bodySm),
+                          Text('₹999.00', style: AppTypography.headlineSm.copyWith(fontSize: 16)),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Current Wallet Balance', style: AppTypography.bodySm.copyWith(color: AppColors.textMuted)),
+                          Text('₹${currentBalance.toStringAsFixed(2)}', style: AppTypography.bodySm.copyWith(fontWeight: FontWeight.w600)),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Post-Deduction Balance', style: AppTypography.bodySm.copyWith(color: AppColors.textMuted)),
+                          Text('₹${(currentBalance - 999.0).toStringAsFixed(2)}', style: AppTypography.bodySm.copyWith(color: AppColors.tertiary, fontWeight: FontWeight.w700)),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 18),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    key: const Key('confirm_guild_elite_subscription_btn'),
+                    onPressed: () {
+                      ref
+                          .read(artisanWalletBalanceProvider.notifier)
+                          .update((b) => b - 999.0);
+                      ref.read(guildEliteSubscriptionProvider.notifier).state =
+                          true;
+                      Navigator.of(ctx).pop();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Subscribed to Guild Elite! 5% commission floor active.',
+                          ),
+                          backgroundColor: AppColors.tertiary,
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.secondary,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                    child: Text(
+                      'Confirm & Deduct ₹999 from Wallet',
+                      style: AppTypography.labelLg.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 

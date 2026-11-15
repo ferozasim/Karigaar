@@ -6,6 +6,8 @@ import '../../../core/providers/app_providers.dart';
 import '../../../core/services/contact_intent_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
+import 'widgets/direct_contact_unlock_sheet.dart';
+import 'widgets/retroactive_escrow_lock_sheet.dart';
 
 class ArtisanProfileScreen extends ConsumerStatefulWidget {
   final String artisanId;
@@ -96,10 +98,15 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                 // Path A Direct Contact Actions (Call & WhatsApp)
                 _buildPathADirectContactButtons(artisan),
 
+                const SizedBox(height: 12),
+
+                // One-tap Upgrade to Protected Guild Booking banner (F-25 & F-36)
+                _buildRetroactiveEscrowLockBanner(artisan),
+
                 const SizedBox(height: 20),
 
                 // Trust & Verification Shield (4 Pillars)
-                _buildVerificationShieldSection(),
+                _buildVerificationShieldSection(artisan),
 
                 const SizedBox(height: 24),
 
@@ -235,11 +242,13 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 4),
-          Row(
-            mainAxisSize: MainAxisSize.min,
+          Wrap(
+            alignment: WrapAlignment.center,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 6,
+            runSpacing: 4,
             children: [
-              const Icon(Icons.handyman_rounded, color: AppColors.secondary, size: 16),
-              const SizedBox(width: 6),
+              _buildRoleBadge(artisan.roleType),
               Text(
                 artisan.tradeTitle,
                 style: AppTypography.bodyMd.copyWith(
@@ -248,6 +257,14 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                 ),
               ),
             ],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            artisan.localizedRoleTitle,
+            style: AppTypography.labelMd.copyWith(
+              color: AppColors.primary,
+              fontWeight: FontWeight.w600,
+            ),
           ),
 
           const SizedBox(height: 10),
@@ -375,52 +392,231 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
     );
   }
 
+  Widget _buildRoleBadge(KarigaarRoleType roleType) {
+    Color bg;
+    Color fg;
+    switch (roleType) {
+      case KarigaarRoleType.headMistry:
+        bg = AppColors.secondary.withValues(alpha: 0.15);
+        fg = AppColors.secondary;
+        break;
+      case KarigaarRoleType.skilledKarigaar:
+        bg = AppColors.primary.withValues(alpha: 0.12);
+        fg = AppColors.primary;
+        break;
+      case KarigaarRoleType.helperAssistant:
+        bg = AppColors.textMuted.withValues(alpha: 0.15);
+        fg = AppColors.textMuted;
+        break;
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        roleType.badgeText,
+        style: AppTypography.labelSm.copyWith(
+          color: fg,
+          fontWeight: FontWeight.w700,
+          fontSize: 11,
+        ),
+      ),
+    );
+  }
+
   Widget _buildPathADirectContactButtons(ArtisanProfileModel artisan) {
+    final unlockState = ref.watch(contactUnlockProvider);
+    final isUnlocked = unlockState.isUnlocked(artisan.artisanId);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Path A: Call Artisan (tel:)
-          Expanded(
-            child: OutlinedButton.icon(
-              onPressed: () {
-                ContactIntentService.makePhoneCall(
-                  context,
-                  phoneNumber: artisan.phone,
-                  contactName: artisan.name,
-                );
-              },
-              icon: const Icon(Icons.phone_in_talk_rounded, size: 18),
-              label: const Text('Call Artisan'),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.primary,
-                side: const BorderSide(color: AppColors.primary, width: 1.5),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          Row(
+            children: [
+              // Path A: Call Artisan (tel:)
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () {
+                    if (!isUnlocked) {
+                      DirectContactUnlockSheet.show(context, artisan);
+                    } else {
+                      ContactIntentService.initiateMaskedTelephonyCall(
+                        context,
+                        calleeId: artisan.artisanId,
+                        role: 'artisan',
+                        contactName: artisan.name,
+                      );
+                    }
+                  },
+                  icon: Icon(
+                    isUnlocked
+                        ? Icons.phone_in_talk_rounded
+                        : Icons.lock_outline_rounded,
+                    size: 18,
+                  ),
+                  label: const Text('Call Artisan'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.primary,
+                    side: const BorderSide(color: AppColors.primary, width: 1.5),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14)),
+                  ),
+                ),
               ),
-            ),
+              const SizedBox(width: 12),
+              // Path A: WhatsApp Artisan (wa.me:)
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    if (!isUnlocked) {
+                      DirectContactUnlockSheet.show(context, artisan);
+                    } else {
+                      ContactIntentService.initiateMaskedWhatsAppChat(
+                        context,
+                        calleeId: artisan.artisanId,
+                        message:
+                            'Namaste ${artisan.name} Ji, I found your profile on Karigaar for ${artisan.tradeTitle}. Are you available for a visit in Nanded?',
+                        contactName: artisan.name,
+                      );
+                    }
+                  },
+                  icon: Icon(
+                    isUnlocked
+                        ? Icons.chat_bubble_rounded
+                        : Icons.lock_outline_rounded,
+                    size: 18,
+                    color: Colors.white,
+                  ),
+                  label: const Text('WhatsApp Artisan'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF25D366),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14)),
+                  ),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 12),
-          // Path A: WhatsApp Artisan (wa.me:)
-          Expanded(
+          const SizedBox(height: 6),
+          Row(
+            children: [
+              Icon(
+                isUnlocked
+                    ? Icons.check_circle_rounded
+                    : Icons.shield_outlined,
+                size: 13,
+                color: isUnlocked ? AppColors.tertiary : AppColors.textMuted,
+              ),
+              const SizedBox(width: 4),
+              Expanded(
+                child: Text(
+                  isUnlocked
+                      ? 'Masked Virtual DID Active (+91-11-4084-2190) • Direct Contact Unlocked'
+                      : 'Masked Virtual Telephony (+91-11-4084-2190) • Unlock from ₹49',
+                  style: AppTypography.bodySm.copyWith(
+                    fontSize: 11,
+                    color: isUnlocked ? AppColors.tertiary : AppColors.textMuted,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRetroactiveEscrowLockBanner(ArtisanProfileModel artisan) {
+    final isMaster = artisan.tier == GuildTier.masterGuildsman ||
+        artisan.tier == GuildTier.guildElite;
+    final coverAmount = isMaster ? '₹25,000 Master' : '₹10,000 Base';
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [
+            AppColors.tertiarySurfaceTint,
+            AppColors.surfaceRaised,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppColors.tertiary.withValues(alpha: 0.3),
+          width: 1.5,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: AppColors.tertiary,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(Icons.lock_rounded, color: Colors.white, size: 16),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Artisan On-Site? Lock Escrow & Warranty',
+                      style: AppTypography.headlineSm.copyWith(fontSize: 14),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      'Activate $coverAmount Cover & ₹29 Safety Shield with 1 tap',
+                      style: AppTypography.bodySm.copyWith(
+                        color: AppColors.textMuted,
+                        fontSize: 11,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          SizedBox(
+            width: double.infinity,
             child: ElevatedButton.icon(
-              onPressed: () {
-                ContactIntentService.openWhatsAppChat(
-                  context,
-                  phoneNumber: artisan.phone,
-                  prefilledMessage:
-                      'Namaste ${artisan.name} Ji, I found your profile on Karigaar for ${artisan.tradeTitle}. Are you available for a visit in Nanded?',
-                  contactName: artisan.name,
-                );
-              },
-              icon: const Icon(Icons.chat_bubble_rounded, size: 18, color: Colors.white),
-              label: const Text('WhatsApp Artisan'),
+              key: const Key('upgrade_to_protected_guild_booking_btn'),
+              onPressed: () => RetroactiveEscrowLockSheet.show(context, artisan),
+              icon: const Icon(Icons.shield_outlined, size: 16),
+              label: const Text(
+                'Upgrade to Protected Guild Booking',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF25D366),
+                backgroundColor: AppColors.tertiary,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                elevation: 0,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
             ),
           ),
@@ -429,7 +625,11 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
     );
   }
 
-  Widget _buildVerificationShieldSection() {
+  Widget _buildVerificationShieldSection(ArtisanProfileModel artisan) {
+    final isMaster = artisan.tier == GuildTier.masterGuildsman ||
+        artisan.tier == GuildTier.guildElite;
+    final coverTitle = isMaster ? '₹25k Master Cover' : '₹10k Base Cover';
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.all(18),
@@ -480,23 +680,23 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
             childAspectRatio: 2.6,
             mainAxisSpacing: 10,
             crossAxisSpacing: 10,
-            children: const [
-              _VerificationPod(
+            children: [
+              const _VerificationPod(
                 icon: Icons.badge_rounded,
                 title: 'Govt. ID & Police',
                 subtitle: 'Background Cleared',
               ),
-              _VerificationPod(
+              const _VerificationPod(
                 icon: Icons.workspace_premium_rounded,
                 title: 'NSDC Certified',
                 subtitle: 'Skill-Tested Grade A',
               ),
               _VerificationPod(
                 icon: Icons.shield_rounded,
-                title: '₹25k Master Cover',
+                title: coverTitle,
                 subtitle: 'Damage Protection',
               ),
-              _VerificationPod(
+              const _VerificationPod(
                 icon: Icons.build_circle_rounded,
                 title: 'Calibrated Tools',
                 subtitle: 'Tool Audit Passed',
@@ -925,7 +1125,7 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
       left: 0,
       right: 0,
       child: Container(
-        padding: const EdgeInsets.fromLTRB(20, 14, 20, 24),
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
@@ -941,6 +1141,7 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
           children: [
             // Left inspection price & warranty badge
             Expanded(
+              flex: 4,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -990,52 +1191,59 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
             ),
             const SizedBox(width: 8),
             // Path B: Book Artisan Now Button
-            ElevatedButton(
-              onPressed: _isSecuringSlot
-                  ? null
-                  : () {
-                      setState(() {
-                        _isSecuringSlot = true;
-                      });
-                      Future.delayed(const Duration(milliseconds: 300), () {
-                        if (mounted) {
-                          setState(() {
-                            _isSecuringSlot = false;
-                          });
-                          context.push('/customer/service/${artisan.primaryTradeId}');
-                        }
-                      });
-                    },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                elevation: 2,
-              ),
-              child: _isSecuringSlot
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      ),
-                    )
-                  : Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          'Book ${artisan.name.split(' ').first} Now',
-                          style: AppTypography.labelLg.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                          ),
+            Expanded(
+              flex: 5,
+              child: ElevatedButton(
+                onPressed: _isSecuringSlot
+                    ? null
+                    : () {
+                        setState(() {
+                          _isSecuringSlot = true;
+                        });
+                        Future.delayed(const Duration(milliseconds: 300), () {
+                          if (mounted) {
+                            setState(() {
+                              _isSecuringSlot = false;
+                            });
+                            context.push('/customer/service/${artisan.primaryTradeId}');
+                          }
+                        });
+                      },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  elevation: 2,
+                ),
+                child: _isSecuringSlot
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
-                        const SizedBox(width: 6),
-                        const Icon(Icons.arrow_forward_rounded, size: 18, color: Colors.white),
-                      ],
-                    ),
+                      )
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              'Book ${artisan.name.split(' ').first} Now',
+                              style: AppTypography.labelLg.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          const Icon(Icons.arrow_forward_rounded, size: 16, color: Colors.white),
+                        ],
+                      ),
+              ),
             ),
           ],
         ),

@@ -503,6 +503,42 @@ class KarigaarApiService {
     };
   }
 
+  /// Feature F-35: Path A Direct Contact Monetization Unlock (`POST /api/v1/monetization/unlock-contact`)
+  Future<Map<String, dynamic>> unlockDirectContact({
+    required String customerId,
+    required String artisanId,
+    required String option,
+  }) async {
+    if (customerId.isEmpty || artisanId.isEmpty) {
+      throw const ApiException(
+        'Customer ID and Artisan ID are required.',
+        code: 'MISSING_UNLOCK_PARAMS',
+        statusCode: 422,
+      );
+    }
+
+    final isPass = option == 'UNLIMITED_DIRECTORY_PASS_499';
+    final amountPaid = isPass ? 499 : 49;
+    final unlockId = 'unl_${DateTime.now().millisecondsSinceEpoch}';
+
+    return {
+      'status': 'SUCCESS',
+      'data': {
+        'unlockId': unlockId,
+        'customerId': customerId,
+        'artisanId': artisanId,
+        'option': option,
+        'amountPaid': amountPaid,
+        'virtualProxyNumber': KarigaarWhatsAppTelephonyService.defaultVirtualProxyDid,
+        'zeroRawMsisdnLeakageGuaranteed': true,
+        'unlockedAt': DateTime.now().toUtc().toIso8601String(),
+        'message': isPass
+            ? 'Unlimited Directory Pass activated for 30 days. Direct contact unlocked across all 10 trades.'
+            : 'Direct contact unlocked for artisan. Route through masked proxy +91-11-4084-2190.',
+      },
+    };
+  }
+
   /// Contract 8: Audio Memo Scoping Upload (`POST /api/v1/media/audio-memo/upload`)
   Future<Map<String, dynamic>> uploadAudioMemo({
     required String bookingId,
