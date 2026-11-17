@@ -77,16 +77,16 @@ All 10 trades feature bilingual English/Marathi naming, diagnostic visit fee str
 
 | # | Trade Craft | Marathi Name | Diagnostic Fee | Safety Shield | Guarantee | Emergency 25m |
 |---|:---|:---|:---:|:---:|:---:|:---:|
-| 1 | **Electrician** | इलेक्ट्रिशियन | ₹199 | ₹29 | 30 Days | ✅ Yes |
-| 2 | **Plumber** | प्लंबर (नळ कारागीर) | ₹199 | ₹29 | 30 Days | ✅ Yes |
-| 3 | **Carpenter** | सुतार (कारपेंटर) | ₹249 | ₹29 | 30 Days | ✅ Yes |
-| 4 | **Mason / Civil Worker** | गवंडी / सिव्हिल कामगार | ₹299 | ₹29 | 30 Days | ❌ No |
+| 1 | **Electrician** | इलेक्ट्रिशियन | ₹199 | ₹29 | 7 Days | ✅ Yes |
+| 2 | **Plumber** | प्लंबर (नळ कारागीर) | ₹199 | ₹29 | 7 Days | ✅ Yes |
+| 3 | **Carpenter** | सुतार (कारपेंटर) | ₹249 | ₹29 | 7 Days | ✅ Yes |
+| 4 | **Mason / Civil Worker** | गवंडी / सिव्हिल कामगार | ₹299 | ₹29 | 7 Days | ❌ No |
 | 5 | **Painter** | रंगारी (पेंटर) | ₹199 | ₹29 | 30 Days | ❌ No |
-| 6 | **AC & Refrigeration** | एसी आणि फ्रीज मेकॅनिक | ₹249 | ₹29 | 30 Days | ✅ Yes |
-| 7 | **Appliance Repair** | घरगुती उपकरणे दुरुस्ती | ₹199 | ₹29 | 30 Days | ✅ Yes |
-| 8 | **Welder / Fabricator** | वेल्डर / लोहार कामगार | ₹299 | ₹29 | 30 Days | ✅ Yes |
-| 9 | **Pest Control** | कीटक नियंत्रण (पेस्ट कंट्रोल) | ₹249 | ₹29 | 60 Days | ❌ No |
-| 10 | **Deep Cleaning** | डीप क्लीनिंग (स्वच्छता सेवा) | ₹199 | ₹29 | 30 Days | ❌ No |
+| 6 | **AC & Refrigeration** | एसी आणि फ्रीज मेकॅनिक | ₹249 | ₹29 | 7 Days | ✅ Yes |
+| 7 | **Appliance Repair** | घरगुती उपकरणे दुरुस्ती | ₹199 | ₹29 | 7 Days | ✅ Yes |
+| 8 | **Welder / Fabricator** | वेल्डर / लोहार कामगार | ₹299 | ₹29 | 7 Days | ✅ Yes |
+| 9 | **Pest Control** | कीटक नियंत्रण (पेस्ट कंट्रोल) | ₹249 | ₹29 | 7 Days | ❌ No |
+| 10 | **Deep Cleaning** | डीप क्लीनिंग (स्वच्छता सेवा) | ₹199 | ₹29 | 7 Days | ❌ No |
 
 ---
 
