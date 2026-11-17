@@ -1,8 +1,8 @@
 # Karigaar System — Comprehensive Operational Status Report
 
-**Generated**: 2026-11-15
+**Generated**: 2026-11-17
 **Workspace**: `c:\Users\asimf\OneDrive\Desktop\Karigaar_app`
-**Current Branch**: `main` (HEAD `1e3b674` — PR #1 `T-06` and PR #2 `T-07` merged)
+**Current Branch**: `main` (HEAD `a08f830` — PR #1 through PR #5 merged, T-01 through T-10 complete)
 **Pilot Regional Corridor**: 7 Regional Districts (Nanded Primary Hub `431601`–`431606`, Parbhani `431401`, Latur `413512`, Hingoli `431513`, Chhatrapati Sambhajinagar `431001`, Nagpur `440001`, Nizamabad `503001`)
 **Launch Trades**: 10 Guild Trades (`Electrician`, `Plumber`, `Carpenter`, `Mason / Gawandi`, `Painter`, `AC & Refrigeration`, `Appliance Repair`, `Welder & Fabricator`, `Pest Control`, `Deep Cleaning`)
 
@@ -214,9 +214,9 @@ All **12 screens** and shared Stitch UI components are implemented, wired into `
 | **T-05** | Payment Gateway, Upfront ₹99 UPI Mandate & Escrow Engine | `feat/T-05-payment-escrow-integration` | ✅ **CLOSED & IN `main`** | `57a7f1d` (199 mobile tests, 26 escrow/UPI tests) |
 | **T-06** | Meta WhatsApp Business Cloud API v21.0 & Telephony Cloud Proxy | `feat/T-06-whatsapp-telephony-proxy` | ✅ **CLOSED & IN `main`** | `459bcaf` / PR #1 `e69d4e7` (220 mobile tests, 21 WA/telephony tests) |
 | **T-07** | Partner Dispatch Radar 45s Broadcast & 2km→6km Radius Cascade | `feat/T-07-partner-dispatch-radar-cascade` | ✅ **CLOSED & IN `main`** | `a55f503` / PR #2 `1e3b674` (243 mobile tests, 23 radar broadcast tests) |
-| **T-08** | **Pre-Login Karigaar Guild Gate & Tap-First Mistri/Labour/Dihadi Onboarding** | `feat/T-08-karigaar-prelogin-onboarding` | 📋 **APPROVED — NEXT** | Dark Guild Gate on `/login`, tap-first Mistri/Labour/Dihadi chips, live district directory sync |
-| **T-09** | **Strict Homeowner vs. Karigaar UI & Route Isolation** | `feat/T-09-strict-role-ui-isolation` | 📋 **APPROVED** | `GoRouter.redirect` role guards, remove post-login switchers, industrial dark header |
-| **T-10** | **Karigaar Partner Profile (`/artisan/profile`), Wallet (`/artisan/wallet`) & Bottom Nav** | `feat/T-10-karigaar-partner-profile-wallet` | 📋 **APPROVED** | New `ArtisanPartnerProfileScreen`, `ArtisanWalletHistoryScreen`, and `ArtisanBottomNav` |
-| **T-11** | **Dual-Mode Firebase (`karigaar-ba812`) + Local Fallback Repositories** | `feat/T-11-firebase-firestore-backend` | 📋 **APPROVED** | Firestore & Storage adapters (`users`, `artisans`, `bookings`, `mandates`, `wallets`) + offline fallback |
-| **T-12** | **Cloud Functions & Webhook Gateways (WhatsApp, Razorpay, Telephony)** | `feat/T-12-cloud-functions-webhooks` | 📋 **APPROVED** | Serverless webhook handlers for Meta WA v21.0, Razorpay AutoPay/IMPS, and virtual DID proxy |
-| **T-13** | **Multi-Modal Scoping (15s Voice Memo & Slot Picker), Path A/B Lock & Admin Warranty/Disputes** | `feat/T-13-multimodal-scoping-dispute-ops` | 📋 **APPROVED** | 15s audio memo, slot picker, ₹49/₹499 Path A unlock, Path A→B retroactive lock, 30% warranty reserve & Admin dispute queue |
+| **T-08** | Pre-Login Karigaar Guild Gate & Tap-First Mistri/Labour/Dihadi Onboarding + Scoping Bundles | `feat/T-08-multimodal-scoping-bundles` | ✅ **CLOSED & IN `main`** | `78cb061` / PR #3 `2e44450` (audio memo, slot picker, maintenance bundles) |
+| **T-09** | Strict Homeowner vs. Karigaar UI & Route Isolation + Path A Monetization | `feat/T-09-path-a-monetization-guild-tiers` | ✅ **CLOSED & IN `main`** | `4cac530` / PR #4 `31efecf` (GoRouter role guards, escrow lock, Guild Elite 5% floor) |
+| **T-10** | Karigaar Partner Profile (`/artisan/profile`), Standalone Wallet (`/artisan/wallet`) & 3-Tab Bottom Nav | `feat/T-10-karigaar-partner-profile-wallet` | ✅ **CLOSED & IN `main`** | `d96c914`, `f6a5309`, `63540ee` / PR #5 `a08f830` (27 T-10 tests passing, 0 lint/analysis issues) |
+| **T-11** | **Dual-Mode Firebase (`karigaar-ba812`) + Local Fallback Repositories** | `feat/T-11-firebase-firestore-backend` | 📋 **PENDING — NEXT UP** | Firestore & Storage adapters (`users`, `artisans`, `bookings`, `mandates`, `wallets`) + zero-key offline fallback |
+| **T-12** | **Cloud Functions & Webhook Gateways (WhatsApp, Razorpay, Telephony)** | `feat/T-12-cloud-functions-webhooks` | 📋 **PENDING** | Serverless webhook handlers for Meta WA v21.0, Razorpay AutoPay/IMPS, and virtual DID proxy |
+| **T-13** | **Admin Dispute Arbitration Workbench, Warranty Reserve Pool & Dispute Ops** | `feat/T-13-multimodal-scoping-dispute-ops` | 📋 **PENDING** | 30% warranty underwriting reserve pool, CSAT ratings sheet, and Admin dispute claim queue |
