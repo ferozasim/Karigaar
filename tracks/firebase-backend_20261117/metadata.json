@@ -1,0 +1,28 @@
+{
+  "id": "firebase-backend_20261117",
+  "title": "Dual-Mode Firebase (karigaar-ba812) + Local Fallback Repositories",
+  "type": "feature",
+  "status": "pending",
+  "priority": "high",
+  "ticket": "T-11",
+  "branch": "feat/T-11-firebase-firestore-backend",
+  "created": "2026-11-17T21:50:00Z",
+  "updated": "2026-11-17T21:54:00Z",
+  "started": null,
+  "completed": null,
+  "assignee": "@team",
+  "phases": {
+    "total": 4,
+    "current": 1,
+    "completed": 0
+  },
+  "tasks": {
+    "total": 17,
+    "completed": 0,
+    "in_progress": 0,
+    "pending": 17
+  },
+  "checkpoints": [],
+  "dependencies": ["partner-profile-wallet_20261117"],
+  "tags": ["firebase", "firestore", "repositories", "offline-first", "testing"]
+}
