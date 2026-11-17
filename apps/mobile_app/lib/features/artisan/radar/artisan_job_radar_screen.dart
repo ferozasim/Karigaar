@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/config/partner_copy.dart';
 import '../../../core/models/booking_model.dart';
 import '../../../core/models/radar_broadcast_model.dart';
 import '../../../core/providers/app_providers.dart';
@@ -51,6 +52,7 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
     final countdown = ref.watch(radarCountdownProvider);
     final activeBroadcast = ref.watch(activeRadarBroadcastProvider);
     final radiusTier = ref.watch(radarRadiusTierProvider);
+    final copy = PartnerCopy.of(ref.watch(partnerLanguageProvider));
 
     final showCard = isOnline &&
         countdown > 0 &&
@@ -87,7 +89,7 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                             const SizedBox(width: 8),
                             Flexible(
                               child: Text(
-                                isOnline ? 'RADAR ACTIVE' : 'DUTY PAUSED',
+                                isOnline ? copy.radarActive : copy.dutyPaused,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: AppTypography.labelSm.copyWith(
@@ -142,7 +144,7 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            isOnline ? 'Accepting Nearby Jobs' : 'Go Online to Receive Jobs',
+                            isOnline ? copy.acceptingJobs : copy.goOnlinePrompt,
                             style: AppTypography.labelLg,
                           ),
                           Text(
@@ -185,7 +187,7 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Today\'s Payout', style: AppTypography.labelSm, maxLines: 1, overflow: TextOverflow.ellipsis),
+                          Text(copy.todaysPayout, style: AppTypography.labelSm, maxLines: 1, overflow: TextOverflow.ellipsis),
                           const SizedBox(height: 4),
                           FittedBox(
                             fit: BoxFit.scaleDown,
@@ -193,7 +195,7 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                             child: Text('₹1,850', style: AppTypography.numericPrice.copyWith(fontSize: 22, color: AppColors.tertiary)),
                           ),
                           const SizedBox(height: 4),
-                          Text('Instant IMPS Ready', maxLines: 1, overflow: TextOverflow.ellipsis, style: AppTypography.bodySm.copyWith(fontSize: 10)),
+                          Text(copy.clearedImpsReady, maxLines: 1, overflow: TextOverflow.ellipsis, style: AppTypography.bodySm.copyWith(fontSize: 10)),
                         ],
                       ),
                     ),
@@ -210,7 +212,7 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Master Guild Tier', style: AppTypography.labelSm, maxLines: 1, overflow: TextOverflow.ellipsis),
+                          Text(copy.masterGuildTier, style: AppTypography.labelSm, maxLines: 1, overflow: TextOverflow.ellipsis),
                           const SizedBox(height: 4),
                           Row(
                             children: [
@@ -380,7 +382,14 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                                   children: [
                                     const Icon(Icons.camera_alt_outlined, size: 14, color: AppColors.secondary),
                                     const SizedBox(width: 4),
-                                    Text('1 Photo', style: AppTypography.labelSm.copyWith(fontSize: 11)),
+                                    Flexible(
+                                      child: Text(
+                                        '1 Photo',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: AppTypography.labelSm.copyWith(fontSize: 11),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -404,12 +413,16 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                                     children: [
                                       const Icon(Icons.mic_outlined, size: 14, color: AppColors.secondary),
                                       const SizedBox(width: 4),
-                                      Text(
-                                        '${activeBroadcast.attachments.voiceMemoDurationSeconds ?? 14}s Audio',
-                                        style: AppTypography.labelSm.copyWith(
-                                          fontSize: 11,
-                                          color: AppColors.secondary,
-                                          fontWeight: FontWeight.bold,
+                                      Flexible(
+                                        child: Text(
+                                          '${activeBroadcast.attachments.voiceMemoDurationSeconds ?? 14}s Audio',
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: AppTypography.labelSm.copyWith(
+                                            fontSize: 11,
+                                            color: AppColors.secondary,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -423,28 +436,29 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                       const SizedBox(height: 16),
                       const Divider(),
                       const SizedBox(height: 12),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Estimated Earnings', style: AppTypography.labelSm, maxLines: 1, overflow: TextOverflow.ellipsis),
-                                FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    '₹${activeBroadcast.payout.guaranteedBase.toStringAsFixed(0)} - ₹${(activeBroadcast.payout.guaranteedBase * 1.5).toStringAsFixed(0)}',
-                                    style: AppTypography.numericPrice.copyWith(fontSize: 20),
-                                  ),
+                      Builder(
+                        builder: (context) {
+                          final earningsCol = Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                copy.estimatedEarnings,
+                                style: AppTypography.labelSm,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  '₹${activeBroadcast.payout.guaranteedBase.toStringAsFixed(0)} - ₹${(activeBroadcast.payout.guaranteedBase * 1.5).toStringAsFixed(0)}',
+                                  style: AppTypography.numericPrice.copyWith(fontSize: 20),
                                 ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          // WhatsApp Pre-Accept inquiry
-                          OutlinedButton.icon(
+                              ),
+                            ],
+                          );
+                          final askBtn = OutlinedButton.icon(
                             key: const Key('radar_ask_customer_btn'),
                             onPressed: () {
                               ContactIntentService.initiateMaskedWhatsAppChat(
@@ -457,14 +471,40 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                               );
                             },
                             icon: const Icon(Icons.chat_bubble_rounded, size: 16, color: Color(0xFF25D366)),
-                            label: const Text('Ask Customer', maxLines: 1, overflow: TextOverflow.ellipsis),
+                            label: Text(
+                              copy.askCustomer,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                             style: OutlinedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                               side: const BorderSide(color: Color(0xFF25D366)),
                               foregroundColor: const Color(0xFF16A34A),
                             ),
-                          ),
-                        ],
+                          );
+                          final useWrap =
+                              MediaQuery.textScalerOf(context).scale(1.0) > 1.15;
+                          if (useWrap) {
+                            return SizedBox(
+                              width: double.infinity,
+                              child: Wrap(
+                                alignment: WrapAlignment.spaceBetween,
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                spacing: 8,
+                                runSpacing: 10,
+                                children: [earningsCol, askBtn],
+                              ),
+                            );
+                          }
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(child: earningsCol),
+                              const SizedBox(width: 8),
+                              Flexible(fit: FlexFit.loose, child: askBtn),
+                            ],
+                          );
+                        },
                       ),
                       const SizedBox(height: 16),
                       // Claim Job CTA
@@ -507,9 +547,12 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                             foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                           ),
-                          child: Text(
-                            _isClaiming ? 'CLAIMING JOB...' : 'CLAIM JOB NOW (${countdown}s)',
-                            style: AppTypography.labelLg.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              _isClaiming ? copy.claimingJob : '${copy.claimJobNow} (${countdown}s)',
+                              style: AppTypography.labelLg.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ),
                       ),
@@ -532,7 +575,7 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                         const Icon(Icons.radar_rounded, size: 48, color: AppColors.textSubtle),
                         const SizedBox(height: 12),
                         Text(
-                          'No active broadcasts in your 6 km corridor',
+                          copy.noActiveBroadcasts,
                           style: AppTypography.labelLg,
                           textAlign: TextAlign.center,
                         ),
@@ -551,7 +594,7 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                                 );
                           },
                           icon: const Icon(Icons.refresh_rounded, size: 18),
-                          label: const Text('Refresh Radar', maxLines: 1, overflow: TextOverflow.ellipsis),
+                          label: Text(copy.refreshRadar, maxLines: 1, overflow: TextOverflow.ellipsis),
                         ),
                       ],
                     ),
@@ -589,7 +632,7 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                                 );
                           },
                           icon: const Icon(Icons.refresh_rounded, size: 18),
-                          label: const Text('Simulate Incoming Broadcast', maxLines: 1, overflow: TextOverflow.ellipsis),
+                          label: Text(copy.simulateBroadcast, maxLines: 1, overflow: TextOverflow.ellipsis),
                         ),
                       ],
                     ),

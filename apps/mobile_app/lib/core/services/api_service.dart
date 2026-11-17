@@ -374,34 +374,56 @@ class KarigaarApiService {
     required num currentWalletBalance,
     String? upiId,
     String? upiVpa,
+    double minReserve = 2000.0,
   }) async {
     final effectiveVpa = (upiId ?? upiVpa ?? '').trim();
     if (effectiveVpa.isEmpty) {
       throw const ApiException('UPI ID / VPA is required for IMPS withdrawal.', code: 'MISSING_UPI_ID', statusCode: 422);
     }
 
-    const double minReserve = 2000.0;
-    if (amount <= 0) {
+    if (!amount.isFinite || amount <= 0) {
+      throw const ApiException('Withdrawal amount must be greater than zero.', code: 'INVALID_AMOUNT', statusCode: 422);
+    }
+    if (!currentWalletBalance.isFinite || currentWalletBalance < 0) {
+      throw const ApiException('Wallet balance must be a valid finite non-negative amount.', code: 'INVALID_BALANCE', statusCode: 422);
+    }
+    if (!minReserve.isFinite || minReserve < 0) {
+      throw const ApiException('Security reserve must be a valid finite non-negative amount.', code: 'INVALID_RESERVE', statusCode: 422);
+    }
+
+    final int balancePaise = (currentWalletBalance * 100).round();
+    final int reservePaise = (minReserve * 100).round();
+    final int amountPaise = (amount * 100).round();
+    if (amountPaise <= 0) {
       throw const ApiException('Withdrawal amount must be greater than zero.', code: 'INVALID_AMOUNT', statusCode: 422);
     }
 
-    final availableForWithdrawal = currentWalletBalance - minReserve;
-    if (availableForWithdrawal < amount) {
+    final int availablePaise = balancePaise - reservePaise;
+    if (availablePaise < amountPaise) {
+      final double availableRupees = availablePaise > 0 ? availablePaise / 100.0 : 0.0;
+      final String availableStr = availablePaise > 0 && availablePaise % 100 != 0
+          ? availableRupees.toStringAsFixed(2)
+          : (availablePaise > 0 ? (availablePaise ~/ 100).toString() : '0');
+      final String reserveStr = reservePaise % 100 == 0
+          ? _formatIndianRupeesInt(reservePaise ~/ 100)
+          : (reservePaise / 100.0).toStringAsFixed(2);
       throw ApiException(
-        'Cannot withdraw ₹$amount. A mandatory ₹2,000 security reserve must be maintained. Available for withdrawal: ₹${availableForWithdrawal > 0 ? availableForWithdrawal : 0}.',
+        'Cannot withdraw ₹$amount. A mandatory ₹$reserveStr security reserve must be maintained. Available for withdrawal: ₹$availableStr.',
         code: 'SECURITY_RESERVE_VIOLATION',
         statusCode: 400,
       );
     }
 
+    final double debitedRupees = amountPaise / 100.0;
+    final double remainingBalance = (balancePaise - amountPaise) / 100.0;
     final payoutId = 'payout_${DateTime.now().millisecondsSinceEpoch}';
     return {
       'status': 'SUCCESS',
       'data': {
         'payoutId': payoutId,
         'artisanId': artisanId,
-        'amountDebited': amount,
-        'remainingBalance': currentWalletBalance - amount,
+        'amountDebited': debitedRupees,
+        'remainingBalance': remainingBalance,
         'upiVpa': effectiveVpa,
         'upiId': effectiveVpa,
         'channel': 'IMPS_INSTANT_24X7',
@@ -409,6 +431,18 @@ class KarigaarApiService {
         'bankReferenceNumber': 'RRN${DateTime.now().millisecondsSinceEpoch}',
       },
     };
+  }
+
+  static String _formatIndianRupeesInt(int value) {
+    final s = value.toString();
+    if (s.length <= 3) return s;
+    final lastThree = s.substring(s.length - 3);
+    final rest = s.substring(0, s.length - 3);
+    final formattedRest = rest.replaceAllMapped(
+      RegExp(r'(\d)(?=(\d{2})+$)'),
+      (m) => '${m[1]},',
+    );
+    return '$formattedRest,$lastThree';
   }
 
   /// Contract 5: Upfront UPI Pre-Authorization Mandate (`POST /api/v1/payments/mandates/create`)

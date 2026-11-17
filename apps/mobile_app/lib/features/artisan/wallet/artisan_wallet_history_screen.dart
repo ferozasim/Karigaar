@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/config/partner_copy.dart';
 import '../../../core/models/artisan_profile_model.dart';
 import '../../../core/models/wallet_settlement_entry.dart';
 import '../../../core/providers/app_providers.dart';
@@ -32,9 +33,14 @@ class _ArtisanWalletHistoryScreenState
     final todayEarnings = ref.watch(todayEarningsProvider);
     final weeklyEarnings = ref.watch(weeklyEarningsProvider);
     final lang = ref.watch(partnerLanguageProvider);
+    final copy = PartnerCopy.of(lang);
 
     final double reserve = profile.securityReserveAmount;
-    final double withdrawable = balance > reserve ? balance - reserve : 0.0;
+    final int balancePaise = (balance * 100).round();
+    final int reservePaise = (reserve * 100).round();
+    final int withdrawablePaise =
+        balancePaise > reservePaise ? balancePaise - reservePaise : 0;
+    final double withdrawable = withdrawablePaise / 100.0;
 
     final filteredEntries = entries.where((entry) {
       switch (_filter) {
@@ -53,7 +59,7 @@ class _ArtisanWalletHistoryScreenState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildHeader(profile: profile, isElite: isElite, lang: lang),
+            _buildHeader(profile: profile, isElite: isElite, copy: copy),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 28),
               child: Column(
@@ -65,20 +71,23 @@ class _ArtisanWalletHistoryScreenState
                     reserve: reserve,
                     withdrawable: withdrawable,
                     profile: profile,
+                    copy: copy,
                   ),
                   const SizedBox(height: 16),
                   _buildEarningsBento(
                     todayEarnings: todayEarnings,
                     weeklyEarnings: weeklyEarnings,
                     isElite: isElite,
+                    copy: copy,
                   ),
                   const SizedBox(height: 20),
-                  _buildLedgerHeader(),
+                  _buildLedgerHeader(copy),
                   const SizedBox(height: 10),
                   if (filteredEntries.isEmpty)
-                    _buildEmptyLedgerState()
+                    _buildEmptyLedgerState(copy)
                   else
-                    ...filteredEntries.map(_buildSettlementCard),
+                    ...filteredEntries
+                        .map((entry) => _buildSettlementCard(entry, copy)),
                 ],
               ),
             ),
@@ -89,16 +98,24 @@ class _ArtisanWalletHistoryScreenState
     );
   }
 
+  String _formatRupeesCompact(double value) {
+    final paise = (value * 100).round();
+    if (paise % 100 == 0) {
+      return (paise ~/ 100).toString();
+    }
+    return (paise / 100.0).toStringAsFixed(2);
+  }
+
   Widget _buildHeader({
     required ArtisanProfileModel profile,
     required bool isElite,
-    required String lang,
+    required PartnerCopy copy,
   }) {
-    final title = switch (lang) {
-      'hi' => 'गिल्ड वॉलेट और कमाई',
-      'mr' => 'गिल्ड वॉलेट आणि कमाई',
-      _ => 'Guild Wallet & Earnings',
-    };
+    final badgeLabel = isElite
+        ? copy.eliteFloorBadge
+        : (profile.tier == GuildTier.masterGuildsman
+            ? copy.masterRateBadge
+            : copy.proRateBadge);
 
     return Container(
       decoration: const BoxDecoration(
@@ -109,16 +126,20 @@ class _ArtisanWalletHistoryScreenState
         bottom: false,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 14, 16, 18),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
+          child: SizedBox(
+            width: double.infinity,
+            child: Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                      copy.walletTitle,
                       style: AppTypography.headlineMd.copyWith(
                         color: Colors.white,
                         fontSize: 20,
@@ -127,8 +148,6 @@ class _ArtisanWalletHistoryScreenState
                     const SizedBox(height: 4),
                     Text(
                       'Guild ID: ${profile.guildId} • 24x7 IMPS Settlement',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                       style: AppTypography.bodySm.copyWith(
                         color: Colors.white70,
                         fontSize: 12,
@@ -136,25 +155,24 @@ class _ArtisanWalletHistoryScreenState
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(width: 8),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                decoration: BoxDecoration(
-                  color: AppColors.secondary.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(9999),
-                  border: Border.all(color: AppColors.secondary),
-                ),
-                child: Text(
-                  isElite ? '5% Elite Floor' : '12% Pro Rate',
-                  style: AppTypography.labelSm.copyWith(
-                    color: AppColors.secondaryLight,
-                    fontSize: 10.5,
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: AppColors.secondary.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(9999),
+                    border: Border.all(color: AppColors.secondary),
+                  ),
+                  child: Text(
+                    badgeLabel,
+                    style: AppTypography.labelSm.copyWith(
+                      color: AppColors.secondaryLight,
+                      fontSize: 10.5,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -167,6 +185,7 @@ class _ArtisanWalletHistoryScreenState
     required double reserve,
     required double withdrawable,
     required ArtisanProfileModel profile,
+    required PartnerCopy copy,
   }) {
     return Container(
       padding: const EdgeInsets.all(18),
@@ -184,7 +203,7 @@ class _ArtisanWalletHistoryScreenState
             children: [
               Expanded(
                 child: Text(
-                  'CLEARED AVAILABLE BALANCE',
+                  copy.clearedAvailableBalance,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppTypography.labelSm.copyWith(
@@ -227,7 +246,7 @@ class _ArtisanWalletHistoryScreenState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'LOCKED SECURITY RESERVE',
+                        copy.lockedSecurityReserve,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: AppTypography.labelSm.copyWith(
@@ -262,7 +281,7 @@ class _ArtisanWalletHistoryScreenState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'INSTANT WITHDRAWABLE',
+                        copy.instantWithdrawable,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: AppTypography.labelSm.copyWith(
@@ -322,10 +341,11 @@ class _ArtisanWalletHistoryScreenState
                 reserve: reserve,
                 withdrawable: withdrawable,
                 profile: profile,
+                copy: copy,
               ),
               icon: const Icon(Icons.bolt_rounded, size: 20),
-              label: const Text(
-                'Instant IMPS Bank Withdrawal (₹0 Fee)',
+              label: Text(
+                copy.withdrawImpsBtn,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -344,6 +364,7 @@ class _ArtisanWalletHistoryScreenState
     required double todayEarnings,
     required double weeklyEarnings,
     required bool isElite,
+    required PartnerCopy copy,
   }) {
     return Row(
       children: [
@@ -359,7 +380,7 @@ class _ArtisanWalletHistoryScreenState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Today's Earnings",
+                  copy.todaysEarnings,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppTypography.labelSm,
@@ -369,7 +390,7 @@ class _ArtisanWalletHistoryScreenState
                   fit: BoxFit.scaleDown,
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    '₹${todayEarnings.toStringAsFixed(0)}',
+                    '₹${_formatRupeesCompact(todayEarnings)}',
                     key: const Key('wallet_today_earnings_text'),
                     style: AppTypography.numericPrice.copyWith(
                       color: AppColors.tertiary,
@@ -379,7 +400,7 @@ class _ArtisanWalletHistoryScreenState
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Cleared & IMPS Ready',
+                  copy.clearedImpsReady,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppTypography.bodySm.copyWith(fontSize: 11),
@@ -401,7 +422,7 @@ class _ArtisanWalletHistoryScreenState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Weekly Earnings',
+                  copy.weeklyEarnings,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppTypography.labelSm,
@@ -411,7 +432,7 @@ class _ArtisanWalletHistoryScreenState
                   fit: BoxFit.scaleDown,
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    '₹${weeklyEarnings.toStringAsFixed(0)}',
+                    '₹${_formatRupeesCompact(weeklyEarnings)}',
                     key: const Key('wallet_weekly_earnings_text'),
                     style: AppTypography.numericPrice.copyWith(
                       color: AppColors.primary,
@@ -421,7 +442,9 @@ class _ArtisanWalletHistoryScreenState
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  isElite ? '5% Elite Commission Floor' : '12% Standard Rate',
+                  isElite
+                      ? copy.eliteCommissionLabel
+                      : copy.standardRateLabel,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppTypography.bodySm.copyWith(fontSize: 11),
@@ -434,17 +457,17 @@ class _ArtisanWalletHistoryScreenState
     );
   }
 
-  Widget _buildLedgerHeader() {
+  Widget _buildLedgerHeader(PartnerCopy copy) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Completed Job Settlement Ledger',
+          copy.ledgerTitle,
           style: AppTypography.headlineSm.copyWith(fontSize: 17),
         ),
         const SizedBox(height: 4),
         Text(
-          'Itemized labor, 0% fee parts pass-through, guild commission & net IMPS payouts',
+          copy.ledgerSubtitle,
           style: AppTypography.bodySm.copyWith(fontSize: 12),
         ),
         const SizedBox(height: 10),
@@ -454,20 +477,20 @@ class _ArtisanWalletHistoryScreenState
           children: [
             ChoiceChip(
               key: const Key('ledger_filter_all'),
-              label: const Text('All'),
+              label: Text(copy.filterAll),
               selected: _filter == _LedgerFilter.all,
               onSelected: (_) => setState(() => _filter = _LedgerFilter.all),
             ),
             ChoiceChip(
               key: const Key('ledger_filter_credits'),
-              label: const Text('Job Credits'),
+              label: Text(copy.filterCredits),
               selected: _filter == _LedgerFilter.credits,
               onSelected: (_) =>
                   setState(() => _filter = _LedgerFilter.credits),
             ),
             ChoiceChip(
               key: const Key('ledger_filter_payouts'),
-              label: const Text('IMPS Payouts'),
+              label: Text(copy.filterPayouts),
               selected: _filter == _LedgerFilter.payouts,
               onSelected: (_) =>
                   setState(() => _filter = _LedgerFilter.payouts),
@@ -478,7 +501,7 @@ class _ArtisanWalletHistoryScreenState
     );
   }
 
-  Widget _buildEmptyLedgerState() {
+  Widget _buildEmptyLedgerState(PartnerCopy copy) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -488,17 +511,18 @@ class _ArtisanWalletHistoryScreenState
       ),
       child: Center(
         child: Text(
-          'No ledger entries found for this filter.',
+          copy.emptyLedgerText,
           style: AppTypography.bodyMd.copyWith(color: AppColors.textMuted),
         ),
       ),
     );
   }
 
-  Widget _buildSettlementCard(WalletSettlementEntry entry) {
+  Widget _buildSettlementCard(WalletSettlementEntry entry, PartnerCopy copy) {
     final bool isCredit = entry.isCredit;
     final Color amountColor =
         isCredit ? AppColors.tertiary : AppColors.secondary;
+    final double maxAmountWidth = MediaQuery.sizeOf(context).width * 0.34;
 
     return Container(
       key: Key('ledger_entry_${entry.id}'),
@@ -584,13 +608,20 @@ class _ArtisanWalletHistoryScreenState
                 ),
               ),
               const SizedBox(width: 8),
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  '${isCredit ? '+' : '-'}₹${entry.netPayout.toStringAsFixed(2)}',
-                  style: AppTypography.numericPrice.copyWith(
-                    color: amountColor,
-                    fontSize: 16,
+              Flexible(
+                flex: 0,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: maxAmountWidth),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      '${isCredit ? '+' : '-'}₹${entry.netPayout.toStringAsFixed(2)}',
+                      style: AppTypography.numericPrice.copyWith(
+                        color: amountColor,
+                        fontSize: 16,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -607,23 +638,23 @@ class _ArtisanWalletHistoryScreenState
               child: Column(
                 children: [
                   _breakdownRow(
-                    'Labor Earned',
-                    '₹${entry.laborAmount.toStringAsFixed(0)}',
+                    copy.laborEarned,
+                    '₹${_formatRupeesCompact(entry.laborAmount)}',
                   ),
                   const SizedBox(height: 4),
                   _breakdownRow(
-                    'Parts Pass-Through (0% fee)',
-                    '₹${entry.partsPassThrough.toStringAsFixed(0)}',
+                    copy.partsPassThrough,
+                    '₹${_formatRupeesCompact(entry.partsPassThrough)}',
                   ),
                   const SizedBox(height: 4),
                   _breakdownRow(
-                    'Guild Commission (${entry.commissionPercent}%)',
-                    '-₹${entry.commissionAmount.toStringAsFixed(0)}',
+                    '${copy.guildCommission} (${entry.commissionPercent}%)',
+                    '-₹${_formatRupeesCompact(entry.commissionAmount)}',
                     valueColor: AppColors.error,
                   ),
                   const Divider(height: 12),
                   _breakdownRow(
-                    'Net Payout Credited',
+                    copy.netPayoutCredited,
                     '+₹${entry.netPayout.toStringAsFixed(2)}',
                     isBold: true,
                     valueColor: AppColors.tertiary,
@@ -682,6 +713,7 @@ class _ArtisanWalletHistoryScreenState
     required double reserve,
     required double withdrawable,
     required ArtisanProfileModel profile,
+    required PartnerCopy copy,
   }) {
     if (balance <= 0 || withdrawable <= 0) {
       ScaffoldMessenger.of(context)
@@ -697,117 +729,195 @@ class _ArtisanWalletHistoryScreenState
       return;
     }
 
-    final amountCtrl =
-        TextEditingController(text: withdrawable.toStringAsFixed(0));
+    final String prefillText = withdrawable == withdrawable.truncateToDouble()
+        ? withdrawable.toStringAsFixed(0)
+        : withdrawable.toStringAsFixed(2);
 
     showDialog<void>(
       context: context,
-      builder: (dialogCtx) => AlertDialog(
-        title: const Text('Instant IMPS Bank Withdrawal'),
-        content: SingleChildScrollView(
+      builder: (dialogCtx) => _ImpsWithdrawalDialog(
+        prefillText: prefillText,
+        balance: balance,
+        reserve: reserve,
+        withdrawable: withdrawable,
+        profile: profile,
+        copy: copy,
+        onConfirm: (requested) async {
+          try {
+            final api = ref.read(apiServiceProvider);
+            final res = await api.withdrawWalletImps(
+              artisanId: profile.artisanId,
+              amount: requested,
+              currentWalletBalance: balance,
+              upiId: profile.upiId,
+              minReserve: reserve,
+            );
+            final data = res['data'] as Map<String, dynamic>;
+            final bankRef =
+                data['bankReferenceNumber']?.toString() ?? 'RRN_IMPS';
+            final remaining = (data['remainingBalance'] as num).toDouble();
+
+            ref.read(artisanWalletBalanceProvider.notifier).state = remaining;
+            ref
+                .read(walletSettlementLedgerProvider.notifier)
+                .recordImpsWithdrawal(
+                  amount: requested,
+                  bankLabel:
+                      '${profile.bankName} ${profile.maskedAccountNumber}',
+                  bankReference: bankRef,
+                );
+
+            if (context.mounted) {
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      '₹${requested.toStringAsFixed(2)} transferred via IMPS! Ref #$bankRef',
+                    ),
+                    backgroundColor: AppColors.tertiary,
+                  ),
+                );
+            }
+          } on ApiException catch (e) {
+            if (context.mounted) {
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  SnackBar(
+                    content: Text(e.message),
+                    backgroundColor: AppColors.error,
+                  ),
+                );
+            }
+          }
+        },
+      ),
+    );
+  }
+}
+
+class _ImpsWithdrawalDialog extends StatefulWidget {
+  final String prefillText;
+  final double balance;
+  final double reserve;
+  final double withdrawable;
+  final ArtisanProfileModel profile;
+  final PartnerCopy copy;
+  final Future<void> Function(double requested) onConfirm;
+
+  const _ImpsWithdrawalDialog({
+    required this.prefillText,
+    required this.balance,
+    required this.reserve,
+    required this.withdrawable,
+    required this.profile,
+    required this.copy,
+    required this.onConfirm,
+  });
+
+  @override
+  State<_ImpsWithdrawalDialog> createState() => _ImpsWithdrawalDialogState();
+}
+
+class _ImpsWithdrawalDialogState extends State<_ImpsWithdrawalDialog> {
+  final _formKey = GlobalKey<FormState>();
+  late final TextEditingController _amountCtrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _amountCtrl = TextEditingController(text: widget.prefillText);
+  }
+
+  @override
+  void dispose() {
+    _amountCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final copy = widget.copy;
+    return AlertDialog(
+      insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      contentPadding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+      actionsPadding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
+      content: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Transfer cleared surplus to ${profile.bankName} ${profile.maskedAccountNumber} (${profile.upiId}).',
+                copy.impsDialogTitle,
+                style: AppTypography.headlineSm,
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Transfer cleared surplus to ${widget.profile.bankName} ${widget.profile.maskedAccountNumber} (${widget.profile.upiId}).',
                 style: AppTypography.bodyMd,
               ),
               const SizedBox(height: 10),
               Container(
+                width: double.infinity,
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: AppColors.secondarySurfaceTint,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  'Max Withdrawable: ₹${withdrawable.toStringAsFixed(2)} (₹${reserve.toStringAsFixed(0)} reserve locked)',
+                  'Max Withdrawable: ₹${widget.withdrawable.toStringAsFixed(2)} (₹${widget.reserve.toStringAsFixed(0)} reserve locked)',
                   style: AppTypography.labelSm.copyWith(
                     color: AppColors.onSecondaryContainer,
                   ),
                 ),
               ),
               const SizedBox(height: 12),
-              TextField(
+              TextFormField(
                 key: const Key('wallet_imps_amount_field'),
-                controller: amountCtrl,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
+                controller: _amountCtrl,
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
                   prefixText: '₹ ',
-                  labelText: 'Withdrawal Amount',
+                  labelText: copy.withdrawalAmountLabel,
                 ),
+                validator: (val) {
+                  final parsed = double.tryParse((val ?? '').trim());
+                  if (parsed == null || !parsed.isFinite || parsed <= 0) {
+                    return copy.invalidAmountError;
+                  }
+                  return null;
+                },
               ),
             ],
           ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogCtx),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            key: const Key('wallet_confirm_imps_btn'),
-            onPressed: () async {
-              final requested = double.tryParse(amountCtrl.text.trim()) ?? 0.0;
-              Navigator.pop(dialogCtx);
-              try {
-                final api = ref.read(apiServiceProvider);
-                final res = await api.withdrawWalletImps(
-                  artisanId: profile.artisanId,
-                  amount: requested,
-                  currentWalletBalance: balance,
-                  upiId: profile.upiId,
-                );
-                final data = res['data'] as Map<String, dynamic>;
-                final bankRef =
-                    data['bankReferenceNumber']?.toString() ?? 'RRN_IMPS';
-                final remaining =
-                    (data['remainingBalance'] as num).toDouble();
-
-                ref.read(artisanWalletBalanceProvider.notifier).state =
-                    remaining;
-                ref
-                    .read(walletSettlementLedgerProvider.notifier)
-                    .recordImpsWithdrawal(
-                      amount: requested,
-                      bankLabel:
-                          '${profile.bankName} ${profile.maskedAccountNumber}',
-                      bankReference: bankRef,
-                    );
-
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context)
-                    ..hideCurrentSnackBar()
-                    ..showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          '₹${requested.toStringAsFixed(2)} transferred via IMPS! Ref #$bankRef',
-                        ),
-                        backgroundColor: AppColors.tertiary,
-                      ),
-                    );
-                }
-              } on ApiException catch (e) {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context)
-                    ..hideCurrentSnackBar()
-                    ..showSnackBar(
-                      SnackBar(
-                        content: Text(e.message),
-                        backgroundColor: AppColors.error,
-                      ),
-                    );
-                }
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('Confirm IMPS Payout'),
-          ),
-        ],
       ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(copy.cancelBtn),
+        ),
+        ElevatedButton(
+          key: const Key('wallet_confirm_imps_btn'),
+          onPressed: () async {
+            if (!(_formKey.currentState?.validate() ?? false)) {
+              return;
+            }
+            final requested = double.parse(_amountCtrl.text.trim());
+            Navigator.pop(context);
+            await widget.onConfirm(requested);
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primary,
+            foregroundColor: Colors.white,
+          ),
+          child: Text(copy.confirmWithdrawBtn),
+        ),
+      ],
     );
   }
 }

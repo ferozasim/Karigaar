@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/config/app_data_service.dart';
+import '../../../core/config/partner_copy.dart';
 import '../../../core/models/artisan_profile_model.dart';
 import '../../../core/models/city_model.dart';
 import '../../../core/models/user_role.dart';
@@ -9,77 +10,6 @@ import '../../../core/providers/app_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../widgets/artisan_bottom_nav.dart';
-
-class _PartnerCopy {
-  final String portalTitle;
-  final String professionalRateCard;
-  final String editRateCard;
-  final String scorecardTitle;
-  final String toolkitTitle;
-  final String portfolioTitle;
-  final String addWorkPhoto;
-  final String payoutSecurityTitle;
-  final String openWalletBtn;
-  final String signOutBtn;
-
-  const _PartnerCopy({
-    required this.portalTitle,
-    required this.professionalRateCard,
-    required this.editRateCard,
-    required this.scorecardTitle,
-    required this.toolkitTitle,
-    required this.portfolioTitle,
-    required this.addWorkPhoto,
-    required this.payoutSecurityTitle,
-    required this.openWalletBtn,
-    required this.signOutBtn,
-  });
-
-  factory _PartnerCopy.of(String lang) {
-    switch (lang) {
-      case 'hi':
-        return const _PartnerCopy(
-          portalTitle: 'कारीगर गिल्ड पोर्टल',
-          professionalRateCard: 'पेशेवर प्रोफ़ाइल और रेट कार्ड',
-          editRateCard: 'प्रोफ़ाइल और रेट कार्ड बदलें',
-          scorecardTitle: 'कारीगरी और स्वच्छता स्कोरकार्ड',
-          toolkitTitle: 'सत्यापित टूल किट',
-          portfolioTitle: 'काम का पोर्टफोलियो गैलरी',
-          addWorkPhoto: 'नया काम फोटो जोड़ें',
-          payoutSecurityTitle: 'बैंक भुगतान और सुरक्षा रिजर्व',
-          openWalletBtn: 'वॉलेट और कमाई देखें',
-          signOutBtn: 'गिल्ड पोर्टल से साइन आउट करें',
-        );
-      case 'mr':
-        return const _PartnerCopy(
-          portalTitle: 'कारागीर गिल्ड पोर्टल',
-          professionalRateCard: 'व्यावसायिक प्रोफाइल आणि दरपत्रक',
-          editRateCard: 'प्रोफाइल आणि दर बदला',
-          scorecardTitle: 'कौशल्य आणि स्वच्छता स्कोअरकार्ड',
-          toolkitTitle: 'पडताळलेले टूल्स किट',
-          portfolioTitle: 'कामाचा पोर्टफोलिओ गॅलरी',
-          addWorkPhoto: 'नवीन कामाचा फोटो जोडा',
-          payoutSecurityTitle: 'बँक पेआउट आणि सुरक्षा राखीव',
-          openWalletBtn: 'वॉलेट आणि कमाई पहा',
-          signOutBtn: 'गिल्ड पोर्टलमधून साइन आउट करा',
-        );
-      case 'en':
-      default:
-        return const _PartnerCopy(
-          portalTitle: 'Karigaar Guild Portal',
-          professionalRateCard: 'Professional & Rate Card',
-          editRateCard: 'Edit Profile & Rate Card',
-          scorecardTitle: 'Craftsmanship & Cleanliness Scorecard',
-          toolkitTitle: 'Verified Tool Kit',
-          portfolioTitle: 'Work Portfolio Gallery',
-          addWorkPhoto: 'Add New Work Photo',
-          payoutSecurityTitle: 'Payout Bank & Security Reserve',
-          openWalletBtn: 'Open Guild Wallet & Ledger',
-          signOutBtn: 'Sign Out of Guild Portal',
-        );
-    }
-  }
-}
 
 class ArtisanPartnerProfileScreen extends ConsumerWidget {
   const ArtisanPartnerProfileScreen({super.key});
@@ -112,7 +42,7 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
     final isOnline = ref.watch(artisanDutyOnlineProvider);
     final isEliteActive =
         profile.isGuildElite || ref.watch(guildEliteSubscriptionProvider);
-    final copy = _PartnerCopy.of(lang);
+    final copy = PartnerCopy.of(lang);
 
     final activeDistrict = AppDataService.getDistrictById(profile.cityId);
 
@@ -168,7 +98,7 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
     required String lang,
     required bool isOnline,
     required bool isEliteActive,
-    required _PartnerCopy copy,
+    required PartnerCopy copy,
   }) {
     final initials = _getInitials(profile.name);
     final tierProgress =
@@ -186,11 +116,17 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Top bar: Portal Title + Language Toggle
-              Row(
-                children: [
-                  Expanded(
-                    child: Row(
+              // Top bar: Portal Title + Language Toggle (Wrap prevents 2.0x overflow)
+              SizedBox(
+                width: double.infinity,
+                child: Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Container(
                           width: 9,
@@ -203,7 +139,7 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
                           ),
                         ),
                         const SizedBox(width: 8),
-                        Expanded(
+                        Flexible(
                           child: Text(
                             copy.portalTitle,
                             maxLines: 1,
@@ -215,10 +151,9 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
                         ),
                       ],
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  _buildLanguagePill(ref, lang),
-                ],
+                    _buildLanguagePill(ref, lang),
+                  ],
+                ),
               ),
               const SizedBox(height: 16),
 
@@ -283,7 +218,7 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
                           runSpacing: 6,
                           children: [
                             _headerBadge(
-                              label: 'ID: ${profile.guildId}',
+                              label: '${copy.guildIdPrefix}: ${profile.guildId}',
                               bg: AppColors.primaryLight,
                               fg: AppColors.secondaryLight,
                               borderColor: AppColors.secondary.withValues(alpha: 0.5),
@@ -355,52 +290,56 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
+                    SizedBox(
+                      width: double.infinity,
+                      child: Wrap(
+                        alignment: WrapAlignment.spaceBetween,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          Text(
                             isEliteActive
-                                ? '₹999/mo Guild Elite Pass • Active'
-                                : '₹999/mo Guild Elite Pass • Eligible',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                                ? copy.elitePassActive
+                                : copy.elitePassEligible,
                             style: AppTypography.bodySm.copyWith(
                               color: Colors.white70,
                               fontSize: 11,
                             ),
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        InkWell(
-                          key: const Key('toggle_guild_elite_pass_chip'),
-                          borderRadius: BorderRadius.circular(9999),
-                          onTap: () {
-                            ref
-                                .read(currentArtisanProfileProvider.notifier)
-                                .toggleGuildElite(!isEliteActive);
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 5,
-                            ),
-                            decoration: BoxDecoration(
-                              color: isEliteActive
-                                  ? AppColors.secondary
-                                  : AppColors.primaryLight,
-                              borderRadius: BorderRadius.circular(9999),
-                              border: Border.all(color: AppColors.secondary),
-                            ),
-                            child: Text(
-                              isEliteActive ? '5% Floor Active' : 'Activate Pass',
-                              style: AppTypography.labelSm.copyWith(
-                                color: Colors.white,
-                                fontSize: 10,
+                          InkWell(
+                            key: const Key('toggle_guild_elite_pass_chip'),
+                            borderRadius: BorderRadius.circular(9999),
+                            onTap: () {
+                              ref
+                                  .read(currentArtisanProfileProvider.notifier)
+                                  .toggleGuildElite(!isEliteActive);
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: isEliteActive
+                                    ? AppColors.secondary
+                                    : AppColors.primaryLight,
+                                borderRadius: BorderRadius.circular(9999),
+                                border: Border.all(color: AppColors.secondary),
+                              ),
+                              child: Text(
+                                isEliteActive
+                                    ? copy.floorActiveChip
+                                    : copy.activatePassChip,
+                                style: AppTypography.labelSm.copyWith(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -496,7 +435,7 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
     WidgetRef ref, {
     required ArtisanProfileModel profile,
     required CityConfigModel activeDistrict,
-    required _PartnerCopy copy,
+    required PartnerCopy copy,
   }) {
     final localityNames = profile.serviceLocalityIds.map((id) {
       final match = activeDistrict.localities.where((l) => l.localityId == id);
@@ -533,6 +472,7 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
                     ref,
                     profile,
                     activeDistrict,
+                    copy,
                   ),
                   icon: const Icon(Icons.edit_rounded, size: 16),
                   label: Text(
@@ -572,7 +512,7 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'VISIT / INSPECTION FEE',
+                        copy.visitFeeHeader,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: AppTypography.labelSm.copyWith(
@@ -609,7 +549,7 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'DAILY DIHADI RATE',
+                        copy.dailyDihadiHeader,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: AppTypography.labelSm.copyWith(fontSize: 10),
@@ -635,31 +575,35 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
           const SizedBox(height: 14),
 
           _infoRow(
+            context,
             Icons.handyman_rounded,
-            'Primary Trade',
+            copy.primaryTradeLabel,
             '${profile.tradeTitle} • ${profile.localizedRoleTitle}',
           ),
           const SizedBox(height: 8),
           _infoRow(
+            context,
             Icons.timeline_rounded,
-            'Experience Tier',
+            copy.experienceTierLabel,
             '${profile.experienceTierLabel} (${profile.roleType.standardLabel})',
           ),
           const SizedBox(height: 8),
           _infoRow(
+            context,
             Icons.work_outline_rounded,
-            'Work Mode',
+            copy.workModeLabel,
             profile.workMode,
           ),
           const SizedBox(height: 8),
           _infoRow(
+            context,
             Icons.location_on_rounded,
-            'Active District',
+            copy.activeDistrictLabel,
             activeDistrict.name,
           ),
           const SizedBox(height: 10),
 
-          Text('Service Localities', style: AppTypography.labelMd),
+          Text(copy.serviceLocalitiesLabel, style: AppTypography.labelMd),
           const SizedBox(height: 6),
           Wrap(
             spacing: 6,
@@ -682,7 +626,7 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
 
-          Text('Work Bio', style: AppTypography.labelMd),
+          Text(copy.workBioLabel, style: AppTypography.labelMd),
           const SizedBox(height: 4),
           Text(
             profile.bio,
@@ -690,7 +634,7 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
           ),
           if (profile.specialties.isNotEmpty) ...[
             const SizedBox(height: 12),
-            Text('Certified Specialties', style: AppTypography.labelMd),
+            Text(copy.certifiedSpecialtiesLabel, style: AppTypography.labelMd),
             const SizedBox(height: 6),
             Wrap(
               spacing: 6,
@@ -722,7 +666,12 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _infoRow(IconData icon, String label, String value) {
+  Widget _infoRow(
+    BuildContext context,
+    IconData icon,
+    String label,
+    String value,
+  ) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -730,6 +679,7 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
         const SizedBox(width: 8),
         Expanded(
           child: RichText(
+            textScaler: MediaQuery.textScalerOf(context),
             text: TextSpan(
               style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
               children: [
@@ -755,7 +705,7 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildScorecardSection(ArtisanProfileModel profile, _PartnerCopy copy) {
+  Widget _buildScorecardSection(ArtisanProfileModel profile, PartnerCopy copy) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -775,7 +725,7 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
             children: [
               Expanded(
                 child: _scoreTile(
-                  label: 'Overall Rating',
+                  label: copy.overallRatingLabel,
                   value: '${profile.rating.toStringAsFixed(1)} ★',
                   accent: AppColors.secondary,
                 ),
@@ -783,7 +733,7 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: _scoreTile(
-                  label: 'Cleanliness & Sawdust',
+                  label: copy.cleanlinessLabel,
                   value: '${profile.cleanlinessScore.toStringAsFixed(1)} / 5.0',
                   accent: AppColors.tertiary,
                 ),
@@ -795,7 +745,7 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
             children: [
               Expanded(
                 child: _scoreTile(
-                  label: 'On-Time Arrival',
+                  label: copy.onTimeArrivalLabel,
                   value: '${profile.onTimeArrivalPercent}%',
                   accent: AppColors.info,
                 ),
@@ -803,7 +753,7 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: _scoreTile(
-                  label: 'Completed Jobs',
+                  label: copy.completedJobsLabel,
                   value: '${profile.totalJobsCompleted}',
                   accent: AppColors.primary,
                 ),
@@ -856,8 +806,12 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     ArtisanProfileModel profile,
-    _PartnerCopy copy,
+    PartnerCopy copy,
   ) {
+    final double textScale =
+        MediaQuery.textScalerOf(context).scale(1.0).clamp(1.0, 2.5);
+    final double portfolioHeight = 164 + (textScale - 1.0) * 64;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -887,7 +841,7 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(9999),
                 ),
                 child: Text(
-                  'Audited',
+                  copy.auditedBadge,
                   style: AppTypography.labelSm.copyWith(
                     color: AppColors.tertiary,
                     fontSize: 10,
@@ -955,7 +909,7 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
                 OutlinedButton.icon(
                   key: const Key('add_work_photo_btn'),
                   onPressed: () =>
-                      _showAddWorkPhotoDialog(context, ref, profile),
+                      _showAddWorkPhotoDialog(context, ref, profile, copy),
                   icon: const Icon(Icons.add_a_photo_rounded, size: 15),
                   label: Text(
                     copy.addWorkPhoto,
@@ -976,117 +930,150 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
 
-          SizedBox(
-            height: 164,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: profile.portfolioItems.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 12),
-              itemBuilder: (context, index) {
-                final item = profile.portfolioItems[index];
-                return Container(
-                  width: 226,
-                  decoration: BoxDecoration(
-                    color: AppColors.surfaceBase,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: AppColors.borderSubtle),
+          if (profile.portfolioItems.isEmpty)
+            Container(
+              key: const Key('empty_portfolio_prompt'),
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.surfaceSubtle,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: AppColors.borderSubtle),
+              ),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.photo_library_outlined,
+                    color: AppColors.textMuted,
+                    size: 22,
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        height: 86,
-                        padding: const EdgeInsets.all(10),
-                        decoration: const BoxDecoration(
-                          color: AppColors.primaryContainer,
-                          borderRadius:
-                              BorderRadius.vertical(top: Radius.circular(13)),
-                        ),
-                        child: Stack(
-                          children: [
-                            const Center(
-                              child: Icon(
-                                Icons.photo_library_rounded,
-                                color: AppColors.secondaryLight,
-                                size: 32,
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      copy.emptyPortfolioText,
+                      style: AppTypography.bodySm.copyWith(
+                        color: AppColors.textMuted,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          else
+            SizedBox(
+              height: portfolioHeight,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: profile.portfolioItems.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                itemBuilder: (context, index) {
+                  final item = profile.portfolioItems[index];
+                  return Container(
+                    width: 226,
+                    decoration: BoxDecoration(
+                      color: AppColors.surfaceBase,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: AppColors.borderSubtle),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: 86,
+                          padding: const EdgeInsets.all(10),
+                          decoration: const BoxDecoration(
+                            color: AppColors.primaryContainer,
+                            borderRadius:
+                                BorderRadius.vertical(top: Radius.circular(13)),
+                          ),
+                          child: Stack(
+                            children: [
+                              const Center(
+                                child: Icon(
+                                  Icons.photo_library_rounded,
+                                  color: AppColors.secondaryLight,
+                                  size: 32,
+                                ),
                               ),
-                            ),
-                            Positioned(
-                              top: 0,
-                              left: 0,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 6,
-                                  vertical: 2,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: AppColors.secondary,
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Text(
-                                  item.badge,
-                                  style: AppTypography.labelSm.copyWith(
-                                    color: Colors.white,
-                                    fontSize: 9.5,
+                              Positioned(
+                                top: 0,
+                                left: 0,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 6,
+                                    vertical: 2,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.secondary,
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: Text(
+                                    item.badge,
+                                    style: AppTypography.labelSm.copyWith(
+                                      color: Colors.white,
+                                      fontSize: 9.5,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            Positioned(
-                              bottom: 0,
-                              right: 0,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 6,
-                                  vertical: 2,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.black54,
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Text(
-                                  item.duration,
-                                  style: AppTypography.labelSm.copyWith(
-                                    color: Colors.white,
-                                    fontSize: 9.5,
+                              Positioned(
+                                bottom: 0,
+                                right: 0,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 6,
+                                    vertical: 2,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black54,
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: Text(
+                                    item.duration,
+                                    style: AppTypography.labelSm.copyWith(
+                                      color: Colors.white,
+                                      fontSize: 9.5,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              item.title,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: AppTypography.labelMd.copyWith(
-                                fontWeight: FontWeight.w700,
-                              ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  item.title,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: AppTypography.labelMd.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                const SizedBox(height: 3),
+                                Text(
+                                  item.location,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: AppTypography.bodySm.copyWith(
+                                    fontSize: 11,
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 3),
-                            Text(
-                              item.location,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: AppTypography.bodySm.copyWith(
-                                fontSize: 11,
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                );
-              },
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
         ],
       ),
     );
@@ -1096,7 +1083,7 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     ArtisanProfileModel profile,
-    _PartnerCopy copy,
+    PartnerCopy copy,
   ) {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -1114,14 +1101,16 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           _infoRow(
+            context,
             Icons.account_balance_rounded,
-            'Linked Bank',
+            copy.linkedBankLabel,
             '${profile.bankName} ${profile.maskedAccountNumber} (IFSC: ${profile.ifscCode})',
           ),
           const SizedBox(height: 8),
           _infoRow(
+            context,
             Icons.qr_code_rounded,
-            'UPI ID',
+            copy.upiIdLabel,
             profile.upiId,
           ),
           const SizedBox(height: 10),
@@ -1203,21 +1192,8 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
     WidgetRef ref,
     ArtisanProfileModel profile,
     CityConfigModel initialDistrict,
+    PartnerCopy copy,
   ) {
-    final feeCtrl = TextEditingController(text: profile.inspectionFee.toString());
-    final dihadiCtrl =
-        TextEditingController(text: profile.dailyDihadiRate.toString());
-    final bioCtrl = TextEditingController(text: profile.bio);
-
-    String selectedTradeId = profile.primaryTradeId;
-    String selectedTradeTitle = profile.tradeTitle;
-    KarigaarRoleType selectedRole = profile.roleType;
-    String selectedExp = profile.experienceTierLabel;
-    String selectedCityId = initialDistrict.cityId;
-    final selectedLocalities = Set<String>.from(profile.serviceLocalityIds);
-
-    final allDistricts = AppDataService.getAllRegionalDistricts();
-
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -1226,278 +1202,59 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (sheetContext) {
-        return StatefulBuilder(
-          builder: (ctx, setModalState) {
-            final districtObj = allDistricts.firstWhere(
-              (d) => d.cityId == selectedCityId,
-              orElse: () => initialDistrict,
-            );
+        return _EditRateCardSheet(
+          profile: profile,
+          initialDistrict: initialDistrict,
+          copy: copy,
+          tradeCatalog: _tradeCatalog,
+          experienceTiers: _experienceTiers,
+          onSaved: ({
+            required String primaryTradeId,
+            required String tradeTitle,
+            required KarigaarRoleType roleType,
+            required String experienceTierLabel,
+            required int yearsExperience,
+            required int inspectionFee,
+            required int dailyDihadiRate,
+            required CityConfigModel districtObj,
+            required List<String> serviceLocalityIds,
+            required String bio,
+          }) {
+            ref
+                .read(currentArtisanProfileProvider.notifier)
+                .updateProfileAndRateCard(
+                  primaryTradeId: primaryTradeId,
+                  tradeTitle: tradeTitle,
+                  roleType: roleType,
+                  experienceTierLabel: experienceTierLabel,
+                  yearsExperience: yearsExperience,
+                  inspectionFee: inspectionFee,
+                  dailyDihadiRate: dailyDihadiRate,
+                  cityId: districtObj.cityId,
+                  localityId: serviceLocalityIds.isNotEmpty
+                      ? serviceLocalityIds.first
+                      : districtObj.localities.first.localityId,
+                  serviceLocalityIds: serviceLocalityIds,
+                  bio: bio,
+                );
 
-            return Padding(
-              padding: EdgeInsets.only(
-                left: 20,
-                right: 20,
-                top: 16,
-                bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
-              ),
-              child: SafeArea(
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              'Edit Profile & Rate Card',
-                              style: AppTypography.headlineSm,
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () => Navigator.pop(ctx),
-                            icon: const Icon(Icons.close_rounded),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
+            if (districtObj.cityId !=
+                ref.read(selectedDistrictProvider).cityId) {
+              ref.read(selectedDistrictProvider.notifier).state = districtObj;
+            }
 
-                      Text('Primary Trade', style: AppTypography.labelMd),
-                      const SizedBox(height: 6),
-                      Wrap(
-                        spacing: 6,
-                        runSpacing: 6,
-                        children: _tradeCatalog.map((t) {
-                          final isSelected = selectedTradeId == t['id'];
-                          return ChoiceChip(
-                            label: Text(t['title']!),
-                            selected: isSelected,
-                            onSelected: (_) {
-                              setModalState(() {
-                                selectedTradeId = t['id']!;
-                                selectedTradeTitle = t['title']!;
-                              });
-                            },
-                          );
-                        }).toList(),
-                      ),
-                      const SizedBox(height: 12),
-
-                      Text('Guild Role Type', style: AppTypography.labelMd),
-                      const SizedBox(height: 6),
-                      Wrap(
-                        spacing: 6,
-                        runSpacing: 6,
-                        children: KarigaarRoleType.values.map((role) {
-                          return ChoiceChip(
-                            label: Text(role.shortLabel),
-                            selected: selectedRole == role,
-                            onSelected: (_) {
-                              setModalState(() => selectedRole = role);
-                            },
-                          );
-                        }).toList(),
-                      ),
-                      const SizedBox(height: 12),
-
-                      Text('Experience Tier', style: AppTypography.labelMd),
-                      const SizedBox(height: 6),
-                      Wrap(
-                        spacing: 6,
-                        runSpacing: 6,
-                        children: _experienceTiers.map((exp) {
-                          return ChoiceChip(
-                            label: Text(exp),
-                            selected: selectedExp == exp,
-                            onSelected: (_) {
-                              setModalState(() => selectedExp = exp);
-                            },
-                          );
-                        }).toList(),
-                      ),
-                      const SizedBox(height: 12),
-
-                      Text('Visit Fee (₹)', style: AppTypography.labelMd),
-                      const SizedBox(height: 6),
-                      Wrap(
-                        spacing: 6,
-                        children: [150, 200, 249, 300, 399].map((fee) {
-                          return ActionChip(
-                            label: Text('₹$fee'),
-                            onPressed: () {
-                              setModalState(() => feeCtrl.text = '$fee');
-                            },
-                          );
-                        }).toList(),
-                      ),
-                      const SizedBox(height: 6),
-                      TextFormField(
-                        key: const Key('edit_visit_fee_field'),
-                        controller: feeCtrl,
-                        keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
-                          prefixText: '₹ ',
-                          labelText: 'Visit Inspection Fee',
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-
-                      Text('Daily Dihadi Rate (₹/day)',
-                          style: AppTypography.labelMd),
-                      const SizedBox(height: 6),
-                      Wrap(
-                        spacing: 6,
-                        children: [500, 700, 900, 1200].map((rate) {
-                          return ActionChip(
-                            label: Text('₹$rate'),
-                            onPressed: () {
-                              setModalState(() => dihadiCtrl.text = '$rate');
-                            },
-                          );
-                        }).toList(),
-                      ),
-                      const SizedBox(height: 6),
-                      TextFormField(
-                        key: const Key('edit_dihadi_rate_field'),
-                        controller: dihadiCtrl,
-                        keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
-                          prefixText: '₹ ',
-                          labelText: 'Daily Dihadi Rate',
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-
-                      Text('Active District & Service Localities',
-                          style: AppTypography.labelMd),
-                      const SizedBox(height: 6),
-                      Wrap(
-                        spacing: 6,
-                        runSpacing: 6,
-                        children: allDistricts.map((d) {
-                          return ChoiceChip(
-                            label: Text(d.name),
-                            selected: selectedCityId == d.cityId,
-                            onSelected: (_) {
-                              setModalState(() {
-                                selectedCityId = d.cityId;
-                                selectedLocalities
-                                  ..clear()
-                                  ..add(d.localities.first.localityId);
-                              });
-                            },
-                          );
-                        }).toList(),
-                      ),
-                      const SizedBox(height: 8),
-                      Wrap(
-                        spacing: 6,
-                        runSpacing: 6,
-                        children: districtObj.localities.map((loc) {
-                          final isSelected =
-                              selectedLocalities.contains(loc.localityId);
-                          return FilterChip(
-                            label: Text(loc.name),
-                            selected: isSelected,
-                            onSelected: (val) {
-                              setModalState(() {
-                                if (val) {
-                                  selectedLocalities.add(loc.localityId);
-                                } else if (selectedLocalities.length > 1) {
-                                  selectedLocalities.remove(loc.localityId);
-                                }
-                              });
-                            },
-                          );
-                        }).toList(),
-                      ),
-                      const SizedBox(height: 12),
-
-                      TextFormField(
-                        key: const Key('edit_bio_field'),
-                        controller: bioCtrl,
-                        maxLines: 3,
-                        decoration: const InputDecoration(
-                          labelText: 'Work Bio',
-                          hintText:
-                              'Describe your craft expertise & safety gear...',
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                          key: const Key('save_profile_rate_card_btn'),
-                          onPressed: () {
-                            final parsedFee =
-                                int.tryParse(feeCtrl.text.trim()) ??
-                                    profile.inspectionFee;
-                            final parsedDihadi =
-                                int.tryParse(dihadiCtrl.text.trim()) ??
-                                    profile.dailyDihadiRate;
-                            final years = switch (selectedExp) {
-                              '1 - 3 Years' => 2,
-                              '3 - 5 Years' => 4,
-                              '5 - 10 Years' => 8,
-                              '10+ Master' => 12,
-                              _ => profile.yearsExperience,
-                            };
-
-                            ref
-                                .read(currentArtisanProfileProvider.notifier)
-                                .updateProfileAndRateCard(
-                                  primaryTradeId: selectedTradeId,
-                                  tradeTitle: selectedTradeTitle,
-                                  roleType: selectedRole,
-                                  experienceTierLabel: selectedExp,
-                                  yearsExperience: years,
-                                  inspectionFee: parsedFee,
-                                  dailyDihadiRate: parsedDihadi,
-                                  cityId: selectedCityId,
-                                  localityId: selectedLocalities.isNotEmpty
-                                      ? selectedLocalities.first
-                                      : districtObj.localities.first.localityId,
-                                  serviceLocalityIds:
-                                      selectedLocalities.toList(),
-                                  bio: bioCtrl.text.trim().isNotEmpty
-                                      ? bioCtrl.text.trim()
-                                      : profile.bio,
-                                );
-
-                            if (selectedCityId !=
-                                ref.read(selectedDistrictProvider).cityId) {
-                              ref.read(selectedDistrictProvider.notifier).state =
-                                  districtObj;
-                            }
-
-                            Navigator.pop(ctx);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Profile & rate card updated and synced to district directory!',
-                                ),
-                                backgroundColor: AppColors.tertiary,
-                              ),
-                            );
-                          },
-                          icon: const Icon(Icons.sync_rounded, size: 18),
-                          label: const Text(
-                            'Save & Sync to Directory',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.secondary,
-                            foregroundColor: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
+            if (context.mounted) {
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Profile & rate card updated and synced to district directory!',
+                    ),
+                    backgroundColor: AppColors.tertiary,
                   ),
-                ),
-              ),
-            );
+                );
+            }
           },
         );
       },
@@ -1508,89 +1265,35 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     ArtisanProfileModel profile,
+    PartnerCopy copy,
   ) {
-    final titleCtrl = TextEditingController();
-    final locationCtrl = TextEditingController(text: 'Anand Nagar, Nanded');
-    final badgeCtrl = TextEditingController(text: 'Verified Work');
-    final durationCtrl = TextEditingController(text: 'Completed in 2 hrs');
+    final activeDistrict = AppDataService.getDistrictById(profile.cityId);
+    final locMatch = activeDistrict.localities
+        .where((l) => l.localityId == profile.localityId);
+    final defaultLocation = locMatch.isNotEmpty
+        ? '${locMatch.first.name}, ${activeDistrict.name}'
+        : 'Anand Nagar, Nanded';
 
     showDialog<void>(
       context: context,
-      builder: (dialogCtx) => AlertDialog(
-        title: const Text('Add New Work Photo'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                key: const Key('portfolio_title_field'),
-                controller: titleCtrl,
-                decoration: const InputDecoration(
-                  labelText: 'Work Title',
-                  hintText: 'e.g. 6-Way Distribution Box Setup',
-                ),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                key: const Key('portfolio_location_field'),
-                controller: locationCtrl,
-                decoration: const InputDecoration(labelText: 'Locality'),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                key: const Key('portfolio_badge_field'),
-                controller: badgeCtrl,
-                decoration: const InputDecoration(labelText: 'Quality Badge'),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                key: const Key('portfolio_duration_field'),
-                controller: durationCtrl,
-                decoration: const InputDecoration(labelText: 'Duration'),
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogCtx),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            key: const Key('confirm_add_work_photo_btn'),
-            onPressed: () {
-              final title = titleCtrl.text.trim();
-              if (title.isEmpty) return;
-              ref.read(currentArtisanProfileProvider.notifier).addPortfolioPhoto(
-                    PortfolioWorkItem(
-                      id: 'pf_${DateTime.now().millisecondsSinceEpoch}',
-                      title: title,
-                      location: locationCtrl.text.trim().isNotEmpty
-                          ? locationCtrl.text.trim()
-                          : 'Nanded',
-                      badge: badgeCtrl.text.trim().isNotEmpty
-                          ? badgeCtrl.text.trim()
-                          : 'Verified Work',
-                      duration: durationCtrl.text.trim().isNotEmpty
-                          ? durationCtrl.text.trim()
-                          : 'Same Day',
-                    ),
-                  );
-              Navigator.pop(dialogCtx);
-              ScaffoldMessenger.of(context).showSnackBar(
+      builder: (dialogCtx) => _AddWorkPhotoDialog(
+        defaultLocation: defaultLocation,
+        copy: copy,
+        onAddPhoto: (item) {
+          ref
+              .read(currentArtisanProfileProvider.notifier)
+              .addPortfolioPhoto(item);
+          if (context.mounted) {
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
                 SnackBar(
-                  content: Text('Added "$title" to portfolio & synced live!'),
+                  content: Text('Added "${item.title}" to portfolio & synced live!'),
                   backgroundColor: AppColors.tertiary,
                 ),
               );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('Add Photo'),
-          ),
-        ],
+          }
+        },
       ),
     );
   }
@@ -1601,5 +1304,480 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
     if (list.isEmpty) return 'KG';
     if (list.length == 1) return list.first[0].toUpperCase();
     return '${list.first[0]}${list.last[0]}'.toUpperCase();
+  }
+}
+
+class _EditRateCardSheet extends StatefulWidget {
+  final ArtisanProfileModel profile;
+  final CityConfigModel initialDistrict;
+  final PartnerCopy copy;
+  final List<Map<String, String>> tradeCatalog;
+  final List<String> experienceTiers;
+  final void Function({
+    required String primaryTradeId,
+    required String tradeTitle,
+    required KarigaarRoleType roleType,
+    required String experienceTierLabel,
+    required int yearsExperience,
+    required int inspectionFee,
+    required int dailyDihadiRate,
+    required CityConfigModel districtObj,
+    required List<String> serviceLocalityIds,
+    required String bio,
+  }) onSaved;
+
+  const _EditRateCardSheet({
+    required this.profile,
+    required this.initialDistrict,
+    required this.copy,
+    required this.tradeCatalog,
+    required this.experienceTiers,
+    required this.onSaved,
+  });
+
+  @override
+  State<_EditRateCardSheet> createState() => _EditRateCardSheetState();
+}
+
+class _EditRateCardSheetState extends State<_EditRateCardSheet> {
+  final _formKey = GlobalKey<FormState>();
+  late final TextEditingController _feeCtrl;
+  late final TextEditingController _dihadiCtrl;
+  late final TextEditingController _bioCtrl;
+
+  late String _selectedTradeId;
+  late String _selectedTradeTitle;
+  late KarigaarRoleType _selectedRole;
+  late String _selectedExp;
+  late String _selectedCityId;
+  late final Set<String> _selectedLocalities;
+  late final List<CityConfigModel> _allDistricts;
+
+  @override
+  void initState() {
+    super.initState();
+    _feeCtrl =
+        TextEditingController(text: widget.profile.inspectionFee.toString());
+    _dihadiCtrl =
+        TextEditingController(text: widget.profile.dailyDihadiRate.toString());
+    _bioCtrl = TextEditingController(text: widget.profile.bio);
+    _selectedTradeId = widget.profile.primaryTradeId;
+    _selectedTradeTitle = widget.profile.tradeTitle;
+    _selectedRole = widget.profile.roleType;
+    _selectedExp = widget.profile.experienceTierLabel;
+    _selectedCityId = widget.initialDistrict.cityId;
+    _selectedLocalities = Set<String>.from(widget.profile.serviceLocalityIds);
+    _allDistricts = AppDataService.getAllRegionalDistricts();
+  }
+
+  @override
+  void dispose() {
+    _feeCtrl.dispose();
+    _dihadiCtrl.dispose();
+    _bioCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final copy = widget.copy;
+    final districtObj = _allDistricts.firstWhere(
+      (d) => d.cityId == _selectedCityId,
+      orElse: () => widget.initialDistrict,
+    );
+
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 20,
+        right: 20,
+        top: 16,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+      ),
+      child: SafeArea(
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        copy.editRateCard,
+                        style: AppTypography.headlineSm,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: const Icon(Icons.close_rounded),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+
+                Text(copy.primaryTradeLabel, style: AppTypography.labelMd),
+                const SizedBox(height: 6),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: widget.tradeCatalog.map((t) {
+                    final isSelected = _selectedTradeId == t['id'];
+                    return ChoiceChip(
+                      label: Text(t['title']!),
+                      selected: isSelected,
+                      onSelected: (_) {
+                        setState(() {
+                          _selectedTradeId = t['id']!;
+                          _selectedTradeTitle = t['title']!;
+                        });
+                      },
+                    );
+                  }).toList(),
+                ),
+                const SizedBox(height: 12),
+
+                Text(copy.guildRoleTypeLabel, style: AppTypography.labelMd),
+                const SizedBox(height: 6),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: KarigaarRoleType.values.map((role) {
+                    return ChoiceChip(
+                      label: Text(role.shortLabel),
+                      selected: _selectedRole == role,
+                      onSelected: (_) {
+                        setState(() => _selectedRole = role);
+                      },
+                    );
+                  }).toList(),
+                ),
+                const SizedBox(height: 12),
+
+                Text(copy.experienceTierLabel, style: AppTypography.labelMd),
+                const SizedBox(height: 6),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: widget.experienceTiers.map((exp) {
+                    return ChoiceChip(
+                      label: Text(exp),
+                      selected: _selectedExp == exp,
+                      onSelected: (_) {
+                        setState(() => _selectedExp = exp);
+                      },
+                    );
+                  }).toList(),
+                ),
+                const SizedBox(height: 12),
+
+                Text('${copy.visitFeeFieldLabel} (₹)',
+                    style: AppTypography.labelMd),
+                const SizedBox(height: 6),
+                Wrap(
+                  spacing: 6,
+                  children: [150, 200, 249, 300, 399].map((fee) {
+                    return ActionChip(
+                      label: Text('₹$fee'),
+                      onPressed: () {
+                        setState(() => _feeCtrl.text = '$fee');
+                      },
+                    );
+                  }).toList(),
+                ),
+                const SizedBox(height: 6),
+                TextFormField(
+                  key: const Key('edit_visit_fee_field'),
+                  controller: _feeCtrl,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    prefixText: '₹ ',
+                    labelText: copy.visitFeeFieldLabel,
+                  ),
+                  validator: (value) {
+                    final parsed = int.tryParse((value ?? '').trim());
+                    if (parsed == null || parsed < 50) {
+                      return copy.visitFeeError;
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 12),
+
+                Text('${copy.dihadiFieldLabel} (₹/day)',
+                    style: AppTypography.labelMd),
+                const SizedBox(height: 6),
+                Wrap(
+                  spacing: 6,
+                  children: [500, 700, 900, 1200].map((rate) {
+                    return ActionChip(
+                      label: Text('₹$rate'),
+                      onPressed: () {
+                        setState(() => _dihadiCtrl.text = '$rate');
+                      },
+                    );
+                  }).toList(),
+                ),
+                const SizedBox(height: 6),
+                TextFormField(
+                  key: const Key('edit_dihadi_rate_field'),
+                  controller: _dihadiCtrl,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    prefixText: '₹ ',
+                    labelText: copy.dihadiFieldLabel,
+                  ),
+                  validator: (value) {
+                    final parsed = int.tryParse((value ?? '').trim());
+                    if (parsed == null || parsed < 100) {
+                      return copy.dihadiRateError;
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 12),
+
+                Text(copy.activeDistrictLocalitiesLabel,
+                    style: AppTypography.labelMd),
+                const SizedBox(height: 6),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: _allDistricts.map((d) {
+                    return ChoiceChip(
+                      label: Text(d.name),
+                      selected: _selectedCityId == d.cityId,
+                      onSelected: (_) {
+                        setState(() {
+                          _selectedCityId = d.cityId;
+                          _selectedLocalities
+                            ..clear()
+                            ..add(d.localities.first.localityId);
+                        });
+                      },
+                    );
+                  }).toList(),
+                ),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: districtObj.localities.map((loc) {
+                    final isSelected =
+                        _selectedLocalities.contains(loc.localityId);
+                    return FilterChip(
+                      label: Text(loc.name),
+                      selected: isSelected,
+                      onSelected: (val) {
+                        setState(() {
+                          if (val) {
+                            _selectedLocalities.add(loc.localityId);
+                          } else if (_selectedLocalities.length > 1) {
+                            _selectedLocalities.remove(loc.localityId);
+                          }
+                        });
+                      },
+                    );
+                  }).toList(),
+                ),
+                const SizedBox(height: 12),
+
+                TextFormField(
+                  key: const Key('edit_bio_field'),
+                  controller: _bioCtrl,
+                  maxLines: 3,
+                  decoration: InputDecoration(
+                    labelText: copy.workBioLabel,
+                    hintText:
+                        'Describe your craft expertise & safety gear...',
+                  ),
+                  validator: (value) {
+                    if ((value ?? '').trim().isEmpty) {
+                      return copy.bioError;
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    key: const Key('save_profile_rate_card_btn'),
+                    onPressed: () {
+                      if (!(_formKey.currentState?.validate() ?? false)) {
+                        return;
+                      }
+                      final parsedFee = int.parse(_feeCtrl.text.trim());
+                      final parsedDihadi = int.parse(_dihadiCtrl.text.trim());
+                      final trimmedBio = _bioCtrl.text.trim();
+                      final years = switch (_selectedExp) {
+                        '1 - 3 Years' => 2,
+                        '3 - 5 Years' => 4,
+                        '5 - 10 Years' => 8,
+                        '10+ Master' => 12,
+                        _ => widget.profile.yearsExperience,
+                      };
+
+                      Navigator.pop(context);
+                      widget.onSaved(
+                        primaryTradeId: _selectedTradeId,
+                        tradeTitle: _selectedTradeTitle,
+                        roleType: _selectedRole,
+                        experienceTierLabel: _selectedExp,
+                        yearsExperience: years,
+                        inspectionFee: parsedFee,
+                        dailyDihadiRate: parsedDihadi,
+                        districtObj: districtObj,
+                        serviceLocalityIds: _selectedLocalities.toList(),
+                        bio: trimmedBio,
+                      );
+                    },
+                    icon: const Icon(Icons.sync_rounded, size: 18),
+                    label: Text(
+                      copy.saveSyncBtn,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.secondary,
+                      foregroundColor: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _AddWorkPhotoDialog extends StatefulWidget {
+  final String defaultLocation;
+  final PartnerCopy copy;
+  final void Function(PortfolioWorkItem item) onAddPhoto;
+
+  const _AddWorkPhotoDialog({
+    required this.defaultLocation,
+    required this.copy,
+    required this.onAddPhoto,
+  });
+
+  @override
+  State<_AddWorkPhotoDialog> createState() => _AddWorkPhotoDialogState();
+}
+
+class _AddWorkPhotoDialogState extends State<_AddWorkPhotoDialog> {
+  final _formKey = GlobalKey<FormState>();
+  late final TextEditingController _titleCtrl;
+  late final TextEditingController _locationCtrl;
+  late final TextEditingController _badgeCtrl;
+  late final TextEditingController _durationCtrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _titleCtrl = TextEditingController();
+    _locationCtrl = TextEditingController(text: widget.defaultLocation);
+    _badgeCtrl = TextEditingController(text: 'Verified Work');
+    _durationCtrl = TextEditingController(text: 'Completed in 2 hrs');
+  }
+
+  @override
+  void dispose() {
+    _titleCtrl.dispose();
+    _locationCtrl.dispose();
+    _badgeCtrl.dispose();
+    _durationCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final copy = widget.copy;
+    return AlertDialog(
+      insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      title: Text(copy.addWorkPhoto),
+      content: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                key: const Key('portfolio_title_field'),
+                controller: _titleCtrl,
+                decoration: InputDecoration(
+                  labelText: copy.workTitleLabel,
+                  hintText: 'e.g. 6-Way Distribution Box Setup',
+                ),
+                validator: (val) {
+                  if ((val ?? '').trim().isEmpty) {
+                    return copy.workTitleError;
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 10),
+              TextFormField(
+                key: const Key('portfolio_location_field'),
+                controller: _locationCtrl,
+                decoration: InputDecoration(labelText: copy.localityLabel),
+              ),
+              const SizedBox(height: 10),
+              TextFormField(
+                key: const Key('portfolio_badge_field'),
+                controller: _badgeCtrl,
+                decoration: InputDecoration(labelText: copy.qualityBadgeLabel),
+              ),
+              const SizedBox(height: 10),
+              TextFormField(
+                key: const Key('portfolio_duration_field'),
+                controller: _durationCtrl,
+                decoration: InputDecoration(labelText: copy.durationLabel),
+              ),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(copy.cancelBtn),
+        ),
+        ElevatedButton(
+          key: const Key('confirm_add_work_photo_btn'),
+          onPressed: () {
+            if (!(_formKey.currentState?.validate() ?? false)) {
+              return;
+            }
+            final title = _titleCtrl.text.trim();
+            final item = PortfolioWorkItem(
+              id: 'pf_${DateTime.now().millisecondsSinceEpoch}',
+              title: title,
+              location: _locationCtrl.text.trim().isNotEmpty
+                  ? _locationCtrl.text.trim()
+                  : widget.defaultLocation,
+              badge: _badgeCtrl.text.trim().isNotEmpty
+                  ? _badgeCtrl.text.trim()
+                  : 'Verified Work',
+              duration: _durationCtrl.text.trim().isNotEmpty
+                  ? _durationCtrl.text.trim()
+                  : 'Same Day',
+            );
+            Navigator.pop(context);
+            widget.onAddPhoto(item);
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primary,
+            foregroundColor: Colors.white,
+          ),
+          child: Text(copy.addPhotoBtn),
+        ),
+      ],
+    );
   }
 }

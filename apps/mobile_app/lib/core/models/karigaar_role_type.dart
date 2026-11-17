@@ -219,10 +219,14 @@ enum KarigaarRoleType {
   static KarigaarRoleType fromString(String? val) {
     if (val == null) return KarigaarRoleType.skilledKarigaar;
     final lower = val.toLowerCase();
-    if (lower.contains('thekedar') || lower.contains('contractor')) {
+    if (lower.contains('thekedar') ||
+        lower.contains('contractor') ||
+        lower.contains('ठेकेदार')) {
       return KarigaarRoleType.thekedar;
     }
     if (lower.contains('mistry') ||
+        lower.contains('mistri') ||
+        lower.contains('मिस्त्री') ||
         lower.contains('ustad') ||
         lower.contains('head') ||
         lower.contains('master') ||

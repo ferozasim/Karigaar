@@ -1,8 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:karigaar_app/core/config/app_data_service.dart';
 import 'package:karigaar_app/core/models/artisan_profile_model.dart';
 import 'package:karigaar_app/core/models/wallet_settlement_entry.dart';
 import 'package:karigaar_app/core/providers/app_providers.dart';
+import 'package:karigaar_app/core/services/api_service.dart';
 
 void main() {
   group('Ticket T-10 Unit Tests: Models, Directory Sync & Settlement Ledger', () {
@@ -175,6 +177,106 @@ void main() {
 
       expect(container.read(todayEarningsProvider), equals(2550.0));
       expect(container.read(weeklyEarningsProvider), equals(6020.0));
+    });
+
+    test('withdrawWalletImps handles exact paise (2000.01 -> 0.01), rejects NaN/Infinity, and respects custom minReserve', () async {
+      const api = KarigaarApiService();
+
+      // 2000.01 - 2000.00 allows exact 0.01 withdrawal without IEEE-754 drift
+      final paiseRes = await api.withdrawWalletImps(
+        artisanId: 'art_partner_self',
+        amount: 0.01,
+        currentWalletBalance: 2000.01,
+        upiId: 'ramesh.karigaar@okaxis',
+      );
+      expect(paiseRes['status'], equals('SUCCESS'));
+      final paiseData = paiseRes['data'] as Map<String, dynamic>;
+      expect(paiseData['amountDebited'], equals(0.01));
+      expect(paiseData['remainingBalance'], equals(2000.0));
+
+      // Reject NaN, Infinity, -Infinity, zero, negative
+      for (final bad in [double.nan, double.infinity, double.negativeInfinity, 0.0, -50.0]) {
+        await expectLater(
+          () => api.withdrawWalletImps(
+            artisanId: 'art_partner_self',
+            amount: bad,
+            currentWalletBalance: 4620.0,
+            upiId: 'ramesh.karigaar@okaxis',
+          ),
+          throwsA(isA<ApiException>().having((e) => e.code, 'code', 'INVALID_AMOUNT')),
+        );
+      }
+
+      // Reject NaN balance
+      await expectLater(
+        () => api.withdrawWalletImps(
+          artisanId: 'art_partner_self',
+          amount: 100.0,
+          currentWalletBalance: double.nan,
+          upiId: 'ramesh.karigaar@okaxis',
+        ),
+        throwsA(isA<ApiException>().having((e) => e.code, 'code', 'INVALID_BALANCE')),
+      );
+
+      // Custom minReserve = 3000.0
+      await expectLater(
+        () => api.withdrawWalletImps(
+          artisanId: 'art_partner_self',
+          amount: 2000.0,
+          currentWalletBalance: 4620.0,
+          upiId: 'ramesh.karigaar@okaxis',
+          minReserve: 3000.0,
+        ),
+        throwsA(isA<ApiException>().having((e) => e.code, 'code', 'SECURITY_RESERVE_VIOLATION')),
+      );
+
+      final customReserveOk = await api.withdrawWalletImps(
+        artisanId: 'art_partner_self',
+        amount: 1620.0,
+        currentWalletBalance: 4620.0,
+        upiId: 'ramesh.karigaar@okaxis',
+        minReserve: 3000.0,
+      );
+      expect((customReserveOk['data'] as Map<String, dynamic>)['remainingBalance'], equals(3000.0));
+    });
+
+    test('KarigaarRoleType.fromString matches Mistri, मिस्त्री, and ठेकेदार', () {
+      expect(KarigaarRoleType.fromString('Mistri'), equals(KarigaarRoleType.headMistry));
+      expect(KarigaarRoleType.fromString('मिस्त्री'), equals(KarigaarRoleType.headMistry));
+      expect(KarigaarRoleType.fromString('ठेकेदार'), equals(KarigaarRoleType.thekedar));
+    });
+
+    test('guildEliteSubscriptionProvider and currentArtisanProfileProvider start aligned false and sync bidirectionally', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      expect(container.read(guildEliteSubscriptionProvider), isFalse);
+      final initialProfile = container.read(currentArtisanProfileProvider);
+      expect(initialProfile.isGuildElite, isFalse);
+      expect(initialProfile.tier, equals(GuildTier.masterGuildsman));
+      expect(initialProfile.effectiveCommissionRate, equals(0.08));
+      expect(
+        initialProfile.guildTierDisplayLabel,
+        equals('Tier 3: Master Guildsman • 5% Commission Floor'),
+      );
+
+      // Toggling guildEliteSubscriptionProvider directly syncs currentArtisanProfileProvider
+      container.read(guildEliteSubscriptionProvider.notifier).state = true;
+      expect(container.read(currentArtisanProfileProvider).isGuildElite, isTrue);
+      expect(container.read(currentArtisanProfileProvider).tier, equals(GuildTier.guildElite));
+      expect(container.read(currentArtisanProfileProvider).effectiveCommissionRate, equals(0.05));
+
+      // Toggling back via notifier syncs guildEliteSubscriptionProvider
+      container.read(currentArtisanProfileProvider.notifier).toggleGuildElite(false);
+      expect(container.read(guildEliteSubscriptionProvider), isFalse);
+      expect(container.read(currentArtisanProfileProvider).isGuildElite, isFalse);
+    });
+
+    test('AppDataService trades use canonical trade_ac_refrig matching partner profile catalog', () async {
+      TestWidgetsFlutterBinding.ensureInitialized();
+      final trades = await AppDataService.loadTrades();
+      expect(trades.any((t) => t.tradeId == 'trade_ac_refrig'), isTrue);
+      expect(trades.any((t) => t.tradeId == 'trade_ac_repair'), isFalse);
     });
   });
 }

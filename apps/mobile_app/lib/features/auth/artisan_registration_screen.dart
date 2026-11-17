@@ -104,7 +104,7 @@ class _ArtisanRegistrationScreenState
       'specialties': ['Royal Texture', 'Waterproof Primer', 'Wood PU Polish', 'Wall Putty Level'],
     },
     {
-      'id': 'trade_ac_repair',
+      'id': 'trade_ac_refrig',
       'name': 'AC & Refrigeration',
       'subtitle': 'HVAC & Whitegoods',
       'icon': Icons.ac_unit_rounded,

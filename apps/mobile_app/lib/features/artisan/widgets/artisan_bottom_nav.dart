@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/config/partner_copy.dart';
+import '../../../core/providers/app_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 
@@ -17,6 +20,21 @@ class ArtisanBottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasScope =
+        context.findAncestorWidgetOfExactType<UncontrolledProviderScope>() !=
+            null;
+    if (!hasScope) {
+      return _buildNav(context, PartnerCopy.of('en'));
+    }
+    return Consumer(
+      builder: (context, ref, _) {
+        final lang = ref.watch(partnerLanguageProvider);
+        return _buildNav(context, PartnerCopy.of(lang));
+      },
+    );
+  }
+
+  Widget _buildNav(BuildContext context, PartnerCopy copy) {
     return Container(
       decoration: const BoxDecoration(
         color: AppColors.primary,
@@ -32,7 +50,7 @@ class ArtisanBottomNav extends StatelessWidget {
                 child: _ArtisanNavItem(
                   key: const Key('artisan_nav_radar'),
                   icon: Icons.radar_rounded,
-                  label: 'Job Radar',
+                  label: copy.navRadar,
                   isActive: currentTab == ArtisanNavTab.radar,
                   onTap: () => _navigateTo(
                     context,
@@ -45,7 +63,7 @@ class ArtisanBottomNav extends StatelessWidget {
                 child: _ArtisanNavItem(
                   key: const Key('artisan_nav_wallet'),
                   icon: Icons.account_balance_wallet_rounded,
-                  label: 'Wallet & Jobs',
+                  label: copy.navWallet,
                   isActive: currentTab == ArtisanNavTab.wallet,
                   onTap: () => _navigateTo(
                     context,
@@ -58,7 +76,7 @@ class ArtisanBottomNav extends StatelessWidget {
                 child: _ArtisanNavItem(
                   key: const Key('artisan_nav_profile'),
                   icon: Icons.person_rounded,
-                  label: 'My Profile',
+                  label: copy.navProfile,
                   isActive: currentTab == ArtisanNavTab.profile,
                   onTap: () => _navigateTo(
                     context,

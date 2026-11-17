@@ -1394,8 +1394,9 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                       ref
                           .read(artisanWalletBalanceProvider.notifier)
                           .update((b) => b - 999.0);
-                      ref.read(guildEliteSubscriptionProvider.notifier).state =
-                          true;
+                      ref
+                          .read(currentArtisanProfileProvider.notifier)
+                          .toggleGuildElite(true);
                       Navigator.of(ctx).pop();
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(

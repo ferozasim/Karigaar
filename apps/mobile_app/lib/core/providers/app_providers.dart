@@ -485,7 +485,7 @@ const ArtisanProfileModel defaultCurrentPartnerProfile = ArtisanProfileModel(
   aadhaarVerified: true,
   kycBadgeLabel: 'Aadhaar & Police Verified',
   tier: GuildTier.masterGuildsman,
-  isGuildElite: true,
+  isGuildElite: false,
   bio:
       'Aadhaar & police verified Master Wireman specializing in 3-phase DB wiring, inverter backups & MCB fault diagnostics.',
   inspectionFee: 249,
@@ -545,7 +545,26 @@ const ArtisanProfileModel defaultCurrentPartnerProfile = ArtisanProfileModel(
 class CurrentArtisanProfileNotifier extends StateNotifier<ArtisanProfileModel> {
   final Ref _ref;
 
-  CurrentArtisanProfileNotifier(this._ref) : super(defaultCurrentPartnerProfile);
+  CurrentArtisanProfileNotifier(this._ref)
+      : super(
+          _ref.read(guildEliteSubscriptionProvider)
+              ? defaultCurrentPartnerProfile.copyWith(
+                  isGuildElite: true,
+                  tier: GuildTier.guildElite,
+                )
+              : defaultCurrentPartnerProfile,
+        ) {
+    _ref.listen<bool>(guildEliteSubscriptionProvider, (prev, next) {
+      if (state.isGuildElite != next) {
+        final updated = state.copyWith(
+          isGuildElite: next,
+          tier: next ? GuildTier.guildElite : GuildTier.masterGuildsman,
+        );
+        state = updated;
+        _syncToDirectory(updated);
+      }
+    });
+  }
 
   void _syncToDirectory(ArtisanProfileModel updated) {
     _ref.read(artisanDirectoryOverridesProvider.notifier).upsertArtisan(updated);

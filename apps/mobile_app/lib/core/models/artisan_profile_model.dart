@@ -249,7 +249,9 @@ class ArtisanProfileModel {
 
   /// Guild tier display label highlighting the sustainable 5% commission floor
   String get guildTierDisplayLabel {
-    if (isGuildElite || tier == GuildTier.guildElite) {
+    if (isGuildElite ||
+        tier == GuildTier.guildElite ||
+        tier == GuildTier.masterGuildsman) {
       return 'Tier 3: Master Guildsman • 5% Commission Floor';
     }
     return tier.label;
