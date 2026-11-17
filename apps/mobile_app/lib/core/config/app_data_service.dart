@@ -26,6 +26,17 @@ class AppDataService {
 
   static CityConfigModel get defaultNandedConfig => _defaultNandedConfig;
 
+  static List<CityConfigModel> getAllRegionalDistricts() =>
+      _cachedDistricts ?? _defaultRegionalDistricts;
+
+  static CityConfigModel getDistrictById(String cityId) {
+    final list = getAllRegionalDistricts();
+    return list.firstWhere(
+      (d) => d.cityId == cityId,
+      orElse: () => _defaultNandedConfig,
+    );
+  }
+
   static Future<CityConfigModel> loadPilotCity() async {
     if (_cachedCity != null) return _cachedCity!;
     try {

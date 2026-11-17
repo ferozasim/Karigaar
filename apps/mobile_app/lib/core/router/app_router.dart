@@ -12,6 +12,8 @@ import '../../features/customer/scoping/service_scoping_screen.dart';
 import '../../features/customer/tracking/live_tracking_screen.dart';
 import '../../features/artisan/radar/artisan_job_radar_screen.dart';
 import '../../features/artisan/active_job/artisan_active_job_screen.dart';
+import '../../features/artisan/profile/artisan_partner_profile_screen.dart';
+import '../../features/artisan/wallet/artisan_wallet_history_screen.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/login',
@@ -95,6 +97,14 @@ final appRouter = GoRouter(
       },
     ),
     GoRoute(
+      path: '/artisan/wallet',
+      builder: (context, state) => const ArtisanWalletHistoryScreen(),
+    ),
+    GoRoute(
+      path: '/artisan/profile',
+      builder: (context, state) => const ArtisanPartnerProfileScreen(),
+    ),
+    GoRoute(
       path: '/karigaar/register',
       builder: (context, state) => const ArtisanRegistrationScreen(),
     ),
@@ -108,6 +118,14 @@ final appRouter = GoRouter(
         final bookingId = state.pathParameters['bookingId'] ?? 'BK_NANDED_8821';
         return ArtisanActiveJobScreen(bookingId: bookingId);
       },
+    ),
+    GoRoute(
+      path: '/karigaar/wallet',
+      builder: (context, state) => const ArtisanWalletHistoryScreen(),
+    ),
+    GoRoute(
+      path: '/karigaar/profile',
+      builder: (context, state) => const ArtisanPartnerProfileScreen(),
     ),
   ],
 );

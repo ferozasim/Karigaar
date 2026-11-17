@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/config/app_data_service.dart';
 import '../../../core/models/artisan_profile_model.dart';
 import '../../../core/providers/app_providers.dart';
 import '../../../core/services/contact_intent_service.dart';
@@ -116,7 +117,7 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                 const SizedBox(height: 24),
 
                 // Craftsmanship Showcase (Portfolio Carousel)
-                _buildCraftsmanshipShowcase(),
+                _buildCraftsmanshipShowcase(artisan),
 
                 const SizedBox(height: 24),
 
@@ -270,44 +271,56 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
           const SizedBox(height: 10),
 
           // Locality & Live Availability Badge
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: AppColors.surfaceSubtle,
-              borderRadius: BorderRadius.circular(9999),
-              border: Border.all(color: AppColors.borderSubtle),
-            ),
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.location_on_rounded, color: AppColors.secondary, size: 15),
-                  const SizedBox(width: 4),
-                  Text(
-                    'Anand Nagar • Within ${artisan.distanceKm} km',
-                    style: AppTypography.labelMd.copyWith(color: AppColors.primary),
+          Builder(
+            builder: (context) {
+              final district = AppDataService.getDistrictById(artisan.cityId);
+              final locMatch = district.localities
+                  .where((l) => l.localityId == artisan.localityId);
+              final localityName = locMatch.isNotEmpty
+                  ? locMatch.first.name
+                  : (district.localities.isNotEmpty
+                      ? district.localities.first.name
+                      : 'Anand Nagar');
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceSubtle,
+                  borderRadius: BorderRadius.circular(9999),
+                  border: Border.all(color: AppColors.borderSubtle),
+                ),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.location_on_rounded, color: AppColors.secondary, size: 15),
+                      const SizedBox(width: 4),
+                      Text(
+                        '$localityName • Within ${artisan.distanceKm} km',
+                        style: AppTypography.labelMd.copyWith(color: AppColors.primary),
+                      ),
+                      const SizedBox(width: 8),
+                      Container(
+                        width: 6,
+                        height: 6,
+                        decoration: const BoxDecoration(
+                          color: AppColors.tertiary,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Available Today',
+                        style: AppTypography.labelSm.copyWith(
+                          color: AppColors.tertiary,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 8),
-                  Container(
-                    width: 6,
-                    height: 6,
-                    decoration: const BoxDecoration(
-                      color: AppColors.tertiary,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    'Available Today',
-                    style: AppTypography.labelSm.copyWith(
-                      color: AppColors.tertiary,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+                ),
+              );
+            },
           ),
 
           const SizedBox(height: 16),
@@ -408,6 +421,10 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
         bg = AppColors.textMuted.withValues(alpha: 0.15);
         fg = AppColors.textMuted;
         break;
+      case KarigaarRoleType.thekedar:
+        bg = AppColors.tertiary.withValues(alpha: 0.15);
+        fg = AppColors.tertiary;
+        break;
     }
 
     return Container(
@@ -459,7 +476,11 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                         : Icons.lock_outline_rounded,
                     size: 18,
                   ),
-                  label: const Text('Call Artisan'),
+                  label: const Text(
+                    'Call Artisan',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.primary,
                     side: const BorderSide(color: AppColors.primary, width: 1.5),
@@ -493,7 +514,11 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                     size: 18,
                     color: Colors.white,
                   ),
-                  label: const Text('WhatsApp Artisan'),
+                  label: const Text(
+                    'WhatsApp Artisan',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF25D366),
                     foregroundColor: Colors.white,
@@ -672,34 +697,53 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
             ],
           ),
           const SizedBox(height: 14),
-          // 4-Pillar Grid
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            childAspectRatio: 2.6,
-            mainAxisSpacing: 10,
-            crossAxisSpacing: 10,
+          // 4-Pillar Adaptive Grid (supports 2.0x text scaling without clipping)
+          Column(
             children: [
-              const _VerificationPod(
-                icon: Icons.badge_rounded,
-                title: 'Govt. ID & Police',
-                subtitle: 'Background Cleared',
+              const IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      child: _VerificationPod(
+                        icon: Icons.badge_rounded,
+                        title: 'Govt. ID & Police',
+                        subtitle: 'Background Cleared',
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: _VerificationPod(
+                        icon: Icons.workspace_premium_rounded,
+                        title: 'NSDC Certified',
+                        subtitle: 'Skill-Tested Grade A',
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              const _VerificationPod(
-                icon: Icons.workspace_premium_rounded,
-                title: 'NSDC Certified',
-                subtitle: 'Skill-Tested Grade A',
-              ),
-              _VerificationPod(
-                icon: Icons.shield_rounded,
-                title: coverTitle,
-                subtitle: 'Damage Protection',
-              ),
-              const _VerificationPod(
-                icon: Icons.build_circle_rounded,
-                title: 'Calibrated Tools',
-                subtitle: 'Tool Audit Passed',
+              const SizedBox(height: 10),
+              IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      child: _VerificationPod(
+                        icon: Icons.shield_rounded,
+                        title: coverTitle,
+                        subtitle: 'Damage Protection',
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    const Expanded(
+                      child: _VerificationPod(
+                        icon: Icons.build_circle_rounded,
+                        title: 'Calibrated Tools',
+                        subtitle: 'Tool Audit Passed',
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -709,14 +753,16 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
   }
 
   Widget _buildSpecializationsSection(ArtisanProfileModel artisan) {
-    final List<String> skills = [
-      '3-Phase Wiring',
-      'Inverter Setup',
-      'MCB Spark Diagnosis',
-      'Modular Switchboards',
-      'Earthing Verification',
-      'Appliance Load Audit',
-    ];
+    final List<String> skills = artisan.specialties.isNotEmpty
+        ? artisan.specialties
+        : const [
+            '3-Phase Wiring',
+            'Inverter Setup',
+            'MCB Spark Diagnosis',
+            'Modular Switchboards',
+            'Earthing Verification',
+            'Appliance Load Audit',
+          ];
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -735,7 +781,7 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                 ),
               ),
               const SizedBox(width: 8),
-              Text('6 Certified', style: AppTypography.labelMd.copyWith(color: AppColors.secondary)),
+              Text('${skills.length} Certified', style: AppTypography.labelMd.copyWith(color: AppColors.secondary)),
             ],
           ),
           const SizedBox(height: 12),
@@ -762,42 +808,65 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
     );
   }
 
-  Widget _buildCraftsmanshipShowcase() {
-    final showcaseItems = [
-      {
-        'title': 'Custom 32A MCB Panel Wiring',
-        'location': 'Anand Nagar, Nanded',
-        'badge': 'Commercial Grade',
-        'duration': 'Completed in 3 hrs',
-        'icon': Icons.electrical_services_rounded,
-      },
-      {
-        'title': 'Inverter & Battery Backup Hub',
-        'location': 'Vazirabad, Nanded',
-        'badge': 'Pure Sine Wave',
-        'duration': 'Zero Downtime',
-        'icon': Icons.battery_charging_full_rounded,
-      },
-      {
-        'title': 'Concealed Copper Conduit Setup',
-        'location': 'CIDCO New Nanded',
-        'badge': 'Laser Aligned',
-        'duration': 'Completed in 1 Day',
-        'icon': Icons.home_repair_service_rounded,
-      },
-    ];
+  Widget _buildCraftsmanshipShowcase(ArtisanProfileModel artisan) {
+    final List<Map<String, dynamic>> showcaseItems =
+        artisan.portfolioItems.isNotEmpty
+            ? artisan.portfolioItems
+                .map((p) => {
+                      'title': p.title,
+                      'location': p.location,
+                      'badge': p.badge,
+                      'duration': p.duration,
+                      'icon': Icons.electrical_services_rounded,
+                    })
+                .toList()
+            : [
+                {
+                  'title': 'Custom 32A MCB Panel Wiring',
+                  'location': 'Anand Nagar, Nanded',
+                  'badge': 'Commercial Grade',
+                  'duration': 'Completed in 3 hrs',
+                  'icon': Icons.electrical_services_rounded,
+                },
+                {
+                  'title': 'Inverter & Battery Backup Hub',
+                  'location': 'Vazirabad, Nanded',
+                  'badge': 'Pure Sine Wave',
+                  'duration': 'Zero Downtime',
+                  'icon': Icons.battery_charging_full_rounded,
+                },
+                {
+                  'title': 'Concealed Copper Conduit Setup',
+                  'location': 'CIDCO New Nanded',
+                  'badge': 'Laser Aligned',
+                  'duration': 'Completed in 1 Day',
+                  'icon': Icons.home_repair_service_rounded,
+                },
+              ];
+
+    final viewAllCount =
+        artisan.portfolioItems.isNotEmpty ? artisan.portfolioItems.length : 38;
+
+    final double textScale =
+        MediaQuery.textScalerOf(context).scale(1.0).clamp(1.0, 2.5);
+    final double showcaseHeight = 180 + (textScale - 1.0) * 64;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Column(
+          child: SizedBox(
+            width: double.infinity,
+            child: Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 8,
+              runSpacing: 4,
+              children: [
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Text('Craftsmanship Showcase', style: AppTypography.headlineSm.copyWith(fontSize: 17)),
                     Text(
@@ -806,15 +875,14 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(width: 8),
-              Text('View All (38)', style: AppTypography.labelMd.copyWith(color: AppColors.secondary)),
-            ],
+                Text('View All ($viewAllCount)', style: AppTypography.labelMd.copyWith(color: AppColors.secondary)),
+              ],
+            ),
           ),
         ),
         const SizedBox(height: 12),
         SizedBox(
-          height: 180,
+          height: showcaseHeight,
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             scrollDirection: Axis.horizontal,
@@ -886,26 +954,31 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                         ],
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            item['title'] as String,
-                            style: AppTypography.headlineSm.copyWith(fontSize: 13),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            item['location'] as String,
-                            style: AppTypography.bodySm.copyWith(
-                              color: AppColors.textMuted,
-                              fontSize: 11,
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              item['title'] as String,
+                              style: AppTypography.headlineSm.copyWith(fontSize: 13),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 2),
+                            Text(
+                              item['location'] as String,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTypography.bodySm.copyWith(
+                                color: AppColors.textMuted,
+                                fontSize: 11,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -984,20 +1057,21 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
+          SizedBox(
+            width: double.infinity,
+            child: Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 8,
+              runSpacing: 4,
+              children: [
+                Text(
                   'Recent Client Feedback',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                   style: AppTypography.headlineSm.copyWith(fontSize: 17),
                 ),
-              ),
-              const SizedBox(width: 8),
-              Text('Verified Bookings', style: AppTypography.labelMd.copyWith(color: AppColors.secondary)),
-            ],
+                Text('Verified Bookings', style: AppTypography.labelMd.copyWith(color: AppColors.secondary)),
+              ],
+            ),
           ),
           const SizedBox(height: 12),
           _buildReviewCard(
