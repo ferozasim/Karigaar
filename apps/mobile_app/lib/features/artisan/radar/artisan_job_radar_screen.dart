@@ -10,6 +10,7 @@ import '../../../core/services/radar_broadcast_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../shared/widgets/mode_switcher_pill.dart';
+import '../widgets/artisan_bottom_nav.dart';
 
 class ArtisanJobRadarScreen extends ConsumerStatefulWidget {
   const ArtisanJobRadarScreen({super.key});
@@ -599,41 +600,7 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: Container(
-        height: 64,
-        decoration: const BoxDecoration(
-          color: AppColors.surfaceRaised,
-          border: Border(top: BorderSide(color: AppColors.borderSubtle)),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: _buildArtisanNavItem(
-                icon: Icons.radar_rounded,
-                label: 'Job Radar',
-                isActive: true,
-                onTap: () {},
-              ),
-            ),
-            Expanded(
-              child: _buildArtisanNavItem(
-                icon: Icons.build_circle_outlined,
-                label: 'Active Job & Bill',
-                isActive: false,
-                onTap: () => context.push('/artisan/active-job/BK_NANDED_8821'),
-              ),
-            ),
-            Expanded(
-              child: _buildArtisanNavItem(
-                icon: Icons.account_balance_wallet_outlined,
-                label: 'Guild Wallet',
-                isActive: false,
-                onTap: () => context.push('/artisan/active-job/BK_NANDED_8821'),
-              ),
-            ),
-          ],
-        ),
-      ),
+      bottomNavigationBar: const ArtisanBottomNav(currentTab: ArtisanNavTab.radar),
     );
   }
 
@@ -812,38 +779,6 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
           },
         );
       },
-    );
-  }
-
-  Widget _buildArtisanNavItem({
-    required IconData icon,
-    required String label,
-    required bool isActive,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            size: 22,
-            color: isActive ? AppColors.secondary : AppColors.textSubtle,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: AppTypography.labelSm.copyWith(
-              color: isActive ? AppColors.secondary : AppColors.textSubtle,
-              fontSize: 11,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

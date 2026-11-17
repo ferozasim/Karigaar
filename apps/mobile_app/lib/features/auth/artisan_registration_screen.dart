@@ -257,6 +257,55 @@ class _ArtisanRegistrationScreenState
         );
       return;
     }
+
+    final selectedTrade = _all10LaunchTrades.firstWhere(
+      (t) => t['id'] == _selectedTradeId,
+      orElse: () => _all10LaunchTrades.first,
+    );
+    final selectedDistrict = ref.read(selectedDistrictProvider);
+    final selectedLocality = ref.read(selectedLocalityProvider);
+    final acctDigits = _accountNoController.text.replaceAll(RegExp(r'\s+'), '');
+    final maskedAcct = acctDigits.length >= 4
+        ? '•••• ${acctDigits.substring(acctDigits.length - 4)}'
+        : '•••• 2104';
+
+    final tools = <String>[
+      if (_toolMultimeter) 'Digital True-RMS Multimeter & Phase Tester',
+      if (_toolInsulatedSet) '1000V Insulated Screwdrivers & Pliers Set',
+      if (_toolDrillGoggles) 'Heavy Duty Rotary Hammer Drill & Safety Goggles',
+      if (_toolDropCloth) 'Canvas Drop-Cloth & Sawdust Cleanup Vacuum Bag',
+    ];
+
+    final yearsExp = switch (_selectedExperience) {
+      '1 - 3 Years' => 2,
+      '3 - 5 Years' => 4,
+      '5 - 10 Years' => 8,
+      '10+ Master' => 12,
+      _ => 4,
+    };
+
+    ref.read(currentArtisanProfileProvider.notifier).syncFromRegistration(
+          name: name,
+          phone: phone.startsWith('+91') ? phone : '+91$phone',
+          primaryTradeId: _selectedTradeId,
+          tradeTitle: '${selectedTrade['name']} (${selectedTrade['subtitle']})',
+          roleType: _selectedRoleType,
+          experienceTierLabel: _selectedExperience,
+          yearsExperience: yearsExp,
+          cityId: selectedDistrict.cityId,
+          localityId: selectedLocality.localityId,
+          serviceLocalityIds: [selectedLocality.localityId],
+          specialties: List<String>.from(selectedTrade['specialties'] as List),
+          verifiedTools: tools,
+          maskedAccountNumber: maskedAcct,
+          ifscCode: _ifscController.text.trim().isNotEmpty
+              ? _ifscController.text.trim()
+              : 'HDFC0002104',
+          upiId: _upiController.text.trim().isNotEmpty
+              ? _upiController.text.trim()
+              : 'ramesh.karigaar@okaxis',
+        );
+
     ref.read(userRoleProvider.notifier).state = UserRole.artisan;
     try {
       context.push('/otp-verify', extra: phone);
@@ -1122,9 +1171,12 @@ class _ArtisanRegistrationScreenState
                   child: Row(
                     children: [
                       Text(
-                        role == KarigaarRoleType.headMistry
-                            ? '👑'
-                            : (role == KarigaarRoleType.skilledKarigaar ? '🔧' : '🤝'),
+                        switch (role) {
+                          KarigaarRoleType.headMistry => '👑',
+                          KarigaarRoleType.skilledKarigaar => '🔧',
+                          KarigaarRoleType.helperAssistant => '🤝',
+                          KarigaarRoleType.thekedar => '👷',
+                        },
                         style: const TextStyle(fontSize: 20),
                       ),
                       const SizedBox(width: 12),

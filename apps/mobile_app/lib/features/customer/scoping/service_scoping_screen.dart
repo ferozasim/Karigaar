@@ -592,11 +592,12 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
           ...KarigaarRoleType.values.map((role) {
             final isSelected = _selectedRoleTier == role;
             final localizedTitle = role.getLocalizedTitle(trade.tradeId);
-            final multText = role == KarigaarRoleType.headMistry
-                ? '1.25x (+25% Master Tier)'
-                : (role == KarigaarRoleType.skilledKarigaar
-                    ? '1.0x (Standard Rate)'
-                    : '0.65x (-35% Helper Tier)');
+            final multText = switch (role) {
+              KarigaarRoleType.headMistry => '1.25x (+25% Master Tier)',
+              KarigaarRoleType.skilledKarigaar => '1.0x (Standard Rate)',
+              KarigaarRoleType.helperAssistant => '0.65x (-35% Helper Tier)',
+              KarigaarRoleType.thekedar => '1.35x (+35% Team Contractor)',
+            };
 
             return Padding(
               padding: const EdgeInsets.only(bottom: 8),

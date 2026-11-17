@@ -499,6 +499,10 @@ class CustomerHomeScreen extends ConsumerWidget {
         bg = AppColors.textMuted.withValues(alpha: 0.15);
         fg = AppColors.textMuted;
         break;
+      case KarigaarRoleType.thekedar:
+        bg = AppColors.tertiary.withValues(alpha: 0.15);
+        fg = AppColors.tertiary;
+        break;
     }
 
     return Container(

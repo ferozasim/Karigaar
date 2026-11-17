@@ -116,7 +116,7 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                 const SizedBox(height: 24),
 
                 // Craftsmanship Showcase (Portfolio Carousel)
-                _buildCraftsmanshipShowcase(),
+                _buildCraftsmanshipShowcase(artisan),
 
                 const SizedBox(height: 24),
 
@@ -407,6 +407,10 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
       case KarigaarRoleType.helperAssistant:
         bg = AppColors.textMuted.withValues(alpha: 0.15);
         fg = AppColors.textMuted;
+        break;
+      case KarigaarRoleType.thekedar:
+        bg = AppColors.tertiary.withValues(alpha: 0.15);
+        fg = AppColors.tertiary;
         break;
     }
 
@@ -709,14 +713,16 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
   }
 
   Widget _buildSpecializationsSection(ArtisanProfileModel artisan) {
-    final List<String> skills = [
-      '3-Phase Wiring',
-      'Inverter Setup',
-      'MCB Spark Diagnosis',
-      'Modular Switchboards',
-      'Earthing Verification',
-      'Appliance Load Audit',
-    ];
+    final List<String> skills = artisan.specialties.isNotEmpty
+        ? artisan.specialties
+        : const [
+            '3-Phase Wiring',
+            'Inverter Setup',
+            'MCB Spark Diagnosis',
+            'Modular Switchboards',
+            'Earthing Verification',
+            'Appliance Load Audit',
+          ];
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -735,7 +741,7 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                 ),
               ),
               const SizedBox(width: 8),
-              Text('6 Certified', style: AppTypography.labelMd.copyWith(color: AppColors.secondary)),
+              Text('${skills.length} Certified', style: AppTypography.labelMd.copyWith(color: AppColors.secondary)),
             ],
           ),
           const SizedBox(height: 12),
@@ -762,30 +768,44 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
     );
   }
 
-  Widget _buildCraftsmanshipShowcase() {
-    final showcaseItems = [
-      {
-        'title': 'Custom 32A MCB Panel Wiring',
-        'location': 'Anand Nagar, Nanded',
-        'badge': 'Commercial Grade',
-        'duration': 'Completed in 3 hrs',
-        'icon': Icons.electrical_services_rounded,
-      },
-      {
-        'title': 'Inverter & Battery Backup Hub',
-        'location': 'Vazirabad, Nanded',
-        'badge': 'Pure Sine Wave',
-        'duration': 'Zero Downtime',
-        'icon': Icons.battery_charging_full_rounded,
-      },
-      {
-        'title': 'Concealed Copper Conduit Setup',
-        'location': 'CIDCO New Nanded',
-        'badge': 'Laser Aligned',
-        'duration': 'Completed in 1 Day',
-        'icon': Icons.home_repair_service_rounded,
-      },
-    ];
+  Widget _buildCraftsmanshipShowcase(ArtisanProfileModel artisan) {
+    final List<Map<String, dynamic>> showcaseItems =
+        artisan.portfolioItems.isNotEmpty
+            ? artisan.portfolioItems
+                .map((p) => {
+                      'title': p.title,
+                      'location': p.location,
+                      'badge': p.badge,
+                      'duration': p.duration,
+                      'icon': Icons.electrical_services_rounded,
+                    })
+                .toList()
+            : [
+                {
+                  'title': 'Custom 32A MCB Panel Wiring',
+                  'location': 'Anand Nagar, Nanded',
+                  'badge': 'Commercial Grade',
+                  'duration': 'Completed in 3 hrs',
+                  'icon': Icons.electrical_services_rounded,
+                },
+                {
+                  'title': 'Inverter & Battery Backup Hub',
+                  'location': 'Vazirabad, Nanded',
+                  'badge': 'Pure Sine Wave',
+                  'duration': 'Zero Downtime',
+                  'icon': Icons.battery_charging_full_rounded,
+                },
+                {
+                  'title': 'Concealed Copper Conduit Setup',
+                  'location': 'CIDCO New Nanded',
+                  'badge': 'Laser Aligned',
+                  'duration': 'Completed in 1 Day',
+                  'icon': Icons.home_repair_service_rounded,
+                },
+              ];
+
+    final viewAllCount =
+        artisan.portfolioItems.isNotEmpty ? artisan.portfolioItems.length : 38;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -808,7 +828,7 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                 ),
               ),
               const SizedBox(width: 8),
-              Text('View All (38)', style: AppTypography.labelMd.copyWith(color: AppColors.secondary)),
+              Text('View All ($viewAllCount)', style: AppTypography.labelMd.copyWith(color: AppColors.secondary)),
             ],
           ),
         ),

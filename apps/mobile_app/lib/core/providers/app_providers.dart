@@ -5,6 +5,7 @@ import '../models/city_model.dart';
 import '../models/trade_model.dart';
 import '../models/booking_model.dart';
 import '../models/artisan_profile_model.dart';
+import '../models/wallet_settlement_entry.dart';
 import '../models/telemetry_model.dart';
 import '../models/radar_broadcast_model.dart';
 import '../models/audio_memo_model.dart';
@@ -65,15 +66,79 @@ final selectedLocalityProvider = StateProvider<LocalityModel>((ref) {
   );
 });
 
-/// Sample Nanded Verified Master Craftsmen
-/// Sample Regional Corridor Verified Master Craftsmen
-final topArtisansProvider = Provider<List<ArtisanProfileModel>>((ref) {
-  final selectedDistrict = ref.watch(selectedDistrictProvider);
-  return AppDataService.getArtisansForDistrict(selectedDistrict.cityId);
+/// Partner Portal Language Toggle ('en' | 'hi' | 'mr')
+final partnerLanguageProvider = StateProvider<String>((ref) => 'en');
+
+/// Mutable District Directory Overrides/Additions synced from Partner Onboarding & Profile Edits.
+/// Initially empty so default per-district sample counts remain unchanged until edited/registered.
+class ArtisanDirectoryNotifier
+    extends StateNotifier<Map<String, ArtisanProfileModel>> {
+  ArtisanDirectoryNotifier() : super(const {});
+
+  void upsertArtisan(ArtisanProfileModel profile) {
+    state = {
+      ...state,
+      profile.artisanId: profile,
+    };
+  }
+
+  void reset() {
+    state = const {};
+  }
+}
+
+final artisanDirectoryOverridesProvider = StateNotifierProvider<
+    ArtisanDirectoryNotifier, Map<String, ArtisanProfileModel>>((ref) {
+  return ArtisanDirectoryNotifier();
 });
 
-/// Artisan Profile by ID Provider
-final artisanByIdProvider = Provider.family<ArtisanProfileModel, String>((ref, id) {
+/// Sample Regional Corridor Verified Master Craftsmen + Live Synced Partner Overrides
+final topArtisansProvider = Provider<List<ArtisanProfileModel>>((ref) {
+  final selectedDistrict = ref.watch(selectedDistrictProvider);
+  final overrides = ref.watch(artisanDirectoryOverridesProvider);
+  final baseList = AppDataService.getArtisansForDistrict(selectedDistrict.cityId);
+
+  if (overrides.isEmpty) {
+    return baseList;
+  }
+
+  final merged = <ArtisanProfileModel>[];
+  final seenIds = <String>{};
+
+  for (final artisan in baseList) {
+    final override = overrides[artisan.artisanId];
+    if (override != null) {
+      if (override.cityId == selectedDistrict.cityId) {
+        merged.add(override);
+      }
+      seenIds.add(artisan.artisanId);
+    } else {
+      merged.add(artisan);
+      seenIds.add(artisan.artisanId);
+    }
+  }
+
+  for (final entry in overrides.values) {
+    if (!seenIds.contains(entry.artisanId) &&
+        entry.cityId == selectedDistrict.cityId) {
+      merged.add(entry);
+    }
+  }
+
+  return merged;
+});
+
+/// Artisan Profile by ID Provider (checks live directory overrides & current partner first)
+final artisanByIdProvider =
+    Provider.family<ArtisanProfileModel, String>((ref, id) {
+  final overrides = ref.watch(artisanDirectoryOverridesProvider);
+  if (overrides.containsKey(id)) {
+    return overrides[id]!;
+  }
+  final currentPartner = ref.watch(currentArtisanProfileProvider);
+  if (currentPartner.artisanId == id) {
+    return currentPartner;
+  }
   final all = AppDataService.getAllSampleArtisans();
   return all.firstWhere(
     (a) => a.artisanId == id,
@@ -400,3 +465,346 @@ final contactUnlockProvider =
 
 /// Feature F-24: Guild Elite Partner Subscription Provider
 final guildEliteSubscriptionProvider = StateProvider<bool>((ref) => false);
+
+/// Default authenticated Partner Profile for `/artisan/profile` & live directory sync (Ticket T-10)
+const ArtisanProfileModel defaultCurrentPartnerProfile = ArtisanProfileModel(
+  artisanId: 'art_partner_self',
+  guildId: 'KG-ND-2026-089',
+  name: 'Ramesh Chandra Sharma',
+  phone: '+919822012345',
+  primaryTradeId: 'trade_electrician',
+  tradeTitle: 'Master Electrician',
+  roleType: KarigaarRoleType.headMistry,
+  yearsExperience: 8,
+  experienceTierLabel: '5 - 10 Years',
+  rating: 4.9,
+  reviewCount: 142,
+  distanceKm: 1.0,
+  policeVerified: true,
+  toolAuditPassed: true,
+  aadhaarVerified: true,
+  kycBadgeLabel: 'Aadhaar & Police Verified',
+  tier: GuildTier.masterGuildsman,
+  isGuildElite: true,
+  bio:
+      'Aadhaar & police verified Master Wireman specializing in 3-phase DB wiring, inverter backups & MCB fault diagnostics.',
+  inspectionFee: 249,
+  dailyDihadiRate: 900,
+  workMode: 'Both Visit & Daily Dihadi',
+  cityId: 'city_nanded_01',
+  localityId: 'loc_anand_nagar',
+  serviceLocalityIds: ['loc_anand_nagar', 'loc_vazirabad', 'loc_cidco'],
+  specialties: [
+    '3-Phase Wiring',
+    'Inverter Setup',
+    'MCB Fault Diagnostics',
+    'Concealed Copper Conduit',
+    'Earthing Audit',
+  ],
+  verifiedTools: [
+    'True-RMS Multimeter',
+    '1000V Insulated Toolset',
+    'Rotary Hammer Drill',
+    'Canvas Drop-Cloth & Sawdust Vacuum',
+  ],
+  portfolioItems: [
+    PortfolioWorkItem(
+      id: 'pf_01',
+      title: '32A 3-Phase Distribution Board',
+      location: 'Anand Nagar, Nanded',
+      badge: 'Commercial Grade',
+      duration: 'Completed in 3 hrs',
+    ),
+    PortfolioWorkItem(
+      id: 'pf_02',
+      title: 'Pure Sine Inverter & Battery Hub',
+      location: 'Vazirabad, Nanded',
+      badge: 'Zero Downtime',
+      duration: 'Completed in 2 hrs',
+    ),
+    PortfolioWorkItem(
+      id: 'pf_03',
+      title: 'Concealed Conduit & Earthing Pit',
+      location: 'CIDCO New Nanded',
+      badge: 'Laser Aligned',
+      duration: 'Completed in 1 Day',
+    ),
+  ],
+  isOnline: true,
+  totalJobsCompleted: 142,
+  cleanlinessScore: 4.9,
+  onTimeArrivalPercent: 98,
+  bankName: 'HDFC Bank',
+  maskedAccountNumber: '•••• 2104',
+  ifscCode: 'HDFC0002104',
+  upiId: 'ramesh.karigaar@okaxis',
+  securityReserveAmount: 2000.0,
+);
+
+/// Notifier managing the Partner's own profile & syncing edits live to district directory
+class CurrentArtisanProfileNotifier extends StateNotifier<ArtisanProfileModel> {
+  final Ref _ref;
+
+  CurrentArtisanProfileNotifier(this._ref) : super(defaultCurrentPartnerProfile);
+
+  void _syncToDirectory(ArtisanProfileModel updated) {
+    _ref.read(artisanDirectoryOverridesProvider.notifier).upsertArtisan(updated);
+  }
+
+  void updateProfileAndRateCard({
+    String? name,
+    String? primaryTradeId,
+    String? tradeTitle,
+    KarigaarRoleType? roleType,
+    int? yearsExperience,
+    String? experienceTierLabel,
+    int? inspectionFee,
+    int? dailyDihadiRate,
+    String? workMode,
+    String? cityId,
+    String? localityId,
+    List<String>? serviceLocalityIds,
+    List<String>? specialties,
+    String? bio,
+  }) {
+    final updated = state.copyWith(
+      name: name,
+      primaryTradeId: primaryTradeId,
+      tradeTitle: tradeTitle,
+      roleType: roleType,
+      yearsExperience: yearsExperience,
+      experienceTierLabel: experienceTierLabel,
+      inspectionFee: inspectionFee,
+      dailyDihadiRate: dailyDihadiRate,
+      workMode: workMode,
+      cityId: cityId,
+      localityId: localityId ??
+          (serviceLocalityIds != null && serviceLocalityIds.isNotEmpty
+              ? serviceLocalityIds.first
+              : state.localityId),
+      serviceLocalityIds: serviceLocalityIds,
+      specialties: specialties,
+      bio: bio,
+    );
+    state = updated;
+    _syncToDirectory(updated);
+  }
+
+  void addPortfolioPhoto(PortfolioWorkItem item) {
+    final updated = state.copyWith(
+      portfolioItems: [item, ...state.portfolioItems],
+    );
+    state = updated;
+    _syncToDirectory(updated);
+  }
+
+  void toggleGuildElite(bool active) {
+    final updated = state.copyWith(
+      isGuildElite: active,
+      tier: active ? GuildTier.guildElite : GuildTier.masterGuildsman,
+    );
+    state = updated;
+    _ref.read(guildEliteSubscriptionProvider.notifier).state = active;
+    _syncToDirectory(updated);
+  }
+
+  void syncFromRegistration({
+    required String name,
+    required String phone,
+    required String primaryTradeId,
+    required String tradeTitle,
+    required KarigaarRoleType roleType,
+    required String experienceTierLabel,
+    int? yearsExperience,
+    int? inspectionFee,
+    int? dailyDihadiRate,
+    String? workMode,
+    required String cityId,
+    required String localityId,
+    List<String>? serviceLocalityIds,
+    List<String>? specialties,
+    List<String>? verifiedTools,
+    String? bankName,
+    String? maskedAccountNumber,
+    String? ifscCode,
+    String? upiId,
+    String? bio,
+  }) {
+    final updated = state.copyWith(
+      name: name,
+      phone: phone,
+      primaryTradeId: primaryTradeId,
+      tradeTitle: tradeTitle,
+      roleType: roleType,
+      experienceTierLabel: experienceTierLabel,
+      yearsExperience: yearsExperience,
+      inspectionFee: inspectionFee,
+      dailyDihadiRate: dailyDihadiRate,
+      workMode: workMode,
+      cityId: cityId,
+      localityId: localityId,
+      serviceLocalityIds: serviceLocalityIds ?? [localityId],
+      specialties: specialties,
+      verifiedTools: verifiedTools,
+      bankName: bankName,
+      maskedAccountNumber: maskedAccountNumber,
+      ifscCode: ifscCode,
+      upiId: upiId,
+      bio: bio,
+    );
+    state = updated;
+    _syncToDirectory(updated);
+  }
+}
+
+final currentArtisanProfileProvider =
+    StateNotifierProvider<CurrentArtisanProfileNotifier, ArtisanProfileModel>(
+        (ref) {
+  return CurrentArtisanProfileNotifier(ref);
+});
+
+/// Completed Job Settlement Ledger & IMPS Withdrawal History (Ticket T-10)
+class WalletSettlementLedgerNotifier
+    extends StateNotifier<List<WalletSettlementEntry>> {
+  WalletSettlementLedgerNotifier() : super(_initialLedgerEntries);
+
+  static const List<WalletSettlementEntry> _initialLedgerEntries = [
+    WalletSettlementEntry(
+      id: 'stl_01',
+      bookingId: 'BK_NANDED_8819',
+      jobTitle: '3-Phase MCB Distribution Box Upgrade',
+      customerLocality: 'Anand Nagar, Nanded',
+      completedAtLabel: 'Today, 2:15 PM',
+      laborAmount: 900.0,
+      partsPassThrough: 640.0,
+      commissionRate: 0.05,
+      commissionAmount: 45.0,
+      netPayout: 1495.0,
+      isCredit: true,
+      isImpsWithdrawal: false,
+      statusLabel: 'Settled (5% Elite)',
+      isToday: true,
+      isThisWeek: true,
+    ),
+    WalletSettlementEntry(
+      id: 'stl_02',
+      bookingId: 'BK_NANDED_8814',
+      jobTitle: 'Inverter Battery Backup & Relay Fix',
+      customerLocality: 'Vazirabad, Nanded',
+      completedAtLabel: 'Today, 10:30 AM',
+      laborAmount: 400.0,
+      partsPassThrough: 0.0,
+      commissionRate: 0.05,
+      commissionAmount: 20.0,
+      netPayout: 380.0,
+      isCredit: true,
+      isImpsWithdrawal: false,
+      statusLabel: 'Settled (5% Elite)',
+      isToday: true,
+      isThisWeek: true,
+    ),
+    WalletSettlementEntry(
+      id: 'stl_03',
+      bookingId: 'BK_NANDED_8792',
+      jobTitle: 'Concealed Copper Conduit & Earthing',
+      customerLocality: 'CIDCO New Nanded',
+      completedAtLabel: 'Yesterday, 5:45 PM',
+      laborAmount: 1500.0,
+      partsPassThrough: 820.0,
+      commissionRate: 0.12,
+      commissionAmount: 180.0,
+      netPayout: 2140.0,
+      isCredit: true,
+      isImpsWithdrawal: false,
+      statusLabel: 'Settled (12% Pro)',
+      isToday: false,
+      isThisWeek: true,
+    ),
+    WalletSettlementEntry(
+      id: 'stl_04',
+      bookingId: 'PAYOUT_8801',
+      jobTitle: 'Instant IMPS Transfer to HDFC •••• 2104',
+      customerLocality: 'Guild Vault Payout',
+      completedAtLabel: '2 days ago',
+      laborAmount: 0.0,
+      partsPassThrough: 0.0,
+      commissionRate: 0.0,
+      commissionAmount: 0.0,
+      netPayout: 2100.0,
+      isCredit: false,
+      isImpsWithdrawal: true,
+      statusLabel: 'IMPS Transferred',
+      bankReference: 'RRN6194028810',
+      isToday: false,
+      isThisWeek: true,
+    ),
+    WalletSettlementEntry(
+      id: 'stl_05',
+      bookingId: 'BK_NANDED_8760',
+      jobTitle: 'Smart Sub-Meter & Voltage Stabilizer',
+      customerLocality: 'Taroda Naka, Nanded',
+      completedAtLabel: '3 days ago',
+      laborAmount: 1000.0,
+      partsPassThrough: 450.0,
+      commissionRate: 0.12,
+      commissionAmount: 120.0,
+      netPayout: 1330.0,
+      isCredit: true,
+      isImpsWithdrawal: false,
+      statusLabel: 'Settled (12% Pro)',
+      isToday: false,
+      isThisWeek: true,
+    ),
+  ];
+
+  void recordImpsWithdrawal({
+    required double amount,
+    required String bankLabel,
+    required String bankReference,
+  }) {
+    final entry = WalletSettlementEntry(
+      id: 'imps_${DateTime.now().millisecondsSinceEpoch}',
+      bookingId: 'PAYOUT_${DateTime.now().millisecondsSinceEpoch % 10000}',
+      jobTitle: 'Instant IMPS Transfer to $bankLabel',
+      customerLocality: 'Guild Vault Payout',
+      completedAtLabel: 'Just now',
+      laborAmount: 0.0,
+      partsPassThrough: 0.0,
+      commissionRate: 0.0,
+      commissionAmount: 0.0,
+      netPayout: amount,
+      isCredit: false,
+      isImpsWithdrawal: true,
+      statusLabel: 'IMPS Transferred',
+      bankReference: bankReference,
+      isToday: true,
+      isThisWeek: true,
+    );
+    state = [entry, ...state];
+  }
+
+  void recordJobSettlement(WalletSettlementEntry entry) {
+    state = [entry, ...state];
+  }
+}
+
+final walletSettlementLedgerProvider = StateNotifierProvider<
+    WalletSettlementLedgerNotifier, List<WalletSettlementEntry>>((ref) {
+  return WalletSettlementLedgerNotifier();
+});
+
+/// Derived Today's Earnings from Completed Job Credits
+final todayEarningsProvider = Provider<double>((ref) {
+  final entries = ref.watch(walletSettlementLedgerProvider);
+  return entries
+      .where((e) => e.isCredit && e.isToday)
+      .fold<double>(0.0, (sum, e) => sum + e.netPayout);
+});
+
+/// Derived Weekly Earnings from Completed Job Credits
+final weeklyEarningsProvider = Provider<double>((ref) {
+  final entries = ref.watch(walletSettlementLedgerProvider);
+  return entries
+      .where((e) => e.isCredit && e.isThisWeek)
+      .fold<double>(0.0, (sum, e) => sum + e.netPayout);
+});
