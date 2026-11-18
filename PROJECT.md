@@ -745,7 +745,7 @@ Karigaar_app/
 | **T-09** | **Strict Homeowner vs. Karigaar UI & Route Isolation + Path A Monetization** | `F-47` | `feat/T-09-path-a-monetization-guild-tiers` | ✅ **CLOSED & IN `main`** | `4cac530` / PR #4 `31efecf` (GoRouter role guards, escrow lock, Guild Elite 5% floor) |
 | **T-10** | **Karigaar Partner Profile (`/artisan/profile`), Standalone Wallet (`/artisan/wallet`) & 3-Tab Bottom Nav** | `F-24`–`F-27`, `F-48` | `feat/T-10-karigaar-partner-profile-wallet` | ✅ **CLOSED & IN `main`** | `d96c914`, `f6a5309`, `63540ee` / PR #5 `a08f830` (27 T-10 tests passing, 0 lint/analysis issues) |
 | **T-11** | **Dual-Mode Firebase (`karigaar-ba812`) + Local Fallback Repositories** | `F-49` | `feat/T-11-firebase-firestore-backend` | ✅ **DELIVERED ON FEATURE BRANCH** | `89759ad`: Firestore/local repository contracts for `users`, `artisans`, `bookings`, `mandates`, and `wallets`; failover, 9 T-11 tests, and 360 mobile regressions passing |
-| **T-12** | **Stage 1B Backend: Cloud Functions & Webhook Gateways (WhatsApp, Razorpay, Telephony)** | `F-49` | `feat/T-12-cloud-functions-webhooks` | 📋 **PENDING** | Serverless webhook handlers for Meta WA v21.0, Razorpay AutoPay/IMPS, and virtual DID proxy |
+| **T-12** | **Stage 1B Backend: Cloud Functions & Webhook Gateways (WhatsApp, Razorpay, Telephony)** | `F-49` | `feat/T-12-cloud-functions-webhooks` | 🚀 **PUSHED — AWAITING PR MERGE** | `999b90e`: Firebase Functions v2 for Meta v21 template delivery and signed receipts, HMAC-verified idempotent Razorpay callbacks, signed telephony callbacks; provider setup documented |
 | **T-13** | **Admin Dispute Arbitration Workbench, Warranty Underwriting Reserve Pool & Dispute Ops** | `F-08`, `F-10`, `F-11`, `F-25`, `F-35`, `F-36`, `F-50` | `feat/T-13-multimodal-scoping-dispute-ops` | 📋 **PENDING** | 30% warranty reserve pool, CSAT ratings sheet, and Admin dispute claim queue |
 
 ---
@@ -822,7 +822,7 @@ flowchart TD
 - **Ticket T-11 (`feat/T-11-firebase-firestore-backend`)**:
   - Delivered Firestore repository contracts and serializers for `users`, `artisans`, `bookings`, `mandates`, and `wallets`, plus seeded in-memory equivalents, Riverpod DI, and runtime failover when Firebase is unavailable. `firestore.rules` now includes mandate and wallet-ledger access controls. All 360 mobile tests run without Firebase credentials; the 9 new T-11 tests validate local behavior, failover, and schema ownership fields.
 - **Ticket T-12 (`feat/T-12-cloud-functions-webhooks`)**:
-  - Serverless Cloud Functions / API webhook gateways for Meta WhatsApp Cloud API v21.0 (`auth_otp`, `dispatch_alert`, `daily_settlement_slip` + delivery receipts), Razorpay UPI AutoPay (`₹99` mandate hold/capture/release) & RazorpayX IMPS (`₹2,000` reserve guard), and Exotel/Twilio masked virtual DID (`+91-11-4084-2190`) session binding.
+  - Implemented Firebase Functions v2 for allow-listed Meta WhatsApp v21 template sending and signed delivery receipts, HMAC-verified idempotent Razorpay event intake, and signed masked-telephony session callbacks. Focused HMAC tests pass. Configure provider secrets and callback URLs before live traffic; live UPI mandate creation/capture, RazorpayX IMPS submission, and number provisioning remain provider-account integration work.
 
 #### 5. Ticket T-13: Multi-Modal Scoping (15s Voice Memo & Slot Picker), Path A/B Monetization & Admin Warranty/Dispute Workbench (`feat/T-13-multimodal-scoping-dispute-ops`)
 - **Multi-Modal Scoping & Seasonal Bundles (`F-08`, `F-10`, `F-11`)**:

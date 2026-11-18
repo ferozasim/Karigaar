@@ -4,7 +4,7 @@
 
 | Track ID | Type | Status | Phase | Dependencies | Scope / Ticket |
 |---|---|---|---|---|---|
-| [cloud-webhooks_20261117](tracks/cloud-webhooks_20261117/) | feature | pending | 0/3 | `firebase-backend_20261117` | Ticket T-12: Serverless Webhook Gateways (WhatsApp v21.0, Razorpay AutoPay/IMPS, Telephony DID proxy) |
+| [cloud-webhooks_20261117](tracks/cloud-webhooks_20261117/) | feature | pushed, awaiting PR merge | 3/3 | `firebase-backend_20261117`, `999b90e` | Ticket T-12: Firebase Functions v2 gateways for WhatsApp, Razorpay callbacks, and masked telephony status |
 | [warranty-disputes_20261117](tracks/warranty-disputes_20261117/) | feature | pending | 0/3 | `cloud-webhooks_20261117` | Ticket T-13: Admin Dispute Arbitration Workbench, Warranty Reserve Pool & CSAT Dispute Queue |
 
 ## Completed Tracks (Historical Milestone Baselines)

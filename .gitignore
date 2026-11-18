@@ -69,6 +69,7 @@ apps/mobile_app/.flutter-plugins-dependencies
 
 # Firebase & Emulators
 .firebase/
+functions/lib/
 firebase-debug.log*
 firestore-debug.log*
 ui-debug.log*
