@@ -1,0 +1,21 @@
+{
+  "@@locale": "en",
+  "languageName": "English",
+  "languageSetting": "App language",
+  "chooseLanguage": "Choose your language",
+  "english": "English",
+  "hindi": "हिन्दी",
+  "marathi": "मराठी",
+  "searchServices": "Search by job, material, or trade",
+  "browseServices": "Browse services",
+  "allTrades": "All services",
+  "explore": "Explore",
+  "bookings": "Bookings",
+  "messages": "Messages",
+  "profile": "Profile",
+  "quickServiceSearch": "Find a service",
+  "selectServicePrompt": "What do you need help with? Search a task like tiles, granite, or plumbing.",
+  "inspectionWarranty": "Inspection ₹{fee} • {days} day warranty",
+  "@inspectionWarranty": {"placeholders": {"fee": {}, "days": {}}},
+  "noServicesFound": "No matching service found. Try another task or trade."
+}

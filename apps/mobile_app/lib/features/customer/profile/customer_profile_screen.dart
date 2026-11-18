@@ -6,6 +6,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../shared/widgets/locality_selector_sheet.dart';
 import '../../shared/widgets/trust_shield_badge.dart';
+import '../../shared/widgets/app_language_selector.dart';
 
 class CustomerProfileScreen extends ConsumerStatefulWidget {
   const CustomerProfileScreen({super.key});
@@ -45,6 +46,8 @@ class _CustomerProfileScreenState extends ConsumerState<CustomerProfileScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const AppLanguageSelector(),
+            const SizedBox(height: 16),
             // Homeowner Identity Card
             Container(
               padding: const EdgeInsets.all(18),

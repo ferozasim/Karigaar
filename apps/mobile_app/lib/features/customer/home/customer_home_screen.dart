@@ -6,6 +6,8 @@ import '../../../core/models/artisan_profile_model.dart';
 import '../../../core/providers/app_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../core/services/service_discovery_catalog.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../shared/widgets/emergency_assist_banner.dart';
 import '../../shared/widgets/karigaar_brand_logo.dart';
 import '../../shared/widgets/karigaar_radar_sync_skeleton.dart';
@@ -54,17 +56,20 @@ class CustomerHomeScreen extends ConsumerWidget {
                                     '${selectedLocality.name}, ${selectedDistrict.name}',
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style: AppTypography.headlineSm.copyWith(fontSize: 15),
+                                    style: AppTypography.headlineSm
+                                        .copyWith(fontSize: 15),
                                   ),
                                 ),
-                                const Icon(Icons.keyboard_arrow_down_rounded, size: 20),
+                                const Icon(Icons.keyboard_arrow_down_rounded,
+                                    size: 20),
                               ],
                             ),
                             Text(
                               '${selectedLocality.marathiName} • ${selectedLocality.pincode}',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
+                              style: AppTypography.bodySm
+                                  .copyWith(color: AppColors.textMuted),
                             ),
                           ],
                         ),
@@ -87,10 +92,12 @@ class CustomerHomeScreen extends ConsumerWidget {
             // Search Bar
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(12),
-                  onTap: () => _showQuickTradeSearchSheet(context, tradesAsync.valueOrNull ?? []),
+                  onTap: () => _showQuickTradeSearchSheet(
+                      context, tradesAsync.valueOrNull ?? []),
                   child: Container(
                     height: 48,
                     padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -101,17 +108,20 @@ class CustomerHomeScreen extends ConsumerWidget {
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.search_rounded, color: AppColors.textMuted, size: 20),
+                        const Icon(Icons.search_rounded,
+                            color: AppColors.textMuted, size: 20),
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
-                            'Search electricians, carpenters, plumbers...',
+                            AppLocalizations.of(context).searchServices,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: AppTypography.bodyMd.copyWith(color: AppColors.textSubtle),
+                            style: AppTypography.bodyMd
+                                .copyWith(color: AppColors.textSubtle),
                           ),
                         ),
-                        const Icon(Icons.mic_rounded, color: AppColors.secondary, size: 20),
+                        const Icon(Icons.mic_rounded,
+                            color: AppColors.secondary, size: 20),
                       ],
                     ),
                   ),
@@ -122,7 +132,8 @@ class CustomerHomeScreen extends ConsumerWidget {
             if (unfulfilledEvent != null)
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
                   child: Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
@@ -132,7 +143,8 @@ class CustomerHomeScreen extends ConsumerWidget {
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.radar_rounded, size: 20, color: Color(0xFFB45309)),
+                        const Icon(Icons.radar_rounded,
+                            size: 20, color: Color(0xFFB45309)),
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
@@ -165,7 +177,8 @@ class CustomerHomeScreen extends ConsumerWidget {
             // 10 Launch Trades Section Header
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -180,7 +193,8 @@ class CustomerHomeScreen extends ConsumerWidget {
                     const SizedBox(width: 8),
                     Text(
                       '${selectedDistrict.name} Guild',
-                      style: AppTypography.labelSm.copyWith(color: AppColors.secondary),
+                      style: AppTypography.labelSm
+                          .copyWith(color: AppColors.secondary),
                     ),
                   ],
                 ),
@@ -201,7 +215,11 @@ class CustomerHomeScreen extends ConsumerWidget {
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
                       final trade = trades[index];
-                      return _buildTradeGridItem(context, trade);
+                      return _buildTradeGridItem(
+                        context,
+                        trade,
+                        ref.watch(appLocaleProvider).languageCode,
+                      );
                     },
                     childCount: trades.length,
                   ),
@@ -241,10 +259,12 @@ class CustomerHomeScreen extends ConsumerWidget {
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.security_rounded, color: AppColors.tertiary, size: 20),
+                          const Icon(Icons.security_rounded,
+                              color: AppColors.tertiary, size: 20),
                           const SizedBox(width: 8),
                           Expanded(
-                            child: Text('The Karigaar Shield Commitment', style: AppTypography.labelLg),
+                            child: Text('The Karigaar Shield Commitment',
+                                style: AppTypography.labelLg),
                           ),
                         ],
                       ),
@@ -278,7 +298,9 @@ class CustomerHomeScreen extends ConsumerWidget {
                     ),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: Text('Top Rated Karigaars in ${selectedDistrict.name}', style: AppTypography.headlineSm),
+                      child: Text(
+                          'Top Rated Karigaars in ${selectedDistrict.name}',
+                          style: AppTypography.headlineSm),
                     ),
                   ],
                 ),
@@ -307,7 +329,8 @@ class CustomerHomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildTradeGridItem(BuildContext context, TradeModel trade) {
+  Widget _buildTradeGridItem(
+      BuildContext context, TradeModel trade, String languageCode) {
     return GestureDetector(
       onTap: () => context.push('/customer/service/${trade.tradeId}'),
       child: FittedBox(
@@ -321,7 +344,8 @@ class CustomerHomeScreen extends ConsumerWidget {
               decoration: BoxDecoration(
                 color: trade.surfaceTint,
                 borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: trade.accentColor.withValues(alpha: 0.3)),
+                border:
+                    Border.all(color: trade.accentColor.withValues(alpha: 0.3)),
               ),
               child: Icon(
                 _getIconData(trade.iconName),
@@ -331,23 +355,13 @@ class CustomerHomeScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              trade.name,
+              ServiceDiscoveryCatalog.localizedTradeName(trade, languageCode),
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: AppTypography.labelSm.copyWith(
                 fontSize: 10,
                 fontWeight: FontWeight.w700,
-              ),
-            ),
-            Text(
-              trade.marathiName,
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AppTypography.bodySm.copyWith(
-                fontSize: 9,
-                color: AppColors.textMuted,
               ),
             ),
           ],
@@ -383,7 +397,8 @@ class CustomerHomeScreen extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(color: AppColors.tertiary, width: 2),
                   ),
-                  child: const Icon(Icons.person_rounded, color: AppColors.textMuted, size: 30),
+                  child: const Icon(Icons.person_rounded,
+                      color: AppColors.textMuted, size: 30),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -404,11 +419,13 @@ class CustomerHomeScreen extends ConsumerWidget {
                                   artisan.name,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: AppTypography.headlineSm.copyWith(fontSize: 16),
+                                  style: AppTypography.headlineSm
+                                      .copyWith(fontSize: 16),
                                 ),
                               ),
                               const SizedBox(width: 4),
-                              const Icon(Icons.verified_rounded, color: AppColors.tertiary, size: 16),
+                              const Icon(Icons.verified_rounded,
+                                  color: AppColors.tertiary, size: 16),
                             ],
                           ),
                           _buildRoleBadge(artisan.roleType),
@@ -424,14 +441,16 @@ class CustomerHomeScreen extends ConsumerWidget {
                       const SizedBox(height: 4),
                       Row(
                         children: [
-                          const Icon(Icons.star_rounded, size: 16, color: AppColors.secondary),
+                          const Icon(Icons.star_rounded,
+                              size: 16, color: AppColors.secondary),
                           const SizedBox(width: 4),
                           Expanded(
                             child: Text(
                               '${artisan.rating} (${artisan.reviewCount} reviews) • ${artisan.distanceKm} km away',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: AppTypography.labelSm.copyWith(color: AppColors.textMuted),
+                              style: AppTypography.labelSm
+                                  .copyWith(color: AppColors.textMuted),
                             ),
                           ),
                         ],
@@ -462,18 +481,25 @@ class CustomerHomeScreen extends ConsumerWidget {
                       overflow: TextOverflow.ellipsis,
                       style: AppTypography.labelSm,
                     ),
-                    Text('₹${artisan.inspectionFee}', style: AppTypography.numericPrice.copyWith(fontSize: 18)),
+                    Text('₹${artisan.inspectionFee}',
+                        style:
+                            AppTypography.numericPrice.copyWith(fontSize: 18)),
                   ],
                 ),
                 ElevatedButton(
-                  onPressed: () => context.push('/customer/service/${artisan.primaryTradeId}'),
+                  onPressed: () => context
+                      .push('/customer/service/${artisan.primaryTradeId}'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 18, vertical: 10),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
                   ),
-                  child: Text('Book Artisan', style: AppTypography.labelMd.copyWith(color: Colors.white)),
+                  child: Text('Book Artisan',
+                      style:
+                          AppTypography.labelMd.copyWith(color: Colors.white)),
                 ),
               ],
             ),
@@ -532,22 +558,25 @@ class CustomerHomeScreen extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildNavItem(icon: Icons.explore_rounded, label: 'Explore', isActive: true),
+          _buildNavItem(
+              icon: Icons.explore_rounded,
+              label: AppLocalizations.of(context).explore,
+              isActive: true),
           _buildNavItem(
             icon: Icons.assignment_rounded,
-            label: 'Bookings',
+            label: AppLocalizations.of(context).bookings,
             isActive: false,
             onTap: () => context.go('/customer/bookings'),
           ),
           _buildNavItem(
             icon: Icons.chat_bubble_outline_rounded,
-            label: 'Messages',
+            label: AppLocalizations.of(context).messages,
             isActive: false,
             onTap: () => context.go('/customer/messages'),
           ),
           _buildNavItem(
             icon: Icons.person_outline_rounded,
-            label: 'Profile',
+            label: AppLocalizations.of(context).profile,
             isActive: false,
             onTap: () => context.go('/customer/profile'),
           ),
@@ -556,48 +585,84 @@ class CustomerHomeScreen extends ConsumerWidget {
     );
   }
 
-  void _showQuickTradeSearchSheet(BuildContext context, List<TradeModel> trades) {
+  void _showQuickTradeSearchSheet(
+      BuildContext context, List<TradeModel> trades) {
+    var query = '';
+    final strings = AppLocalizations.of(context);
     showModalBottomSheet<void>(
       context: context,
+      isScrollControlled: true,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      builder: (ctx) => Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Quick Trade Search', style: AppTypography.headlineSm),
-            const SizedBox(height: 6),
-            Text('Select a Nanded Guild trade to scope your issue:', style: AppTypography.bodySm),
-            const SizedBox(height: 12),
-            Flexible(
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: trades.length,
-                itemBuilder: (_, idx) {
-                  final t = trades[idx];
-                  return ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: CircleAvatar(
-                      backgroundColor: t.surfaceTint,
-                      child: Icon(_getIconData(t.iconName), color: t.accentColor, size: 20),
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setModalState) {
+          final results = ServiceDiscoveryCatalog.search(trades, query);
+          return Padding(
+            padding: EdgeInsets.fromLTRB(
+                20, 20, 20, 20 + MediaQuery.viewInsetsOf(ctx).bottom),
+            child: SizedBox(
+              height: MediaQuery.sizeOf(ctx).height * 0.72,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(strings.quickServiceSearch,
+                      style: AppTypography.headlineSm),
+                  const SizedBox(height: 6),
+                  Text(strings.selectServicePrompt,
+                      style: AppTypography.bodySm),
+                  const SizedBox(height: 12),
+                  TextField(
+                    autofocus: true,
+                    onChanged: (value) => setModalState(() => query = value),
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.search_rounded),
+                      hintText: strings.searchServices,
+                      border: const OutlineInputBorder(),
                     ),
-                    title: Text('${t.name} (${t.marathiName})', style: AppTypography.labelLg),
-                    subtitle: Text('Inspection ₹${t.baseInspectionFee} • ${t.guaranteeDays}d Warranty', style: AppTypography.bodySm),
-                    trailing: const Icon(Icons.chevron_right_rounded),
-                    onTap: () {
-                      Navigator.pop(ctx);
-                      context.push('/customer/service/${t.tradeId}');
-                    },
-                  );
-                },
+                  ),
+                  const SizedBox(height: 8),
+                  Expanded(
+                    child: results.isEmpty
+                        ? Center(child: Text(strings.noServicesFound))
+                        : ListView.builder(
+                            itemCount: results.length,
+                            itemBuilder: (_, idx) {
+                              final trade = results[idx];
+                              final languageCode =
+                                  Localizations.localeOf(ctx).languageCode;
+                              return ListTile(
+                                contentPadding: EdgeInsets.zero,
+                                leading: CircleAvatar(
+                                  backgroundColor: trade.surfaceTint,
+                                  child: Icon(_getIconData(trade.iconName),
+                                      color: trade.accentColor, size: 20),
+                                ),
+                                title: Text(
+                                    ServiceDiscoveryCatalog.serviceLabel(
+                                        trade, query, languageCode),
+                                    style: AppTypography.labelLg),
+                                subtitle: Text(
+                                  '${ServiceDiscoveryCatalog.localizedTradeName(trade, languageCode)} • ${strings.inspectionWarranty(trade.baseInspectionFee, trade.guaranteeDays)}',
+                                  style: AppTypography.bodySm,
+                                ),
+                                trailing:
+                                    const Icon(Icons.chevron_right_rounded),
+                                onTap: () {
+                                  Navigator.pop(ctx);
+                                  context.push(
+                                      '/customer/service/${trade.tradeId}');
+                                },
+                              );
+                            },
+                          ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
