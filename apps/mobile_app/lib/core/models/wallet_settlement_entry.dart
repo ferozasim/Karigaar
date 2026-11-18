@@ -77,4 +77,44 @@ class WalletSettlementEntry {
       isThisWeek: isThisWeek ?? this.isThisWeek,
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'bookingId': bookingId,
+        'jobTitle': jobTitle,
+        'customerLocality': customerLocality,
+        'completedAtLabel': completedAtLabel,
+        'laborAmount': laborAmount,
+        'partsPassThrough': partsPassThrough,
+        'commissionRate': commissionRate,
+        'commissionAmount': commissionAmount,
+        'netPayout': netPayout,
+        'isCredit': isCredit,
+        'isImpsWithdrawal': isImpsWithdrawal,
+        'statusLabel': statusLabel,
+        if (bankReference != null) 'bankReference': bankReference,
+        'isToday': isToday,
+        'isThisWeek': isThisWeek,
+      };
+
+  factory WalletSettlementEntry.fromJson(Map<String, dynamic> json) {
+    return WalletSettlementEntry(
+      id: json['id'] as String,
+      bookingId: json['bookingId'] as String,
+      jobTitle: json['jobTitle'] as String,
+      customerLocality: json['customerLocality'] as String,
+      completedAtLabel: json['completedAtLabel'] as String,
+      laborAmount: (json['laborAmount'] as num).toDouble(),
+      partsPassThrough: (json['partsPassThrough'] as num).toDouble(),
+      commissionRate: (json['commissionRate'] as num).toDouble(),
+      commissionAmount: (json['commissionAmount'] as num).toDouble(),
+      netPayout: (json['netPayout'] as num).toDouble(),
+      isCredit: json['isCredit'] as bool,
+      isImpsWithdrawal: json['isImpsWithdrawal'] as bool,
+      statusLabel: json['statusLabel'] as String,
+      bankReference: json['bankReference'] as String?,
+      isToday: json['isToday'] as bool? ?? false,
+      isThisWeek: json['isThisWeek'] as bool? ?? true,
+    );
+  }
 }

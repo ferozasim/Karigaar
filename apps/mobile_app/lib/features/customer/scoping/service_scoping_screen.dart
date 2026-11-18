@@ -28,7 +28,8 @@ class ServiceScopingScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<ServiceScopingScreen> createState() => _ServiceScopingScreenState();
+  ConsumerState<ServiceScopingScreen> createState() =>
+      _ServiceScopingScreenState();
 }
 
 class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
@@ -48,14 +49,17 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
           orElse: () => trades.first,
         );
 
-        if (!_hasInitializedTradeSelection && trade.popularPackages.isNotEmpty) {
+        if (!_hasInitializedTradeSelection &&
+            trade.popularPackages.isNotEmpty) {
           _hasInitializedTradeSelection = true;
-          if (widget.initialPackageIds != null && widget.initialPackageIds!.isNotEmpty) {
+          if (widget.initialPackageIds != null &&
+              widget.initialPackageIds!.isNotEmpty) {
             _selectedPackageIds
               ..clear()
               ..addAll(widget.initialPackageIds!);
           } else {
-            final hasMatch = trade.popularPackages.any((p) => _selectedPackageIds.contains(p.packageId));
+            final hasMatch = trade.popularPackages
+                .any((p) => _selectedPackageIds.contains(p.packageId));
             if (!hasMatch) {
               _selectedPackageIds
                 ..clear()
@@ -67,7 +71,8 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
         // Calculate dynamic total
         int baseLaborTotal = 0;
         final hasBundleApplied = widget.bundle != null &&
-            widget.bundle!.includedPackageIds.every((id) => _selectedPackageIds.contains(id));
+            widget.bundle!.includedPackageIds
+                .every((id) => _selectedPackageIds.contains(id));
 
         if (hasBundleApplied) {
           baseLaborTotal = widget.bundle!.discountedPrice;
@@ -86,7 +91,8 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
           if (baseLaborTotal == 0) baseLaborTotal = trade.baseInspectionFee;
         }
 
-        final laborTotal = (baseLaborTotal * _selectedRoleTier.rateMultiplier).round();
+        final laborTotal =
+            (baseLaborTotal * _selectedRoleTier.rateMultiplier).round();
         final safetyShieldFee = trade.safetyShieldFee;
         final grandTotal = laborTotal + safetyShieldFee;
 
@@ -123,27 +129,32 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Row(
+                          const Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
-                              Flexible(
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
                                 child: TrustShieldBadge(
                                   label: 'Verified Master Guild',
                                   icon: Icons.workspace_premium_rounded,
                                 ),
                               ),
-                              SizedBox(width: 8),
-                              Expanded(
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Icon(Icons.star_rounded, color: AppColors.secondary, size: 18),
+                                    Icon(Icons.star_rounded,
+                                        color: AppColors.secondary, size: 18),
                                     SizedBox(width: 4),
-                                    Flexible(
-                                      child: Text(
-                                        '4.9 (1.4k jobs in Nanded)',
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+                                    Text(
+                                      '4.9 (1.4k jobs in Nanded)',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ],
@@ -154,12 +165,14 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                           const SizedBox(height: 12),
                           Text(
                             trade.name,
-                            style: AppTypography.headlineLg.copyWith(color: Colors.white),
+                            style: AppTypography.headlineLg
+                                .copyWith(color: Colors.white),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             trade.tagline,
-                            style: AppTypography.bodyMd.copyWith(color: AppColors.onPrimaryContainer),
+                            style: AppTypography.bodyMd
+                                .copyWith(color: AppColors.onPrimaryContainer),
                           ),
                           const SizedBox(height: 14),
                           Container(
@@ -170,12 +183,14 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                             ),
                             child: Row(
                               children: [
-                                const Icon(Icons.shield_rounded, color: AppColors.tertiaryLight, size: 18),
+                                const Icon(Icons.shield_rounded,
+                                    color: AppColors.tertiaryLight, size: 18),
                                 const SizedBox(width: 8),
                                 Expanded(
                                   child: Text(
                                     'Includes 45-min diagnostic inspection & 30-day rework warranty',
-                                    style: AppTypography.bodySm.copyWith(color: Colors.white),
+                                    style: AppTypography.bodySm
+                                        .copyWith(color: Colors.white),
                                   ),
                                 ),
                               ],
@@ -186,9 +201,11 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                     ),
 
                     const SizedBox(height: 24),
-                    Text('Select Issues to Resolve', style: AppTypography.headlineSm),
+                    Text('Select Issues to Resolve',
+                        style: AppTypography.headlineSm),
                     const SizedBox(height: 6),
-                    Text('Choose all relevant problems for accurate tooling', style: AppTypography.bodySm),
+                    Text('Choose all relevant problems for accurate tooling',
+                        style: AppTypography.bodySm),
                     const SizedBox(height: 16),
 
                     if (widget.bundle != null) ...[
@@ -200,7 +217,8 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                           color: widget.bundle!.surfaceTint,
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(
-                            color: widget.bundle!.accentColor.withValues(alpha: 0.4),
+                            color: widget.bundle!.accentColor
+                                .withValues(alpha: 0.4),
                           ),
                         ),
                         child: Row(
@@ -247,11 +265,13 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                                             ),
                                             decoration: BoxDecoration(
                                               color: widget.bundle!.accentColor,
-                                              borderRadius: BorderRadius.circular(4),
+                                              borderRadius:
+                                                  BorderRadius.circular(4),
                                             ),
                                             child: Text(
                                               widget.bundle!.discountTag,
-                                              style: AppTypography.labelSm.copyWith(
+                                              style: AppTypography.labelSm
+                                                  .copyWith(
                                                 color: Colors.white,
                                                 fontSize: 9,
                                                 fontWeight: FontWeight.bold,
@@ -282,7 +302,8 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
 
                     // Issues Checklist
                     ...trade.popularPackages.map((pkg) {
-                      final isSelected = _selectedPackageIds.contains(pkg.packageId);
+                      final isSelected =
+                          _selectedPackageIds.contains(pkg.packageId);
                       return GestureDetector(
                         onTap: () {
                           setState(() {
@@ -300,7 +321,9 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                             color: AppColors.surfaceRaised,
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
-                              color: isSelected ? AppColors.primary : AppColors.borderSubtle,
+                              color: isSelected
+                                  ? AppColors.primary
+                                  : AppColors.borderSubtle,
                               width: isSelected ? 2 : 1,
                             ),
                           ),
@@ -325,23 +348,27 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(pkg.name, style: AppTypography.labelLg),
+                                    Text(pkg.name,
+                                        style: AppTypography.labelLg),
                                     const SizedBox(height: 4),
                                     Text(
                                       pkg.description,
-                                      style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
+                                      style: AppTypography.bodySm
+                                          .copyWith(color: AppColors.textMuted),
                                     ),
                                     const SizedBox(height: 8),
                                     Wrap(
                                       spacing: 8,
                                       runSpacing: 4,
-                                      crossAxisAlignment: WrapCrossAlignment.center,
+                                      crossAxisAlignment:
+                                          WrapCrossAlignment.center,
                                       children: [
                                         FittedBox(
                                           fit: BoxFit.scaleDown,
                                           child: Text(
                                             '₹${pkg.estimatedPrice} Est.',
-                                            style: AppTypography.numericPrice.copyWith(fontSize: 16),
+                                            style: AppTypography.numericPrice
+                                                .copyWith(fontSize: 16),
                                           ),
                                         ),
                                         FittedBox(
@@ -368,9 +395,12 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
 
                     const SizedBox(height: 20),
                     // Media & Voice Scoping (15s Audio Memo)
-                    Text('Photo & 15-Second Voice Note', style: AppTypography.headlineSm),
+                    Text('Photo & 15-Second Voice Note',
+                        style: AppTypography.headlineSm),
                     const SizedBox(height: 6),
-                    Text('Help your craftsman bring the exact spares from the hardware store', style: AppTypography.bodySm),
+                    Text(
+                        'Help your craftsman bring the exact spares from the hardware store',
+                        style: AppTypography.bodySm),
                     const SizedBox(height: 12),
                     // Photo upload button
                     GestureDetector(
@@ -393,28 +423,40 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                         height: 52,
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: _hasAttachedPhoto ? AppColors.tertiarySurfaceTint : AppColors.surfaceRaised,
+                          color: _hasAttachedPhoto
+                              ? AppColors.tertiarySurfaceTint
+                              : AppColors.surfaceRaised,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: _hasAttachedPhoto ? AppColors.tertiary : AppColors.borderSubtle,
+                            color: _hasAttachedPhoto
+                                ? AppColors.tertiary
+                                : AppColors.borderSubtle,
                           ),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
-                              _hasAttachedPhoto ? Icons.check_circle_rounded : Icons.add_a_photo_rounded,
-                              color: _hasAttachedPhoto ? AppColors.tertiary : AppColors.primary,
+                              _hasAttachedPhoto
+                                  ? Icons.check_circle_rounded
+                                  : Icons.add_a_photo_rounded,
+                              color: _hasAttachedPhoto
+                                  ? AppColors.tertiary
+                                  : AppColors.primary,
                               size: 20,
                             ),
                             const SizedBox(width: 8),
                             Flexible(
                               child: Text(
-                                _hasAttachedPhoto ? 'Defect Photo Attached' : 'Add Issue Photo (Optional)',
+                                _hasAttachedPhoto
+                                    ? 'Defect Photo Attached'
+                                    : 'Add Issue Photo (Optional)',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: AppTypography.labelMd.copyWith(
-                                  color: _hasAttachedPhoto ? AppColors.tertiary : AppColors.textPrimary,
+                                  color: _hasAttachedPhoto
+                                      ? AppColors.tertiary
+                                      : AppColors.textPrimary,
                                 ),
                               ),
                             ),
@@ -449,7 +491,8 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                   padding: const EdgeInsets.fromLTRB(20, 14, 20, 14),
                   decoration: BoxDecoration(
                     color: AppColors.surfaceRaised,
-                    border: const Border(top: BorderSide(color: AppColors.borderSubtle)),
+                    border: const Border(
+                        top: BorderSide(color: AppColors.borderSubtle)),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withValues(alpha: 0.08),
@@ -470,17 +513,20 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                               alignment: Alignment.centerLeft,
                               child: Row(
                                 children: [
-                                  Text('₹$grandTotal', style: AppTypography.numericPrice),
+                                  Text('₹$grandTotal',
+                                      style: AppTypography.numericPrice),
                                   const SizedBox(width: 6),
                                   Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 6, vertical: 2),
                                     decoration: BoxDecoration(
                                       color: AppColors.tertiarySurfaceTint,
                                       borderRadius: BorderRadius.circular(4),
                                     ),
                                     child: Text(
                                       '+₹29 Shield Fee',
-                                      style: AppTypography.labelSm.copyWith(color: AppColors.tertiary),
+                                      style: AppTypography.labelSm
+                                          .copyWith(color: AppColors.tertiary),
                                     ),
                                   ),
                                 ],
@@ -508,8 +554,10 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.primary,
                               foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 14, vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
                             ),
                             child: Text(
                               'Request Artisan',
@@ -530,7 +578,8 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
           ),
         );
       },
-      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+      loading: () =>
+          const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (e, _) => Scaffold(body: Center(child: Text('Error: $e'))),
     );
   }
@@ -549,29 +598,31 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Wrap(
+            spacing: 8,
+            runSpacing: 6,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              Expanded(
-                child: Text(
-                  'Craftsperson Skill Tier',
-                  style: AppTypography.headlineSm.copyWith(fontSize: 16),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
+              Text(
+                'Craftsperson Skill Tier',
+                style: AppTypography.headlineSm.copyWith(fontSize: 16),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(
-                  _selectedRoleTier.badgeText,
-                  style: AppTypography.labelSm.copyWith(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 10,
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    _selectedRoleTier.badgeText,
+                    style: AppTypography.labelSm.copyWith(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 10,
+                    ),
                   ),
                 ),
               ),
@@ -613,7 +664,9 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                         : AppColors.surfaceSubtle,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: isSelected ? AppColors.primary : AppColors.borderSubtle,
+                      color: isSelected
+                          ? AppColors.primary
+                          : AppColors.borderSubtle,
                       width: isSelected ? 1.5 : 1.0,
                     ),
                   ),
@@ -640,8 +693,9 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                             Text(
                               localizedTitle,
                               style: AppTypography.labelMd.copyWith(
-                                fontWeight:
-                                    isSelected ? FontWeight.w700 : FontWeight.w500,
+                                fontWeight: isSelected
+                                    ? FontWeight.w700
+                                    : FontWeight.w500,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -712,7 +766,8 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                             color: AppColors.primaryContainer,
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: const Icon(Icons.security_rounded, color: Colors.white, size: 22),
+                          child: const Icon(Icons.security_rounded,
+                              color: Colors.white, size: 22),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -721,11 +776,14 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                             children: [
                               Text(
                                 'Upfront ₹99 Standby Mandate',
-                                style: AppTypography.headlineSm.copyWith(fontSize: 17),
+                                style: AppTypography.headlineSm
+                                    .copyWith(fontSize: 17),
                               ),
                               Text(
                                 'Razorpay / Cashfree UPI Autopay Protected',
-                                style: AppTypography.labelSm.copyWith(color: AppColors.tertiary, fontWeight: FontWeight.w600),
+                                style: AppTypography.labelSm.copyWith(
+                                    color: AppColors.tertiary,
+                                    fontWeight: FontWeight.w600),
                               ),
                             ],
                           ),
@@ -745,10 +803,14 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                         children: [
                           Row(
                             children: [
-                              const Icon(Icons.info_outline_rounded, size: 16, color: AppColors.primary),
+                              const Icon(Icons.info_outline_rounded,
+                                  size: 16, color: AppColors.primary),
                               const SizedBox(width: 6),
                               Expanded(
-                                child: Text('Why is a ₹99 pre-authorization required?', style: AppTypography.labelSm.copyWith(fontWeight: FontWeight.bold)),
+                                child: Text(
+                                    'Why is a ₹99 pre-authorization required?',
+                                    style: AppTypography.labelSm
+                                        .copyWith(fontWeight: FontWeight.bold)),
                               ),
                             ],
                           ),
@@ -761,14 +823,19 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    Text('Quick Select UPI App', style: AppTypography.labelMd.copyWith(fontWeight: FontWeight.bold)),
+                    Text('Quick Select UPI App',
+                        style: AppTypography.labelMd
+                            .copyWith(fontWeight: FontWeight.bold)),
                     const SizedBox(height: 8),
                     Wrap(
                       spacing: 8,
                       runSpacing: 8,
                       children: [
                         ActionChip(
-                          avatar: const Icon(Icons.account_balance_wallet_rounded, size: 16, color: Color(0xFF1A73E8)),
+                          avatar: const Icon(
+                              Icons.account_balance_wallet_rounded,
+                              size: 16,
+                              color: Color(0xFF1A73E8)),
                           label: const Text('GPay'),
                           onPressed: () {
                             setSheetState(() {
@@ -778,7 +845,10 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                           },
                         ),
                         ActionChip(
-                          avatar: const Icon(Icons.account_balance_wallet_rounded, size: 16, color: Color(0xFF5F259F)),
+                          avatar: const Icon(
+                              Icons.account_balance_wallet_rounded,
+                              size: 16,
+                              color: Color(0xFF5F259F)),
                           label: const Text('PhonePe'),
                           onPressed: () {
                             setSheetState(() {
@@ -788,7 +858,10 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                           },
                         ),
                         ActionChip(
-                          avatar: const Icon(Icons.account_balance_wallet_rounded, size: 16, color: Color(0xFF002970)),
+                          avatar: const Icon(
+                              Icons.account_balance_wallet_rounded,
+                              size: 16,
+                              color: Color(0xFF002970)),
                           label: const Text('Paytm'),
                           onPressed: () {
                             setSheetState(() {
@@ -800,15 +873,20 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                       ],
                     ),
                     const SizedBox(height: 14),
-                    Text('Enter UPI ID / VPA', style: AppTypography.labelMd.copyWith(fontWeight: FontWeight.bold)),
+                    Text('Enter UPI ID / VPA',
+                        style: AppTypography.labelMd
+                            .copyWith(fontWeight: FontWeight.bold)),
                     const SizedBox(height: 6),
                     TextField(
                       controller: vpaController,
                       decoration: InputDecoration(
                         hintText: 'e.g. mobile@okaxis',
-                        prefixIcon: const Icon(Icons.alternate_email_rounded, size: 20),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        prefixIcon:
+                            const Icon(Icons.alternate_email_rounded, size: 20),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 12),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12)),
                         errorText: errorMessage,
                       ),
                       onChanged: (_) {
@@ -827,14 +905,17 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                           backgroundColor: AppColors.primary,
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
                         ),
                         onPressed: () async {
                           final vpa = vpaController.text.trim();
-                          final vpaRegex = RegExp(r'^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$');
+                          final vpaRegex = RegExp(
+                              r'^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$');
                           if (!vpaRegex.hasMatch(vpa)) {
                             setSheetState(() {
-                              errorMessage = 'Please enter a valid UPI VPA (e.g. name@bank)';
+                              errorMessage =
+                                  'Please enter a valid UPI VPA (e.g. name@bank)';
                             });
                             return;
                           }
@@ -847,11 +928,15 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                               upiVpa: vpa,
                               amount: 99,
                             );
-                            final mandateData = res['data'] as Map<String, dynamic>?;
+                            final mandateData =
+                                res['data'] as Map<String, dynamic>?;
 
-                            final audioMemo = ref.read(recordedAudioMemoProvider);
-                            final selectedSlot = ref.read(selectedArrivalSlotProvider);
-                            final selectedDate = ref.read(selectedArrivalDateProvider);
+                            final audioMemo =
+                                ref.read(recordedAudioMemoProvider);
+                            final selectedSlot =
+                                ref.read(selectedArrivalSlotProvider);
+                            final selectedDate =
+                                ref.read(selectedArrivalDateProvider);
 
                             String? audioUrl;
                             int? audioDuration;
@@ -866,13 +951,23 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                                   durationSeconds: audioMemo.durationSeconds,
                                   waveform: audioMemo.waveform,
                                 );
-                                final uploadData = uploadRes['data'] as Map<String, dynamic>?;
-                                audioUrl = uploadData?['audioMemoUrl'] as String? ?? audioMemo.url;
-                                audioDuration = (uploadData?['durationSeconds'] as num?)?.toInt() ?? audioMemo.durationSeconds;
-                                audioWf = (uploadData?['waveform'] as List<dynamic>?)
-                                    ?.map((e) => (e as num).toDouble())
-                                    .toList() ?? audioMemo.waveform;
-                                audioTranscript = uploadData?['transcript'] as String? ?? audioMemo.transcript;
+                                final uploadData =
+                                    uploadRes['data'] as Map<String, dynamic>?;
+                                audioUrl =
+                                    uploadData?['audioMemoUrl'] as String? ??
+                                        audioMemo.url;
+                                audioDuration =
+                                    (uploadData?['durationSeconds'] as num?)
+                                            ?.toInt() ??
+                                        audioMemo.durationSeconds;
+                                audioWf =
+                                    (uploadData?['waveform'] as List<dynamic>?)
+                                            ?.map((e) => (e as num).toDouble())
+                                            .toList() ??
+                                        audioMemo.waveform;
+                                audioTranscript =
+                                    uploadData?['transcript'] as String? ??
+                                        audioMemo.transcript;
                               } catch (_) {
                                 audioUrl = audioMemo.url;
                                 audioDuration = audioMemo.durationSeconds;
@@ -885,7 +980,8 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                                 ? '${selectedSlot.category.label} (${selectedSlot.timeWindow})'
                                 : null;
                             final slotId = selectedSlot?.slotId;
-                            final isEmergency = selectedSlot?.isEmergency ?? false;
+                            final isEmergency =
+                                selectedSlot?.isEmergency ?? false;
 
                             if (selectedSlot != null) {
                               try {
@@ -898,9 +994,11 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                               } catch (_) {}
                             }
 
-                            final currentBooking = ref.read(activeBookingProvider);
+                            final currentBooking =
+                                ref.read(activeBookingProvider);
                             if (currentBooking != null) {
-                              ref.read(activeBookingProvider.notifier).state = currentBooking.copyWith(
+                              ref.read(activeBookingProvider.notifier).state =
+                                  currentBooking.copyWith(
                                 mandateStatus: UpiMandateStatus.authorized,
                                 mandateId: mandateData?['mandateId'] as String?,
                                 upiVpa: vpa,
@@ -919,7 +1017,8 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                               Navigator.pop(sheetContext);
                             }
                             if (context.mounted) {
-                              await context.push('/customer/active-tracking/BK_NANDED_8821');
+                              await context.push(
+                                  '/customer/active-tracking/BK_NANDED_8821');
                             }
                           } catch (e) {
                             setSheetState(() {
@@ -929,7 +1028,8 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                         },
                         child: Text(
                           'Authorize ₹99 Mandate & Request Artisan',
-                          style: AppTypography.labelLg.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                          style: AppTypography.labelLg.copyWith(
+                              color: Colors.white, fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
