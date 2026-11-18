@@ -70,7 +70,7 @@ Implement a production-grade dual-mode repository architecture for Karigaar. All
 
 | Phase | Checkpoint SHA | Date | Status |
 |---|---|---|---|
-| Phase 1: In-Memory Repositories | `9fa4b23` | 2026-11-18 | complete |
-| Phase 2: Provider Wiring & Regressions | `9fa4b23` | 2026-11-18 | complete |
-| Phase 3: Firestore Cloud Adapters | `9fa4b23` | 2026-11-18 | complete |
-| Phase 4: Final Verification & PR | `9fa4b23` | 2026-11-18 | complete |
+| Phase 1: In-Memory Repositories | `89759ad` | 2026-11-18 | complete |
+| Phase 2: Provider Wiring & Regressions | `89759ad` | 2026-11-18 | complete |
+| Phase 3: Firestore Cloud Adapters | `89759ad` | 2026-11-18 | complete |
+| Phase 4: Final Verification & PR | `89759ad` | 2026-11-18 | complete |
