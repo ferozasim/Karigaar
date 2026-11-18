@@ -745,8 +745,8 @@ Karigaar_app/
 | **T-09** | **Strict Homeowner vs. Karigaar UI & Route Isolation + Path A Monetization** | `F-47` | `feat/T-09-path-a-monetization-guild-tiers` | ✅ **CLOSED & IN `main`** | `4cac530` / PR #4 `31efecf` (GoRouter role guards, escrow lock, Guild Elite 5% floor) |
 | **T-10** | **Karigaar Partner Profile (`/artisan/profile`), Standalone Wallet (`/artisan/wallet`) & 3-Tab Bottom Nav** | `F-24`–`F-27`, `F-48` | `feat/T-10-karigaar-partner-profile-wallet` | ✅ **CLOSED & IN `main`** | `d96c914`, `f6a5309`, `63540ee` / PR #5 `a08f830` (27 T-10 tests passing, 0 lint/analysis issues) |
 | **T-11** | **Dual-Mode Firebase (`karigaar-ba812`) + Local Fallback Repositories** | `F-49` | `feat/T-11-firebase-firestore-backend` | ✅ **DELIVERED ON FEATURE BRANCH** | `89759ad`: Firestore/local repository contracts for `users`, `artisans`, `bookings`, `mandates`, and `wallets`; failover, 9 T-11 tests, and 360 mobile regressions passing |
-| **T-12** | **Stage 1B Backend: Cloud Functions & Webhook Gateways (WhatsApp, Razorpay, Telephony)** | `F-49` | `feat/T-12-cloud-functions-webhooks` | 🚀 **PUSHED — AWAITING PR MERGE** | `999b90e`: Firebase Functions v2 for Meta v21 template delivery and signed receipts, HMAC-verified idempotent Razorpay callbacks, signed telephony callbacks; provider setup documented |
-| **T-13** | **Admin Dispute Arbitration Workbench, Warranty Underwriting Reserve Pool & Dispute Ops** | `F-08`, `F-10`, `F-11`, `F-25`, `F-35`, `F-36`, `F-50` | `feat/T-13-multimodal-scoping-dispute-ops` | 📋 **PENDING** | 30% warranty reserve pool, CSAT ratings sheet, and Admin dispute claim queue |
+| **T-12** | **Stage 1B Backend: Cloud Functions & Webhook Gateways (WhatsApp, Razorpay, Telephony)** | `F-49` | `feat/T-12-cloud-functions-webhooks` | ✅ **MERGED INTO `main`** | PR #7 merged as `b6981dc`; Firebase Functions v2 for Meta v21 template delivery and signed receipts, HMAC-verified idempotent Razorpay callbacks, signed telephony callbacks; provider setup documented |
+| **T-13** | **Admin Dispute Arbitration Workbench, Warranty Underwriting Reserve Pool & Dispute Ops** | `F-08`, `F-10`, `F-11`, `F-25`, `F-35`, `F-36`, `F-50` | `feat/T-13-warranty-dispute-ops` | 🚀 **PUSHED — PR READY** | `d5da306`: 30% reserve contribution calculation, customer CSAT and claim intake, interactive admin arbitration prototype; client-side/demo data only |
 
 ---
 
@@ -824,17 +824,18 @@ flowchart TD
 - **Ticket T-12 (`feat/T-12-cloud-functions-webhooks`)**:
   - Implemented Firebase Functions v2 for allow-listed Meta WhatsApp v21 template sending and signed delivery receipts, HMAC-verified idempotent Razorpay event intake, and signed masked-telephony session callbacks. Focused HMAC tests pass. Configure provider secrets and callback URLs before live traffic; live UPI mandate creation/capture, RazorpayX IMPS submission, and number provisioning remain provider-account integration work.
 
-#### 5. Ticket T-13: Multi-Modal Scoping (15s Voice Memo & Slot Picker), Path A/B Monetization & Admin Warranty/Dispute Workbench (`feat/T-13-multimodal-scoping-dispute-ops`)
+#### 5. Ticket T-13: Warranty Reserve, CSAT & Admin Warranty/Dispute Workbench (`feat/T-13-warranty-dispute-ops`)
 - **Multi-Modal Scoping & Seasonal Bundles (`F-08`, `F-10`, `F-11`)**:
   - `ServiceScopingScreen`: Interactive 15-second Audio Voice Memo countdown recorder (`15s → 0s`), animated waveform preview, playback/delete controls, and horizontal Scheduled Arrival Slot Picker (`Fastest: Today 45m`, `Tomorrow`, `+2 Days` with Morning `09–11 AM`, Afternoon `02–04 PM Popular`, Evening `05–07 PM` time windows), persisted into `BookingModel` and `RadarAttachmentInfo`.
   - `CustomerHomeScreen`: Wire `"Add +"` on Seasonal Bundles (*AC Deep Service & Jet Clean ₹599*, *Full Home Electrical Audit ₹799*) into `ServiceScopingScreen` with pre-selected bundle pricing.
 - **Path A Direct Contact Monetization & Path A → Path B Retroactive Escrow Lock (`F-25`, `F-35`, `F-36`)**:
   - `ArtisanProfileScreen`: Pay-Per-Lead Unlock (`₹49` per artisan contact) + `₹499/mo` Unlimited Directory Pass toggle, routing unlocked calls/chats through the Masked Virtual Telephony Bridge (`+91-11-4084-2190`).
   - One-tap **"Upgrade to Protected Guild Booking (Lock ₹25k Warranty & Escrow)"** CTA on `ArtisanProfileScreen` and `CustomerBookingsScreen` (`convertPathAToPathBBooking`), converting a Path A direct inspection visit into an active Path B escrow-protected booking with Start OTP (`4921`), `₹29` Safety Shield, and Two-Tier Guild Damage Shield (`₹10,000` Base / `₹25,000` Master cover with `₹250` deductible).
-- **Warranty Underwriting Reserve Ledger, CSAT & Super Admin Dispute Arbitration Workbench (`Phase 4` & `Phase 5`)**:
-  - `KarigaarApiService`: Allocate **30% of platform labor take-rate** from every completed job into `warrantyReservePoolProvider`, and expose `submitPostJobCsat` and `raiseWarrantyClaim` (enforcing the `₹250` customer deductible and `₹10k`/`₹25k` tier cap).
-  - `CustomerBookingsScreen`: 5-star post-job CSAT + Cleanliness/Sawdust rating sheet and `"Raise 30-Day Warranty / Damage Claim (₹250 deductible)"` drawer on completed bookings.
-  - `apps/admin_web/src/app/page.tsx`: Dedicated **Warranty Underwriting Reserve Pool KPI** + **Post-Service CSAT Monitor** + interactive **Dispute & Warranty Claim Arbitration Queue** with `Approve Claim Payout`, `Schedule Free Rework`, and `Reject Claim` actions.
+- **Delivered on the T-13 feature branch**:
+  - `KarigaarApiService`: Calculates a 30% reserve contribution from the platform labor take-rate; validates post-job CSAT and warranty claim intake, including the exact 30-day cutoff, ₹250 deductible, and ₹10k/₹25k cover ceiling.
+  - `CustomerBookingsScreen`: Completed-booking CSAT sheet and 30-day warranty claim drawer.
+  - `apps/admin_web/src/app/page.tsx`: Warranty reserve and CSAT KPIs with an interactive arbitration queue for payout approval, free rework, or rejection.
+  - **Persistence limitation:** Customer claim/CSAT state and admin decisions currently live in client-side providers/demo state. They are not yet saved to Firestore or a server API, and the reserve KPI uses demonstration ledger values. Do not treat the prototype as a production claims or accounting ledger.
 
 ---
 

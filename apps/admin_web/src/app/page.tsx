@@ -265,6 +265,32 @@ interface KycArtisan {
   priority: boolean;
 }
 
+type ClaimStatus = 'PENDING REVIEW' | 'REWORK SCHEDULED' | 'PAYOUT APPROVED' | 'REJECTED';
+
+interface WarrantyClaim {
+  id: string;
+  bookingId: string;
+  customer: string;
+  artisan: string;
+  districtId: string;
+  issue: string;
+  requestedAmount: number;
+  deductible: number;
+  coverLimit: number;
+  status: ClaimStatus;
+}
+
+const INITIAL_WARRANTY_CLAIMS: WarrantyClaim[] = [
+  { id: 'WC-1042', bookingId: 'BK_NANDED_8412', customer: 'Priya Sharma', artisan: 'Abdul Shaikh', districtId: 'city_nanded_01', issue: 'Cabinet hinge detached after repair', requestedAmount: 2400, deductible: 250, coverLimit: 25000, status: 'PENDING REVIEW' },
+  { id: 'WC-1038', bookingId: 'BK_NAGPUR_2841', customer: 'Meera Desai', artisan: 'Sunil Meshram', districtId: 'dist_nagpur', issue: 'Water leak returned within warranty window', requestedAmount: 1800, deductible: 250, coverLimit: 10000, status: 'PENDING REVIEW' },
+];
+
+const CSAT_SAMPLE = [
+  { id: 'BK_NANDED_8412', customer: 'Priya Sharma', artisan: 'Abdul Shaikh', districtId: 'city_nanded_01', overall: 4, cleanliness: 5, care: 4 },
+  { id: 'BK_NAGPUR_2841', customer: 'Meera Desai', artisan: 'Sunil Meshram', districtId: 'dist_nagpur', overall: 2, cleanliness: 3, care: 2 },
+  { id: 'BK_PAR_3391', customer: 'Amit Kulkarni', artisan: 'Balaji Rathod', districtId: 'dist_parbhani', overall: 5, cleanliness: 5, care: 5 },
+];
+
 const KYC_CANDIDATES: KycArtisan[] = [
   { id: 'art_01', districtId: 'city_nanded_01', districtName: 'Nanded', name: 'Ganesh Kadam', trade: 'Master Electrician', loc: 'Anand Nagar', docs: 'Aadhaar + Police Cleared', priority: true },
   { id: 'art_02', districtId: 'city_nanded_01', districtName: 'Nanded', name: 'Sayyed Arshad', trade: 'Plumber', loc: 'Vazirabad', docs: 'Aadhaar + NSDC Cert', priority: false },
@@ -282,6 +308,13 @@ export default function SuperAdminPortal() {
   const [verifiedList, setVerifiedList] = useState<string[]>([]);
   const [playingAudioId, setPlayingAudioId] = useState<string | null>(null);
   const [expandedTranscriptId, setExpandedTranscriptId] = useState<string | null>(null);
+  const [warrantyClaims, setWarrantyClaims] = useState<WarrantyClaim[]>(INITIAL_WARRANTY_CLAIMS);
+  const [warrantyActionMessage, setWarrantyActionMessage] = useState<string | null>(null);
+
+  const decideClaim = (claimId: string, status: Exclude<ClaimStatus, 'PENDING REVIEW'>) => {
+    setWarrantyClaims((claims) => claims.map((claim) => claim.id === claimId ? {...claim, status} : claim));
+    setWarrantyActionMessage(`${claimId}: ${status.toLowerCase()}.`);
+  };
 
   const togglePlayAudio = (id: string) => {
     setPlayingAudioId((prev) => (prev === id ? null : id));
@@ -595,6 +628,80 @@ export default function SuperAdminPortal() {
             </div>
           </div>
         </div>
+
+        {/* Warranty Reserve, CSAT & Arbitration Queue (Ticket T-13) */}
+        <section className="space-y-4" aria-labelledby="warranty-ops-heading">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+              <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">Warranty underwriting reserve</div>
+              <div className="mt-3 text-2xl font-extrabold text-slate-900">₹1,25,000</div>
+              <p className="mt-1 text-xs text-slate-500">Demo ledger • 30% of platform labor take-rate is allocated per eligible settlement.</p>
+            </div>
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+              <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">Available claim cover</div>
+              <div className="mt-3 text-2xl font-extrabold text-emerald-700">₹{(125000 - warrantyClaims.filter((claim) => claim.status === 'PAYOUT APPROVED').reduce((sum, claim) => sum + Math.max(0, claim.requestedAmount - claim.deductible), 0)).toLocaleString('en-IN')}</div>
+              <p className="mt-1 text-xs text-slate-500">Pending claims are not deducted until an arbitrator approves payout.</p>
+            </div>
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+              <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">Post-service CSAT</div>
+              <div className="mt-3 text-2xl font-extrabold text-amber-600">{(CSAT_SAMPLE.reduce((sum, item) => sum + item.overall, 0) / CSAT_SAMPLE.length).toFixed(1)} / 5</div>
+              <p className="mt-1 text-xs text-slate-500">{CSAT_SAMPLE.length} sample survey responses • low scores flagged for follow-up.</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 xl:grid-cols-5 gap-4">
+            <div className="xl:col-span-3 bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+              <div className="flex flex-wrap items-start justify-between gap-2">
+                <div>
+                  <h3 id="warranty-ops-heading" className="text-sm font-bold text-slate-900">Dispute & warranty arbitration</h3>
+                  <p className="text-xs text-slate-500 mt-1">Review the evidence and choose a resolution. Payout deducts the ₹250 customer deductible and stays within the booking cover limit.</p>
+                </div>
+                <span className="text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200 rounded px-2 py-1">{warrantyClaims.filter((claim) => claim.status === 'PENDING REVIEW').length} awaiting review</span>
+              </div>
+              {warrantyActionMessage && <p role="status" className="text-xs rounded bg-emerald-50 text-emerald-800 px-3 py-2">{warrantyActionMessage}</p>}
+              {warrantyClaims.filter((claim) => selectedDistrict === 'all' || claim.districtId === selectedDistrict).map((claim) => (
+                <article key={claim.id} className="border border-slate-200 rounded-lg p-4 space-y-3">
+                  <div className="flex flex-wrap items-start justify-between gap-2">
+                    <div>
+                      <div className="text-xs font-bold text-slate-900">{claim.id} · {claim.bookingId}</div>
+                      <p className="text-sm font-semibold text-slate-800 mt-1">{claim.issue}</p>
+                      <p className="text-xs text-slate-500 mt-1">{claim.customer} · artisan {claim.artisan}</p>
+                    </div>
+                    <span className={`text-[10px] font-bold px-2 py-1 rounded ${claim.status === 'PENDING REVIEW' ? 'bg-amber-50 text-amber-800' : 'bg-slate-100 text-slate-700'}`}>{claim.status}</span>
+                  </div>
+                  <div className="flex flex-wrap gap-x-5 gap-y-1 text-xs text-slate-600">
+                    <span>Requested: <strong>₹{claim.requestedAmount.toLocaleString('en-IN')}</strong></span>
+                    <span>Deductible: ₹{claim.deductible}</span>
+                    <span>Cover cap: ₹{claim.coverLimit.toLocaleString('en-IN')}</span>
+                  </div>
+                  {claim.status === 'PENDING REVIEW' && <div className="flex flex-wrap gap-2">
+                    <button onClick={() => decideClaim(claim.id, 'PAYOUT APPROVED')} className="bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-2 rounded text-xs font-semibold">Approve payout</button>
+                    <button onClick={() => decideClaim(claim.id, 'REWORK SCHEDULED')} className="bg-indigo-700 hover:bg-indigo-600 text-white px-3 py-2 rounded text-xs font-semibold">Schedule free rework</button>
+                    <button onClick={() => decideClaim(claim.id, 'REJECTED')} className="bg-white hover:bg-rose-50 text-rose-700 border border-rose-200 px-3 py-2 rounded text-xs font-semibold">Reject claim</button>
+                  </div>}
+                </article>
+              ))}
+            </div>
+
+            <div className="xl:col-span-2 bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
+              <div>
+                <h3 className="text-sm font-bold text-slate-900">Recent service feedback</h3>
+                <p className="text-xs text-slate-500 mt-1">Overall score and craft-care dimensions.</p>
+              </div>
+              {CSAT_SAMPLE.filter((item) => selectedDistrict === 'all' || item.districtId === selectedDistrict).map((item) => (
+                <div key={item.id} className="border-b border-slate-100 pb-3 last:border-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs font-semibold text-slate-800">{item.customer}</span>
+                    <span className={`text-xs font-bold ${item.overall <= 2 ? 'text-rose-600' : 'text-amber-600'}`}>★ {item.overall}/5</span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 mt-1">{item.id} · {item.artisan}</p>
+                  <p className="text-[11px] text-slate-600 mt-1">Cleanliness {item.cleanliness}/5 · Care & finish {item.care}/5</p>
+                  {item.overall <= 2 && <span className="inline-block mt-2 text-[10px] font-bold text-rose-700 bg-rose-50 px-2 py-1 rounded">Follow-up recommended</span>}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
 
         {/* Active Bookings & Dispatch Console (Ticket T-08 F-10/F-11) */}
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">

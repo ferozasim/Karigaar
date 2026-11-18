@@ -25,6 +25,101 @@ class KarigaarApiService {
 
   const KarigaarApiService();
 
+  static const int warrantyReserveRatePercent = 30;
+  static const int warrantyClaimDeductiblePaise = 25000;
+
+  /// Reserve contribution is 30% of the platform labor take-rate, in paise.
+  int calculateWarrantyReserveContributionPaise(
+      int platformLaborTakeRatePaise) {
+    if (platformLaborTakeRatePaise < 0) {
+      throw const ApiException('Platform labor take-rate cannot be negative.',
+          code: 'INVALID_TAKE_RATE', statusCode: 422);
+    }
+    return (platformLaborTakeRatePaise * warrantyReserveRatePercent) ~/ 100;
+  }
+
+  /// Submit a post-job satisfaction record after validating its rating fields.
+  Future<Map<String, dynamic>> submitPostJobCsat({
+    required String bookingId,
+    required int overallRating,
+    required int cleanlinessRating,
+    required int sawdustRating,
+    String feedbackNote = '',
+  }) async {
+    if (bookingId.trim().isEmpty) {
+      throw const ApiException('Booking ID is required.',
+          code: 'MISSING_BOOKING_ID', statusCode: 422);
+    }
+    for (final rating in [overallRating, cleanlinessRating, sawdustRating]) {
+      if (rating < 1 || rating > 5) {
+        throw const ApiException('Ratings must be between 1 and 5.',
+            code: 'INVALID_RATING', statusCode: 422);
+      }
+    }
+    return {
+      'status': 'SUCCESS',
+      'data': {
+        'bookingId': bookingId,
+        'overallRating': overallRating,
+        'cleanlinessRating': cleanlinessRating,
+        'sawdustRating': sawdustRating,
+        'feedbackNote': feedbackNote.trim(),
+        'submittedAt': DateTime.now().toUtc().toIso8601String(),
+      },
+    };
+  }
+
+  /// Open a protected booking claim, applying the customer deductible and tier cap.
+  Future<Map<String, dynamic>> raiseWarrantyClaim({
+    required String bookingId,
+    required int requestedAmountPaise,
+    required int damageCoverAmountPaise,
+    required DateTime completedAt,
+    required bool warrantyEligible,
+    String reason = '',
+  }) async {
+    if (bookingId.trim().isEmpty) {
+      throw const ApiException('Booking ID is required.',
+          code: 'MISSING_BOOKING_ID', statusCode: 422);
+    }
+    if (!warrantyEligible) {
+      throw const ApiException(
+          'This booking is not covered by the Guild warranty.',
+          code: 'WARRANTY_NOT_ELIGIBLE',
+          statusCode: 403);
+    }
+    final now = DateTime.now();
+    if (completedAt.isAfter(now) ||
+        now.isAfter(completedAt.add(const Duration(days: 30)))) {
+      throw const ApiException(
+          'Warranty claims must be raised within 30 days of completion.',
+          code: 'WARRANTY_WINDOW_EXPIRED',
+          statusCode: 403);
+    }
+    if (requestedAmountPaise <= warrantyClaimDeductiblePaise ||
+        requestedAmountPaise > damageCoverAmountPaise) {
+      throw const ApiException(
+          'Claim amount must exceed the ₹250 deductible and stay within the booking cover limit.',
+          code: 'CLAIM_AMOUNT_OUT_OF_RANGE',
+          statusCode: 422);
+    }
+    return {
+      'status': 'SUCCESS',
+      'data': {
+        'claimId': 'wc_${DateTime.now().millisecondsSinceEpoch}',
+        'bookingId': bookingId,
+        'requestedAmountPaise': requestedAmountPaise,
+        'eligiblePayoutPaise':
+            requestedAmountPaise - warrantyClaimDeductiblePaise,
+        'customerDeductiblePaise': warrantyClaimDeductiblePaise,
+        'maximumCoverPaise': damageCoverAmountPaise,
+        'claimStatus': 'PENDING_REVIEW',
+        'reason': reason.trim(),
+        'submittedAt': DateTime.now().toUtc().toIso8601String(),
+      },
+    };
+  }
+
   /// Contract 1: WhatsApp Authentication Request OTP (`POST /api/v1/auth/whatsapp/otp/request`)
   Future<Map<String, dynamic>> requestWhatsAppOtp({
     required String phoneNumber,
@@ -33,10 +128,14 @@ class KarigaarApiService {
   }) async {
     final cleanPhone = phoneNumber.replaceAll(RegExp(r'\s+'), '');
     if (cleanPhone.isEmpty || cleanPhone.length < 10) {
-      throw const ApiException('Invalid Indian phone number. Expected 10 digits.', code: 'INVALID_PHONE', statusCode: 422);
+      throw const ApiException(
+          'Invalid Indian phone number. Expected 10 digits.',
+          code: 'INVALID_PHONE',
+          statusCode: 422);
     }
 
-    final reqId = 'req_auth_${DateTime.now().millisecondsSinceEpoch.toString().substring(5)}';
+    final reqId =
+        'req_auth_${DateTime.now().millisecondsSinceEpoch.toString().substring(5)}';
     return {
       'status': 'SUCCESS',
       'data': {
@@ -57,7 +156,8 @@ class KarigaarApiService {
   }) async {
     final cleanOtp = otpCode.trim();
     if (cleanOtp.length != 4 && cleanOtp.length != 6) {
-      throw const ApiException('Invalid OTP code. Expected 4 or 6 digits.', code: 'INVALID_OTP_LENGTH', statusCode: 422);
+      throw const ApiException('Invalid OTP code. Expected 4 or 6 digits.',
+          code: 'INVALID_OTP_LENGTH', statusCode: 422);
     }
 
     return {
@@ -66,7 +166,8 @@ class KarigaarApiService {
         'authToken': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.karigaar_mock_token',
         'refreshToken': 'ref_${DateTime.now().millisecondsSinceEpoch}',
         'user': {
-          'id': 'usr_${phoneNumber.replaceAll(RegExp(r'\D'), '').substring(phoneNumber.length > 5 ? phoneNumber.length - 5 : 0)}',
+          'id':
+              'usr_${phoneNumber.replaceAll(RegExp(r'\D'), '').substring(phoneNumber.length > 5 ? phoneNumber.length - 5 : 0)}',
           'phoneNumber': phoneNumber,
           'isKycVerified': true,
         },
@@ -82,11 +183,13 @@ class KarigaarApiService {
     String? bookingId,
   }) async {
     if (callerNumber.isEmpty || calleeId.isEmpty) {
-      throw const ApiException('Caller number and Callee ID are required.', code: 'MISSING_TELEPHONY_PARAMS', statusCode: 422);
+      throw const ApiException('Caller number and Callee ID are required.',
+          code: 'MISSING_TELEPHONY_PARAMS', statusCode: 422);
     }
 
     try {
-      final session = await KarigaarWhatsAppTelephonyService.instance.bridgeTelephonyCall(
+      final session =
+          await KarigaarWhatsAppTelephonyService.instance.bridgeTelephonyCall(
         callerNumber: callerNumber,
         calleeId: calleeId,
         role: role,
@@ -100,23 +203,28 @@ class KarigaarApiService {
           'callerRole': session.callerRole,
           'virtualProxyNumber': session.virtualProxyNumber,
           'sessionStatus': session.sessionStatus,
-          'zeroRawMsisdnLeakageGuaranteed': session.zeroRawMsisdnLeakageGuaranteed,
+          'zeroRawMsisdnLeakageGuaranteed':
+              session.zeroRawMsisdnLeakageGuaranteed,
           'expiresInSeconds': session.expiresInSeconds,
         },
       };
     } catch (e) {
       if (e is ArgumentError) {
-        throw ApiException(e.message.toString(), code: 'INVALID_TELEPHONY_PARAM', statusCode: 422);
+        throw ApiException(e.message.toString(),
+            code: 'INVALID_TELEPHONY_PARAM', statusCode: 422);
       }
       rethrow;
     }
   }
 
   /// Get status of active telephony bridge session (`GET /api/v1/telephony/sessions/:id`)
-  Future<Map<String, dynamic>> getTelephonyBridgeSession({required String sessionId}) async {
-    final session = KarigaarWhatsAppTelephonyService.instance.getTelephonyBridgeSession(sessionId);
+  Future<Map<String, dynamic>> getTelephonyBridgeSession(
+      {required String sessionId}) async {
+    final session = KarigaarWhatsAppTelephonyService.instance
+        .getTelephonyBridgeSession(sessionId);
     if (session == null) {
-      throw const ApiException('Telephony session not found.', code: 'SESSION_NOT_FOUND', statusCode: 404);
+      throw const ApiException('Telephony session not found.',
+          code: 'SESSION_NOT_FOUND', statusCode: 404);
     }
     return {
       'status': 'SUCCESS',
@@ -125,15 +233,20 @@ class KarigaarApiService {
   }
 
   /// Terminate active telephony bridge session (`POST /api/v1/telephony/sessions/:id/terminate`)
-  Future<Map<String, dynamic>> terminateTelephonyBridgeSession({required String sessionId}) async {
+  Future<Map<String, dynamic>> terminateTelephonyBridgeSession(
+      {required String sessionId}) async {
     try {
-      final session = KarigaarWhatsAppTelephonyService.instance.terminateTelephonyBridgeSession(sessionId);
+      final session = KarigaarWhatsAppTelephonyService.instance
+          .terminateTelephonyBridgeSession(sessionId);
       return {
         'status': 'SUCCESS',
         'data': session.toJson(),
       };
     } catch (e) {
-      throw const ApiException('Telephony session not found or already terminated.', code: 'SESSION_NOT_FOUND', statusCode: 404);
+      throw const ApiException(
+          'Telephony session not found or already terminated.',
+          code: 'SESSION_NOT_FOUND',
+          statusCode: 404);
     }
   }
 
@@ -145,7 +258,8 @@ class KarigaarApiService {
     List<WhatsAppTemplateComponent> components = const [],
   }) async {
     try {
-      return await KarigaarWhatsAppTelephonyService.instance.dispatchWhatsAppTemplate(
+      return await KarigaarWhatsAppTelephonyService.instance
+          .dispatchWhatsAppTemplate(
         recipientPhone: recipientPhone,
         templateName: templateName,
         languageCode: languageCode,
@@ -153,7 +267,8 @@ class KarigaarApiService {
       );
     } catch (e) {
       if (e is ArgumentError) {
-        throw ApiException(e.message.toString(), code: 'INVALID_WHATSAPP_PARAM', statusCode: 422);
+        throw ApiException(e.message.toString(),
+            code: 'INVALID_WHATSAPP_PARAM', statusCode: 422);
       }
       rethrow;
     }
@@ -172,7 +287,8 @@ class KarigaarApiService {
     String languageCode = 'en_US',
   }) async {
     try {
-      final result = await KarigaarWhatsAppTelephonyService.instance.syncDualDispatchPayload(
+      final result = await KarigaarWhatsAppTelephonyService.instance
+          .syncDualDispatchPayload(
         bookingId: bookingId,
         artisanPhone: artisanPhone,
         customerAddress: customerAddress,
@@ -189,7 +305,8 @@ class KarigaarApiService {
       };
     } catch (e) {
       if (e is ArgumentError) {
-        throw ApiException(e.message.toString(), code: 'INVALID_DUAL_SYNC_PARAM', statusCode: 422);
+        throw ApiException(e.message.toString(),
+            code: 'INVALID_DUAL_SYNC_PARAM', statusCode: 422);
       }
       rethrow;
     }
@@ -204,10 +321,13 @@ class KarigaarApiService {
     double? longitude,
   }) async {
     if (bookingId.isEmpty || artisanId.isEmpty) {
-      throw const ApiException('Booking ID and Artisan ID are required to accept a job.', code: 'MISSING_ASSIGNMENT_PARAMS');
+      throw const ApiException(
+          'Booking ID and Artisan ID are required to accept a job.',
+          code: 'MISSING_ASSIGNMENT_PARAMS');
     }
 
-    final isGurugram = bookingId.contains('8842') || bookingId.startsWith('KG-');
+    final isGurugram =
+        bookingId.contains('8842') || bookingId.startsWith('KG-');
     final destLat = isGurugram ? 28.4722 : 19.1415;
     final destLng = isGurugram ? 77.0381 : 77.3242;
     final address = isGurugram
@@ -239,7 +359,10 @@ class KarigaarApiService {
   }) async {
     final cleanCode = securityStartCode.trim();
     if (cleanCode != '4921') {
-      throw const ApiException('Incorrect Start Code. Expected 4921 shared by customer.', code: 'INVALID_START_CODE', statusCode: 403);
+      throw const ApiException(
+          'Incorrect Start Code. Expected 4921 shared by customer.',
+          code: 'INVALID_START_CODE',
+          statusCode: 403);
     }
 
     return {
@@ -277,7 +400,8 @@ class KarigaarApiService {
           'creditedToArtisanGuildWallet': 80.00,
           'platformCancellationProcessingFee': 19.00,
         },
-        'message': 'Doorstep access denial verified via GPS dwell time (>15 mins). ₹80 transit fee credited to artisan wallet. Job closed cleanly.',
+        'message':
+            'Doorstep access denial verified via GPS dwell time (>15 mins). ₹80 transit fee credited to artisan wallet. Job closed cleanly.',
       },
     };
   }
@@ -307,7 +431,8 @@ class KarigaarApiService {
         'gst18Percent': gst18,
         'grandTotal': grandTotal,
         'completionOtpExpected': '7294',
-        'message': 'Invoice submitted. Customer must review and release Completion OTP (7294).',
+        'message':
+            'Invoice submitted. Customer must review and release Completion OTP (7294).',
       },
     };
   }
@@ -320,7 +445,10 @@ class KarigaarApiService {
   }) async {
     final cleanPartName = partName.trim();
     if (cleanPartName.isEmpty || price <= 0) {
-      throw const ApiException('Part name and valid price are required for 2FA approval.', code: 'INVALID_PART_DETAILS', statusCode: 422);
+      throw const ApiException(
+          'Part name and valid price are required for 2FA approval.',
+          code: 'INVALID_PART_DETAILS',
+          statusCode: 422);
     }
 
     final approvalToken = 'appr_2fa_${DateTime.now().millisecondsSinceEpoch}';
@@ -335,7 +463,8 @@ class KarigaarApiService {
         'approvalStatus': 'PENDING_CUSTOMER_2FA_APPROVAL',
         'customerApprovalPromptDispatched': true,
         'partsGatewayConvenienceFee': convenienceFee,
-        'message': 'Customer 2FA approval prompt dispatched for ₹$price spare part.',
+        'message':
+            'Customer 2FA approval prompt dispatched for ₹$price spare part.',
       },
     };
   }
@@ -346,11 +475,29 @@ class KarigaarApiService {
     required String completionOtp,
     int customerRating = 5,
     String feedbackNote = '',
+    int laborAmountPaise = 24900,
+    int platformTakeRatePercent = 12,
   }) async {
     final cleanCode = completionOtp.trim();
     if (cleanCode != '7294') {
-      throw const ApiException('Incorrect Completion OTP. Expected 7294.', code: 'INVALID_COMPLETION_OTP', statusCode: 403);
+      throw const ApiException('Incorrect Completion OTP. Expected 7294.',
+          code: 'INVALID_COMPLETION_OTP', statusCode: 403);
     }
+
+    if (customerRating < 1 ||
+        customerRating > 5 ||
+        laborAmountPaise < 0 ||
+        platformTakeRatePercent < 0 ||
+        platformTakeRatePercent > 100) {
+      throw const ApiException(
+          'Completion rating or labor settlement values are invalid.',
+          code: 'INVALID_SETTLEMENT_INPUT',
+          statusCode: 422);
+    }
+    final platformTakeRatePaise =
+        (laborAmountPaise * platformTakeRatePercent) ~/ 100;
+    final warrantyContributionPaise =
+        calculateWarrantyReserveContributionPaise(platformTakeRatePaise);
 
     return {
       'status': 'SUCCESS',
@@ -360,6 +507,9 @@ class KarigaarApiService {
         'escrowSettled': true,
         'customerRating': customerRating,
         'feedbackNote': feedbackNote,
+        'platformLaborTakeRatePaise': platformTakeRatePaise,
+        'warrantyReserveContributionPaise': warrantyContributionPaise,
+        'warrantyReserveRatePercent': warrantyReserveRatePercent,
         'warrantyActiveDays': 30,
         'masterShieldCover': 25000,
         'completedAt': DateTime.now().toUtc().toIso8601String(),
@@ -378,32 +528,43 @@ class KarigaarApiService {
   }) async {
     final effectiveVpa = (upiId ?? upiVpa ?? '').trim();
     if (effectiveVpa.isEmpty) {
-      throw const ApiException('UPI ID / VPA is required for IMPS withdrawal.', code: 'MISSING_UPI_ID', statusCode: 422);
+      throw const ApiException('UPI ID / VPA is required for IMPS withdrawal.',
+          code: 'MISSING_UPI_ID', statusCode: 422);
     }
 
     if (!amount.isFinite || amount <= 0) {
-      throw const ApiException('Withdrawal amount must be greater than zero.', code: 'INVALID_AMOUNT', statusCode: 422);
+      throw const ApiException('Withdrawal amount must be greater than zero.',
+          code: 'INVALID_AMOUNT', statusCode: 422);
     }
     if (!currentWalletBalance.isFinite || currentWalletBalance < 0) {
-      throw const ApiException('Wallet balance must be a valid finite non-negative amount.', code: 'INVALID_BALANCE', statusCode: 422);
+      throw const ApiException(
+          'Wallet balance must be a valid finite non-negative amount.',
+          code: 'INVALID_BALANCE',
+          statusCode: 422);
     }
     if (!minReserve.isFinite || minReserve < 0) {
-      throw const ApiException('Security reserve must be a valid finite non-negative amount.', code: 'INVALID_RESERVE', statusCode: 422);
+      throw const ApiException(
+          'Security reserve must be a valid finite non-negative amount.',
+          code: 'INVALID_RESERVE',
+          statusCode: 422);
     }
 
     final int balancePaise = (currentWalletBalance * 100).round();
     final int reservePaise = (minReserve * 100).round();
     final int amountPaise = (amount * 100).round();
     if (amountPaise <= 0) {
-      throw const ApiException('Withdrawal amount must be greater than zero.', code: 'INVALID_AMOUNT', statusCode: 422);
+      throw const ApiException('Withdrawal amount must be greater than zero.',
+          code: 'INVALID_AMOUNT', statusCode: 422);
     }
 
     final int availablePaise = balancePaise - reservePaise;
     if (availablePaise < amountPaise) {
-      final double availableRupees = availablePaise > 0 ? availablePaise / 100.0 : 0.0;
-      final String availableStr = availablePaise > 0 && availablePaise % 100 != 0
-          ? availableRupees.toStringAsFixed(2)
-          : (availablePaise > 0 ? (availablePaise ~/ 100).toString() : '0');
+      final double availableRupees =
+          availablePaise > 0 ? availablePaise / 100.0 : 0.0;
+      final String availableStr =
+          availablePaise > 0 && availablePaise % 100 != 0
+              ? availableRupees.toStringAsFixed(2)
+              : (availablePaise > 0 ? (availablePaise ~/ 100).toString() : '0');
       final String reserveStr = reservePaise % 100 == 0
           ? _formatIndianRupeesInt(reservePaise ~/ 100)
           : (reservePaise / 100.0).toStringAsFixed(2);
@@ -497,7 +658,8 @@ class KarigaarApiService {
         'platformFee': 19.0,
         'reason': reason,
         'capturedAt': DateTime.now().toUtc().toIso8601String(),
-        'message': '₹99 transit fee captured. ₹80 credited to artisan wallet, ₹19 platform fee retained.',
+        'message':
+            '₹99 transit fee captured. ₹80 credited to artisan wallet, ₹19 platform fee retained.',
       },
     };
   }
@@ -515,7 +677,8 @@ class KarigaarApiService {
         'mandateStatus': 'RELEASED',
         'holdAmountReleased': 99.0,
         'releasedAt': DateTime.now().toUtc().toIso8601String(),
-        'message': 'Standby ₹99 pre-auth hold released successfully upon job completion.',
+        'message':
+            'Standby ₹99 pre-auth hold released successfully upon job completion.',
       },
     };
   }
@@ -563,7 +726,8 @@ class KarigaarApiService {
         'artisanId': artisanId,
         'option': option,
         'amountPaid': amountPaid,
-        'virtualProxyNumber': KarigaarWhatsAppTelephonyService.defaultVirtualProxyDid,
+        'virtualProxyNumber':
+            KarigaarWhatsAppTelephonyService.defaultVirtualProxyDid,
         'zeroRawMsisdnLeakageGuaranteed': true,
         'unlockedAt': DateTime.now().toUtc().toIso8601String(),
         'message': isPass
@@ -612,7 +776,8 @@ class KarigaarApiService {
         'waveform': computedWaveform,
         'fileSizeBytes': durationSeconds * 2560,
         'uploadedAt': DateTime.now().toUtc().toIso8601String(),
-        'transcript': 'Customer voice scoping memo: Defect diagnosed for $tradeId. Urgent repair needed.',
+        'transcript':
+            'Customer voice scoping memo: Defect diagnosed for $tradeId. Urgent repair needed.',
       },
     };
   }
@@ -625,10 +790,12 @@ class KarigaarApiService {
     DateTime? now,
   }) async {
     if (tradeId.trim().isEmpty) {
-      throw const ApiException('tradeId is required.', code: 'MISSING_TRADE_ID', statusCode: 422);
+      throw const ApiException('tradeId is required.',
+          code: 'MISSING_TRADE_ID', statusCode: 422);
     }
     if (localityId.trim().isEmpty) {
-      throw const ApiException('localityId is required.', code: 'MISSING_LOCALITY_ID', statusCode: 422);
+      throw const ApiException('localityId is required.',
+          code: 'MISSING_LOCALITY_ID', statusCode: 422);
     }
 
     final DateTime parsedDate;
@@ -663,10 +830,12 @@ class KarigaarApiService {
     required String slotId,
   }) async {
     if (bookingId.trim().isEmpty) {
-      throw const ApiException('bookingId is required.', code: 'MISSING_BOOKING_ID', statusCode: 422);
+      throw const ApiException('bookingId is required.',
+          code: 'MISSING_BOOKING_ID', statusCode: 422);
     }
     if (slotId.trim().isEmpty) {
-      throw const ApiException('slotId is required.', code: 'INVALID_SLOT_ID', statusCode: 422);
+      throw const ApiException('slotId is required.',
+          code: 'INVALID_SLOT_ID', statusCode: 422);
     }
 
     final DateTime parsedDate;
@@ -685,7 +854,8 @@ class KarigaarApiService {
     final timeWindow = category.defaultTimeWindow;
     final scheduledSlotLabel = '${category.label} ($timeWindow)';
 
-    final reservationId = 'res_slot_${DateTime.now().millisecondsSinceEpoch.toString().substring(5)}';
+    final reservationId =
+        'res_slot_${DateTime.now().millisecondsSinceEpoch.toString().substring(5)}';
 
     return {
       'status': 'SUCCESS',
@@ -696,7 +866,10 @@ class KarigaarApiService {
         'slotId': slotId,
         'scheduledDate': dateStr,
         'scheduledSlot': scheduledSlotLabel,
-        'lockExpiresAt': DateTime.now().add(const Duration(minutes: 10)).toUtc().toIso8601String(),
+        'lockExpiresAt': DateTime.now()
+            .add(const Duration(minutes: 10))
+            .toUtc()
+            .toIso8601String(),
       },
     };
   }
