@@ -1,11 +1,5 @@
 # Track Registry
 
-## Active Tracks
-
-| Track ID | Type | Status | Phase | Started | Assignee |
-|---|---|---|---|---|---|
-| [firebase-backend_20261117](tracks/firebase-backend_20261117/) | feature | pending | 0/3 | 2026-11-17 | @team |
-
 ## Upcoming Tracks
 
 | Track ID | Type | Status | Phase | Dependencies | Scope / Ticket |
@@ -27,3 +21,4 @@
 | `onboarding-scoping_20261116` | feature | 2026-11-16 | 1 day | `78cb061` / PR #3 | Ticket T-08: Pre-login Guild Gate, 15s audio memo & arrival slot picker |
 | `role-isolation-monetization_20261116` | feature | 2026-11-16 | 1 day | `4cac530` / PR #4 | Ticket T-09: Strict UI role guards, Path A monetization, Guild Elite 5% floor |
 | `partner-profile-wallet_20261117` | feature | 2026-11-17 | 1 day | `d96c914` / PR #5 | Ticket T-10: Karigaar Partner Profile, Standalone Wallet & 3-Tab Bottom Nav |
+| `firebase-backend_20261117` | feature | 2026-11-18 | 1 day | `89759ad` | Ticket T-11: dual-mode Firestore/local repositories, graceful failover, and Firestore mandate/wallet-ledger rules |

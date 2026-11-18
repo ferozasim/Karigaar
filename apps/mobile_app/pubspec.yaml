@@ -27,6 +27,11 @@ dependencies:
   # Intent Dispatches (Path A Direct Call & WhatsApp)
   url_launcher: ^6.3.0
 
+  # T-11 persistence layer. Firebase is optional at runtime: the app defaults
+  # to deterministic in-memory repositories when no Firebase app is configured.
+  firebase_core: ^3.15.2
+  cloud_firestore: ^5.6.12
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

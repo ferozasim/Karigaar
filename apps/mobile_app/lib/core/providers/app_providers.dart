@@ -17,6 +17,7 @@ import 'package:karigaar_app/core/services/whatsapp_telephony_service.dart';
 import 'package:karigaar_app/core/services/radar_broadcast_service.dart';
 import '../config/app_data_service.dart';
 import '../config/app_constants.dart';
+import 'repository_providers.dart';
 
 /// Current Active User Role (Customer vs Artisan)
 final userRoleProvider = StateProvider<UserRole>((ref) => UserRole.customer);
@@ -73,13 +74,25 @@ final partnerLanguageProvider = StateProvider<String>((ref) => 'en');
 /// Initially empty so default per-district sample counts remain unchanged until edited/registered.
 class ArtisanDirectoryNotifier
     extends StateNotifier<Map<String, ArtisanProfileModel>> {
-  ArtisanDirectoryNotifier() : super(const {});
+  ArtisanDirectoryNotifier(this._ref) : super(const {});
+
+  final Ref _ref;
 
   void upsertArtisan(ArtisanProfileModel profile) {
     state = {
       ...state,
       profile.artisanId: profile,
     };
+    unawaited(_persist(profile));
+  }
+
+  Future<void> _persist(ArtisanProfileModel profile) async {
+    try {
+      await _ref.read(artisanRepositoryProvider).updateProfile(profile);
+    } catch (_) {
+      // Repository errors must not discard a local profile edit. In cloud mode
+      // the caller can surface retry UI once T-12 adds sync error telemetry.
+    }
   }
 
   void reset() {
@@ -89,7 +102,7 @@ class ArtisanDirectoryNotifier
 
 final artisanDirectoryOverridesProvider = StateNotifierProvider<
     ArtisanDirectoryNotifier, Map<String, ArtisanProfileModel>>((ref) {
-  return ArtisanDirectoryNotifier();
+  return ArtisanDirectoryNotifier(ref);
 });
 
 /// Sample Regional Corridor Verified Master Craftsmen + Live Synced Partner Overrides
@@ -392,6 +405,26 @@ final activeBookingProvider = StateProvider<BookingModel?>((ref) {
     createdAt: DateTime.now().subtract(const Duration(minutes: 12)),
   );
 });
+
+/// Mirrors the active workflow booking into the selected T-11 repository.
+/// Existing screen code can retain its StateProvider API while the booking is
+/// now persisted in local mode and ready for Firestore when Firebase is live.
+final activeBookingRepositoryMirrorProvider = Provider<void>((ref) {
+  ref.listen<BookingModel?>(activeBookingProvider, (previous, next) {
+    if (next == null) return;
+    unawaited(_saveActiveBooking(ref, next));
+  }, fireImmediately: true);
+});
+
+Future<void> _saveActiveBooking(Ref ref, BookingModel booking) async {
+  try {
+    await ref.read(bookingRepositoryProvider).save(booking);
+  } catch (_) {
+    // Keep the interactive workflow usable offline. Repository streams retain
+    // the last consistent state and a later T-12 sync layer will retry cloud
+    // failures with an idempotency key.
+  }
+}
 
 /// Karigaar Telemetry & Geospatial Service Provider (Contract 3)
 final telemetryServiceProvider = Provider<KarigaarTelemetryService>((ref) {
