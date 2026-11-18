@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/user_role.dart';
 import '../models/city_model.dart';
@@ -70,8 +71,11 @@ final selectedLocalityProvider = StateProvider<LocalityModel>((ref) {
   );
 });
 
-/// Partner Portal Language Toggle ('en' | 'hi' | 'mr')
+/// One shared, persisted app language code used by both user roles.
 final partnerLanguageProvider = StateProvider<String>((ref) => 'en');
+final appLocaleProvider = Provider<Locale>(
+  (ref) => Locale(ref.watch(partnerLanguageProvider)),
+);
 
 /// Mutable District Directory Overrides/Additions synced from Partner Onboarding & Profile Edits.
 /// Initially empty so default per-district sample counts remain unchanged until edited/registered.

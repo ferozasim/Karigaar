@@ -87,7 +87,8 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
           ],
         ),
       ),
-      bottomNavigationBar: const ArtisanBottomNav(currentTab: ArtisanNavTab.profile),
+      bottomNavigationBar:
+          const ArtisanBottomNav(currentTab: ArtisanNavTab.profile),
     );
   }
 
@@ -218,10 +219,12 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
                           runSpacing: 6,
                           children: [
                             _headerBadge(
-                              label: '${copy.guildIdPrefix}: ${profile.guildId}',
+                              label:
+                                  '${copy.guildIdPrefix}: ${profile.guildId}',
                               bg: AppColors.primaryLight,
                               fg: AppColors.secondaryLight,
-                              borderColor: AppColors.secondary.withValues(alpha: 0.5),
+                              borderColor:
+                                  AppColors.secondary.withValues(alpha: 0.5),
                             ),
                             _headerBadge(
                               label: profile.kycBadgeLabel,
@@ -502,7 +505,8 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
                 child: Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: AppColors.secondarySurfaceTint.withValues(alpha: 0.65),
+                    color:
+                        AppColors.secondarySurfaceTint.withValues(alpha: 0.65),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: AppColors.secondary.withValues(alpha: 0.35),
@@ -834,8 +838,7 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
                 ),
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
                   color: AppColors.tertiarySurfaceTint,
                   borderRadius: BorderRadius.circular(9999),
@@ -893,7 +896,6 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
                 .toList(),
           ),
           const SizedBox(height: 18),
-
           SizedBox(
             width: double.infinity,
             child: Wrap(
@@ -929,7 +931,6 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 12),
-
           if (profile.portfolioItems.isEmpty)
             Container(
               key: const Key('empty_portfolio_prompt'),
@@ -1288,7 +1289,8 @@ class ArtisanPartnerProfileScreen extends ConsumerWidget {
               ..hideCurrentSnackBar()
               ..showSnackBar(
                 SnackBar(
-                  content: Text('Added "${item.title}" to portfolio & synced live!'),
+                  content:
+                      Text('Added "${item.title}" to portfolio & synced live!'),
                   backgroundColor: AppColors.tertiary,
                 ),
               );
@@ -1416,7 +1418,6 @@ class _EditRateCardSheetState extends State<_EditRateCardSheet> {
                   ],
                 ),
                 const SizedBox(height: 12),
-
                 Text(copy.primaryTradeLabel, style: AppTypography.labelMd),
                 const SizedBox(height: 6),
                 Wrap(
@@ -1437,7 +1438,6 @@ class _EditRateCardSheetState extends State<_EditRateCardSheet> {
                   }).toList(),
                 ),
                 const SizedBox(height: 12),
-
                 Text(copy.guildRoleTypeLabel, style: AppTypography.labelMd),
                 const SizedBox(height: 6),
                 Wrap(
@@ -1454,7 +1454,6 @@ class _EditRateCardSheetState extends State<_EditRateCardSheet> {
                   }).toList(),
                 ),
                 const SizedBox(height: 12),
-
                 Text(copy.experienceTierLabel, style: AppTypography.labelMd),
                 const SizedBox(height: 6),
                 Wrap(
@@ -1471,7 +1470,6 @@ class _EditRateCardSheetState extends State<_EditRateCardSheet> {
                   }).toList(),
                 ),
                 const SizedBox(height: 12),
-
                 Text('${copy.visitFeeFieldLabel} (₹)',
                     style: AppTypography.labelMd),
                 const SizedBox(height: 6),
@@ -1504,7 +1502,6 @@ class _EditRateCardSheetState extends State<_EditRateCardSheet> {
                   },
                 ),
                 const SizedBox(height: 12),
-
                 Text('${copy.dihadiFieldLabel} (₹/day)',
                     style: AppTypography.labelMd),
                 const SizedBox(height: 6),
@@ -1537,7 +1534,6 @@ class _EditRateCardSheetState extends State<_EditRateCardSheet> {
                   },
                 ),
                 const SizedBox(height: 12),
-
                 Text(copy.activeDistrictLocalitiesLabel,
                     style: AppTypography.labelMd),
                 const SizedBox(height: 6),
@@ -1582,15 +1578,13 @@ class _EditRateCardSheetState extends State<_EditRateCardSheet> {
                   }).toList(),
                 ),
                 const SizedBox(height: 12),
-
                 TextFormField(
                   key: const Key('edit_bio_field'),
                   controller: _bioCtrl,
                   maxLines: 3,
                   decoration: InputDecoration(
                     labelText: copy.workBioLabel,
-                    hintText:
-                        'Describe your craft expertise & safety gear...',
+                    hintText: 'Describe your craft expertise & safety gear...',
                   ),
                   validator: (value) {
                     if ((value ?? '').trim().isEmpty) {
@@ -1600,7 +1594,6 @@ class _EditRateCardSheetState extends State<_EditRateCardSheet> {
                   },
                 ),
                 const SizedBox(height: 16),
-
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(

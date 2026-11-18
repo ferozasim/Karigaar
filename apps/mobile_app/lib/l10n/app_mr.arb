@@ -1,0 +1,21 @@
+{
+  "@@locale": "mr",
+  "languageName": "मराठी",
+  "languageSetting": "अॅपची भाषा",
+  "chooseLanguage": "तुमची भाषा निवडा",
+  "english": "English",
+  "hindi": "हिन्दी",
+  "marathi": "मराठी",
+  "searchServices": "काम, साहित्य किंवा कारागीर शोधा",
+  "browseServices": "सेवा पाहा",
+  "allTrades": "सर्व सेवा",
+  "explore": "शोधा",
+  "bookings": "बुकिंग्ज",
+  "messages": "संदेश",
+  "profile": "प्रोफाइल",
+  "quickServiceSearch": "सेवा शोधा",
+  "selectServicePrompt": "तुम्हाला कोणत्या कामासाठी मदत हवी आहे? टाइल, ग्रॅनाइट किंवा प्लंबिंग शोधा.",
+  "inspectionWarranty": "तपासणी ₹{fee} • {days} दिवसांची वॉरंटी",
+  "@inspectionWarranty": {"placeholders": {"fee": {}, "days": {}}},
+  "noServicesFound": "जुळणारी सेवा सापडली नाही. दुसरे काम किंवा व्यवसाय शोधा."
+}

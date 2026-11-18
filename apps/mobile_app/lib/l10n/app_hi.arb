@@ -1,0 +1,21 @@
+{
+  "@@locale": "hi",
+  "languageName": "हिन्दी",
+  "languageSetting": "ऐप की भाषा",
+  "chooseLanguage": "अपनी भाषा चुनें",
+  "english": "English",
+  "hindi": "हिन्दी",
+  "marathi": "मराठी",
+  "searchServices": "काम, सामग्री या कारीगर खोजें",
+  "browseServices": "सेवाएँ देखें",
+  "allTrades": "सभी सेवाएँ",
+  "explore": "खोजें",
+  "bookings": "बुकिंग",
+  "messages": "संदेश",
+  "profile": "प्रोफ़ाइल",
+  "quickServiceSearch": "सेवा खोजें",
+  "selectServicePrompt": "आपको किस काम में मदद चाहिए? टाइल, ग्रेनाइट या प्लंबिंग खोजें।",
+  "inspectionWarranty": "जांच ₹{fee} • {days} दिन की वारंटी",
+  "@inspectionWarranty": {"placeholders": {"fee": {}, "days": {}}},
+  "noServicesFound": "कोई सेवा नहीं मिली। दूसरा काम या कारीगर खोजें।"
+}

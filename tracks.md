@@ -6,6 +6,7 @@
 |---|---|---|---|---|---|
 | [cloud-webhooks_20261117](tracks/cloud-webhooks_20261117/) | feature | merged | 3/3 | PR #7, `b6981dc` | Ticket T-12: Firebase Functions v2 gateways for WhatsApp, Razorpay callbacks, and masked telephony status |
 | [warranty-disputes_20261117](tracks/warranty-disputes_20261117/) | feature | pushed, PR ready | 3/3 | `cloud-webhooks_20261117`, `d5da306` | Ticket T-13: 30% reserve calculation, completed-booking CSAT and warranty intake, admin arbitration prototype; server persistence pending |
+| [service-discovery-localization_20261118](tracks/service-discovery-localization_20261118/) | feature | in progress | 0/3 | `origin/main` (`90e97d7`) | Ticket T-14: task-first service discovery, trade aliases, and shared app-wide language preference |
 
 ## Completed Tracks (Historical Milestone Baselines)
 

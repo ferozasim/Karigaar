@@ -730,6 +730,14 @@ Karigaar_app/
 
 ## 7. Master Ticket Backlog, Pre-Login Karigaar Onboarding & Execution Status (`T-01` – `T-13`)
 
+### T-14: Task-First Discovery & App-Wide Localization
+
+**Business goal:** Let homeowners search for the job or material they know (for example, tile repair or granite work) and still reach the right trade provider. Give homeowners and Karigaars one persistent language preference that controls the whole app.
+
+**System design:** Keep canonical service/trade IDs as the booking and backend contract. A local discovery catalog maps task words, materials, regional spellings, and trade aliases onto those IDs; the catalog is data-only so a future API can replace it without changing booking identity. Localization is owned at the app shell, with a persisted locale shared by both roles and ARB resources as the translation source. Search aliases and UI translations remain client-side and work offline.
+
+**Acceptance:** Search results are ranked from task names, package descriptions, and aliases; tile and stone/granite searches expose the masonry provider without making duplicate trades. Selecting a result preserves the canonical trade ID. Switching English/Hindi/Marathi updates the `MaterialApp` locale, is available to homeowner and artisan users, and survives restart. User-facing copy, validation, empty/error states, and dynamic service data must be translated before this ticket is complete.
+
 ### 7.1 Complete Master Ticket Registry
 
 | Ticket | Title | Feature IDs | Branch | Status | Commit / Verification Baseline |
