@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/models/booking_model.dart';
 import '../../../core/config/app_data_service.dart';
 import '../../../core/providers/app_providers.dart';
+import '../../../core/services/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../shared/widgets/trust_shield_badge.dart';
@@ -50,6 +51,8 @@ class _CustomerBookingsScreenState
       'locality': 'Anand Nagar, Nanded',
       'scheduledSlot': '02 Nov 2026 • Completed',
       'amount': 640,
+      'cover': 25000,
+      'daysSinceCompletion': 6,
       'status': 'Completed',
       'warranty': 'Warranty Active (24 days left)',
     },
@@ -62,6 +65,8 @@ class _CustomerBookingsScreenState
       'locality': 'CIDCO, Nanded',
       'scheduledSlot': '18 Oct 2026 • Completed',
       'amount': 1150,
+      'cover': 10000,
+      'daysSinceCompletion': 21,
       'status': 'Completed',
       'warranty': 'Warranty Active (9 days left)',
     },
@@ -84,9 +89,8 @@ class _CustomerBookingsScreenState
   @override
   Widget build(BuildContext context) {
     final activeBooking = ref.watch(activeBookingProvider);
-    final activeStatusText = activeBooking != null
-        ? _statusLabel(activeBooking.status)
-        : 'En-Route';
+    final activeStatusText =
+        activeBooking != null ? _statusLabel(activeBooking.status) : 'En-Route';
 
     final showActiveCard = activeBooking != null &&
         (_selectedTab == 'All' ||
@@ -309,7 +313,8 @@ class _CustomerBookingsScreenState
               if (booking.scheduledSlot != null || booking.isEmergencyDispatch)
                 Container(
                   key: const Key('active_booking_slot_badge'),
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: booking.isEmergencyDispatch
                         ? const Color(0xFFFEF2F2)
@@ -351,19 +356,23 @@ class _CustomerBookingsScreenState
                     ],
                   ),
                 ),
-              if (booking.audioMemoUrl != null || booking.audioMemoDurationSeconds != null)
+              if (booking.audioMemoUrl != null ||
+                  booking.audioMemoDurationSeconds != null)
                 Container(
                   key: const Key('active_booking_audio_badge'),
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: AppColors.secondarySurfaceTint,
                     borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: AppColors.secondary.withValues(alpha: 0.3)),
+                    border: Border.all(
+                        color: AppColors.secondary.withValues(alpha: 0.3)),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.mic_rounded, size: 13, color: AppColors.secondary),
+                      const Icon(Icons.mic_rounded,
+                          size: 13, color: AppColors.secondary),
                       const SizedBox(width: 4),
                       Flexible(
                         child: Text(
@@ -562,7 +571,8 @@ class _CustomerBookingsScreenState
                 child: Text(
                   item['status'] as String,
                   style: AppTypography.labelSm.copyWith(
-                    color: isUpcoming ? AppColors.secondary : AppColors.tertiary,
+                    color:
+                        isUpcoming ? AppColors.secondary : AppColors.tertiary,
                   ),
                 ),
               ),
@@ -611,9 +621,214 @@ class _CustomerBookingsScreenState
               ),
             ],
           ),
+          if (!isUpcoming) ...[
+            const SizedBox(height: 10),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                OutlinedButton.icon(
+                  key: Key('csat_${item['id']}'),
+                  onPressed: () => _showCsatSheet(context, item),
+                  icon: const Icon(Icons.star_outline_rounded, size: 16),
+                  label: const Text('Rate service'),
+                ),
+                OutlinedButton.icon(
+                  key: Key('warranty_claim_${item['id']}'),
+                  onPressed: () => _showWarrantyClaimSheet(context, item),
+                  icon: const Icon(Icons.shield_outlined, size: 16),
+                  label: const Text('Raise warranty claim'),
+                ),
+              ],
+            ),
+          ],
         ],
       ),
     );
+  }
+
+  Future<void> _showCsatSheet(
+    BuildContext context,
+    Map<String, dynamic> booking,
+  ) async {
+    var overall = 5;
+    var cleanliness = 5;
+    var sawdust = 5;
+    final noteController = TextEditingController();
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (sheetContext) => StatefulBuilder(
+        builder: (context, setSheetState) => Padding(
+          padding: EdgeInsets.fromLTRB(
+            20,
+            20,
+            20,
+            MediaQuery.of(context).viewInsets.bottom + 24,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('How was the service?', style: AppTypography.headlineSm),
+              const SizedBox(height: 12),
+              _ratingRow('Overall', overall,
+                  (value) => setSheetState(() => overall = value)),
+              _ratingRow('Cleanliness', cleanliness,
+                  (value) => setSheetState(() => cleanliness = value)),
+              _ratingRow('Care & finish', sawdust,
+                  (value) => setSheetState(() => sawdust = value)),
+              TextField(
+                controller: noteController,
+                decoration:
+                    const InputDecoration(labelText: 'Optional feedback'),
+                maxLength: 240,
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    final result =
+                        await KarigaarApiService.instance.submitPostJobCsat(
+                      bookingId: booking['id'] as String,
+                      overallRating: overall,
+                      cleanlinessRating: cleanliness,
+                      sawdustRating: sawdust,
+                      feedbackNote: noteController.text,
+                    );
+                    ref.read(postJobCsatProvider.notifier).update((state) => {
+                          ...state,
+                          booking['id'] as String:
+                              result['data'] as Map<String, dynamic>,
+                        });
+                    if (context.mounted) Navigator.pop(sheetContext);
+                  },
+                  child: const Text('Submit rating'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    noteController.dispose();
+  }
+
+  Widget _ratingRow(String label, int rating, ValueChanged<int> onChanged) {
+    return Row(
+      children: [
+        Expanded(child: Text(label, style: AppTypography.labelMd)),
+        for (var value = 1; value <= 5; value++)
+          IconButton(
+            visualDensity: VisualDensity.compact,
+            onPressed: () => onChanged(value),
+            icon: Icon(
+              value <= rating ? Icons.star_rounded : Icons.star_outline_rounded,
+              color: AppColors.secondary,
+            ),
+          ),
+      ],
+    );
+  }
+
+  Future<void> _showWarrantyClaimSheet(
+    BuildContext context,
+    Map<String, dynamic> booking,
+  ) async {
+    final amountController = TextEditingController(text: '1000');
+    final reasonController = TextEditingController();
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (sheetContext) => Padding(
+        padding: EdgeInsets.fromLTRB(
+          20,
+          20,
+          20,
+          MediaQuery.of(context).viewInsets.bottom + 24,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('30-day warranty claim', style: AppTypography.headlineSm),
+            const SizedBox(height: 8),
+            Text(
+                '₹250 deductible applies. Claims are reviewed by Karigaar support.',
+                style: AppTypography.bodySm),
+            TextField(
+              controller: amountController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'Estimated damage amount (₹)',
+                helperText: 'Cover limit: ₹${booking['cover'] ?? 25000}',
+              ),
+            ),
+            TextField(
+              controller: reasonController,
+              decoration:
+                  const InputDecoration(labelText: 'Describe the issue'),
+              maxLength: 400,
+              maxLines: 3,
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () async {
+                  final amount = int.tryParse(amountController.text.trim());
+                  if (amount == null || reasonController.text.trim().isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content:
+                              Text('Enter a valid amount and claim reason.')),
+                    );
+                    return;
+                  }
+                  try {
+                    final result =
+                        await KarigaarApiService.instance.raiseWarrantyClaim(
+                      bookingId: booking['id'] as String,
+                      requestedAmountPaise: amount * 100,
+                      damageCoverAmountPaise:
+                          (booking['cover'] as int? ?? 25000) * 100,
+                      completedAt: DateTime.now().subtract(
+                        Duration(
+                            days: booking['daysSinceCompletion'] as int? ?? 6),
+                      ),
+                      warrantyEligible: true,
+                      reason: reasonController.text,
+                    );
+                    ref
+                        .read(warrantyClaimsProvider.notifier)
+                        .update((claims) => [
+                              result['data'] as Map<String, dynamic>,
+                              ...claims,
+                            ]);
+                    if (context.mounted) Navigator.pop(sheetContext);
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text(
+                                'Claim sent for review. We’ll update you in this booking.')),
+                      );
+                    }
+                  } on ApiException catch (error) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(error.message)),
+                      );
+                    }
+                  }
+                },
+                child: const Text('Submit claim'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+    amountController.dispose();
+    reasonController.dispose();
   }
 
   Widget _buildBottomNav(BuildContext context) {

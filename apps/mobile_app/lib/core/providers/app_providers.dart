@@ -12,6 +12,7 @@ import '../models/audio_memo_model.dart';
 import '../models/arrival_slot_model.dart';
 import '../models/preventive_bundle_model.dart';
 import 'package:karigaar_app/core/services/audio_service.dart';
+import 'package:karigaar_app/core/services/api_service.dart';
 import 'package:karigaar_app/core/services/telemetry_service.dart';
 import 'package:karigaar_app/core/services/whatsapp_telephony_service.dart';
 import 'package:karigaar_app/core/services/radar_broadcast_service.dart';
@@ -23,7 +24,8 @@ import 'repository_providers.dart';
 final userRoleProvider = StateProvider<UserRole>((ref) => UserRole.customer);
 
 /// Regional Launch Districts List (7 Districts: Nanded, Parbhani, Latur, Hingoli, Sambhajinagar, Nagpur, Nizamabad)
-final regionalDistrictsProvider = FutureProvider<List<CityConfigModel>>((ref) async {
+final regionalDistrictsProvider =
+    FutureProvider<List<CityConfigModel>>((ref) async {
   return AppDataService.loadRegionalDistricts();
 });
 
@@ -38,7 +40,8 @@ final pilotCityProvider = FutureProvider<CityConfigModel>((ref) async {
 });
 
 /// Active District Localities List Provider
-final nandedLocalitiesProvider = FutureProvider<List<LocalityModel>>((ref) async {
+final nandedLocalitiesProvider =
+    FutureProvider<List<LocalityModel>>((ref) async {
   final district = ref.watch(selectedDistrictProvider);
   return district.localities;
 });
@@ -109,7 +112,8 @@ final artisanDirectoryOverridesProvider = StateNotifierProvider<
 final topArtisansProvider = Provider<List<ArtisanProfileModel>>((ref) {
   final selectedDistrict = ref.watch(selectedDistrictProvider);
   final overrides = ref.watch(artisanDirectoryOverridesProvider);
-  final baseList = AppDataService.getArtisansForDistrict(selectedDistrict.cityId);
+  final baseList =
+      AppDataService.getArtisansForDistrict(selectedDistrict.cityId);
 
   if (overrides.isEmpty) {
     return baseList;
@@ -168,7 +172,8 @@ final artisanDutyOnlineProvider = StateProvider<bool>((ref) {
 });
 
 /// Karigaar Radar Broadcast Broker Service Provider (Contract 2)
-final radarBroadcastServiceProvider = Provider<KarigaarRadarBroadcastService>((ref) {
+final radarBroadcastServiceProvider =
+    Provider<KarigaarRadarBroadcastService>((ref) {
   final service = KarigaarRadarBroadcastService.instance;
   final duty = ref.watch(artisanDutyOnlineProvider);
   service.setArtisanDutyOnline(duty);
@@ -176,11 +181,13 @@ final radarBroadcastServiceProvider = Provider<KarigaarRadarBroadcastService>((r
 });
 
 /// Active Incoming Radar Broadcast State
-class ActiveRadarBroadcastNotifier extends StateNotifier<JobRadarBroadcastModel?> {
+class ActiveRadarBroadcastNotifier
+    extends StateNotifier<JobRadarBroadcastModel?> {
   final KarigaarRadarBroadcastService _service;
   StreamSubscription<JobRadarBroadcastModel?>? _sub;
 
-  ActiveRadarBroadcastNotifier(this._service) : super(_service.activeBroadcast) {
+  ActiveRadarBroadcastNotifier(this._service)
+      : super(_service.activeBroadcast) {
     _sub = _service.broadcastStream.listen((broadcast) {
       state = broadcast;
     });
@@ -197,8 +204,8 @@ class ActiveRadarBroadcastNotifier extends StateNotifier<JobRadarBroadcastModel?
   }
 }
 
-final activeRadarBroadcastProvider =
-    StateNotifierProvider<ActiveRadarBroadcastNotifier, JobRadarBroadcastModel?>((ref) {
+final activeRadarBroadcastProvider = StateNotifierProvider<
+    ActiveRadarBroadcastNotifier, JobRadarBroadcastModel?>((ref) {
   final service = ref.watch(radarBroadcastServiceProvider);
   return ActiveRadarBroadcastNotifier(service);
 });
@@ -256,7 +263,8 @@ class RadarUnfulfilledNotifier extends StateNotifier<RadarUnfulfilledEvent?> {
 }
 
 final radarUnfulfilledEventProvider =
-    StateNotifierProvider<RadarUnfulfilledNotifier, RadarUnfulfilledEvent?>((ref) {
+    StateNotifierProvider<RadarUnfulfilledNotifier, RadarUnfulfilledEvent?>(
+        (ref) {
   final service = ref.watch(radarBroadcastServiceProvider);
   return RadarUnfulfilledNotifier(service);
 });
@@ -268,7 +276,8 @@ class RadarCountdownNotifier extends StateNotifier<int> {
   Timer? _timer;
 
   RadarCountdownNotifier([this._service])
-      : super(_service?.currentCountdown ?? AppConstants.radarCountdownSeconds) {
+      : super(
+            _service?.currentCountdown ?? AppConstants.radarCountdownSeconds) {
     if (_service != null) {
       _sub = _service.countdownStream.listen((count) {
         state = count;
@@ -279,7 +288,8 @@ class RadarCountdownNotifier extends StateNotifier<int> {
   void startTimer() {
     if (_service != null) {
       if (_service.activeBroadcast == null) {
-        _service.startBroadcast(KarigaarRadarBroadcastService.createSampleBroadcast());
+        _service.startBroadcast(
+            KarigaarRadarBroadcastService.createSampleBroadcast());
       } else {
         _service.startBroadcast(_service.activeBroadcast!);
       }
@@ -358,7 +368,8 @@ final selectedArrivalSlotProvider = StateProvider<ScheduledArrivalSlot?>((ref) {
 
 /// Available Arrival Slots for Selected Date
 final arrivalSlotsForDateProvider =
-    FutureProvider.family<List<ScheduledArrivalSlot>, DateTime>((ref, date) async {
+    FutureProvider.family<List<ScheduledArrivalSlot>, DateTime>(
+        (ref, date) async {
   return ArrivalSlotModel.defaultSlotsForDate(date);
 });
 
@@ -395,9 +406,23 @@ final activeBookingProvider = StateProvider<BookingModel?>((ref) {
     audioMemoUrl: 'https://cdn.karigaar.in/audio/memo_8821.aac',
     audioMemoDurationSeconds: 14,
     audioMemoWaveform: const [
-      0.15, 0.42, 0.68, 0.85, 0.92, 0.74, 0.61, 0.88, 0.95, 0.72, 0.54, 0.38, 0.22, 0.10
+      0.15,
+      0.42,
+      0.68,
+      0.85,
+      0.92,
+      0.74,
+      0.61,
+      0.88,
+      0.95,
+      0.72,
+      0.54,
+      0.38,
+      0.22,
+      0.10
     ],
-    audioMemoTranscript: 'MCB switch sparks when turning on AC. Need 32A replacement.',
+    audioMemoTranscript:
+        'MCB switch sparks when turning on AC. Need 32A replacement.',
     scheduledDate: DateTime.now(),
     scheduledSlot: 'Morning (9:00 AM - 12:00 PM)',
     scheduledSlotId: 'slot_morning',
@@ -441,11 +466,12 @@ final liveTrackingFeedProvider =
 });
 
 /// Artisan En-Route Telemetry HUD Status Provider (Foreground vs Background toggle)
-final artisanTelemetryStatusProvider =
-    StateProvider<ArtisanTelemetryStatus>((ref) => const ArtisanTelemetryStatus());
+final artisanTelemetryStatusProvider = StateProvider<ArtisanTelemetryStatus>(
+    (ref) => const ArtisanTelemetryStatus());
 
 /// WhatsApp & Telephony Cloud Proxy Service Provider (Ticket T-06)
-final whatsappTelephonyServiceProvider = Provider<KarigaarWhatsAppTelephonyService>((ref) {
+final whatsappTelephonyServiceProvider =
+    Provider<KarigaarWhatsAppTelephonyService>((ref) {
   return KarigaarWhatsAppTelephonyService.instance;
 });
 
@@ -600,7 +626,9 @@ class CurrentArtisanProfileNotifier extends StateNotifier<ArtisanProfileModel> {
   }
 
   void _syncToDirectory(ArtisanProfileModel updated) {
-    _ref.read(artisanDirectoryOverridesProvider.notifier).upsertArtisan(updated);
+    _ref
+        .read(artisanDirectoryOverridesProvider.notifier)
+        .upsertArtisan(updated);
   }
 
   void updateProfileAndRateCard({
@@ -844,6 +872,30 @@ final walletSettlementLedgerProvider = StateNotifierProvider<
     WalletSettlementLedgerNotifier, List<WalletSettlementEntry>>((ref) {
   return WalletSettlementLedgerNotifier();
 });
+
+/// Demo reserve ledger in paise; live accounting is authoritative on backend.
+class WarrantyReserveNotifier extends StateNotifier<int> {
+  WarrantyReserveNotifier() : super(1250000);
+
+  void recordPlatformLaborTakeRate(int takeRatePaise) {
+    final contribution =
+        KarigaarApiService.instance.calculateWarrantyReserveContributionPaise(
+      takeRatePaise,
+    );
+    state += contribution;
+  }
+}
+
+final warrantyReservePoolProvider =
+    StateNotifierProvider<WarrantyReserveNotifier, int>(
+  (ref) => WarrantyReserveNotifier(),
+);
+
+final warrantyClaimsProvider =
+    StateProvider<List<Map<String, dynamic>>>((ref) => const []);
+
+final postJobCsatProvider =
+    StateProvider<Map<String, Map<String, dynamic>>>((ref) => const {});
 
 /// Derived Today's Earnings from Completed Job Credits
 final todayEarningsProvider = Provider<double>((ref) {
