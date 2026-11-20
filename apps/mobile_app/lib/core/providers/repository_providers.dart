@@ -60,6 +60,8 @@ class RepositoryBundle {
     }
     if (booking is InMemoryBookingRepository) {
       await (booking as InMemoryBookingRepository).dispose();
+    } else if (booking is PersistentLocalBookingRepository) {
+      await (booking as PersistentLocalBookingRepository).dispose();
     }
     if (wallet is InMemoryWalletRepository) {
       await (wallet as InMemoryWalletRepository).dispose();
@@ -90,7 +92,7 @@ RepositoryBundle createLocalRepositoryBundle({
     artisan: InMemoryArtisanRepository(
       artisans ?? AppDataService.getAllSampleArtisans(),
     ),
-    booking: InMemoryBookingRepository(bookings),
+    booking: PersistentLocalBookingRepository(seed: bookings),
     mandate: InMemoryMandateRepository(),
     wallet: InMemoryWalletRepository(
       wallets: wallets ??
@@ -167,6 +169,11 @@ final repositoryArtisansProvider =
 final repositoryActiveBookingsProvider =
     StreamProvider.family<List<BookingModel>, String>((ref, customerId) {
   return ref.watch(bookingRepositoryProvider).streamActiveBookings(customerId);
+});
+
+final repositoryBookingProvider =
+    StreamProvider.family<BookingModel?, String>((ref, bookingId) {
+  return ref.watch(bookingRepositoryProvider).streamBooking(bookingId);
 });
 
 final repositoryWalletProvider =

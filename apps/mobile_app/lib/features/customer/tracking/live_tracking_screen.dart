@@ -3,7 +3,9 @@ import '../../../l10n/localized_strings.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/models/booking_model.dart';
+import '../../../core/models/user_role.dart';
 import '../../../core/providers/app_providers.dart';
+import '../../../core/providers/repository_providers.dart';
 import '../../../core/services/api_service.dart';
 import '../../../core/services/contact_intent_service.dart';
 import '../../../core/theme/app_colors.dart';
@@ -17,7 +19,11 @@ class LiveTrackingScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booking = ref.watch(activeBookingProvider);
+    final persistedBooking =
+        ref.watch(repositoryBookingProvider(bookingId)).valueOrNull;
+    final currentBooking = ref.watch(activeBookingProvider);
+    final booking = persistedBooking ??
+        (currentBooking?.bookingId == bookingId ? currentBooking : null);
 
     if (booking == null) {
       return Scaffold(
@@ -83,6 +89,55 @@ class LiveTrackingScreen extends ConsumerWidget {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                if (booking.status == BookingStatus.dispatchFailed)
+                  Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.only(bottom: 12),
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFF7ED),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFF59E0B)),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('No artisan accepted this request yet.',
+                            style: AppTypography.labelLg),
+                        const SizedBox(height: 6),
+                        Text('Retry dispatch to search the supported service area.',
+                            style: AppTypography.bodySm),
+                        const SizedBox(height: 10),
+                        FilledButton.icon(
+                          onPressed: () async {
+                            try {
+                              final updated = await ref
+                                  .read(bookingRepositoryProvider)
+                                  .transitionBooking(
+                                    bookingId: booking.bookingId,
+                                    to: BookingStatus.broadcasting,
+                                    actorId: booking.customerId,
+                                    actorRole: UserRole.customer,
+                                    eventKey:
+                                        '${booking.idempotencyKey}_retry_${booking.statusEvents.length}',
+                                    reason: 'Customer retried unfulfilled dispatch',
+                                  );
+                              ref.read(activeBookingProvider.notifier).state =
+                                  updated;
+                            } catch (error) {
+                              if (!context.mounted) return;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Retry failed: $error')),
+                              );
+                            }
+                          },
+                          icon: const Icon(Icons.refresh_rounded),
+                          label: const Text('Retry dispatch'),
                         ),
                       ],
                     ),
@@ -999,9 +1054,20 @@ class LiveTrackingScreen extends ConsumerWidget {
                           mandateId: booking.mandateId ?? 'man_preauth_9981',
                         );
 
+                        var completed = booking;
+                        if (booking.status != BookingStatus.completed) {
+                          completed = await ref
+                              .read(bookingRepositoryProvider)
+                              .transitionBooking(
+                                bookingId: booking.bookingId,
+                                to: BookingStatus.completed,
+                                actorId: booking.customerId,
+                                actorRole: UserRole.customer,
+                                eventKey: '${booking.idempotencyKey}_completed',
+                              );
+                        }
                         ref.read(activeBookingProvider.notifier).state =
-                            booking.copyWith(
-                          status: BookingStatus.completed,
+                            completed.copyWith(
                           mandateStatus: UpiMandateStatus.released,
                         );
 
@@ -1069,6 +1135,7 @@ class LiveTrackingScreen extends ConsumerWidget {
       case BookingStatus.cancelledByCustomer:
       case BookingStatus.cancelledByArtisan:
       case BookingStatus.disputed:
+      case BookingStatus.dispatchFailed:
         return 0;
     }
   }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/user_role.dart';
@@ -457,9 +458,12 @@ final activeBookingProvider = StateProvider<BookingModel?>((ref) {
 /// now persisted in local mode and ready for Firestore when Firebase is live.
 final activeBookingRepositoryMirrorProvider = Provider<void>((ref) {
   ref.listen<BookingModel?>(activeBookingProvider, (previous, next) {
-    if (next == null) return;
+    if (next == null || previous == null || previous.status != next.status) {
+      return;
+    }
+    if (jsonEncode(previous.toJson()) == jsonEncode(next.toJson())) return;
     unawaited(_saveActiveBooking(ref, next));
-  }, fireImmediately: true);
+  });
 });
 
 Future<void> _saveActiveBooking(Ref ref, BookingModel booking) async {

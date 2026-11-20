@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/providers/app_providers.dart';
+import '../../../core/providers/repository_providers.dart';
 import '../../../core/models/booking_model.dart';
+import '../../../core/models/user_role.dart';
 import '../../../core/services/api_service.dart';
 import '../../../core/services/contact_intent_service.dart';
 import '../../../core/theme/app_colors.dart';
@@ -44,19 +46,66 @@ class _ArtisanActiveJobScreenState
     ),
   ];
 
-  void _verifyStartOtp() {
+  Future<BookingModel> _transitionBooking(
+    BookingModel booking,
+    BookingStatus to, {
+    required String eventKey,
+    String? reason,
+  }) {
+    final identity = ref.read(verifiedPhoneIdentityProvider);
+    final actorId = identity?.userId ??
+        booking.assignedArtisanId ??
+        'art_nanded_01';
+    return ref.read(bookingRepositoryProvider).transitionBooking(
+          bookingId: booking.bookingId,
+          to: to,
+          actorId: actorId,
+          actorRole: UserRole.artisan,
+          eventKey: eventKey,
+          reason: reason,
+        );
+  }
+
+  Future<void> _verifyStartOtp() async {
     final code = _startOtpController.text.trim();
     final booking = ref.read(activeBookingProvider);
     final isValid =
         booking != null ? booking.verifyStartOtp(code) : code == '4921';
     if (isValid) {
-      setState(() => _startOtpVerified = true);
       if (booking != null) {
-        ref.read(activeBookingProvider.notifier).state = booking.copyWith(
-          status: BookingStatus.workInProgress,
-          arrivalTime: DateTime.now(),
-        );
+        try {
+          var updated = booking;
+          if (updated.status == BookingStatus.artisanEnRoute) {
+            updated = await _transitionBooking(
+              updated,
+              BookingStatus.artisanArrived,
+              eventKey: '${updated.idempotencyKey}_arrived',
+            );
+          }
+          if (updated.status == BookingStatus.artisanArrived) {
+            updated = await _transitionBooking(
+              updated,
+              BookingStatus.workInProgress,
+              eventKey: '${updated.idempotencyKey}_work_started',
+            );
+          }
+          if (updated.status != BookingStatus.workInProgress) {
+            throw StateError('Booking is not ready to start work.');
+          }
+          ref.read(activeBookingProvider.notifier).state = updated;
+          if (mounted) setState(() => _startOtpVerified = true);
+        } catch (error) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Could not start this booking: $error')),
+            );
+          }
+          return;
+        }
+      } else {
+        setState(() => _startOtpVerified = true);
       }
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text('Start Code $code verified! Stopwatch activated.')),
@@ -88,10 +137,13 @@ class _ArtisanActiveJobScreenState
           .read(artisanWalletBalanceProvider.notifier)
           .update((bal) => bal + credited);
       if (booking != null) {
-        ref.read(activeBookingProvider.notifier).state = booking.copyWith(
-          status: BookingStatus.cancelledByCustomer,
-          dwellMinutesAtDestination: _dwellMinutes,
+        final updated = await _transitionBooking(
+          booking,
+          BookingStatus.cancelledByArtisan,
+          eventKey: '${booking.idempotencyKey}_doorstep_denied',
+          reason: 'Customer denied access after arrival dwell time.',
         );
+        ref.read(activeBookingProvider.notifier).state = updated;
       }
 
       if (mounted) {
@@ -263,8 +315,14 @@ class _ArtisanActiveJobScreenState
 
       setState(() => _invoiceSubmitted = true);
       if (booking != null) {
-        ref.read(activeBookingProvider.notifier).state = booking.copyWith(
-          status: BookingStatus.completionPendingOtp,
+        final updated = booking.status == BookingStatus.completionPendingOtp
+            ? booking
+            : await _transitionBooking(
+                booking,
+                BookingStatus.completionPendingOtp,
+                eventKey: '${booking.idempotencyKey}_invoice_submitted',
+              );
+        ref.read(activeBookingProvider.notifier).state = updated.copyWith(
           parts: List<BillPartItem>.from(_parts),
           partsGatewaySurcharge: data?['partsGatewaySurcharge2Percent'] as int?,
           gstAmount: data?['gst18Percent'] as int?,
@@ -292,6 +350,12 @@ class _ArtisanActiveJobScreenState
   @override
   Widget build(BuildContext context) {
     _strings = localizedStrings(context);
+    ref.listen(repositoryBookingProvider(widget.bookingId), (previous, next) {
+      final persisted = next.valueOrNull;
+      if (persisted != null && mounted) {
+        ref.read(activeBookingProvider.notifier).state = persisted;
+      }
+    });
     final booking = ref.watch(activeBookingProvider);
     final telemetryStatus = ref.watch(artisanTelemetryStatusProvider);
     final labor = booking?.laborFee ?? 249;
@@ -966,7 +1030,7 @@ class _ArtisanActiveJobScreenState
             KarigaarButton(
               label: 'Finish Job & Claim ₹$totalBill Instant IMPS Payout',
               variant: KarigaarButtonVariant.urgent,
-              onPressed: () {
+              onPressed: () async {
                 final pin = _completionOtpController.text.trim();
                 final currentBooking = ref.read(activeBookingProvider);
                 final isPinValid = currentBooking != null
@@ -974,20 +1038,30 @@ class _ArtisanActiveJobScreenState
                     : pin == '7294';
                 if (isPinValid) {
                   if (currentBooking != null) {
+                    var completed = currentBooking;
+                    if (currentBooking.status ==
+                        BookingStatus.completionPendingOtp) {
+                      completed = await _transitionBooking(
+                        currentBooking,
+                        BookingStatus.completed,
+                        eventKey:
+                            '${currentBooking.idempotencyKey}_artisan_completion',
+                      );
+                    }
                     ref.read(activeBookingProvider.notifier).state =
-                        currentBooking.copyWith(
-                      status: BookingStatus.settled,
+                        completed.copyWith(
                       parts: List<BillPartItem>.from(_parts),
                       partsGatewaySurcharge: partsSurcharge,
                       gstAmount: gst18,
                       grandTotal: totalBill,
-                      completionTime: DateTime.now(),
                     );
                   }
                   ref.read(artisanWalletBalanceProvider.notifier).update(
                         (balance) => balance + totalBill,
                       );
-                  showDialog<void>(
+                  if (!context.mounted) return;
+                  final router = GoRouter.of(context);
+                  await showDialog<void>(
                     context: context,
                     builder: (ctx) => AlertDialog(
                       title: Text(_strings.jobPayoutSettled),
@@ -999,7 +1073,7 @@ class _ArtisanActiveJobScreenState
                           onPressed: () {
                             Navigator.pop(ctx);
                             try {
-                              context.go('/artisan/radar');
+                              router.go('/artisan/radar');
                             } catch (_) {}
                           },
                           child: Text(_strings.jobBackRadar),

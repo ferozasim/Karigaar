@@ -1,3 +1,5 @@
+import 'booking_lifecycle.dart';
+
 enum BookingStatus {
   draft,
   broadcasting,
@@ -12,6 +14,7 @@ enum BookingStatus {
   cancelledByCustomer,
   cancelledByArtisan,
   disputed,
+  dispatchFailed,
   settled;
 
   String get label {
@@ -42,6 +45,8 @@ enum BookingStatus {
         return 'Cancelled by Artisan';
       case BookingStatus.disputed:
         return 'Dispute In Review';
+      case BookingStatus.dispatchFailed:
+        return 'Dispatch needs a retry';
       case BookingStatus.settled:
         return 'Settled & Paid Out';
     }
@@ -119,6 +124,7 @@ class BillPartItem {
 
 class BookingModel {
   final String bookingId;
+  final String idempotencyKey;
   final String customerId;
   final String customerName;
   final String customerPhone;
@@ -130,6 +136,8 @@ class BookingModel {
   final String localityId;
   final String localityName;
   final String address;
+  final String problemDescription;
+  final bool issuePhotoAttached;
   final BookingStatus status;
   final String startOtp; // Default '4921'
   final String completionOtp;
@@ -145,6 +153,7 @@ class BookingModel {
   final DateTime createdAt;
   final DateTime? arrivalTime;
   final DateTime? completionTime;
+  final List<BookingStatusEvent> statusEvents;
 
   // Scheduled Arrival Slot Fields (Ticket T-08 F-11)
   final DateTime? scheduledDate;
@@ -168,6 +177,7 @@ class BookingModel {
 
   const BookingModel({
     required this.bookingId,
+    String? idempotencyKey,
     required this.customerId,
     required this.customerName,
     required this.customerPhone,
@@ -179,6 +189,8 @@ class BookingModel {
     required this.localityId,
     required this.localityName,
     required this.address,
+    this.problemDescription = '',
+    this.issuePhotoAttached = false,
     required this.status,
     this.startOtp = '4921',
     this.completionOtp = '7294',
@@ -194,6 +206,7 @@ class BookingModel {
     required this.createdAt,
     this.arrivalTime,
     this.completionTime,
+    this.statusEvents = const [],
     this.scheduledDate,
     this.scheduledSlot,
     this.scheduledSlotId,
@@ -208,7 +221,7 @@ class BookingModel {
     this.damageCoverAmount = 25000,
     this.customerDeductible = 250,
     this.isRetroactiveOnSiteLock = false,
-  });
+  }) : idempotencyKey = idempotencyKey ?? bookingId;
 
   int get partsTotal => parts.fold(0, (sum, part) => sum + part.total);
   int get calculatedPartsSurcharge => (partsTotal * 0.02).round();
@@ -231,9 +244,14 @@ class BookingModel {
 
   BookingModel copyWith({
     BookingStatus? status,
+    String? idempotencyKey,
+    List<BookingStatusEvent>? statusEvents,
     String? assignedArtisanId,
     String? assignedArtisanName,
     String? assignedArtisanPhone,
+    bool clearAssignedArtisan = false,
+    String? problemDescription,
+    bool? issuePhotoAttached,
     List<BillPartItem>? parts,
     String? audioMemoUrl,
     int? audioMemoDurationSeconds,
@@ -259,18 +277,28 @@ class BookingModel {
   }) {
     return BookingModel(
       bookingId: bookingId,
+      idempotencyKey: idempotencyKey ?? this.idempotencyKey,
       customerId: customerId,
       customerName: customerName,
       customerPhone: customerPhone,
-      assignedArtisanId: assignedArtisanId ?? this.assignedArtisanId,
-      assignedArtisanName: assignedArtisanName ?? this.assignedArtisanName,
-      assignedArtisanPhone: assignedArtisanPhone ?? this.assignedArtisanPhone,
+      assignedArtisanId: clearAssignedArtisan
+          ? null
+          : assignedArtisanId ?? this.assignedArtisanId,
+      assignedArtisanName: clearAssignedArtisan
+          ? null
+          : assignedArtisanName ?? this.assignedArtisanName,
+      assignedArtisanPhone: clearAssignedArtisan
+          ? null
+          : assignedArtisanPhone ?? this.assignedArtisanPhone,
       tradeId: tradeId,
       tradeName: tradeName,
       localityId: localityId,
       localityName: localityName,
       address: address,
+      problemDescription: problemDescription ?? this.problemDescription,
+      issuePhotoAttached: issuePhotoAttached ?? this.issuePhotoAttached,
       status: status ?? this.status,
+      statusEvents: statusEvents ?? this.statusEvents,
       startOtp: startOtp,
       completionOtp: completionOtp,
       baseInspectionFee: baseInspectionFee,
@@ -305,6 +333,7 @@ class BookingModel {
   factory BookingModel.fromJson(Map<String, dynamic> json) {
     return BookingModel(
       bookingId: json['bookingId'] as String,
+      idempotencyKey: json['idempotencyKey'] as String?,
       customerId: json['customerId'] as String,
       customerName: json['customerName'] as String,
       customerPhone: json['customerPhone'] as String,
@@ -316,10 +345,17 @@ class BookingModel {
       localityId: json['localityId'] as String,
       localityName: json['localityName'] as String,
       address: json['address'] as String,
+      problemDescription: json['problemDescription'] as String? ?? '',
+      issuePhotoAttached: json['issuePhotoAttached'] as bool? ?? false,
       status: BookingStatus.values.firstWhere(
         (s) => s.name == json['status'],
         orElse: () => BookingStatus.draft,
       ),
+      statusEvents: (json['statusEvents'] as List<dynamic>?)
+              ?.map((event) => BookingStatusEvent.fromJson(
+                  event as Map<String, dynamic>))
+              .toList(growable: false) ??
+          const [],
       startOtp: json['startOtp'] as String? ?? '4921',
       completionOtp: json['completionOtp'] as String? ?? '7294',
       baseInspectionFee: (json['baseInspectionFee'] as num?)?.toInt() ?? 199,
@@ -369,6 +405,7 @@ class BookingModel {
 
   Map<String, dynamic> toJson() => {
         'bookingId': bookingId,
+        'idempotencyKey': idempotencyKey,
         'customerId': customerId,
         'customerName': customerName,
         'customerPhone': customerPhone,
@@ -380,7 +417,10 @@ class BookingModel {
         'localityId': localityId,
         'localityName': localityName,
         'address': address,
+        'problemDescription': problemDescription,
+        'issuePhotoAttached': issuePhotoAttached,
         'status': status.name,
+        'statusEvents': statusEvents.map((event) => event.toJson()).toList(),
         'startOtp': startOtp,
         'completionOtp': completionOtp,
         'baseInspectionFee': baseInspectionFee,

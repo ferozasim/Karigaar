@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../models/artisan_profile_model.dart';
 import '../../models/booking_model.dart';
+import '../../models/booking_lifecycle.dart';
 import '../../models/mandate_model.dart';
 import '../../models/user_profile_model.dart';
 import '../../models/user_role.dart';
@@ -115,11 +116,15 @@ class FirestoreBookingRepository implements IBookingRepository {
   @override
   Future<void> createBooking(BookingModel booking) async {
     final reference = _bookings.doc(booking.bookingId);
-    final existing = await reference.get();
-    if (existing.exists) {
-      throw StateError('Booking ${booking.bookingId} already exists');
-    }
-    await reference.set(booking.toJson());
+    await _firestore.runTransaction((transaction) async {
+      final existing = await transaction.get(reference);
+      if (existing.exists) {
+        final prior = BookingModel.fromJson(_dataWithId(existing));
+        if (prior.idempotencyKey == booking.idempotencyKey) return;
+        throw StateError('Booking ${booking.bookingId} already exists');
+      }
+      transaction.set(reference, booking.toJson());
+    });
   }
 
   @override
@@ -129,13 +134,86 @@ class FirestoreBookingRepository implements IBookingRepository {
   }
 
   @override
+  Stream<BookingModel?> streamBooking(String bookingId) =>
+      _bookings.doc(bookingId).snapshots().map((doc) =>
+          doc.exists ? BookingModel.fromJson(_dataWithId(doc)) : null);
+
+  @override
   Future<void> save(BookingModel booking) => _bookings
       .doc(booking.bookingId)
       .set(booking.toJson(), SetOptions(merge: true));
 
   @override
   Future<void> updateStatus(String bookingId, BookingStatus status) =>
-      _bookings.doc(bookingId).update({'status': status.name});
+      transitionBooking(
+        bookingId: bookingId,
+        to: status,
+        actorId: 'system',
+        actorRole: UserRole.admin,
+        eventKey: 'legacy_${DateTime.now().microsecondsSinceEpoch}',
+      ).then((_) {});
+
+  @override
+  Future<BookingModel> transitionBooking({
+    required String bookingId,
+    required BookingStatus to,
+    required String actorId,
+    required UserRole actorRole,
+    required String eventKey,
+    String? reason,
+    String? assignArtisanId,
+    String? assignArtisanName,
+    String? assignArtisanPhone,
+  }) =>
+      _firestore.runTransaction((transaction) async {
+        final reference = _bookings.doc(bookingId);
+        final snapshot = await transaction.get(reference);
+        if (!snapshot.exists) throw StateError('Booking $bookingId was not found');
+        final booking = BookingModel.fromJson(_dataWithId(snapshot));
+        final previousEvent = booking.statusEvents
+            .where((event) => event.eventKey == eventKey)
+            .firstOrNull;
+        if (previousEvent != null) return booking;
+        if (!BookingLifecycle.canTransition(booking.status, to,
+            actorRole: actorRole)) {
+          throw StateError('Invalid booking transition ${booking.status.name} -> ${to.name}');
+        }
+        if (assignArtisanId != null &&
+            !BookingLifecycle.canAssign(
+              to: to,
+              actorId: actorId,
+              assignedArtisanId: assignArtisanId,
+            )) {
+          throw StateError('Only a claiming artisan can assign this booking');
+        }
+        final now = DateTime.now().toUtc();
+        final updated = booking.copyWith(
+          status: to,
+          assignedArtisanId: assignArtisanId,
+          assignedArtisanName: assignArtisanName,
+          assignedArtisanPhone: assignArtisanPhone,
+          statusEvents: [
+            ...booking.statusEvents,
+            BookingStatusEvent(
+              from: booking.status,
+              to: to,
+              actorId: actorId,
+              actorRole: actorRole,
+              eventKey: eventKey,
+              occurredAt: now,
+              reason: reason,
+            ),
+          ],
+          clearAssignedArtisan: to == BookingStatus.dispatchFailed,
+          arrivalTime: to == BookingStatus.artisanArrived ? now : null,
+          completionTime:
+              to == BookingStatus.completed || to == BookingStatus.settled
+                  ? now
+                  : null,
+        );
+        transaction.set(reference, updated.toJson());
+        return updated;
+      });
 
   @override
   Stream<List<BookingModel>> streamActiveBookings(String customerId) =>
