@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/models/user_role.dart';
+import '../../../core/models/artisan_onboarding.dart';
+import '../../../core/services/identity_service.dart';
 import '../../../core/models/karigaar_role_type.dart';
 import '../../../core/providers/app_providers.dart';
 import '../../../core/theme/app_colors.dart';
@@ -49,6 +52,7 @@ class _ArtisanRegistrationScreenState
   bool _toolInsulatedSet = true;
   bool _toolDrillGoggles = true;
   bool _toolDropCloth = true;
+  Timer? _draftSaveTimer;
 
   // Form controllers
   final TextEditingController _nameController =
@@ -205,10 +209,61 @@ class _ArtisanRegistrationScreenState
   void initState() {
     super.initState();
     _currentStep = widget.initialStep.clamp(1, 4);
+    _nameController.addListener(_scheduleDraftSave);
+    _phoneController.addListener(_scheduleDraftSave);
+    _restoreDraft();
+  }
+
+  void _scheduleDraftSave() {
+    _draftSaveTimer?.cancel();
+    _draftSaveTimer = Timer(const Duration(milliseconds: 350), () {
+      unawaited(_saveDraft());
+    });
+  }
+
+  Future<void> _restoreDraft() async {
+    final identity = ref.read(verifiedPhoneIdentityProvider);
+    final userId = identity?.userId ??
+        DevelopmentPhoneIdentityService.localUserIdForPhone(
+            _phoneController.text);
+    final draft = await ref.read(artisanOnboardingStoreProvider).read(userId);
+    if (!mounted ||
+        draft == null ||
+        draft.status != ArtisanReviewStatus.draft) {
+      return;
+    }
+    setState(() {
+      if (draft.name.isNotEmpty) _nameController.text = draft.name;
+      _phoneController.text = draft.phone.replaceFirst('+91', '');
+      _selectedTradeId = draft.tradeId;
+      _currentStep = draft.step;
+    });
+  }
+
+  Future<void> _saveDraft({ArtisanReviewStatus? status}) async {
+    final identity = ref.read(verifiedPhoneIdentityProvider);
+    final phone = _phoneController.text.trim();
+    final userId = identity?.userId ??
+        DevelopmentPhoneIdentityService.localUserIdForPhone(phone);
+    await ref.read(artisanOnboardingStoreProvider).save(
+          ArtisanOnboardingDraft(
+            userId: userId,
+            phone:
+                identity?.phone ?? '+91${phone.replaceAll(RegExp(r'\D'), '')}',
+            name: _nameController.text.trim(),
+            tradeId: _selectedTradeId,
+            cityId: ref.read(selectedDistrictProvider).cityId,
+            localityId: ref.read(selectedLocalityProvider).localityId,
+            step: _currentStep,
+            status: status ?? ArtisanReviewStatus.draft,
+            updatedAt: DateTime.now(),
+          ),
+        );
   }
 
   @override
   void dispose() {
+    _draftSaveTimer?.cancel();
     _nameController.dispose();
     _phoneController.dispose();
     _emergencyNameController.dispose();
@@ -238,7 +293,7 @@ class _ArtisanRegistrationScreenState
 
   double get _progressValue => _currentStep * 0.25;
 
-  void _nextStep() {
+  Future<void> _nextStep() async {
     if (_currentStep == 1) {
       final name = _nameController.text.trim();
       final phone = _phoneController.text.trim();
@@ -276,15 +331,17 @@ class _ArtisanRegistrationScreenState
 
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     if (_currentStep < 4) {
-      setState(() => _currentStep++);
+      if (mounted) setState(() => _currentStep++);
+      await _saveDraft();
     } else {
-      _submitRegistration();
+      await _submitRegistration();
     }
   }
 
   void _prevStep() {
     if (_currentStep > 1) {
       setState(() => _currentStep--);
+      unawaited(_saveDraft());
     } else {
       try {
         if (context.canPop()) {
@@ -298,7 +355,7 @@ class _ArtisanRegistrationScreenState
     }
   }
 
-  void _submitRegistration() {
+  Future<void> _submitRegistration() async {
     final name = _nameController.text.trim();
     final phone = _phoneController.text.trim();
     if (name.isEmpty || phone.length < 10) {
@@ -312,57 +369,12 @@ class _ArtisanRegistrationScreenState
       return;
     }
 
-    final selectedTrade = _all10LaunchTrades.firstWhere(
-      (t) => t['id'] == _selectedTradeId,
-      orElse: () => _all10LaunchTrades.first,
-    );
-    final selectedDistrict = ref.read(selectedDistrictProvider);
-    final selectedLocality = ref.read(selectedLocalityProvider);
-    final acctDigits = _accountNoController.text.replaceAll(RegExp(r'\s+'), '');
-    final maskedAcct = acctDigits.length >= 4
-        ? '•••• ${acctDigits.substring(acctDigits.length - 4)}'
-        : '•••• 2104';
-
-    final tools = <String>[
-      if (_toolMultimeter) 'Digital True-RMS Multimeter & Phase Tester',
-      if (_toolInsulatedSet) _strings.authInsulatedTools,
-      if (_toolDrillGoggles) _strings.authDrillTools,
-      if (_toolDropCloth) _strings.authCleanupTools,
-    ];
-
-    final yearsExp = switch (_selectedExperience) {
-      '1 - 3 Years' => 2,
-      '3 - 5 Years' => 4,
-      '5 - 10 Years' => 8,
-      '10+ Master' => 12,
-      _ => 4,
-    };
-
-    ref.read(currentArtisanProfileProvider.notifier).syncFromRegistration(
-          name: name,
-          phone: phone.startsWith('+91') ? phone : '+91$phone',
-          primaryTradeId: _selectedTradeId,
-          tradeTitle: '${selectedTrade['name']} (${selectedTrade['subtitle']})',
-          roleType: _selectedRoleType,
-          experienceTierLabel: _selectedExperience,
-          yearsExperience: yearsExp,
-          cityId: selectedDistrict.cityId,
-          localityId: selectedLocality.localityId,
-          serviceLocalityIds: [selectedLocality.localityId],
-          specialties: List<String>.from(selectedTrade['specialties'] as List),
-          verifiedTools: tools,
-          maskedAccountNumber: maskedAcct,
-          ifscCode: _ifscController.text.trim().isNotEmpty
-              ? _ifscController.text.trim()
-              : 'HDFC0002104',
-          upiId: _upiController.text.trim().isNotEmpty
-              ? _upiController.text.trim()
-              : 'ramesh.karigaar@okaxis',
-        );
+    await _saveDraft(status: ArtisanReviewStatus.submitted);
+    if (!mounted) return;
 
     ref.read(userRoleProvider.notifier).state = UserRole.artisan;
     try {
-      context.push('/otp-verify', extra: phone);
+      await context.push('/otp-verify', extra: phone);
     } catch (_) {
       // Handle test harnesses without GoRouter
     }
@@ -772,6 +784,7 @@ class _ArtisanRegistrationScreenState
         const SizedBox(height: 6),
         TextField(
           controller: _nameController,
+          onChanged: (_) => _scheduleDraftSave(),
           decoration: InputDecoration(
             prefixIcon: const Icon(Icons.badge_outlined, size: 20),
             hintText: _strings.authNameHint,
@@ -809,6 +822,7 @@ class _ArtisanRegistrationScreenState
         const SizedBox(height: 6),
         TextField(
           controller: _phoneController,
+          onChanged: (_) => _scheduleDraftSave(),
           keyboardType: TextInputType.phone,
           maxLength: 10,
           decoration: InputDecoration(
@@ -1145,8 +1159,10 @@ class _ArtisanRegistrationScreenState
             final isSelected = _selectedTradeId == trade['id'];
             return InkWell(
               borderRadius: BorderRadius.circular(14),
-              onTap: () =>
-                  setState(() => _selectedTradeId = trade['id'] as String),
+              onTap: () {
+                setState(() => _selectedTradeId = trade['id'] as String);
+                _scheduleDraftSave();
+              },
               child: Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(

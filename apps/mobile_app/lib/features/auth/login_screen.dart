@@ -190,12 +190,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     if (currentRole == UserRole.artisan) ...[
                       const SizedBox(height: 14),
                       Center(
+                        child: Text(
+                          'Returning Karigaar? Sign in above with your verified phone.',
+                          textAlign: TextAlign.center,
+                          style: AppTypography.bodySm
+                              .copyWith(color: AppColors.textMuted),
+                        ),
+                      ),
+                      Center(
                         child: TextButton.icon(
                           onPressed: () => context.push('/artisan/register'),
                           icon: const Icon(Icons.person_add_alt_1_rounded,
                               size: 18, color: AppColors.secondary),
                           label: Text(
-                            strings.joinGuild,
+                            'New Karigaar? ${strings.joinGuild}',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: AppTypography.labelMd.copyWith(

@@ -14,6 +14,15 @@ service cloud.firestore {
       return isAuthenticated() && (request.auth.token.role == 'ROLE_ADMIN' || request.auth.token.admin == true);
     }
 
+    function isApprovedArtisan() {
+      return isAuthenticated() && request.auth.token.artisanApproved == true &&
+        request.auth.token.artisanId is string;
+    }
+
+    function ownsArtisan(artisanId) {
+      return isApprovedArtisan() && request.auth.token.artisanId == artisanId;
+    }
+
     // Public / Reference Collections
     match /cities/{cityId} {
       allow read: if true;
@@ -37,17 +46,65 @@ service cloud.firestore {
 
     // User Accounts
     match /users/{userId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated() && request.auth.uid == userId;
-      allow update: if isOwner(userId) || isAdmin();
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId) &&
+        request.resource.data.userId == userId &&
+        request.resource.data.activeRole in ['customer', 'artisan'] &&
+        request.resource.data.keys().hasOnly([
+          'userId', 'displayName', 'phone', 'activeRole', 'cityId',
+          'artisanId', 'createdAt', 'updatedAt'
+        ]);
+      allow update: if isAdmin() || (isOwner(userId) &&
+        request.resource.data.userId == userId &&
+        request.resource.data.activeRole in ['customer', 'artisan'] &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'displayName', 'activeRole', 'cityId', 'updatedAt'
+        ]));
       allow delete: if isAdmin();
+    }
+
+    // Private artisan application and immutable decision history. Clients can
+    // submit safe profile fields, but only trusted functions can change review
+    // states or write audit events.
+    match /artisan_applications/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId) &&
+        request.resource.data.userId == userId &&
+        request.resource.data.artisanId == ('art_' + userId) &&
+        request.resource.data.status in ['draft', 'submitted'] &&
+        request.resource.data.keys().hasOnly([
+          'userId', 'artisanId', 'phone', 'name', 'tradeId', 'cityId',
+          'localityId', 'step', 'status', 'updatedAt'
+        ]);
+      allow update: if isAdmin() || (isOwner(userId) &&
+        resource.data.status in ['draft', 'needs_action'] &&
+        request.resource.data.userId == userId &&
+        request.resource.data.artisanId == ('art_' + userId) &&
+        request.resource.data.status in ['draft', 'submitted'] &&
+        request.resource.data.keys().hasOnly([
+          'userId', 'artisanId', 'phone', 'name', 'tradeId', 'cityId',
+          'localityId', 'step', 'status', 'updatedAt'
+        ]));
+      allow delete: if isAdmin();
+
+      match /review_events/{eventId} {
+        allow read: if isOwner(userId) || isAdmin();
+        allow write: if false;
+      }
     }
 
     // Artisan Guild Profiles
     match /artisans/{artisanId} {
       allow read: if true;
-      allow create: if isOwner(artisanId);
-      allow update: if isOwner(artisanId) || isAdmin();
+      allow create: if isAdmin();
+      allow update: if isAdmin() || (ownsArtisan(artisanId) &&
+        request.resource.data.artisanId == artisanId &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'name', 'primaryTradeId', 'tradeTitle', 'yearsExperience', 'bio',
+          'inspectionFee', 'cityId', 'localityId', 'isOnline',
+          'dailyDihadiRate', 'workMode', 'serviceLocalityIds', 'specialties',
+          'verifiedTools', 'portfolioItems'
+        ]));
       allow delete: if isAdmin();
     }
 
@@ -56,14 +113,20 @@ service cloud.firestore {
       allow read: if isAuthenticated() && (
         resource.data.customerId == request.auth.uid ||
         resource.data.assignedArtisanId == request.auth.uid ||
-        resource.data.status == 'BROADCASTING' ||
+        (resource.data.status == 'broadcasting' && isApprovedArtisan()) ||
         isAdmin()
       );
-      allow create: if isAuthenticated();
+      allow create: if isAuthenticated() &&
+        request.resource.data.customerId == request.auth.uid;
       allow update: if isAuthenticated() && (
-        resource.data.customerId == request.auth.uid ||
-        resource.data.assignedArtisanId == request.auth.uid ||
-        (resource.data.status == 'BROADCASTING' && request.resource.data.assignedArtisanId == request.auth.uid) ||
+        (resource.data.customerId == request.auth.uid &&
+          request.resource.data.customerId == request.auth.uid) ||
+        (ownsArtisan(resource.data.assignedArtisanId) &&
+          request.resource.data.assignedArtisanId == resource.data.assignedArtisanId) ||
+        (resource.data.status == 'broadcasting' &&
+          request.resource.data.status == 'claimed' &&
+          isApprovedArtisan() &&
+          request.resource.data.assignedArtisanId == request.auth.token.artisanId) ||
         isAdmin()
       );
       allow delete: if isAdmin();

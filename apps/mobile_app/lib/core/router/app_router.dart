@@ -3,6 +3,7 @@ import '../models/preventive_bundle_model.dart';
 import '../../features/auth/artisan_registration_screen.dart';
 import '../../features/auth/login_screen.dart';
 import '../../features/auth/otp_verification_screen.dart';
+import '../../features/auth/artisan_application_status_screen.dart';
 import '../../features/customer/bookings/customer_bookings_screen.dart';
 import '../../features/customer/home/customer_home_screen.dart';
 import '../../features/customer/messages/customer_messages_screen.dart';
@@ -31,19 +32,27 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/customer/home',
-      builder: (context, state) => const CustomerHomeScreen(),
+      builder: (context, state) => const CustomerAccessGate(
+        child: CustomerHomeScreen(),
+      ),
     ),
     GoRoute(
       path: '/customer/bookings',
-      builder: (context, state) => const CustomerBookingsScreen(),
+      builder: (context, state) => const CustomerAccessGate(
+        child: CustomerBookingsScreen(),
+      ),
     ),
     GoRoute(
       path: '/customer/messages',
-      builder: (context, state) => const CustomerMessagesScreen(),
+      builder: (context, state) => const CustomerAccessGate(
+        child: CustomerMessagesScreen(),
+      ),
     ),
     GoRoute(
       path: '/customer/profile',
-      builder: (context, state) => const CustomerProfileScreen(),
+      builder: (context, state) => const CustomerAccessGate(
+        child: CustomerProfileScreen(),
+      ),
     ),
     GoRoute(
       path: '/customer/artisan/:artisanId',
@@ -64,13 +73,15 @@ final appRouter = GoRouter(
       builder: (context, state) {
         final tradeId = state.pathParameters['tradeId'] ?? 'trade_electrician';
         final extra = state.extra as Map<String, dynamic>?;
-        return ServiceScopingScreen(
-          tradeId: tradeId,
-          initialPackageIds: (extra?['packageIds'] as List<dynamic>?)
-              ?.map((e) => e.toString())
-              .toList(),
-          bundleId: extra?['bundleId'] as String?,
-          bundle: extra?['bundle'] as PreventiveBundleModel?,
+        return CustomerAccessGate(
+          child: ServiceScopingScreen(
+            tradeId: tradeId,
+            initialPackageIds: (extra?['packageIds'] as List<dynamic>?)
+                ?.map((e) => e.toString())
+                .toList(),
+            bundleId: extra?['bundleId'] as String?,
+            bundle: extra?['bundle'] as PreventiveBundleModel?,
+          ),
         );
       },
     ),
@@ -78,7 +89,9 @@ final appRouter = GoRouter(
       path: '/customer/active-tracking/:bookingId',
       builder: (context, state) {
         final bookingId = state.pathParameters['bookingId'] ?? 'BK_NANDED_8821';
-        return LiveTrackingScreen(bookingId: bookingId);
+        return CustomerAccessGate(
+          child: LiveTrackingScreen(bookingId: bookingId),
+        );
       },
     ),
     GoRoute(
@@ -86,23 +99,35 @@ final appRouter = GoRouter(
       builder: (context, state) => const ArtisanRegistrationScreen(),
     ),
     GoRoute(
+      path: '/artisan/application-status',
+      builder: (context, state) => const ArtisanApplicationStatusScreen(),
+    ),
+    GoRoute(
       path: '/artisan/radar',
-      builder: (context, state) => const ArtisanJobRadarScreen(),
+      builder: (context, state) => const ArtisanAccessGate(
+        child: ArtisanJobRadarScreen(),
+      ),
     ),
     GoRoute(
       path: '/artisan/active-job/:bookingId',
       builder: (context, state) {
         final bookingId = state.pathParameters['bookingId'] ?? 'BK_NANDED_8821';
-        return ArtisanActiveJobScreen(bookingId: bookingId);
+        return ArtisanAccessGate(
+          child: ArtisanActiveJobScreen(bookingId: bookingId),
+        );
       },
     ),
     GoRoute(
       path: '/artisan/wallet',
-      builder: (context, state) => const ArtisanWalletHistoryScreen(),
+      builder: (context, state) => const ArtisanAccessGate(
+        child: ArtisanWalletHistoryScreen(),
+      ),
     ),
     GoRoute(
       path: '/artisan/profile',
-      builder: (context, state) => const ArtisanPartnerProfileScreen(),
+      builder: (context, state) => const ArtisanAccessGate(
+        child: ArtisanPartnerProfileScreen(),
+      ),
     ),
     GoRoute(
       path: '/karigaar/register',
@@ -110,22 +135,30 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/karigaar/radar',
-      builder: (context, state) => const ArtisanJobRadarScreen(),
+      builder: (context, state) => const ArtisanAccessGate(
+        child: ArtisanJobRadarScreen(),
+      ),
     ),
     GoRoute(
       path: '/karigaar/active-job/:bookingId',
       builder: (context, state) {
         final bookingId = state.pathParameters['bookingId'] ?? 'BK_NANDED_8821';
-        return ArtisanActiveJobScreen(bookingId: bookingId);
+        return ArtisanAccessGate(
+          child: ArtisanActiveJobScreen(bookingId: bookingId),
+        );
       },
     ),
     GoRoute(
       path: '/karigaar/wallet',
-      builder: (context, state) => const ArtisanWalletHistoryScreen(),
+      builder: (context, state) => const ArtisanAccessGate(
+        child: ArtisanWalletHistoryScreen(),
+      ),
     ),
     GoRoute(
       path: '/karigaar/profile',
-      builder: (context, state) => const ArtisanPartnerProfileScreen(),
+      builder: (context, state) => const ArtisanAccessGate(
+        child: ArtisanPartnerProfileScreen(),
+      ),
     ),
   ],
 );
