@@ -1,0 +1,195 @@
+OtpVerification|OTP Verification|OTP सत्यापन|OTP पडताळणी
+VerifyWhatsAppCode|Verify WhatsApp Code|WhatsApp कोड सत्यापित करें|WhatsApp कोड पडताळा
+CodeSent|We sent a 6-digit verification code to\n|हमने 6 अंकों का सत्यापन कोड भेजा है\n|आम्ही 6 अंकी पडताळणी कोड पाठवला आहे\n
+ResendCode|Resend Code via WhatsApp|WhatsApp से कोड फिर भेजें|WhatsApp वरून कोड पुन्हा पाठवा
+FallbackSms|Fallback SMS sent via DLT gateway.|DLT गेटवे से SMS भेजा गया।|DLT गेटवेद्वारे SMS पाठवला.
+SmsFallback|Didn't receive on WhatsApp? Send via SMS|WhatsApp पर नहीं मिला? SMS से भेजें|WhatsApp वर मिळाला नाही? SMS ने पाठवा
+VerifyContinue|Verify & Continue|सत्यापित करें और आगे बढ़ें|पडताळा आणि पुढे जा
+StepPersonal|Step 1 of 4: Personal Details|चरण 1/4: व्यक्तिगत विवरण|टप्पा 1/4: वैयक्तिक माहिती
+StepTrade|Step 2 of 4: Trade Selection|चरण 2/4: काम चुनें|टप्पा 2/4: व्यवसाय निवडा
+StepAudit|Step 3 of 4: KYC & Tools Audit|चरण 3/4: KYC और औज़ार जाँच|टप्पा 3/4: KYC व साधन तपासणी
+StepPayout|Step 4 of 4: Payout & Protection|चरण 4/4: भुगतान और सुरक्षा|टप्पा 4/4: पेआउट व संरक्षण
+LegalNameError|Please enter your full Aadhaar name and 10-digit mobile number.|कृपया आधार वाला पूरा नाम और 10 अंकों का मोबाइल नंबर दर्ज करें।|कृपया आधारवरील पूर्ण नाव आणि 10 अंकी मोबाइल नंबर टाका.
+TradeError|Please select your primary trade from the 10 launch trades.|कृपया 10 सेवाओं में से अपना मुख्य काम चुनें।|कृपया 10 सेवांमधून तुमचा मुख्य व्यवसाय निवडा.
+AadhaarError|Please enter a valid 12-digit Aadhaar number.|कृपया सही 12 अंकों का आधार नंबर दर्ज करें।|कृपया योग्य 12 अंकी आधार नंबर टाका.
+JoinGuild|Join the Karigaar Guild|कारीगर गिल्ड से जुड़ें|कारागीर गिल्डमध्ये सामील व्हा
+AlreadyRegistered|Already registered in the Guild? Log In here|गिल्ड में पहले से पंजीकृत हैं? यहाँ लॉग इन करें|गिल्डमध्ये आधीच नोंदणी केली आहे? येथे लॉग इन करा
+Accreditation|Guild Accreditation|गिल्ड मान्यता|गिल्ड मान्यता
+CommissionGuarantee|5% Commission Floor Guarantee|न्यूनतम 5% कमीशन की गारंटी|किमान 5% कमिशनची हमी
+JoinDescription|Connect directly with premium households in your pin code. Transparent daily payouts and guild master insurance cover.|अपने पिन कोड के ग्राहकों से सीधे जुड़ें। पारदर्शी दैनिक भुगतान और गिल्ड मास्टर बीमा सुरक्षा।|तुमच्या पिनकोडमधील ग्राहकांशी थेट संपर्क साधा. पारदर्शक दैनिक पेआउट आणि गिल्ड मास्टर विमा संरक्षण.
+AverageEarnings|Over ₹42,000/mo Avg. Earnings|औसत कमाई ₹42,000/माह से अधिक|सरासरी कमाई ₹42,000/महिन्यापेक्षा अधिक
+GuildProfessionals|Join 12,400+ verified professionals across Nanded Guild|नांदेड़ गिल्ड के 12,400+ सत्यापित पेशेवरों से जुड़ें|नांदेड गिल्डमधील 12,400+ पडताळलेल्या व्यावसायिकांमध्ये सामील व्हा
+PersonalHeading|Step 1: Personal Details & Locality|चरण 1: व्यक्तिगत विवरण और इलाका|टप्पा 1: वैयक्तिक माहिती व परिसर
+PersonalDescription|Your legal info for KYC, guild credentials and instant direct deposits|KYC, गिल्ड पहचान और सीधे भुगतान के लिए आपकी कानूनी जानकारी|KYC, गिल्ड ओळख आणि थेट पेआउटसाठी तुमची कायदेशीर माहिती
+FullName|Full Legal Name|पूरा कानूनी नाम|पूर्ण कायदेशीर नाव
+MatchesAadhaar|Matches Aadhaar Card|आधार कार्ड के अनुसार|आधार कार्डप्रमाणे
+NameHint|e.g. Ramesh Chandra Sharma|जैसे रमेश चंद्र शर्मा|उदा. रमेश चंद्र शर्मा
+WhatsAppNumber|WhatsApp Mobile Number|WhatsApp मोबाइल नंबर|WhatsApp मोबाइल नंबर
+InstantOtp|Instant OTP Dispatch|तुरंत OTP भेजें|त्वरित OTP पाठवा
+WhatsAppHint|Enter 10-digit WhatsApp number|10 अंकों का WhatsApp नंबर दर्ज करें|10 अंकी WhatsApp नंबर टाका
+EmergencyContact|Emergency Contact (Next-of-Kin)|आपातकालीन संपर्क (परिजन)|आपत्कालीन संपर्क (जवळचे नातेवाईक)
+ContactName|Contact Name|संपर्क का नाम|संपर्काचे नाव
+PhoneHint|10-digit Phone|10 अंकों का फ़ोन नंबर|10 अंकी फोन नंबर
+WorkingLocality|Primary Working Locality|मुख्य कार्य क्षेत्र|मुख्य कामाचा परिसर
+Experience|Trade Experience|काम का अनुभव|कामाचा अनुभव
+PriorityLeads|Higher tier gets priority leads|ऊँचे स्तर को प्राथमिकता से काम मिलता है|उच्च स्तराला कामात प्राधान्य मिळते
+DispatchAlerts|WhatsApp Dispatch Alerts|WhatsApp काम के अलर्ट|WhatsApp कामाच्या सूचना
+DispatchDescription|Receive emergency high-pay calls, daily settlement slips, and guild warranty alerts instantly.|आपातकालीन काम, दैनिक भुगतान पर्चियाँ और गिल्ड वारंटी अलर्ट तुरंत पाएँ।|आपत्कालीन कामे, दैनिक पेआउट पावत्या आणि गिल्ड वॉरंटी सूचना त्वरित मिळवा.
+ReferralQuestion|Have a Master Craftsman Referral Code?|क्या आपके पास मास्टर कारीगर का रेफ़रल कोड है?|मास्टर कारागिराचा रेफरल कोड आहे का?
+ReferralHint|e.g. GUILD500|जैसे GUILD500|उदा. GUILD500
+ReferralApplied|Referral code GUILD500 applied! ₹500 joining bonus unlocked.|रेफ़रल कोड GUILD500 लागू हुआ! ₹500 जॉइनिंग बोनस मिला।|रेफरल कोड GUILD500 लागू झाला! ₹500 प्रवेश बोनस मिळाला.
+Apply|Apply|लागू करें|लागू करा
+PrimaryTrade|Select Primary Trade|मुख्य काम चुनें|मुख्य व्यवसाय निवडा
+PrimaryTradeDescription|Tap your certified craft from Nanded 10 launch trades|नांदेड़ की 10 सेवाओं में अपना प्रमाणित काम चुनें|नांदेडच्या 10 सेवांमधून तुमचा प्रमाणित व्यवसाय निवडा
+OneRequired|1 Required|1 आवश्यक|1 आवश्यक
+RoleType|Karigaar Role Type|कारीगर की भूमिका|कारागिराची भूमिका
+KycHeading|Step 3: Aadhaar KYC & Tools Audit|चरण 3: आधार KYC और औज़ार जाँच|टप्पा 3: आधार KYC व साधन तपासणी
+KycDescription|Biometric verification and calibrated equipment checklist for Guild safety rating|गिल्ड सुरक्षा रेटिंग के लिए बायोमेट्रिक सत्यापन और औज़ारों की जाँच सूची|गिल्ड सुरक्षा गुणांकनासाठी बायोमेट्रिक पडताळणी आणि साधनांची तपासणी यादी
+AadhaarNumber|12-Digit Aadhaar Number|12 अंकों का आधार नंबर|12 अंकी आधार नंबर
+Encrypted|Encrypted & UIDAI Compliant|एन्क्रिप्टेड और UIDAI अनुरूप|एन्क्रिप्टेड व UIDAI अनुरूप
+TradeCard|Aadhaar / Trade Card|आधार / व्यवसाय कार्ड|आधार / व्यवसाय कार्ड
+FrontSync|Front photo & DigiLocker sync|सामने की फ़ोटो और DigiLocker सिंक|पुढील बाजूचा फोटो व DigiLocker सिंक
+DigilockerSuccess|DigiLocker KYC Gateway synced successfully!|DigiLocker KYC गेटवे सफलतापूर्वक सिंक हुआ!|DigiLocker KYC गेटवे यशस्वीपणे सिंक झाला!
+FrontCaptured|Aadhaar Front Scan Captured|आधार के सामने का स्कैन लिया गया|आधारच्या पुढील बाजूचे स्कॅन घेतले
+CaptureAadhaar|Capture Front of Aadhaar Card|आधार कार्ड के सामने की फ़ोटो लें|आधार कार्डच्या पुढील बाजूचा फोटो घ्या
+PhotoLimit|Clear photo • Max size 10MB (JPG/PNG)|साफ़ फ़ोटो • अधिकतम 10MB (JPG/PNG)|स्पष्ट फोटो • कमाल 10MB (JPG/PNG)
+AutoVerified|72% Auto-verified|72% स्वतः सत्यापित|72% स्वयंचलित पडताळणी
+Upload|Tap to upload|अपलोड करने के लिए टैप करें|अपलोड करण्यासाठी टॅप करा
+ToolsAudit|Calibrated Tools Audit|कैलिब्रेटेड औज़ारों की जाँच|कॅलिब्रेट केलेल्या साधनांची तपासणी
+SafetyStandard|Guild Safety Standard|गिल्ड सुरक्षा मानक|गिल्ड सुरक्षा मानक
+Multimeter|Digital True-RMS Multimeter & Phase Tester (calibrated)|डिजिटल True-RMS मल्टीमीटर और फ़ेज़ टेस्टर (कैलिब्रेटेड)|डिजिटल True-RMS मल्टीमीटर व फेज टेस्टर (कॅलिब्रेट केलेले)
+InsulatedTools|1000V Insulated Screwdrivers & Pliers Set|1000V इंसुलेटेड पेचकस और प्लायर सेट|1000V इन्सुलेटेड स्क्रूड्रायव्हर व प्लायर संच
+DrillTools|Heavy Duty Rotary Hammer Drill & Safety Goggles|हैवी ड्यूटी रोटरी हैमर ड्रिल और सुरक्षा चश्मा|हेवी ड्युटी रोटरी हॅमर ड्रिल व सुरक्षा चष्मा
+CleanupTools|Canvas Drop-Cloth & Sawdust Cleanup Vacuum Bag|कैनवास ड्रॉप-क्लॉथ और बुरादा सफ़ाई वैक्यूम बैग|कॅनव्हास ड्रॉप-क्लॉथ व भुसा सफाई व्हॅक्यूम बॅग
+PayoutHeading|Step 4: Bank / UPI Payout Verification|चरण 4: बैंक / UPI भुगतान सत्यापन|टप्पा 4: बँक / UPI पेआउट पडताळणी
+PayoutDescription|Link your bank or UPI ID for instant 10-second IMPS payout settlements with zero guild fee|बिना गिल्ड शुल्क 10 सेकंड में IMPS भुगतान के लिए बैंक या UPI ID जोड़ें|शून्य गिल्ड शुल्कासह 10 सेकंदांत IMPS पेआउटसाठी बँक किंवा UPI ID जोडा
+DirectPayout|Instant Guild Direct Payout|तुरंत गिल्ड सीधा भुगतान|त्वरित गिल्ड थेट पेआउट
+BankAccount|Bank Account Number|बैंक खाता नंबर|बँक खाते क्रमांक
+ReenterBank|Re-Enter Bank Account Number|बैंक खाता नंबर फिर दर्ज करें|बँक खाते क्रमांक पुन्हा टाका
+Ifsc|IFSC Code|IFSC कोड|IFSC कोड
+BranchResolved|Branch Resolved: HDFC Bank, Vazirabad Branch, Nanded (431601)|शाखा मिली: HDFC बैंक, वज़ीराबाद शाखा, नांदेड़ (431601)|शाखा सापडली: HDFC बँक, वजीराबाद शाखा, नांदेड (431601)
+UpiPayout|UPI Fast Payout VPA|UPI तेज़ भुगतान VPA|UPI जलद पेआउट VPA
+PennyDrop|Penny-Drop Verified|पेनी-ड्रॉप सत्यापित|पेनी-ड्रॉप पडताळलेले
+VerifiedUpi|Verified UPI ID / VPA (₹0 IMPS Fee)|सत्यापित UPI ID / VPA (₹0 IMPS शुल्क)|पडताळलेले UPI ID / VPA (₹0 IMPS शुल्क)
+PennyDropSimulation|Simulated ₹1 IMPS penny-drop test successful. Payout wallet linked.|डेमो ₹1 IMPS पेनी-ड्रॉप परीक्षण सफल। भुगतान वॉलेट जुड़ा।|डेमो ₹1 IMPS पेनी-ड्रॉप चाचणी यशस्वी. पेआउट वॉलेट जोडले.
+ProtectionActive|₹25,000 Guild Protection Shield Active|₹25,000 गिल्ड सुरक्षा कवच सक्रिय|₹25,000 गिल्ड संरक्षण कवच सक्रिय
+ProtectionDescription|Karigaar covers accidental on-site property damage up to ₹25,000. You earn with zero liability and sustainable 5% commission floor guarantee (Guild Elite).|कारीगर साइट पर आकस्मिक संपत्ति क्षति को ₹25,000 तक कवर करता है। शून्य देयता और न्यूनतम 5% कमीशन गारंटी (गिल्ड एलीट) के साथ कमाएँ।|कारागीर साइटवरील अपघाती मालमत्ता नुकसानीसाठी ₹25,000 पर्यंत संरक्षण देतो. शून्य दायित्व आणि किमान 5% कमिशन हमीसह (गिल्ड एलिट) कमवा.
+Back|Back|वापस|मागे
+NextStep|Next Step|अगला चरण|पुढील टप्पा
+VerifyWhatsApp|Verify via WhatsApp OTP|WhatsApp OTP से सत्यापित करें|WhatsApp OTP ने पडताळा
+InvalidStart|Invalid code! Ask customer for their 4-digit start code.|गलत कोड! ग्राहक से उनका 4 अंकों का स्टार्ट कोड पूछें।|चुकीचा कोड! ग्राहकाला त्यांचा 4 अंकी प्रारंभ कोड विचारा.
+AccessDenied|Doorstep Access Denied|दरवाज़े पर प्रवेश नहीं मिला|दाराशी प्रवेश नाकारला
+CloseJob|Close Job|काम बंद करें|काम बंद करा
+AddPart2fa|Add Spare Part with 2FA|2FA के साथ पुर्ज़ा जोड़ें|2FA सह सुटा भाग जोडा
+PartName|Part Name & Specification|पुर्ज़े का नाम और विवरण|भागाचे नाव व तपशील
+UnitPrice|Unit Price (₹)|प्रति इकाई मूल्य (₹)|प्रति नग किंमत (₹)
+StoreName|Hardware Store Name|हार्डवेयर दुकान का नाम|हार्डवेअर दुकानाचे नाव
+AttachReceipt|Attach Hardware Store Receipt Photo|हार्डवेयर दुकान की रसीद फ़ोटो जोड़ें|हार्डवेअर दुकानाच्या पावतीचा फोटो जोडा
+PartsDisclaimer|Pass-through spare parts include a 2% payment gateway surcharge and trigger an in-app customer RBI 2FA approval prompt.|पुर्ज़ों में 2% भुगतान गेटवे शुल्क शामिल है और ऐप में ग्राहक की RBI 2FA मंज़ूरी माँगी जाती है।|सुट्या भागांवर 2% पेमेंट गेटवे अधिभार लागतो आणि अॅपमध्ये ग्राहकाची RBI 2FA मंजुरी मागितली जाते.
+Cancel|Cancel|रद्द करें|रद्द करा
+AddPartBill|Add Part to Bill|बिल में पुर्ज़ा जोड़ें|बिलात भाग जोडा
+InvoiceSubmitted|Itemized Invoice Submitted! Customer notified to verify bill and release PIN.|विस्तृत बिल भेजा गया! ग्राहक को बिल जाँचकर PIN देने की सूचना मिली।|तपशीलवार बिल पाठवले! ग्राहकाला बिल तपासून PIN देण्याची सूचना मिळाली.
+ActiveBill|Active Job & Bill Builder|सक्रिय काम और बिल बनाएँ|सक्रिय काम व बिल तयार करा
+Stopwatch|ON-SITE REPAIR STOPWATCH|साइट पर मरम्मत का समय|साइटवरील दुरुस्तीचा वेळ
+Elapsed|28m 14s Elapsed|28 मिनट 14 सेकंड बीते|28 मि. 14 से. झाले
+LiveLog|Live Log|लाइव लॉग|थेट नोंद
+GpsStreaming|LIVE GPS TELEMETRY STREAMING (CONTRACT 3)|लाइव GPS टेलीमेट्री स्ट्रीमिंग (अनुबंध 3)|थेट GPS टेलीमेट्री स्ट्रीमिंग (करार 3)
+Foreground|Foreground (3s)|अग्रभूमि (3 सेकंड)|अग्रभाग (3 से.)
+Background|Background (15s)|पृष्ठभूमि (15 सेकंड)|पार्श्वभूमी (15 से.)
+Speed|Speed|गति|वेग
+Heading|Heading|दिशा|दिशा
+Battery|Battery|बैटरी|बॅटरी
+Remaining|Remaining|बाकी|उर्वरित
+Geofence|Doorstep 200m Geofence Triggered! Ready for Start Code.|200 मीटर का जियोफ़ेंस सक्रिय! स्टार्ट कोड के लिए तैयार।|200 मीटर जिओफेन्स सक्रिय! प्रारंभ कोडसाठी तयार.
+EnterStart|Step 1: Enter Customer Start Code|चरण 1: ग्राहक का स्टार्ट कोड दर्ज करें|टप्पा 1: ग्राहकाचा प्रारंभ कोड टाका
+StartDescription|Ask homeowner for their 4-digit security code (Demo: 4921) to confirm doorstep arrival.|पहुँचने की पुष्टि के लिए घर के मालिक से 4 अंकों का सुरक्षा कोड पूछें (डेमो: 4921)।|पोहोचल्याची पुष्टी करण्यासाठी घरमालकाला 4 अंकी सुरक्षा कोड विचारा (डेमो: 4921).
+StartHint|Enter 4-digit Start Code|4 अंकों का स्टार्ट कोड दर्ज करें|4 अंकी प्रारंभ कोड टाका
+VerifyBegin|Verify Code & Begin Repair|कोड सत्यापित कर मरम्मत शुरू करें|कोड पडताळून दुरुस्ती सुरू करा
+DeniedTransit|Doorstep Access Denied (Claim ₹80 Transit)|प्रवेश नहीं मिला (₹80 यात्रा शुल्क माँगें)|प्रवेश नाकारला (₹80 प्रवास शुल्क मागा)
+StartComplete|Start Code 4921 Verified • Doorstep Handshake Complete|स्टार्ट कोड 4921 सत्यापित • आगमन की पुष्टि पूरी|प्रारंभ कोड 4921 पडताळला • आगमनाची पुष्टी पूर्ण
+BillBuilder|Dynamic Bill Builder|बिल बनाएँ|बिल तयार करा
+CustomPart|Custom Part|कस्टम पुर्ज़ा|कस्टम भाग
+AddPart|Add Part|पुर्ज़ा जोड़ें|भाग जोडा
+LaborDiagnostic|Labor & Diagnostic Inspection|मज़दूरी और जाँच|मजुरी व निदान तपासणी
+ReceiptAttached|Receipt Photo Attached|रसीद की फ़ोटो जुड़ी है|पावतीचा फोटो जोडला
+LaborBase|Labor & Inspection Base|मज़दूरी और जाँच का मूल शुल्क|मजुरी व तपासणीचे मूळ शुल्क
+PartsSurcharge|2% Parts Gateway Surcharge|पुर्ज़ों पर 2% गेटवे शुल्क|भागांवर 2% गेटवे अधिभार
+Gst|18% GST (Labor & Surcharge)|18% GST (मज़दूरी और अधिभार)|18% GST (मजुरी व अधिभार)
+TotalInvoiced|Total Invoiced to Customer|ग्राहक का कुल बिल|ग्राहकाचे एकूण बिल
+WaitingPin|Itemized Invoice Submitted • Waiting Customer PIN|विस्तृत बिल भेजा • ग्राहक के PIN का इंतज़ार|तपशीलवार बिल पाठवले • ग्राहकाच्या PIN ची प्रतीक्षा
+SubmitInvoice|Submit Itemized Invoice (Decoupled)|विस्तृत बिल जमा करें (अलग चरण)|तपशीलवार बिल सादर करा (स्वतंत्र टप्पा)
+CompletionHeading|Step 3: Collect Completion PIN|चरण 3: काम पूरा होने का PIN लें|टप्पा 3: काम पूर्ण झाल्याचा PIN घ्या
+CompletionDescription|Ask customer for their 4-digit verbal completion PIN (Demo: 7294)|ग्राहक से 4 अंकों का पूर्णता PIN पूछें (डेमो: 7294)|ग्राहकाला 4 अंकी पूर्णता PIN विचारा (डेमो: 7294)
+CompletionHint|Enter 4-digit Completion PIN|4 अंकों का पूर्णता PIN दर्ज करें|4 अंकी पूर्णता PIN टाका
+PayoutSettled|IMPS Payout Settled!|IMPS भुगतान पूरा!|IMPS पेआउट पूर्ण!
+BackRadar|Back to Radar|रडार पर वापस|रडारकडे परत
+InvalidCompletion|Invalid completion PIN! Enter 7294 for demo.|गलत पूर्णता PIN! डेमो के लिए 7294 दर्ज करें।|चुकीचा पूर्णता PIN! डेमोसाठी 7294 टाका.
+ElitePartner|Guild Elite Partner|गिल्ड एलीट पार्टनर|गिल्ड एलिट भागीदार
+GoldGuildsman|Gold Guildsman|गोल्ड गिल्ड कारीगर|गोल्ड गिल्ड कारागीर
+FloorActive|5% Commission Floor Active|न्यूनतम 5% कमीशन सक्रिय|किमान 5% कमिशन सक्रिय
+Tier4|Tier Level 4 Craftsman|स्तर 4 कारीगर|स्तर 4 कारागीर
+TakeRate|💎 5% Take-Rate|💎 5% कमीशन|💎 5% कमिशन
+TopPartner|Top 5% Partner|शीर्ष 5% पार्टनर|अव्वल 5% भागीदार
+Apprentice|Apprentice\n(15%)|प्रशिक्षु\n(15%)|शिकाऊ\n(15%)
+Pro|Pro\n(12%)|प्रो\n(12%)|प्रो\n(12%)
+Master|Master\n(8%)|मास्टर\n(8%)|मास्टर\n(8%)
+Elite|Elite\n(5% Floor)|एलीट\n(न्यूनतम 5%)|एलिट\n(किमान 5%)
+EliteMilestone|Guild Elite Milestone: Unlocked|गिल्ड एलीट उपलब्धि: अनलॉक|गिल्ड एलिट टप्पा: अनलॉक
+MasterMilestone|Milestone: Master Guildsman (8%)|उपलब्धि: मास्टर कारीगर (8%)|टप्पा: मास्टर कारागीर (8%)
+JobsProgress|42 / 50 Jobs|42 / 50 काम|42 / 50 कामे
+EliteDescription|Guild Elite active! You keep 95% of job billings with a 5% commission floor.|गिल्ड एलीट सक्रिय! 5% कमीशन के साथ बिल का 95% आपको मिलता है।|गिल्ड एलिट सक्रिय! 5% कमिशनसह बिलातील 95% तुम्हाला मिळतात.
+MasterDescription|Complete 8 more jobs for 8% Master tier, or subscribe to Guild Elite for the 5% commission floor!|8% मास्टर स्तर के लिए 8 और काम पूरे करें, या 5% कमीशन के लिए गिल्ड एलीट लें!|8% मास्टर स्तरासाठी आणखी 8 कामे पूर्ण करा, किंवा 5% कमिशनसाठी गिल्ड एलिट घ्या!
+KarigaarElite|Karigaar Guild Elite Partner|कारीगर गिल्ड एलीट पार्टनर|कारागीर गिल्ड एलिट भागीदार
+Keep95|5% Commission Floor (Keep 95%)|न्यूनतम 5% कमीशन (95% रखें)|किमान 5% कमिशन (95% ठेवा)
+MonthlyDeduction|₹999 / month • Instant 1-tap wallet deduction|₹999 / माह • एक टैप में वॉलेट से कटौती|₹999 / महिना • एका टॅपमध्ये वॉलेटमधून कपात
+EliteBenefitFees|• 5% Commission Floor (Save up to ₹4,500/mo in platform fees)\n|• न्यूनतम 5% कमीशन (प्लैटफ़ॉर्म शुल्क में ₹4,500/माह तक बचाएँ)\n|• किमान 5% कमिशन (प्लॅटफॉर्म शुल्कात ₹4,500/महिना पर्यंत बचत)\n
+EliteBenefitRadar|• Priority 10s Radar Dispatch blast before standard partners\n|• सामान्य पार्टनर से 10 सेकंड पहले प्राथमिकता रडार सूचना\n|• सामान्य भागीदारांपूर्वी 10 सेकंद आधी प्राधान्य रडार सूचना\n
+EliteBenefitImps|• ₹0 Instant IMPS Payout Fee (platform covers gateway charges)\n|• ₹0 तत्काल IMPS भुगतान शुल्क (गेटवे शुल्क प्लैटफ़ॉर्म देगा)\n|• ₹0 त्वरित IMPS पेआउट शुल्क (गेटवे शुल्क प्लॅटफॉर्म देतो)\n
+EliteBenefitBadge|• Golden Guild Elite badge displayed to customers|• ग्राहकों को गोल्डन गिल्ड एलीट बैज दिखता है|• ग्राहकांना गोल्डन गिल्ड एलिट बॅज दिसतो
+UpgradeElite|Upgrade to Guild Elite (₹999/mo)|गिल्ड एलीट में अपग्रेड करें (₹999/माह)|गिल्ड एलिटमध्ये अपग्रेड करा (₹999/महिना)
+EliteLocked|💎 Guild Elite Active • 5% Commission Floor Locked • Next billing in 30 days|💎 गिल्ड एलीट सक्रिय • 5% कमीशन तय • अगला बिल 30 दिन में|💎 गिल्ड एलिट सक्रिय • 5% कमिशन निश्चित • पुढील बिल 30 दिवसांत
+SubscribeElite|Subscribe to Guild Elite|गिल्ड एलीट की सदस्यता लें|गिल्ड एलिटची सदस्यता घ्या
+LockFloor|Lock in sustainable 5% commission floor|स्थायी न्यूनतम 5% कमीशन तय करें|टिकाऊ किमान 5% कमिशन निश्चित करा
+SubscriptionFee|Monthly Subscription Fee|मासिक सदस्यता शुल्क|मासिक सदस्यता शुल्क
+WalletBalance|Current Wallet Balance|मौजूदा वॉलेट शेष|सध्याची वॉलेट शिल्लक
+PostDeduction|Post-Deduction Balance|कटौती के बाद शेष|कपातीनंतरची शिल्लक
+Subscribed|Subscribed to Guild Elite! 5% commission floor active.|गिल्ड एलीट सदस्यता ली! न्यूनतम 5% कमीशन सक्रिय।|गिल्ड एलिट सदस्यता घेतली! किमान 5% कमिशन सक्रिय.
+ConfirmDeduct|Confirm & Deduct ₹999 from Wallet|पुष्टि करें और वॉलेट से ₹999 काटें|पुष्टी करा आणि वॉलेटमधून ₹999 कापा
+GuildWallet|Guild Wallet|गिल्ड वॉलेट|गिल्ड वॉलेट
+ImpsLive|Instant IMPS Live|तत्काल IMPS सक्रिय|त्वरित IMPS सक्रिय
+ClearedPayout|CLEARED AVAILABLE PAYOUT|उपलब्ध भुगतान राशि|उपलब्ध पेआउट रक्कम
+LockedReserve|LOCKED RESERVE|आरक्षित राशि|राखीव रक्कम
+AvailablePayout|AVAILABLE PAYOUT|उपलब्ध भुगतान|उपलब्ध पेआउट
+WithdrawBank|Withdraw to Bank via UPI / IMPS (₹0 Fee)|UPI / IMPS से बैंक में निकालें (₹0 शुल्क)|UPI / IMPS ने बँकेत काढा (₹0 शुल्क)
+Support|Karigaar Partner Support|कारीगर पार्टनर सहायता|कारागीर भागीदार सहाय्य
+WeeklySummary|Send Weekly Earnings Summary to WhatsApp|साप्ताहिक कमाई का सारांश WhatsApp पर भेजें|साप्ताहिक कमाईचा सारांश WhatsApp वर पाठवा
+VerifiedVault|Verified Guild Vault|सत्यापित गिल्ड वॉल्ट|पडताळलेले गिल्ड व्हॉल्ट
+NoBalance|No cleared balance available for withdrawal.|निकासी के लिए कोई उपलब्ध राशि नहीं है।|काढण्यासाठी उपलब्ध शिल्लक नाही.
+ReserveRequired|Cannot withdraw. A mandatory ₹2,000 security reserve must be maintained.|निकासी नहीं हो सकती। अनिवार्य ₹2,000 सुरक्षा राशि रखना आवश्यक है।|रक्कम काढता येत नाही. अनिवार्य ₹2,000 सुरक्षा राखीव ठेवणे आवश्यक आहे.
+InstantPayout|Instant IMPS Payout|तत्काल IMPS भुगतान|त्वरित IMPS पेआउट
+ReserveLocked|Mandatory ₹2,000 rolling security reserve locked in Guild Vault.|अनिवार्य ₹2,000 सुरक्षा राशि गिल्ड वॉल्ट में आरक्षित है।|अनिवार्य ₹2,000 सुरक्षा रक्कम गिल्ड व्हॉल्टमध्ये राखीव आहे.
+BankNanded|Bank: HDFC Bank Limited (Nanded Main Branch)|बैंक: HDFC बैंक लिमिटेड (नांदेड़ मुख्य शाखा)|बँक: HDFC बँक लिमिटेड (नांदेड मुख्य शाखा)
+MaskedAccount|Account: •••• •••• 2104|खाता: •••• •••• 2104|खाते: •••• •••• 2104
+PayoutFee|Payout Fee: ₹0.00 (Guild Covered)|भुगतान शुल्क: ₹0.00 (गिल्ड देगा)|पेआउट शुल्क: ₹0.00 (गिल्ड भरेल)
+ConfirmPayout|Confirm IMPS Payout|IMPS भुगतान की पुष्टि करें|IMPS पेआउटची पुष्टी करा
+RecentActivity|Recent Activity|हाल की गतिविधि|अलीकडील व्यवहार
+ViewLedger|View Ledger|खाता-बही देखें|खातेवही पाहा
+WiringRepair|MCB & Wiring Repair|MCB और वायरिंग मरम्मत|MCB व वायरिंग दुरुस्ती
+ActivityToday|Anand Nagar, Nanded • Today, 11:20 AM|आनंद नगर, नांदेड़ • आज, सुबह 11:20|आनंद नगर, नांदेड • आज, सकाळी 11:20
+DailyPayout|Daily Payout to HDFC|HDFC में दैनिक भुगतान|HDFC ला दैनिक पेआउट
+ActivityYesterday|Ref #IMPS99824 • Yesterday|संदर्भ #IMPS99824 • कल|संदर्भ #IMPS99824 • काल
+GuildGuarantee|Guild guarantee: Guaranteed immediate IMPS payout processing 24/7 with zero service deduction.|गिल्ड गारंटी: बिना सेवा कटौती 24/7 तत्काल IMPS भुगतान प्रक्रिया की गारंटी।|गिल्ड हमी: सेवा कपातीशिवाय 24/7 त्वरित IMPS पेआउट प्रक्रियेची हमी.
+ProfileUpdated|Profile & rate card updated and synced to district directory!|प्रोफ़ाइल और दर सूची अपडेट होकर जिला निर्देशिका से सिंक हुई!|प्रोफाइल व दरपत्रक अद्ययावत करून जिल्हा निर्देशिकेशी सिंक केले!
+BioHint|Describe your craft expertise & safety gear...|अपने काम की विशेषज्ञता और सुरक्षा उपकरण बताएँ...|तुमचे कौशल्य व सुरक्षा साधने सांगा...
+WorkPhotoHint|e.g. 6-Way Distribution Box Setup|जैसे 6-वे डिस्ट्रीब्यूशन बॉक्स लगाना|उदा. 6-वे डिस्ट्रिब्युशन बॉक्स उभारणी
+NandedGuild|Nanded Trade Guild|नांदेड़ व्यवसाय गिल्ड|नांदेड व्यवसाय गिल्ड
+JobsRating|4.9★ (340 jobs)|4.9★ (340 काम)|4.9★ (340 कामे)
+Emergency|EMERGENCY BREAKDOWN|आपातकालीन खराबी|आपत्कालीन बिघाड
+OnePhoto|1 Photo|1 फ़ोटो|1 फोटो
+BroadcastTimeout|Broadcast timed out without acceptance. Search expanded to regional guild.|समय सीमा में काम नहीं लिया गया। खोज क्षेत्रीय गिल्ड तक बढ़ाई गई।|वेळेत काम स्वीकारले नाही. शोध प्रादेशिक गिल्डपर्यंत वाढवला.
+Scanning|Scanning Nanded for incoming requests...|नांदेड़ में नए काम खोज रहे हैं...|नांदेडमध्ये नवीन कामे शोधत आहोत...
+DutyPaused|Duty paused. Go online to receive jobs.|ड्यूटी रुकी है। काम पाने के लिए ऑनलाइन जाएँ।|ड्युटी थांबली आहे. कामासाठी ऑनलाइन व्हा.
+KeepActive|Keep app active to receive 45s priority broadcasts|45 सेकंड के प्राथमिकता अलर्ट के लिए ऐप चालू रखें|45 सेकंदांच्या प्राधान्य सूचनांसाठी अॅप सक्रिय ठेवा
+VoiceExample|Customer Voice Note: "MCB switch sparking when turning on AC. Need 32A replacement."|ग्राहक की आवाज़: "AC चालू करने पर MCB में चिंगारी आती है। 32A बदलना है।"|ग्राहकाची ध्वनिनोंद: "AC सुरू केल्यावर MCB मध्ये ठिणग्या येतात. 32A बदलणे आवश्यक आहे."
+PausePreview|Pause Preview|पूर्वावलोकन रोकें|पूर्वावलोकन थांबवा
+ListenMemo|Listen to Customer Audio Memo|ग्राहक का ऑडियो सुनें|ग्राहकाची ध्वनिनोंद ऐका

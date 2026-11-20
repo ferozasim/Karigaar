@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/app_providers.dart';
-import '../../../l10n/app_localizations.dart';
+import '../../../l10n/localized_strings.dart';
 
 class AppLanguageSelector extends ConsumerWidget {
   const AppLanguageSelector({super.key});
@@ -9,7 +9,7 @@ class AppLanguageSelector extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final languageCode = ref.watch(partnerLanguageProvider);
-    final strings = AppLocalizations.of(context);
+    final strings = localizedStrings(context);
     final options = <(String, String)>[
       ('en', strings.english),
       ('hi', strings.hindi),

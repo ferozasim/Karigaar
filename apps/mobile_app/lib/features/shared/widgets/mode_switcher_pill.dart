@@ -5,6 +5,7 @@ import '../../../core/models/user_role.dart';
 import '../../../core/providers/app_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../l10n/localized_strings.dart';
 
 class ModeSwitcherPill extends ConsumerWidget {
   final bool compact;
@@ -14,6 +15,7 @@ class ModeSwitcherPill extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentRole = ref.watch(userRoleProvider);
+    final strings = localizedStrings(context);
 
     return FittedBox(
       fit: BoxFit.scaleDown,
@@ -31,7 +33,7 @@ class ModeSwitcherPill extends ConsumerWidget {
               context: context,
               role: UserRole.customer,
               isActive: currentRole == UserRole.customer,
-              label: compact ? 'Homeowner' : 'Homeowner Mode',
+              label: compact ? strings.homeowner : strings.homeownerMode,
               icon: Icons.home_rounded,
               onTap: () {
                 ref.read(userRoleProvider.notifier).state = UserRole.customer;
@@ -50,7 +52,7 @@ class ModeSwitcherPill extends ConsumerWidget {
               context: context,
               role: UserRole.artisan,
               isActive: currentRole == UserRole.artisan,
-              label: compact ? 'Karigaar' : 'Artisan Mode',
+              label: compact ? strings.karigaar : strings.artisanMode,
               icon: Icons.handyman_rounded,
               onTap: () {
                 ref.read(userRoleProvider.notifier).state = UserRole.artisan;
@@ -111,7 +113,8 @@ class ModeSwitcherPill extends ConsumerWidget {
             SizedBox(width: compact ? 4 : 6),
             Text(
               label,
-              style: (compact ? AppTypography.labelSm : AppTypography.labelMd).copyWith(
+              style: (compact ? AppTypography.labelSm : AppTypography.labelMd)
+                  .copyWith(
                 color: isActive ? AppColors.onPrimary : AppColors.textMuted,
                 fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
                 fontSize: compact ? 11 : null,

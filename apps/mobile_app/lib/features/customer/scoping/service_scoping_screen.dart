@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../l10n/localized_strings.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/models/booking_model.dart';
@@ -129,7 +130,7 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Wrap(
+                          Wrap(
                             spacing: 8,
                             runSpacing: 8,
                             crossAxisAlignment: WrapCrossAlignment.center,
@@ -137,7 +138,8 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                               FittedBox(
                                 fit: BoxFit.scaleDown,
                                 child: TrustShieldBadge(
-                                  label: 'Verified Master Guild',
+                                  label: localizedStrings(context)
+                                      .flowVerifiedGuild,
                                   icon: Icons.workspace_premium_rounded,
                                 ),
                               ),
@@ -146,12 +148,13 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Icon(Icons.star_rounded,
+                                    const Icon(Icons.star_rounded,
                                         color: AppColors.secondary, size: 18),
-                                    SizedBox(width: 4),
+                                    const SizedBox(width: 4),
                                     Text(
-                                      '4.9 (1.4k jobs in Nanded)',
-                                      style: TextStyle(
+                                      localizedStrings(context)
+                                          .flowNandedRating,
+                                      style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 13,
                                         fontWeight: FontWeight.bold,
@@ -188,7 +191,8 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                                 const SizedBox(width: 8),
                                 Expanded(
                                   child: Text(
-                                    'Includes 45-min diagnostic inspection & 30-day rework warranty',
+                                    localizedStrings(context)
+                                        .flowInspectionWarranty,
                                     style: AppTypography.bodySm
                                         .copyWith(color: Colors.white),
                                   ),
@@ -201,10 +205,10 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                     ),
 
                     const SizedBox(height: 24),
-                    Text('Select Issues to Resolve',
+                    Text(localizedStrings(context).flowSelectIssues,
                         style: AppTypography.headlineSm),
                     const SizedBox(height: 6),
-                    Text('Choose all relevant problems for accurate tooling',
+                    Text(localizedStrings(context).flowSelectIssuesHint,
                         style: AppTypography.bodySm),
                     const SizedBox(height: 16),
 
@@ -244,7 +248,8 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                                     children: [
                                       Expanded(
                                         child: Text(
-                                          'Curated Bundle Applied',
+                                          localizedStrings(context)
+                                              .flowBundleApplied,
                                           style: AppTypography.labelSm.copyWith(
                                             color: widget.bundle!.accentColor,
                                             fontWeight: FontWeight.bold,
@@ -395,11 +400,10 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
 
                     const SizedBox(height: 20),
                     // Media & Voice Scoping (15s Audio Memo)
-                    Text('Photo & 15-Second Voice Note',
+                    Text(localizedStrings(context).flowPhotoVoice,
                         style: AppTypography.headlineSm),
                     const SizedBox(height: 6),
-                    Text(
-                        'Help your craftsman bring the exact spares from the hardware store',
+                    Text(localizedStrings(context).flowSparesHint,
                         style: AppTypography.bodySm),
                     const SizedBox(height: 12),
                     // Photo upload button
@@ -413,7 +417,7 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                             content: Text(
                               _hasAttachedPhoto
                                   ? 'Issue photo attached for ${trade.name} inspection.'
-                                  : 'Removed attached photo.',
+                                  : localizedStrings(context).flowPhotoRemoved,
                             ),
                             duration: const Duration(seconds: 1),
                           ),
@@ -449,8 +453,9 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                             Flexible(
                               child: Text(
                                 _hasAttachedPhoto
-                                    ? 'Defect Photo Attached'
-                                    : 'Add Issue Photo (Optional)',
+                                    ? localizedStrings(context)
+                                        .flowPhotoAttached
+                                    : localizedStrings(context).flowAddPhoto,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: AppTypography.labelMd.copyWith(
@@ -524,7 +529,7 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                                       borderRadius: BorderRadius.circular(4),
                                     ),
                                     child: Text(
-                                      '+₹29 Shield Fee',
+                                      localizedStrings(context).flowShieldFee,
                                       style: AppTypography.labelSm
                                           .copyWith(color: AppColors.tertiary),
                                     ),
@@ -533,7 +538,7 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                               ),
                             ),
                             Text(
-                              'Adjustable on-site bill',
+                              localizedStrings(context).flowAdjustableBill,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: AppTypography.bodySm,
@@ -560,7 +565,7 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                                   borderRadius: BorderRadius.circular(12)),
                             ),
                             child: Text(
-                              'Request Artisan',
+                              localizedStrings(context).flowRequestArtisan,
                               maxLines: 1,
                               style: AppTypography.labelLg.copyWith(
                                 color: Colors.white,
@@ -578,8 +583,9 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
           ),
         );
       },
-      loading: () =>
-          const Scaffold(body: Center(child: CircularProgressIndicator())),
+      loading: () => const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      ),
       error: (e, _) => Scaffold(body: Center(child: Text('Error: $e'))),
     );
   }
@@ -604,7 +610,7 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               Text(
-                'Craftsperson Skill Tier',
+                localizedStrings(context).flowSkillTier,
                 style: AppTypography.headlineSm.copyWith(fontSize: 16),
               ),
               FittedBox(
@@ -644,10 +650,14 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
             final isSelected = _selectedRoleTier == role;
             final localizedTitle = role.getLocalizedTitle(trade.tradeId);
             final multText = switch (role) {
-              KarigaarRoleType.headMistry => '1.25x (+25% Master Tier)',
-              KarigaarRoleType.skilledKarigaar => '1.0x (Standard Rate)',
-              KarigaarRoleType.helperAssistant => '0.65x (-35% Helper Tier)',
-              KarigaarRoleType.thekedar => '1.35x (+35% Team Contractor)',
+              KarigaarRoleType.headMistry =>
+                localizedStrings(context).flowMasterRate,
+              KarigaarRoleType.skilledKarigaar =>
+                localizedStrings(context).flowStandardRate,
+              KarigaarRoleType.helperAssistant =>
+                localizedStrings(context).flowHelperRate,
+              KarigaarRoleType.thekedar =>
+                localizedStrings(context).flowContractorRate,
             };
 
             return Padding(
@@ -775,12 +785,12 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Upfront ₹99 Standby Mandate',
+                                localizedStrings(context).flowMandateTitle,
                                 style: AppTypography.headlineSm
                                     .copyWith(fontSize: 17),
                               ),
                               Text(
-                                'Razorpay / Cashfree UPI Autopay Protected',
+                                localizedStrings(context).flowMandateProvider,
                                 style: AppTypography.labelSm.copyWith(
                                     color: AppColors.tertiary,
                                     fontWeight: FontWeight.w600),
@@ -808,7 +818,7 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                               const SizedBox(width: 6),
                               Expanded(
                                 child: Text(
-                                    'Why is a ₹99 pre-authorization required?',
+                                    localizedStrings(context).flowMandateWhy,
                                     style: AppTypography.labelSm
                                         .copyWith(fontWeight: FontWeight.bold)),
                               ),
@@ -816,14 +826,14 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Secures ₹99 standby transit fee hold to protect artisan fuel and travel. The hold is RELEASED upon job completion and debited ONLY if doorstep access is denied for >15 minutes.',
+                            localizedStrings(context).flowMandateExplanation,
                             style: AppTypography.bodySm.copyWith(fontSize: 12),
                           ),
                         ],
                       ),
                     ),
                     const SizedBox(height: 16),
-                    Text('Quick Select UPI App',
+                    Text(localizedStrings(context).flowSelectUpi,
                         style: AppTypography.labelMd
                             .copyWith(fontWeight: FontWeight.bold)),
                     const SizedBox(height: 8),
@@ -873,14 +883,14 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                       ],
                     ),
                     const SizedBox(height: 14),
-                    Text('Enter UPI ID / VPA',
+                    Text(localizedStrings(context).flowUpiId,
                         style: AppTypography.labelMd
                             .copyWith(fontWeight: FontWeight.bold)),
                     const SizedBox(height: 6),
                     TextField(
                       controller: vpaController,
                       decoration: InputDecoration(
-                        hintText: 'e.g. mobile@okaxis',
+                        hintText: localizedStrings(context).flowUpiHint,
                         prefixIcon:
                             const Icon(Icons.alternate_email_rounded, size: 20),
                         contentPadding: const EdgeInsets.symmetric(
@@ -915,7 +925,7 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                           if (!vpaRegex.hasMatch(vpa)) {
                             setSheetState(() {
                               errorMessage =
-                                  'Please enter a valid UPI VPA (e.g. name@bank)';
+                                  localizedStrings(context).flowUpiInvalid;
                             });
                             return;
                           }
@@ -1027,7 +1037,7 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                           }
                         },
                         child: Text(
-                          'Authorize ₹99 Mandate & Request Artisan',
+                          localizedStrings(context).flowAuthorizeMandate,
                           style: AppTypography.labelLg.copyWith(
                               color: Colors.white, fontWeight: FontWeight.bold),
                         ),

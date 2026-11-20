@@ -7,6 +7,7 @@ import '../../../core/models/user_role.dart';
 import '../../../core/providers/app_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../l10n/localized_strings.dart';
 import '../shared/widgets/karigaar_button.dart';
 
 class OtpVerificationScreen extends ConsumerStatefulWidget {
@@ -15,7 +16,8 @@ class OtpVerificationScreen extends ConsumerStatefulWidget {
   const OtpVerificationScreen({super.key, required this.phone});
 
   @override
-  ConsumerState<OtpVerificationScreen> createState() => _OtpVerificationScreenState();
+  ConsumerState<OtpVerificationScreen> createState() =>
+      _OtpVerificationScreenState();
 }
 
 class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
@@ -81,11 +83,12 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
         border: Border.all(color: AppColors.primary, width: 2),
       ),
     );
+    final strings = localizedStrings(context);
 
     return Scaffold(
       backgroundColor: AppColors.surfaceBase,
       appBar: AppBar(
-        title: const Text('OTP Verification'),
+        title: Text(strings.authOtpVerification),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () {
@@ -104,7 +107,8 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
-                  minHeight: (constraints.maxHeight - 32).clamp(0.0, double.infinity),
+                  minHeight:
+                      (constraints.maxHeight - 32).clamp(0.0, double.infinity),
                 ),
                 child: IntrinsicHeight(
                   child: Column(
@@ -126,18 +130,20 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        'Verify WhatsApp Code',
+                        strings.authVerifyWhatsAppCode,
                         style: AppTypography.headlineLg,
                       ),
                       const SizedBox(height: 8),
                       Text.rich(
                         TextSpan(
-                          style: AppTypography.bodyMd.copyWith(color: AppColors.textMuted),
+                          style: AppTypography.bodyMd
+                              .copyWith(color: AppColors.textMuted),
                           children: [
-                            const TextSpan(text: 'We sent a 6-digit verification code to\n'),
+                            TextSpan(text: strings.authCodeSent),
                             TextSpan(
                               text: '+91 ${widget.phone}',
-                              style: AppTypography.labelLg.copyWith(color: AppColors.textPrimary),
+                              style: AppTypography.labelLg
+                                  .copyWith(color: AppColors.textPrimary),
                             ),
                           ],
                         ),
@@ -163,12 +169,14 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(Icons.timer_outlined, size: 16, color: AppColors.textMuted),
+                            const Icon(Icons.timer_outlined,
+                                size: 16, color: AppColors.textMuted),
                             const SizedBox(width: 6),
                             Flexible(
                               child: Text(
-                                'Resend WhatsApp code in ${_secondsRemaining}s',
-                                style: AppTypography.labelMd.copyWith(color: AppColors.textMuted),
+                                '${strings.authResendCode} • ${_secondsRemaining}s',
+                                style: AppTypography.labelMd
+                                    .copyWith(color: AppColors.textMuted),
                               ),
                             ),
                           ],
@@ -176,9 +184,10 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                       else
                         TextButton.icon(
                           onPressed: _startCountdown,
-                          icon: const Icon(Icons.refresh_rounded, size: 16, color: AppColors.secondary),
+                          icon: const Icon(Icons.refresh_rounded,
+                              size: 16, color: AppColors.secondary),
                           label: Text(
-                            'Resend Code via WhatsApp',
+                            strings.authResendCode,
                             style: AppTypography.labelMd.copyWith(
                               color: AppColors.secondary,
                               fontWeight: FontWeight.w700,
@@ -191,11 +200,11 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                       TextButton(
                         onPressed: () {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Fallback SMS sent via DLT gateway.')),
+                            SnackBar(content: Text(strings.authFallbackSms)),
                           );
                         },
                         child: Text(
-                          'Didn\'t receive on WhatsApp? Send via SMS',
+                          strings.authSmsFallback,
                           style: AppTypography.labelSm.copyWith(
                             color: AppColors.textMuted,
                             decoration: TextDecoration.underline,
@@ -207,7 +216,7 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                       const SizedBox(height: 16),
                       // Verify Button
                       KarigaarButton(
-                        label: 'Verify & Continue',
+                        label: strings.authVerifyContinue,
                         onPressed: _verifyOtp,
                       ),
                       const SizedBox(height: 16),

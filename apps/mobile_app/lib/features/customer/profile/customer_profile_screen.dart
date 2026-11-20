@@ -1,3 +1,4 @@
+import '../../../l10n/localized_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -29,7 +30,7 @@ class _CustomerProfileScreenState extends ConsumerState<CustomerProfileScreen> {
     return Scaffold(
       backgroundColor: AppColors.surfaceBase,
       appBar: AppBar(
-        title: const Text('Homeowner Profile & Settings'),
+        title: Text(localizedStrings(context).accountProfileTitle),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () {
@@ -83,7 +84,7 @@ class _CustomerProfileScreenState extends ConsumerState<CustomerProfileScreen> {
                               ),
                             ),
                             Text(
-                              '+91 9822199882 • Verified Homeowner',
+                              localizedStrings(context).accountVerifiedPhone,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: AppTypography.bodySm.copyWith(
@@ -96,8 +97,8 @@ class _CustomerProfileScreenState extends ConsumerState<CustomerProfileScreen> {
                     ],
                   ),
                   const SizedBox(height: 14),
-                  const TrustShieldBadge(
-                    label: '₹25,000 Master Guild Damage Protection Active',
+                  TrustShieldBadge(
+                    label: localizedStrings(context).accountMasterProtection,
                   ),
                 ],
               ),
@@ -111,7 +112,7 @@ class _CustomerProfileScreenState extends ConsumerState<CustomerProfileScreen> {
               children: [
                 Expanded(
                   child: Text(
-                    'Saved Nanded Localities',
+                    localizedStrings(context).accountSavedLocalities,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: AppTypography.headlineSm,
@@ -119,7 +120,7 @@ class _CustomerProfileScreenState extends ConsumerState<CustomerProfileScreen> {
                 ),
                 TextButton(
                   onPressed: () => LocalitySelectorSheet.show(context),
-                  child: const Text('Change'),
+                  child: Text(localizedStrings(context).accountChange),
                 ),
               ],
             ),
@@ -146,13 +147,13 @@ class _CustomerProfileScreenState extends ConsumerState<CustomerProfileScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Primary: ${selectedLocality.name}, Nanded (${selectedLocality.pincode})',
+                              localizedStrings(context).accountPrimaryLocality(selectedLocality.name, selectedLocality.pincode),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: AppTypography.labelLg,
                             ),
                             Text(
-                              '${selectedLocality.marathiName} • Plot 14, Near Guru Gobind Singh Ji Marg',
+                              localizedStrings(context).accountSavedAddress(selectedLocality.marathiName),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: AppTypography.bodySm.copyWith(
@@ -194,7 +195,7 @@ class _CustomerProfileScreenState extends ConsumerState<CustomerProfileScreen> {
 
             // Payment & Escrow Preferences
             Text(
-              'Escrow & Payment Preferences',
+              localizedStrings(context).accountPaymentPreferences,
               style: AppTypography.headlineSm,
             ),
             const SizedBox(height: 8),
@@ -226,7 +227,7 @@ class _CustomerProfileScreenState extends ConsumerState<CustomerProfileScreen> {
                                 style: AppTypography.labelLg,
                               ),
                               Text(
-                                '₹99 Transit Fee Mandate & RBI 2FA Parts Approval',
+                                localizedStrings(context).accountTransitMandate,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: AppTypography.bodySm.copyWith(
@@ -242,11 +243,11 @@ class _CustomerProfileScreenState extends ConsumerState<CustomerProfileScreen> {
                     SwitchListTile(
                       contentPadding: EdgeInsets.zero,
                       title: Text(
-                        'UPI Escrow Pre-Authorization',
+                        localizedStrings(context).accountPreauthorization,
                         style: AppTypography.labelMd,
                       ),
                       subtitle: Text(
-                        'Release payout only after 4-digit Completion OTP',
+                        localizedStrings(context).accountCompletionPayout,
                         style: AppTypography.bodySm,
                       ),
                       value: _upiAutoMandate,
@@ -256,11 +257,11 @@ class _CustomerProfileScreenState extends ConsumerState<CustomerProfileScreen> {
                     SwitchListTile(
                       contentPadding: EdgeInsets.zero,
                       title: Text(
-                        'WhatsApp Dispatch & Gate Pass Alerts',
+                        localizedStrings(context).accountWhatsappAlerts,
                         style: AppTypography.labelMd,
                       ),
                       subtitle: Text(
-                        'Receive live artisan tracking & digital GST invoices',
+                        localizedStrings(context).accountTrackingInvoices,
                         style: AppTypography.bodySm,
                       ),
                       value: _whatsAppUpdates,
@@ -276,7 +277,7 @@ class _CustomerProfileScreenState extends ConsumerState<CustomerProfileScreen> {
             const SizedBox(height: 20),
 
             // Emergency Contact & Mode Switch
-            Text('Guild Portal & Security', style: AppTypography.headlineSm),
+            Text(localizedStrings(context).accountPortalSecurity, style: AppTypography.headlineSm),
             const SizedBox(height: 8),
             Material(
               color: AppColors.surfaceRaised,
@@ -295,11 +296,11 @@ class _CustomerProfileScreenState extends ConsumerState<CustomerProfileScreen> {
                         color: AppColors.error,
                       ),
                       title: Text(
-                        'Emergency SOS Contact',
+                        localizedStrings(context).accountSosContact,
                         style: AppTypography.labelLg,
                       ),
                       subtitle: Text(
-                        '+91 9422100100 • Nanded Control Desk (24x7)',
+                        localizedStrings(context).accountControlDesk,
                         style: AppTypography.bodySm,
                       ),
                     ),
@@ -311,11 +312,11 @@ class _CustomerProfileScreenState extends ConsumerState<CustomerProfileScreen> {
                         color: AppColors.secondary,
                       ),
                       title: Text(
-                        'Switch to Artisan Guild Portal',
+                        localizedStrings(context).accountSwitchGuild,
                         style: AppTypography.labelLg,
                       ),
                       subtitle: Text(
-                        'Open 45s Job Radar & Instant IMPS Wallet',
+                        localizedStrings(context).accountRadarWallet,
                         style: AppTypography.bodySm,
                       ),
                       trailing: const Icon(Icons.chevron_right_rounded),
@@ -329,7 +330,7 @@ class _CustomerProfileScreenState extends ConsumerState<CustomerProfileScreen> {
                         color: AppColors.error,
                       ),
                       title: Text(
-                        'Sign Out / Switch Number',
+                        localizedStrings(context).accountSignOut,
                         style: AppTypography.labelLg.copyWith(
                           color: AppColors.error,
                         ),
@@ -359,25 +360,25 @@ class _CustomerProfileScreenState extends ConsumerState<CustomerProfileScreen> {
         children: [
           _buildNavItem(
             icon: Icons.explore_rounded,
-            label: 'Explore',
+            label: localizedStrings(context).explore,
             isActive: false,
             onTap: () => context.go('/customer/home'),
           ),
           _buildNavItem(
             icon: Icons.assignment_rounded,
-            label: 'Bookings',
+            label: localizedStrings(context).bookings,
             isActive: false,
             onTap: () => context.go('/customer/bookings'),
           ),
           _buildNavItem(
             icon: Icons.chat_bubble_outline_rounded,
-            label: 'Messages',
+            label: localizedStrings(context).messages,
             isActive: false,
             onTap: () => context.go('/customer/messages'),
           ),
           _buildNavItem(
             icon: Icons.person_outline_rounded,
-            label: 'Profile',
+            label: localizedStrings(context).profile,
             isActive: true,
           ),
         ],

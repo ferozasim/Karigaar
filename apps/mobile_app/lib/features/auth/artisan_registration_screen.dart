@@ -6,6 +6,9 @@ import '../../../core/models/karigaar_role_type.dart';
 import '../../../core/providers/app_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../../l10n/catalog_localizations.dart';
+import '../../../l10n/localized_strings.dart';
 import '../shared/widgets/karigaar_button.dart';
 import '../shared/widgets/locality_selector_sheet.dart';
 
@@ -39,6 +42,7 @@ class _ArtisanRegistrationScreenState
   bool _upiPayoutVerified = true;
   bool _whatsAppOptIn = true;
   bool _showReferralInput = false;
+  late AppLocalizations _strings;
 
   // Tool audit item states
   bool _toolMultimeter = true;
@@ -73,70 +77,120 @@ class _ArtisanRegistrationScreenState
       'name': 'Electrician',
       'subtitle': 'Wiring & Inverters',
       'icon': Icons.bolt_rounded,
-      'specialties': ['3-Phase Commercial', 'Inverter DB Wiring', 'MCB Tripping', 'Concealed Piping'],
+      'specialties': [
+        '3-Phase Commercial',
+        'Inverter DB Wiring',
+        'MCB Tripping',
+        'Concealed Piping'
+      ],
     },
     {
       'id': 'trade_plumber',
       'name': 'Plumbing',
       'subtitle': 'Fittings & Pressure',
       'icon': Icons.plumbing_rounded,
-      'specialties': ['CPVC Pipelines', 'Diverter Cartridge', 'Pressure Pump', 'Drainage Unclog'],
+      'specialties': [
+        'CPVC Pipelines',
+        'Diverter Cartridge',
+        'Pressure Pump',
+        'Drainage Unclog'
+      ],
     },
     {
       'id': 'trade_carpenter',
       'name': 'Carpenter',
       'subtitle': 'Modular & Woodwork',
       'icon': Icons.handyman_rounded,
-      'specialties': ['Modular Kitchen', 'Hydraulic Hinges', 'Door Lock Fitting', 'Laminate Pasting'],
+      'specialties': [
+        'Modular Kitchen',
+        'Hydraulic Hinges',
+        'Door Lock Fitting',
+        'Laminate Pasting'
+      ],
     },
     {
       'id': 'trade_mason',
       'name': 'Mason / Gawandi',
       'subtitle': 'Tiles, Granite & Civil',
       'icon': Icons.foundation_rounded,
-      'specialties': ['Vitrified Tiles', 'Granite Platform', 'Plastering & Brick', 'Waterproofing'],
+      'specialties': [
+        'Vitrified Tiles',
+        'Granite Platform',
+        'Plastering & Brick',
+        'Waterproofing'
+      ],
     },
     {
       'id': 'trade_painter',
       'name': 'Painter',
       'subtitle': 'Textures & Polish',
       'icon': Icons.format_paint_rounded,
-      'specialties': ['Royal Texture', 'Waterproof Primer', 'Wood PU Polish', 'Wall Putty Level'],
+      'specialties': [
+        'Royal Texture',
+        'Waterproof Primer',
+        'Wood PU Polish',
+        'Wall Putty Level'
+      ],
     },
     {
       'id': 'trade_ac_refrig',
       'name': 'AC & Refrigeration',
       'subtitle': 'HVAC & Whitegoods',
       'icon': Icons.ac_unit_rounded,
-      'specialties': ['Inverter Split AC', 'Jet Pump Wash', 'R32 Gas Charging', 'Deep Freezer'],
+      'specialties': [
+        'Inverter Split AC',
+        'Jet Pump Wash',
+        'R32 Gas Charging',
+        'Deep Freezer'
+      ],
     },
     {
       'id': 'trade_appliance',
       'name': 'Appliance Repair',
       'subtitle': 'RO, Geyser & Washer',
       'icon': Icons.home_repair_service_rounded,
-      'specialties': ['RO Membrane & Pump', 'Instant Geyser Coil', 'Front Load Washer', 'Microwave PCB'],
+      'specialties': [
+        'RO Membrane & Pump',
+        'Instant Geyser Coil',
+        'Front Load Washer',
+        'Microwave PCB'
+      ],
     },
     {
       'id': 'trade_welder',
       'name': 'Welder',
       'subtitle': 'Grills & Fabrication',
       'icon': Icons.construction_rounded,
-      'specialties': ['Arc Welding', 'Safety Gate Grill', 'Shed Fabrication', 'Stainless Steel Railing'],
+      'specialties': [
+        'Arc Welding',
+        'Safety Gate Grill',
+        'Shed Fabrication',
+        'Stainless Steel Railing'
+      ],
     },
     {
       'id': 'trade_pest_control',
       'name': 'Pest Control',
       'subtitle': 'Termite & Herbal',
       'icon': Icons.pest_control_rounded,
-      'specialties': ['Termite Drill Injection', 'Herbal Cockroach Gel', 'Bedbug Heat Treat', 'Rodent Proofing'],
+      'specialties': [
+        'Termite Drill Injection',
+        'Herbal Cockroach Gel',
+        'Bedbug Heat Treat',
+        'Rodent Proofing'
+      ],
     },
     {
       'id': 'trade_deep_cleaning',
       'name': 'Deep Cleaning',
       'subtitle': 'Tank & Home Sanitize',
       'icon': Icons.cleaning_services_rounded,
-      'specialties': ['Overhead Water Tank', 'Kitchen Degreasing', 'Sofa Steam Vacuum', 'Bathroom Descaling'],
+      'specialties': [
+        'Overhead Water Tank',
+        'Kitchen Degreasing',
+        'Sofa Steam Vacuum',
+        'Bathroom Descaling'
+      ],
     },
   ];
 
@@ -171,14 +225,14 @@ class _ArtisanRegistrationScreenState
   String get _stepTitle {
     switch (_currentStep) {
       case 1:
-        return 'Step 1 of 4: Personal Details';
+        return _strings.authStepPersonal;
       case 2:
-        return 'Step 2 of 4: Trade Selection';
+        return _strings.authStepTrade;
       case 3:
-        return 'Step 3 of 4: KYC & Tools Audit';
+        return _strings.authStepAudit;
       case 4:
       default:
-        return 'Step 4 of 4: Payout & Protection';
+        return _strings.authStepPayout;
     }
   }
 
@@ -191,8 +245,8 @@ class _ArtisanRegistrationScreenState
       if (name.isEmpty || phone.length < 10) {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please enter your full Aadhaar name and 10-digit mobile number.'),
+          SnackBar(
+            content: Text(_strings.authLegalNameError),
           ),
         );
         return;
@@ -201,8 +255,8 @@ class _ArtisanRegistrationScreenState
       if (_selectedTradeId.isEmpty) {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please select your primary trade from the 10 launch trades.'),
+          SnackBar(
+            content: Text(_strings.authTradeError),
           ),
         );
         return;
@@ -212,8 +266,8 @@ class _ArtisanRegistrationScreenState
       if (aadhaar.length < 12) {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please enter a valid 12-digit Aadhaar number.'),
+          SnackBar(
+            content: Text(_strings.authAadhaarError),
           ),
         );
         return;
@@ -251,8 +305,8 @@ class _ArtisanRegistrationScreenState
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
         ..showSnackBar(
-          const SnackBar(
-            content: Text('Please enter your full Aadhaar name and 10-digit mobile number.'),
+          SnackBar(
+            content: Text(_strings.authLegalNameError),
           ),
         );
       return;
@@ -271,9 +325,9 @@ class _ArtisanRegistrationScreenState
 
     final tools = <String>[
       if (_toolMultimeter) 'Digital True-RMS Multimeter & Phase Tester',
-      if (_toolInsulatedSet) '1000V Insulated Screwdrivers & Pliers Set',
-      if (_toolDrillGoggles) 'Heavy Duty Rotary Hammer Drill & Safety Goggles',
-      if (_toolDropCloth) 'Canvas Drop-Cloth & Sawdust Cleanup Vacuum Bag',
+      if (_toolInsulatedSet) _strings.authInsulatedTools,
+      if (_toolDrillGoggles) _strings.authDrillTools,
+      if (_toolDropCloth) _strings.authCleanupTools,
     ];
 
     final yearsExp = switch (_selectedExperience) {
@@ -316,12 +370,14 @@ class _ArtisanRegistrationScreenState
 
   @override
   Widget build(BuildContext context) {
+    _strings = localizedStrings(context);
+    _selectedLanguage = ref.watch(partnerLanguageProvider);
     final selectedLocality = ref.watch(selectedLocalityProvider);
 
     return Scaffold(
       backgroundColor: AppColors.surfaceBase,
       appBar: AppBar(
-        title: const Text('Join the Karigaar Guild'),
+        title: Text(_strings.authJoinGuild),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: _prevStep,
@@ -342,7 +398,8 @@ class _ArtisanRegistrationScreenState
                 value: _progressValue,
                 minHeight: 6,
                 backgroundColor: AppColors.surfaceSubtle,
-                valueColor: const AlwaysStoppedAnimation<Color>(AppColors.secondary),
+                valueColor:
+                    const AlwaysStoppedAnimation<Color>(AppColors.secondary),
               ),
             ),
 
@@ -381,8 +438,9 @@ class _ArtisanRegistrationScreenState
               child: TextButton(
                 onPressed: () => context.go('/login'),
                 child: Text(
-                  'Already registered in the Guild? Log In here',
-                  style: AppTypography.labelMd.copyWith(color: AppColors.secondary),
+                  _strings.authAlreadyRegistered,
+                  style: AppTypography.labelMd
+                      .copyWith(color: AppColors.secondary),
                 ),
               ),
             ),
@@ -457,6 +515,7 @@ class _ArtisanRegistrationScreenState
                 children: [
                   _buildLangBtn('en', 'English'),
                   _buildLangBtn('hi', 'हिंदी'),
+                  _buildLangBtn('mr', 'मराठी'),
                 ],
               ),
             ),
@@ -470,7 +529,7 @@ class _ArtisanRegistrationScreenState
     final isSelected = _selectedLanguage == code;
     return GestureDetector(
       key: ValueKey('lang_btn_$code'),
-      onTap: () => setState(() => _selectedLanguage = code),
+      onTap: () => ref.read(partnerLanguageProvider.notifier).state = code,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
         decoration: BoxDecoration(
@@ -504,7 +563,8 @@ class _ArtisanRegistrationScreenState
             runSpacing: 6,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: AppColors.tertiarySurfaceTint,
                   borderRadius: BorderRadius.circular(9999),
@@ -512,40 +572,44 @@ class _ArtisanRegistrationScreenState
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.verified_rounded, size: 14, color: AppColors.tertiary),
+                    const Icon(Icons.verified_rounded,
+                        size: 14, color: AppColors.tertiary),
                     const SizedBox(width: 4),
                     Flexible(
                       child: Text(
-                        'Guild Accreditation',
+                        _strings.authAccreditation,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: AppTypography.labelSm.copyWith(color: AppColors.tertiary),
+                        style: AppTypography.labelSm
+                            .copyWith(color: AppColors.tertiary),
                       ),
                     ),
                   ],
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: AppColors.secondarySurfaceTint,
                   borderRadius: BorderRadius.circular(9999),
                 ),
                 child: Text(
-                  '5% Commission Floor Guarantee',
-                  style: AppTypography.labelSm.copyWith(color: AppColors.secondary),
+                  _strings.authCommissionGuarantee,
+                  style: AppTypography.labelSm
+                      .copyWith(color: AppColors.secondary),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 10),
           Text(
-            'Join the Karigaar Guild',
+            _strings.authJoinGuild,
             style: AppTypography.headlineLg.copyWith(color: Colors.white),
           ),
           const SizedBox(height: 4),
           Text(
-            'Connect directly with premium households in your pin code. Transparent daily payouts and guild master insurance cover.',
+            _strings.authJoinDescription,
             style: AppTypography.bodySm.copyWith(color: Colors.white70),
           ),
         ],
@@ -583,24 +647,27 @@ class _ArtisanRegistrationScreenState
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.star_rounded, size: 16, color: AppColors.secondary),
+                    const Icon(Icons.star_rounded,
+                        size: 16, color: AppColors.secondary),
                     const SizedBox(width: 4),
                     Expanded(
                       child: Text(
-                        'Over ₹42,000/mo Avg. Earnings',
+                        _strings.authAverageEarnings,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: AppTypography.labelMd.copyWith(color: AppColors.secondary),
+                        style: AppTypography.labelMd
+                            .copyWith(color: AppColors.secondary),
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'Join 12,400+ verified professionals across Nanded Guild',
+                  _strings.authGuildProfessionals,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
+                  style:
+                      AppTypography.bodySm.copyWith(color: AppColors.textMuted),
                 ),
               ],
             ),
@@ -676,10 +743,10 @@ class _ArtisanRegistrationScreenState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Step 1: Personal Details & Locality', style: AppTypography.headlineSm),
+        Text(_strings.authPersonalHeading, style: AppTypography.headlineSm),
         const SizedBox(height: 4),
         Text(
-          'Your legal info for KYC, guild credentials and instant direct deposits',
+          _strings.authPersonalDescription,
           style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
         ),
         const SizedBox(height: 14),
@@ -688,13 +755,16 @@ class _ArtisanRegistrationScreenState
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(child: Text('Full Legal Name', style: AppTypography.labelMd)),
+            Expanded(
+                child:
+                    Text(_strings.authFullName, style: AppTypography.labelMd)),
             Flexible(
               child: Text(
-                'Matches Aadhaar Card',
+                _strings.authMatchesAadhaar,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
+                style:
+                    AppTypography.bodySm.copyWith(color: AppColors.textMuted),
               ),
             ),
           ],
@@ -702,9 +772,9 @@ class _ArtisanRegistrationScreenState
         const SizedBox(height: 6),
         TextField(
           controller: _nameController,
-          decoration: const InputDecoration(
-            prefixIcon: Icon(Icons.badge_outlined, size: 20),
-            hintText: 'e.g. Ramesh Chandra Sharma',
+          decoration: InputDecoration(
+            prefixIcon: const Icon(Icons.badge_outlined, size: 20),
+            hintText: _strings.authNameHint,
           ),
         ),
 
@@ -714,7 +784,9 @@ class _ArtisanRegistrationScreenState
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(child: Text('WhatsApp Mobile Number', style: AppTypography.labelMd)),
+            Expanded(
+                child: Text(_strings.authWhatsAppNumber,
+                    style: AppTypography.labelMd)),
             Flexible(
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -725,8 +797,9 @@ class _ArtisanRegistrationScreenState
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Text(
-                    'Instant OTP Dispatch',
-                    style: AppTypography.labelSm.copyWith(color: AppColors.tertiary),
+                    _strings.authInstantOtp,
+                    style: AppTypography.labelSm
+                        .copyWith(color: AppColors.tertiary),
                   ),
                 ),
               ),
@@ -738,9 +811,9 @@ class _ArtisanRegistrationScreenState
           controller: _phoneController,
           keyboardType: TextInputType.phone,
           maxLength: 10,
-          decoration: const InputDecoration(
-            prefixIcon: Icon(Icons.phone_android_rounded, size: 20),
-            hintText: 'Enter 10-digit WhatsApp number',
+          decoration: InputDecoration(
+            prefixIcon: const Icon(Icons.phone_android_rounded, size: 20),
+            hintText: _strings.authWhatsAppHint,
             counterText: '',
           ),
         ),
@@ -748,16 +821,17 @@ class _ArtisanRegistrationScreenState
         const SizedBox(height: 14),
 
         // Emergency Contact
-        Text('Emergency Contact (Next-of-Kin)', style: AppTypography.labelMd),
+        Text(_strings.authEmergencyContact, style: AppTypography.labelMd),
         const SizedBox(height: 6),
         Row(
           children: [
             Expanded(
               child: TextField(
                 controller: _emergencyNameController,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.person_outline_rounded, size: 20),
-                  hintText: 'Contact Name',
+                decoration: InputDecoration(
+                  prefixIcon:
+                      const Icon(Icons.person_outline_rounded, size: 20),
+                  hintText: _strings.authContactName,
                 ),
               ),
             ),
@@ -767,9 +841,9 @@ class _ArtisanRegistrationScreenState
                 controller: _emergencyPhoneController,
                 keyboardType: TextInputType.phone,
                 maxLength: 10,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.phone_outlined, size: 20),
-                  hintText: '10-digit Phone',
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.phone_outlined, size: 20),
+                  hintText: _strings.authPhoneHint,
                   counterText: '',
                 ),
               ),
@@ -780,7 +854,7 @@ class _ArtisanRegistrationScreenState
         const SizedBox(height: 14),
 
         // Primary Working Locality
-        Text('Primary Working Locality', style: AppTypography.labelMd),
+        Text(_strings.authWorkingLocality, style: AppTypography.labelMd),
         const SizedBox(height: 6),
         InkWell(
           borderRadius: BorderRadius.circular(12),
@@ -795,7 +869,8 @@ class _ArtisanRegistrationScreenState
             ),
             child: Row(
               children: [
-                const Icon(Icons.location_on_rounded, color: AppColors.secondary, size: 20),
+                const Icon(Icons.location_on_rounded,
+                    color: AppColors.secondary, size: 20),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
@@ -805,7 +880,8 @@ class _ArtisanRegistrationScreenState
                     style: AppTypography.bodyMd,
                   ),
                 ),
-                const Icon(Icons.expand_more_rounded, color: AppColors.textMuted),
+                const Icon(Icons.expand_more_rounded,
+                    color: AppColors.textMuted),
               ],
             ),
           ),
@@ -817,13 +893,16 @@ class _ArtisanRegistrationScreenState
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(child: Text('Trade Experience', style: AppTypography.labelMd)),
+            Expanded(
+                child: Text(_strings.authExperience,
+                    style: AppTypography.labelMd)),
             Flexible(
               child: Text(
-                'Higher tier gets priority leads',
+                _strings.authPriorityLeads,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: AppTypography.labelSm.copyWith(color: AppColors.secondary),
+                style:
+                    AppTypography.labelSm.copyWith(color: AppColors.secondary),
               ),
             ),
           ],
@@ -848,10 +927,12 @@ class _ArtisanRegistrationScreenState
                 alignment: Alignment.center,
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 decoration: BoxDecoration(
-                  color: isSelected ? AppColors.primary : AppColors.surfaceRaised,
+                  color:
+                      isSelected ? AppColors.primary : AppColors.surfaceRaised,
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
-                    color: isSelected ? AppColors.primary : AppColors.borderSubtle,
+                    color:
+                        isSelected ? AppColors.primary : AppColors.borderSubtle,
                   ),
                 ),
                 child: Text(
@@ -885,7 +966,8 @@ class _ArtisanRegistrationScreenState
                 Checkbox(
                   value: _whatsAppOptIn,
                   activeColor: AppColors.tertiary,
-                  onChanged: (val) => setState(() => _whatsAppOptIn = val ?? true),
+                  onChanged: (val) =>
+                      setState(() => _whatsAppOptIn = val ?? true),
                 ),
                 const SizedBox(width: 6),
                 Expanded(
@@ -894,22 +976,25 @@ class _ArtisanRegistrationScreenState
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.chat_rounded, size: 16, color: AppColors.tertiary),
+                          const Icon(Icons.chat_rounded,
+                              size: 16, color: AppColors.tertiary),
                           const SizedBox(width: 6),
                           Expanded(
                             child: Text(
-                              'WhatsApp Dispatch Alerts',
+                              _strings.authDispatchAlerts,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: AppTypography.labelMd.copyWith(fontWeight: FontWeight.w700),
+                              style: AppTypography.labelMd
+                                  .copyWith(fontWeight: FontWeight.w700),
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Receive emergency high-pay calls, daily settlement slips, and guild warranty alerts instantly.',
-                        style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
+                        _strings.authDispatchDescription,
+                        style: AppTypography.bodySm
+                            .copyWith(color: AppColors.textMuted),
                       ),
                     ],
                   ),
@@ -934,18 +1019,20 @@ class _ArtisanRegistrationScreenState
               GestureDetector(
                 key: const ValueKey('referral_code_accordion_toggle'),
                 behavior: HitTestBehavior.opaque,
-                onTap: () => setState(() => _showReferralInput = !_showReferralInput),
+                onTap: () =>
+                    setState(() => _showReferralInput = !_showReferralInput),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
                       child: Row(
                         children: [
-                          const Icon(Icons.redeem_rounded, color: AppColors.secondary, size: 20),
+                          const Icon(Icons.redeem_rounded,
+                              color: AppColors.secondary, size: 20),
                           const SizedBox(width: 8),
                           Flexible(
                             child: Text(
-                              'Have a Master Craftsman Referral Code?',
+                              _strings.authReferralQuestion,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: AppTypography.labelMd,
@@ -955,7 +1042,9 @@ class _ArtisanRegistrationScreenState
                       ),
                     ),
                     Icon(
-                      _showReferralInput ? Icons.expand_less_rounded : Icons.expand_more_rounded,
+                      _showReferralInput
+                          ? Icons.expand_less_rounded
+                          : Icons.expand_more_rounded,
                       color: AppColors.textMuted,
                     ),
                   ],
@@ -968,8 +1057,8 @@ class _ArtisanRegistrationScreenState
                     Expanded(
                       child: TextField(
                         controller: _referralController,
-                        decoration: const InputDecoration(
-                          hintText: 'e.g. GUILD500',
+                        decoration: InputDecoration(
+                          hintText: _strings.authReferralHint,
                         ),
                       ),
                     ),
@@ -979,12 +1068,12 @@ class _ArtisanRegistrationScreenState
                         ScaffoldMessenger.of(context)
                           ..hideCurrentSnackBar()
                           ..showSnackBar(
-                            const SnackBar(
-                              content: Text('Referral code GUILD500 applied! ₹500 joining bonus unlocked.'),
+                            SnackBar(
+                              content: Text(_strings.authReferralApplied),
                             ),
                           );
                       },
-                      child: const Text('Apply'),
+                      child: Text(_strings.authApply),
                     ),
                   ],
                 ),
@@ -1014,10 +1103,12 @@ class _ArtisanRegistrationScreenState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Select Primary Trade', style: AppTypography.headlineSm),
+                  Text(_strings.authPrimaryTrade,
+                      style: AppTypography.headlineSm),
                   Text(
-                    'Tap your certified craft from Nanded 10 launch trades',
-                    style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
+                    _strings.authPrimaryTradeDescription,
+                    style: AppTypography.bodySm
+                        .copyWith(color: AppColors.textMuted),
                   ),
                 ],
               ),
@@ -1029,8 +1120,9 @@ class _ArtisanRegistrationScreenState
                 borderRadius: BorderRadius.circular(9999),
               ),
               child: Text(
-                '1 Required',
-                style: AppTypography.labelSm.copyWith(color: AppColors.secondary),
+                _strings.authOneRequired,
+                style:
+                    AppTypography.labelSm.copyWith(color: AppColors.secondary),
               ),
             ),
           ],
@@ -1053,14 +1145,19 @@ class _ArtisanRegistrationScreenState
             final isSelected = _selectedTradeId == trade['id'];
             return InkWell(
               borderRadius: BorderRadius.circular(14),
-              onTap: () => setState(() => _selectedTradeId = trade['id'] as String),
+              onTap: () =>
+                  setState(() => _selectedTradeId = trade['id'] as String),
               child: Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: isSelected ? AppColors.surfaceRaised : AppColors.surfaceSubtle,
+                  color: isSelected
+                      ? AppColors.surfaceRaised
+                      : AppColors.surfaceSubtle,
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(
-                    color: isSelected ? AppColors.secondary : AppColors.borderSubtle,
+                    color: isSelected
+                        ? AppColors.secondary
+                        : AppColors.borderSubtle,
                     width: isSelected ? 2.0 : 1.0,
                   ),
                 ),
@@ -1070,12 +1167,16 @@ class _ArtisanRegistrationScreenState
                       width: 38,
                       height: 38,
                       decoration: BoxDecoration(
-                        color: isSelected ? AppColors.secondarySurfaceTint : AppColors.surfaceRaised,
+                        color: isSelected
+                            ? AppColors.secondarySurfaceTint
+                            : AppColors.surfaceRaised,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Icon(
                         trade['icon'] as IconData,
-                        color: isSelected ? AppColors.secondary : AppColors.textPrimary,
+                        color: isSelected
+                            ? AppColors.secondary
+                            : AppColors.textPrimary,
                         size: 20,
                       ),
                     ),
@@ -1086,15 +1187,29 @@ class _ArtisanRegistrationScreenState
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            trade['name'] as String,
+                            Localizations.localeOf(context).languageCode == 'en'
+                                ? trade['name'] as String
+                                : localizedTradeNameById(
+                                    context,
+                                    trade['id'] as String,
+                                    trade['name'] as String,
+                                  ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: AppTypography.labelMd.copyWith(
-                              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                              fontWeight: isSelected
+                                  ? FontWeight.w700
+                                  : FontWeight.w600,
                             ),
                           ),
                           Text(
-                            trade['subtitle'] as String,
+                            Localizations.localeOf(context).languageCode == 'en'
+                                ? trade['subtitle'] as String
+                                : localizedTradeTaglineById(
+                                    context,
+                                    trade['id'] as String,
+                                    trade['subtitle'] as String,
+                                  ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: AppTypography.bodySm.copyWith(
@@ -1113,7 +1228,8 @@ class _ArtisanRegistrationScreenState
                           color: AppColors.secondary,
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(Icons.check, size: 12, color: Colors.white),
+                        child: const Icon(Icons.check,
+                            size: 12, color: Colors.white),
                       ),
                   ],
                 ),
@@ -1126,7 +1242,7 @@ class _ArtisanRegistrationScreenState
 
         // Sub-Trade Skill Specialization Chips
         Text(
-          'Certified Skills for ${selectedTradeData['name']}',
+          'Certified Skills for ${Localizations.localeOf(context).languageCode == 'en' ? selectedTradeData['name'] : localizedTradeNameById(context, _selectedTradeId, selectedTradeData['name'] as String)}',
           style: AppTypography.labelMd,
         ),
         const SizedBox(height: 8),
@@ -1137,13 +1253,14 @@ class _ArtisanRegistrationScreenState
             return Chip(
               label: Text(spec, style: AppTypography.labelSm),
               backgroundColor: AppColors.surfaceRaised,
-              avatar: const Icon(Icons.check_circle_rounded, size: 16, color: AppColors.tertiary),
+              avatar: const Icon(Icons.check_circle_rounded,
+                  size: 16, color: AppColors.tertiary),
             );
           }).toList(),
         ),
         const SizedBox(height: 18),
         Text(
-          'Karigaar Role Type',
+          _strings.authRoleType,
           style: AppTypography.labelMd,
         ),
         const SizedBox(height: 8),
@@ -1153,10 +1270,13 @@ class _ArtisanRegistrationScreenState
           return Container(
             margin: const EdgeInsets.only(bottom: 8),
             decoration: BoxDecoration(
-              color: isSelected ? AppColors.surfaceRaised : AppColors.surfaceSubtle,
+              color: isSelected
+                  ? AppColors.surfaceRaised
+                  : AppColors.surfaceSubtle,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: isSelected ? AppColors.secondary : AppColors.borderSubtle,
+                color:
+                    isSelected ? AppColors.secondary : AppColors.borderSubtle,
                 width: isSelected ? 1.5 : 1.0,
               ),
             ),
@@ -1167,7 +1287,8 @@ class _ArtisanRegistrationScreenState
                 borderRadius: BorderRadius.circular(12),
                 onTap: () => setState(() => _selectedRoleType = role),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                   child: Row(
                     children: [
                       Text(
@@ -1187,22 +1308,31 @@ class _ArtisanRegistrationScreenState
                             Text(
                               localizedTitle,
                               style: AppTypography.labelMd.copyWith(
-                                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                                color: isSelected ? AppColors.secondary : AppColors.textPrimary,
+                                fontWeight: isSelected
+                                    ? FontWeight.w700
+                                    : FontWeight.w500,
+                                color: isSelected
+                                    ? AppColors.secondary
+                                    : AppColors.textPrimary,
                               ),
                             ),
                             const SizedBox(height: 2),
                             Text(
                               '${role.standardLabel} • ${(role.rateMultiplier * 100).round()}% standard labor rate',
-                              style: AppTypography.bodySm.copyWith(color: AppColors.textMuted, fontSize: 11),
+                              style: AppTypography.bodySm.copyWith(
+                                  color: AppColors.textMuted, fontSize: 11),
                             ),
                           ],
                         ),
                       ),
                       const SizedBox(width: 8),
                       Icon(
-                        isSelected ? Icons.check_circle_rounded : Icons.circle_outlined,
-                        color: isSelected ? AppColors.secondary : AppColors.textMuted,
+                        isSelected
+                            ? Icons.check_circle_rounded
+                            : Icons.circle_outlined,
+                        color: isSelected
+                            ? AppColors.secondary
+                            : AppColors.textMuted,
                       ),
                     ],
                   ),
@@ -1220,10 +1350,10 @@ class _ArtisanRegistrationScreenState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Step 3: Aadhaar KYC & Tools Audit', style: AppTypography.headlineSm),
+        Text(_strings.authKycHeading, style: AppTypography.headlineSm),
         const SizedBox(height: 4),
         Text(
-          'Biometric verification and calibrated equipment checklist for Guild safety rating',
+          _strings.authKycDescription,
           style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
         ),
         const SizedBox(height: 16),
@@ -1232,7 +1362,9 @@ class _ArtisanRegistrationScreenState
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(child: Text('12-Digit Aadhaar Number', style: AppTypography.labelMd)),
+            Expanded(
+                child: Text(_strings.authAadhaarNumber,
+                    style: AppTypography.labelMd)),
             Flexible(
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
@@ -1243,8 +1375,9 @@ class _ArtisanRegistrationScreenState
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Text(
-                    'Encrypted & UIDAI Compliant',
-                    style: AppTypography.labelSm.copyWith(color: AppColors.tertiary),
+                    _strings.authEncrypted,
+                    style: AppTypography.labelSm
+                        .copyWith(color: AppColors.tertiary),
                   ),
                 ),
               ),
@@ -1298,8 +1431,15 @@ class _ArtisanRegistrationScreenState
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Aadhaar / Trade Card', style: AppTypography.labelLg, maxLines: 1, overflow: TextOverflow.ellipsis),
-                              Text('Front photo & DigiLocker sync', maxLines: 1, overflow: TextOverflow.ellipsis, style: AppTypography.bodySm.copyWith(color: AppColors.textMuted)),
+                              Text(_strings.authTradeCard,
+                                  style: AppTypography.labelLg,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis),
+                              Text(_strings.authFrontSync,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: AppTypography.bodySm
+                                      .copyWith(color: AppColors.textMuted)),
                             ],
                           ),
                         ),
@@ -1311,7 +1451,8 @@ class _ArtisanRegistrationScreenState
                       ScaffoldMessenger.of(context)
                         ..hideCurrentSnackBar()
                         ..showSnackBar(
-                          const SnackBar(content: Text('DigiLocker KYC Gateway synced successfully!')),
+                          SnackBar(
+                              content: Text(_strings.authDigilockerSuccess)),
                         );
                     },
                     icon: const Icon(Icons.cloud_sync_rounded, size: 16),
@@ -1321,7 +1462,8 @@ class _ArtisanRegistrationScreenState
               ),
               const SizedBox(height: 12),
               GestureDetector(
-                onTap: () => setState(() => _aadhaarUploaded = !_aadhaarUploaded),
+                onTap: () =>
+                    setState(() => _aadhaarUploaded = !_aadhaarUploaded),
                 child: Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(16),
@@ -1332,18 +1474,25 @@ class _ArtisanRegistrationScreenState
                   child: Column(
                     children: [
                       Icon(
-                        _aadhaarUploaded ? Icons.check_circle_rounded : Icons.add_a_photo_rounded,
-                        color: _aadhaarUploaded ? AppColors.tertiary : AppColors.secondary,
+                        _aadhaarUploaded
+                            ? Icons.check_circle_rounded
+                            : Icons.add_a_photo_rounded,
+                        color: _aadhaarUploaded
+                            ? AppColors.tertiary
+                            : AppColors.secondary,
                         size: 32,
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        _aadhaarUploaded ? 'Aadhaar Front Scan Captured' : 'Capture Front of Aadhaar Card',
+                        _aadhaarUploaded
+                            ? _strings.authFrontCaptured
+                            : _strings.authCaptureAadhaar,
                         style: AppTypography.labelMd,
                       ),
                       Text(
-                        'Clear photo • Max size 10MB (JPG/PNG)',
-                        style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
+                        _strings.authPhotoLimit,
+                        style: AppTypography.bodySm
+                            .copyWith(color: AppColors.textMuted),
                       ),
                       const SizedBox(height: 10),
                       ClipRRect(
@@ -1352,7 +1501,8 @@ class _ArtisanRegistrationScreenState
                           value: _aadhaarUploaded ? 0.72 : 0.0,
                           minHeight: 8,
                           backgroundColor: Colors.white,
-                          valueColor: const AlwaysStoppedAnimation<Color>(AppColors.tertiary),
+                          valueColor: const AlwaysStoppedAnimation<Color>(
+                              AppColors.tertiary),
                         ),
                       ),
                       const SizedBox(height: 6),
@@ -1364,17 +1514,22 @@ class _ArtisanRegistrationScreenState
                               'aadhaar_front_scan.jpg',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: AppTypography.labelSm.copyWith(color: AppColors.textMuted),
+                              style: AppTypography.labelSm
+                                  .copyWith(color: AppColors.textMuted),
                             ),
                           ),
                           const SizedBox(width: 8),
                           Flexible(
                             child: Text(
-                              _aadhaarUploaded ? '72% Auto-verified' : 'Tap to upload',
+                              _aadhaarUploaded
+                                  ? _strings.authAutoVerified
+                                  : _strings.authUpload,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: AppTypography.labelSm.copyWith(
-                                color: _aadhaarUploaded ? AppColors.tertiary : AppColors.secondary,
+                                color: _aadhaarUploaded
+                                    ? AppColors.tertiary
+                                    : AppColors.secondary,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -1407,7 +1562,7 @@ class _ArtisanRegistrationScreenState
                 children: [
                   Expanded(
                     child: Text(
-                      'Calibrated Tools Audit',
+                      _strings.authToolsAudit,
                       style: AppTypography.labelLg,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -1416,7 +1571,8 @@ class _ArtisanRegistrationScreenState
                   const SizedBox(width: 6),
                   Flexible(
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
                         color: AppColors.tertiarySurfaceTint,
                         borderRadius: BorderRadius.circular(9999),
@@ -1424,8 +1580,9 @@ class _ArtisanRegistrationScreenState
                       child: FittedBox(
                         fit: BoxFit.scaleDown,
                         child: Text(
-                          'Guild Safety Standard',
-                          style: AppTypography.labelSm.copyWith(color: AppColors.tertiary),
+                          _strings.authSafetyStandard,
+                          style: AppTypography.labelSm
+                              .copyWith(color: AppColors.tertiary),
                         ),
                       ),
                     ),
@@ -1434,22 +1591,22 @@ class _ArtisanRegistrationScreenState
               ),
               const SizedBox(height: 8),
               _buildToolCheckItem(
-                'Digital True-RMS Multimeter & Phase Tester (calibrated)',
+                _strings.authMultimeter,
                 _toolMultimeter,
                 (val) => setState(() => _toolMultimeter = val ?? true),
               ),
               _buildToolCheckItem(
-                '1000V Insulated Screwdrivers & Pliers Set',
+                _strings.authInsulatedTools,
                 _toolInsulatedSet,
                 (val) => setState(() => _toolInsulatedSet = val ?? true),
               ),
               _buildToolCheckItem(
-                'Heavy Duty Rotary Hammer Drill & Safety Goggles',
+                _strings.authDrillTools,
                 _toolDrillGoggles,
                 (val) => setState(() => _toolDrillGoggles = val ?? true),
               ),
               _buildToolCheckItem(
-                'Canvas Drop-Cloth & Sawdust Cleanup Vacuum Bag',
+                _strings.authCleanupTools,
                 _toolDropCloth,
                 (val) => setState(() => _toolDropCloth = val ?? true),
               ),
@@ -1460,7 +1617,8 @@ class _ArtisanRegistrationScreenState
     );
   }
 
-  Widget _buildToolCheckItem(String label, bool value, ValueChanged<bool?> onChanged) {
+  Widget _buildToolCheckItem(
+      String label, bool value, ValueChanged<bool?> onChanged) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -1488,10 +1646,10 @@ class _ArtisanRegistrationScreenState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Step 4: Bank / UPI Payout Verification', style: AppTypography.headlineSm),
+        Text(_strings.authPayoutHeading, style: AppTypography.headlineSm),
         const SizedBox(height: 4),
         Text(
-          'Link your bank or UPI ID for instant 10-second IMPS payout settlements with zero guild fee',
+          _strings.authPayoutDescription,
           style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
         ),
         const SizedBox(height: 16),
@@ -1507,48 +1665,51 @@ class _ArtisanRegistrationScreenState
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Instant Guild Direct Payout', style: AppTypography.labelLg),
+              Text(_strings.authDirectPayout, style: AppTypography.labelLg),
               const SizedBox(height: 12),
               TextField(
                 controller: _accountNoController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Bank Account Number',
-                  prefixIcon: Icon(Icons.account_balance_rounded),
+                decoration: InputDecoration(
+                  labelText: _strings.authBankAccount,
+                  prefixIcon: const Icon(Icons.account_balance_rounded),
                 ),
               ),
               const SizedBox(height: 12),
               TextField(
                 controller: _reAccountNoController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Re-Enter Bank Account Number',
-                  prefixIcon: Icon(Icons.lock_outline_rounded),
+                decoration: InputDecoration(
+                  labelText: _strings.authReenterBank,
+                  prefixIcon: const Icon(Icons.lock_outline_rounded),
                 ),
               ),
               const SizedBox(height: 12),
               TextField(
                 controller: _ifscController,
-                decoration: const InputDecoration(
-                  labelText: 'IFSC Code',
-                  prefixIcon: Icon(Icons.domain_rounded),
+                decoration: InputDecoration(
+                  labelText: _strings.authIfsc,
+                  prefixIcon: const Icon(Icons.domain_rounded),
                 ),
               ),
               const SizedBox(height: 8),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
                   color: AppColors.surfaceSubtle,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.check_circle_outline_rounded, size: 16, color: AppColors.tertiary),
+                    const Icon(Icons.check_circle_outline_rounded,
+                        size: 16, color: AppColors.tertiary),
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
-                        'Branch Resolved: HDFC Bank, Vazirabad Branch, Nanded (431601)',
-                        style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
+                        _strings.authBranchResolved,
+                        style: AppTypography.bodySm
+                            .copyWith(color: AppColors.textMuted),
                       ),
                     ),
                   ],
@@ -1575,17 +1736,20 @@ class _ArtisanRegistrationScreenState
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    child: Text('UPI Fast Payout VPA', style: AppTypography.labelLg),
+                    child: Text(_strings.authUpiPayout,
+                        style: AppTypography.labelLg),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
                       color: AppColors.tertiarySurfaceTint,
                       borderRadius: BorderRadius.circular(9999),
                     ),
                     child: Text(
-                      _upiPayoutVerified ? 'Penny-Drop Verified' : 'Pending',
-                      style: AppTypography.labelSm.copyWith(color: AppColors.tertiary),
+                      _upiPayoutVerified ? _strings.authPennyDrop : 'Pending',
+                      style: AppTypography.labelSm
+                          .copyWith(color: AppColors.tertiary),
                     ),
                   ),
                 ],
@@ -1593,11 +1757,12 @@ class _ArtisanRegistrationScreenState
               const SizedBox(height: 10),
               TextField(
                 controller: _upiController,
-                decoration: const InputDecoration(
-                  labelText: 'Verified UPI ID / VPA (₹0 IMPS Fee)',
-                  prefixIcon: Icon(Icons.qr_code_rounded),
+                decoration: InputDecoration(
+                  labelText: _strings.authVerifiedUpi,
+                  prefixIcon: const Icon(Icons.qr_code_rounded),
                 ),
-                onChanged: (val) => setState(() => _upiPayoutVerified = val.contains('@')),
+                onChanged: (val) =>
+                    setState(() => _upiPayoutVerified = val.contains('@')),
               ),
               const SizedBox(height: 10),
               Container(
@@ -1608,12 +1773,14 @@ class _ArtisanRegistrationScreenState
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.bolt_rounded, size: 18, color: AppColors.tertiary),
+                    const Icon(Icons.bolt_rounded,
+                        size: 18, color: AppColors.tertiary),
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
-                        'Simulated ₹1 IMPS penny-drop test successful. Payout wallet linked.',
-                        style: AppTypography.labelSm.copyWith(color: AppColors.tertiary),
+                        _strings.authPennyDropSimulation,
+                        style: AppTypography.labelSm
+                            .copyWith(color: AppColors.tertiary),
                       ),
                     ),
                   ],
@@ -1637,21 +1804,23 @@ class _ArtisanRegistrationScreenState
             children: [
               Row(
                 children: [
-                  const Icon(Icons.security_rounded, color: AppColors.secondary, size: 22),
+                  const Icon(Icons.security_rounded,
+                      color: AppColors.secondary, size: 22),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      '₹25,000 Guild Protection Shield Active',
+                      _strings.authProtectionActive,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AppTypography.headlineSm.copyWith(color: Colors.white, fontSize: 16),
+                      style: AppTypography.headlineSm
+                          .copyWith(color: Colors.white, fontSize: 16),
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 6),
               Text(
-                'Karigaar covers accidental on-site property damage up to ₹25,000. You earn with zero liability and sustainable 5% commission floor guarantee (Guild Elite).',
+                _strings.authProtectionDescription,
                 style: AppTypography.bodySm.copyWith(color: Colors.white70),
               ),
             ],
@@ -1675,16 +1844,17 @@ class _ArtisanRegistrationScreenState
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
-                  child: const Text('Back'),
+                  child: Text(_strings.authBack),
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 flex: 2,
                 child: KarigaarButton(
-                  label: 'Next Step',
+                  label: _strings.authNextStep,
                   variant: KarigaarButtonVariant.primary,
-                  icon: const Icon(Icons.arrow_forward_rounded, size: 18, color: Colors.white),
+                  icon: const Icon(Icons.arrow_forward_rounded,
+                      size: 18, color: Colors.white),
                   onPressed: _nextStep,
                 ),
               ),
@@ -1699,16 +1869,17 @@ class _ArtisanRegistrationScreenState
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
-                  child: const Text('Back'),
+                  child: Text(_strings.authBack),
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 flex: 2,
                 child: KarigaarButton(
-                  label: 'Verify via WhatsApp OTP',
+                  label: _strings.authVerifyWhatsApp,
                   variant: KarigaarButtonVariant.urgent,
-                  icon: const Icon(Icons.lock_rounded, size: 18, color: Colors.white),
+                  icon: const Icon(Icons.lock_rounded,
+                      size: 18, color: Colors.white),
                   onPressed: _submitRegistration,
                 ),
               ),

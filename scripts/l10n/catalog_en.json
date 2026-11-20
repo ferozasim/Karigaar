@@ -1,0 +1,109 @@
+{
+  "catalogTradeName": "{id, select, trade_electrician {Electrician} trade_plumber {Plumber} trade_carpenter {Carpenter} trade_mason {Mason / Civil Worker} trade_painter {Painter} trade_ac_refrig {AC & Refrigeration} trade_appliance {Appliance Repair} trade_welder {Welder / Fabricator} trade_pest {Pest Control} trade_deep_cleaning {Deep Cleaning} other {{fallback}}}",
+  "@catalogTradeName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "fallback": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogTradeTagline": "{id, select, trade_electrician {Short circuit, MCB, switchboard & heavy appliance wiring} trade_plumber {Pipe leaks, tap replacement, drainage blockages & sanitary fittings} trade_carpenter {Door locks, modular kitchen hinges, veneer repairs & furniture assembly} trade_mason {Tile replacement, wall plastering, concrete drilling & waterproofing} trade_painter {Wall touch-ups, dampness treatment, door polish & full home painting} trade_ac_refrig {Foam jet service, gas refill, compressor diagnosis & cooling issues} trade_appliance {Washing machine, microwave, geyser, mixer grinder & RO purifier} trade_welder {Main gate hinge welding, window safety grill, railing & shed repair} trade_pest {Cockroach gel treatment, termite drill barrier, bed bug eradication} trade_deep_cleaning {Full bathroom descaling, kitchen oil degreasing & sofa shampooing} other {{fallback}}}",
+  "@catalogTradeTagline": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "fallback": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogPackageName": "{id, select, pkg_elec_mcb {Short Circuit & MCB Tripping} pkg_elec_switchboard {Switchboard & Socket Repair} pkg_elec_fan {Ceiling Fan / Chandelier Fitting} pkg_elec_inverter {Inverter & Battery Wiring} pkg_plumb_leak {Water Pipe Joint Leakage Fix} pkg_plumb_drain {Kitchen Sink & Bathroom Drain Unclog} pkg_plumb_tap {Tap / Mixer / Diverter Replacement} pkg_plumb_tank {Overhead Tank Float Valve & Motor Line} pkg_carp_lock {Main Door Deadbolt / Godrej Lock Repair} pkg_carp_hinge {Hydraulic Cabinet & Wardrobe Hinge Replacement} pkg_carp_door_trim {Door Dragging & Frame Planing} pkg_carp_furniture {Bed / Table Assembly & Structural Tightening} pkg_mason_tile {Broken Floor / Wall Tile Patching (Up to 4 tiles)} pkg_mason_plaster {Wall Crack & Plaster Repair} pkg_mason_waterproof {Bathroom / Balcony Corner Waterproofing} pkg_paint_patch {Single Wall Patch & Touch-up (Putty + Paint)} pkg_paint_damp {Anti-Dampness Chemical Barrier + Topcoat} pkg_paint_wood {Door & Window Enamel / Melamine Polishing} pkg_ac_deep_clean {Split AC Foam Jet Deep Service} pkg_ac_gas_leak {AC Gas Leakage Check & Top-up} pkg_fridge_cooling {Refrigerator Low Cooling / Defrost Fix} pkg_app_geyser {Instant / Storage Geyser Heating Element Fix} pkg_app_washing {Washing Machine Spin / Drain Drum Issue} pkg_app_ro {RO Water Purifier Membrane & Filter Overhaul} pkg_weld_gate {Main Sliding / Swing Gate Heavy Hinge Arc Welding} pkg_weld_grill {Balcony & Window Safety Grill Reinforcement} pkg_weld_sheet {Tin Shed & Polycarbonate Roof Bracket Fix} pkg_pest_cockroach {Kitchen & Bathroom Herbal Gel Treatment} pkg_pest_termite {Wood Termite Drill & Inject Chemical Shield} pkg_pest_bedbug {2-Stage Bed Bug Thermal & Spray Eradication} pkg_clean_bath {Intense Bathroom Hard Water Stain & Tile Descaling} pkg_clean_kitchen {Modular Kitchen Chimney & Slab Degreasing} pkg_clean_sofa {Fabric Sofa 5-Seater Shampoo & Wet Extraction} other {{fallback}}}",
+  "@catalogPackageName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "fallback": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogPackageDescription": "{id, select, pkg_elec_mcb {Continuous tripping, spark diagnosis, neutral fault identification & fuse repair} pkg_elec_switchboard {Loose modular switches, burnt contact points, 16A power socket installation} pkg_elec_fan {Anchor rod hanging, speed regulator rewiring, vibration reduction} pkg_elec_inverter {Backup bypass line, heavy load terminal setup, battery water check} pkg_plumb_leak {CPVC/PVC pipe joint soldering, concealed wall seepage diagnosis} pkg_plumb_drain {High pressure mechanical auger drain clearing, trap cleaning} pkg_plumb_tap {Ceramic spindle change, quarter-turn angle valve fitting, teflon sealing} pkg_plumb_tank {Ball cock auto cut-off valve replacement, airlock clearance} pkg_carp_lock {Cylinder replacement, jammed latch alignment, brass strike plate fitting} pkg_carp_hinge {Soft-close hinge tension adjustment, plywood screw anchor grip repair} pkg_carp_door_trim {Precision bottom trimming, monsoon swollen wood clearance} pkg_carp_furniture {Hardware re-bolting, wooden bracket reinforcement, termite inspection} pkg_mason_tile {Adhesive bedding, laser levelling, anti-fungal epoxy grouting} pkg_mason_plaster {Polymer-modified cement slurry, v-groove chasing, smooth trowel finish} pkg_mason_waterproof {Dr. Fixit 2-coat chemical membrane application on skirtings} pkg_paint_patch {Sanding, acrylic wall putty, 2-coat primer and shade matching} pkg_paint_damp {Efflorescence salt removal, silicone damp-lock treatment} pkg_paint_wood {Fine sandpaper smoothing, high-gloss PU coating} pkg_ac_deep_clean {Indoor coil antibacterial foam pressure wash, outdoor unit blower rinse, filter disinfection} pkg_ac_gas_leak {Nitrogen pressure leak testing, flare nut brazing, R32/R410A vacuum charging} pkg_fridge_cooling {Thermostat calibration, bi-metal sensor replacement, capillary flush} pkg_app_geyser {Copper heating coil descaling, safety thermostat auto cut-off calibration} pkg_app_washing {Motor belt tightening, drain pump lint filter unclog, PCB relay check} pkg_app_ro {TDS level calibration, sediment + carbon filter change, booster pump check} pkg_weld_gate {Heavy duty mild steel ball-bearing pivot welding, slag chipping, rust-primer coat} pkg_weld_grill {Loose anchor pin tack welding, angle iron strengthening} pkg_weld_sheet {Wind-damaged purlin joint welding, self-tapping screw gasket replacement} pkg_pest_cockroach {Odorless Fipronil bait dot application in hinges, under-sink crevices (safe for kids & pets)} pkg_pest_termite {Precision 6mm skirt drilling, pressurized Imidacloprid injection, wood-colored seal} pkg_pest_bedbug {Mattress seam steam purge, residual pyrethroid spraying, 15-day free repeat visit} pkg_clean_bath {Single-disc scrubber rotary tile wash, tap chrome buffing, glass divider spot removal} pkg_clean_kitchen {Caustic-free baffle filter ultrasonic cleaning, stainless steel polish, tile grout whitening} pkg_clean_sofa {Deep foam agitation, industrial vacuum suction moisture extraction, citrus deodorizer} other {{fallback}}}",
+  "@catalogPackageDescription": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "fallback": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogBundleTitle": "{id, select, bundle_monsoon_elec {Monsoon Electrical Shield} bundle_plumb_health {Full Home Plumbing Health Check} bundle_ac_summer {Pre-Summer AC Super Cool} bundle_carpenter_care {Modular Kitchen & Door Alignment} other {{fallback}}}",
+  "@catalogBundleTitle": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "fallback": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogBundleSubtitle": "{id, select, bundle_monsoon_elec {Prevent short circuits, MCB trips & moisture leakage shocks} bundle_plumb_health {Concealed pipe seepage scan, overhead tank valve test & trap unclogging} bundle_ac_summer {Antibacterial foam jet deep wash, cooling test & gas pressure audit} bundle_carpenter_care {Hydraulic soft-close hinge tightening & swollen door planing} other {{fallback}}}",
+  "@catalogBundleSubtitle": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "fallback": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogBundleTask": "{id, select, bundle_monsoon_elec_0 {MCB trip diagnosis & fuse load calibration} bundle_monsoon_elec_1 {Switchboard moisture & earthing leakage check} bundle_monsoon_elec_2 {Ceiling fan & backup wiring tightening} bundle_plumb_health_0 {Concealed pipe joint acoustic seepage audit} bundle_plumb_health_1 {Kitchen sink & bathroom mechanical drain auger cleaning} bundle_plumb_health_2 {Quarter-turn angle valves & ceramic spindle tune-up} bundle_ac_summer_0 {Indoor cooling coil high-pressure foam jet wash} bundle_ac_summer_1 {Outdoor unit condenser rinse & compressor vibration damping} bundle_ac_summer_2 {R32/R410A gas pressure measurement & filter disinfection} bundle_carpenter_care_0 {Hydraulic cabinet & wardrobe soft-close tension adjustment} bundle_carpenter_care_1 {Swollen door frame planing & bottom clearance trimming} bundle_carpenter_care_2 {Main door deadbolt & Godrej lock cylinder servicing} other {{fallback}}}",
+  "@catalogBundleTask": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "fallback": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogRoleName": "{id, select, headMistry {Head Mistry / Ustad} skilledKarigaar {Skilled Karigaar} helperAssistant {Helper / Bigari} thekedar {Thekedar / Team Contractor} other {{fallback}}}",
+  "@catalogRoleName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "fallback": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogRoleBadge": "{id, select, headMistry {👑 Head Mistry} skilledKarigaar {🔧 Skilled Karigaar} helperAssistant {🤝 Helper} thekedar {👷 Thekedar} other {{fallback}}}",
+  "@catalogRoleBadge": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "fallback": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedSavePercent": "Save {percent}%",
+  "@sharedSavePercent": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  }
+}

@@ -1,0 +1,317 @@
+{
+  "accountProfileTitle": "घरमालक प्रोफ़ाइल और सेटिंग्स",
+  "accountMasterProtection": "₹25,000 मास्टर गिल्ड क्षति सुरक्षा सक्रिय",
+  "accountSavedLocalities": "सहेजे गए नांदेड़ इलाके",
+  "accountChange": "बदलें",
+  "accountPaymentPreferences": "एस्क्रो और भुगतान प्राथमिकताएँ",
+  "accountTransitMandate": "₹99 यात्रा शुल्क मैंडेट और पुर्जों के लिए RBI 2FA मंज़ूरी",
+  "accountPreauthorization": "UPI एस्क्रो पूर्व-अनुमति",
+  "accountCompletionPayout": "4 अंकों के समापन OTP के बाद ही भुगतान जारी करें",
+  "accountWhatsappAlerts": "WhatsApp डिस्पैच और गेट पास सूचनाएँ",
+  "accountTrackingInvoices": "कारीगर की लाइव स्थिति और डिजिटल GST बिल पाएँ",
+  "accountPortalSecurity": "गिल्ड पोर्टल और सुरक्षा",
+  "accountSosContact": "आपातकालीन SOS संपर्क",
+  "accountControlDesk": "+91 9422100100 • नांदेड़ नियंत्रण कक्ष (24x7)",
+  "accountSwitchGuild": "कारीगर गिल्ड पोर्टल खोलें",
+  "accountRadarWallet": "45 सेकंड जॉब रडार और त्वरित IMPS वॉलेट खोलें",
+  "accountSignOut": "साइन आउट / नंबर बदलें",
+  "accountChatTitle": "गिल्ड सुरक्षित चैट और WhatsApp",
+  "accountMaskedCall": "नंबर छिपाकर कॉल",
+  "accountViewArtisanProfile": "कारीगर की प्रोफ़ाइल देखें",
+  "accountGateApproved": "गेट पास मंज़ूर",
+  "accountSharePin": "लाइव लोकेशन भेजें",
+  "accountCallOnArrival": "पहुँचने पर कॉल करें",
+  "accountWhatsappRelay": "WhatsApp रिले",
+  "accountMessageHint": "गिल्ड ब्रिज से कारीगर को संदेश भेजें...",
+  "accountSend": "भेजें",
+  "accountBookingsTitle": "मेरी सेवा बुकिंग",
+  "accountActiveDispatch": "सक्रिय डिस्पैच",
+  "accountPastOrders": "आगामी और पिछले ऑर्डर",
+  "accountShield25": "₹25,000 गिल्ड क्षति सुरक्षा सक्रिय",
+  "accountShield10": "₹10,000 गिल्ड क्षति सुरक्षा सक्रिय",
+  "accountOnsiteLocked": "मौके पर एस्क्रो लॉक किया गया",
+  "accountScheduledWindow": "निर्धारित समय",
+  "accountTrackLive": "लाइव स्थिति देखें",
+  "accountDirectVisit": "सीधी विज़िट (सुरक्षा के बिना)",
+  "accountOnsiteUpgradeExplanation": "कारीगर मौके पर हैं। स्टार्ट OTP (4921), ₹29 सुरक्षा शील्ड और ₹25 हज़ार मास्टर कवर सक्रिय करने के लिए अपग्रेड करें।",
+  "accountUpgradeBooking": "सुरक्षित गिल्ड बुकिंग में अपग्रेड करें",
+  "accountViewArtisan": "कारीगर देखें",
+  "accountBookAgain": "फिर बुक करें",
+  "accountRateService": "सेवा को रेटिंग दें",
+  "accountRaiseClaim": "वारंटी दावा करें",
+  "accountServiceQuestion": "सेवा कैसी थी?",
+  "accountOverall": "कुल मिलाकर",
+  "accountCleanliness": "साफ़-सफ़ाई",
+  "accountCareFinish": "सावधानी और फिनिशिंग",
+  "accountFeedback": "वैकल्पिक प्रतिक्रिया",
+  "accountSubmitRating": "रेटिंग भेजें",
+  "accountClaimTitle": "30 दिन की वारंटी का दावा",
+  "accountDeductibleReview": "₹250 कटौती लागू है। कारीगर सहायता टीम दावों की समीक्षा करती है।",
+  "accountDamageAmount": "अनुमानित नुकसान की राशि (₹)",
+  "accountDescribeIssue": "समस्या का विवरण दें",
+  "accountClaimValidation": "सही राशि और दावे का कारण दर्ज करें।",
+  "accountClaimSent": "दावा समीक्षा के लिए भेजा गया। अपडेट इसी बुकिंग में मिलेगा।",
+  "accountSubmitClaim": "दावा भेजें",
+  "accountCraftsmanProfile": "कारीगर की प्रोफ़ाइल",
+  "accountRemovedFavorite": "पसंदीदा सूची से हटाया गया।",
+  "accountPro": "प्रो",
+  "accountAvailableToday": "आज उपलब्ध",
+  "accountExperience": "अनुभव",
+  "accountCompletedJobs": "पूरे किए गए काम",
+  "accountCallArtisan": "कारीगर को कॉल करें",
+  "accountWhatsappArtisan": "कारीगर को WhatsApp करें",
+  "accountMaskedUnlocked": "सुरक्षित वर्चुअल DID सक्रिय (+91-11-4084-2190) • सीधा संपर्क खुला",
+  "accountMaskedLocked": "सुरक्षित वर्चुअल कॉल (+91-11-4084-2190) • ₹49 से संपर्क खोलें",
+  "accountMasterAmount": "₹25,000 मास्टर",
+  "accountBaseAmount": "₹10,000 बेस",
+  "accountOnsiteQuestion": "कारीगर मौके पर हैं? एस्क्रो और वारंटी लॉक करें",
+  "accountMasterShortCover": "₹25 हज़ार मास्टर कवर",
+  "accountBaseShortCover": "₹10 हज़ार बेस कवर",
+  "accountVerifiedGuildsman": "कारीगर सत्यापित गिल्ड सदस्य",
+  "accountTripleScreened": "घर की सुरक्षा और कुशल काम के लिए तीन स्तर की जाँच",
+  "accountGovtPolice": "सरकारी पहचान और पुलिस",
+  "accountBackgroundCleared": "पृष्ठभूमि जाँच पूरी",
+  "accountNsdc": "NSDC प्रमाणित",
+  "accountSkillGrade": "कौशल परीक्षित ग्रेड A",
+  "accountDamageProtection": "नुकसान से सुरक्षा",
+  "accountCalibratedTools": "कैलिब्रेटेड औज़ार",
+  "accountToolAudit": "औज़ार जाँच सफल",
+  "accountWiring": "3-फेज़ वायरिंग",
+  "accountInverterSetup": "इन्वर्टर सेटअप",
+  "accountMcbDiagnosis": "MCB स्पार्क की जाँच",
+  "accountSwitchboards": "मॉड्यूलर स्विचबोर्ड",
+  "accountEarthing": "अर्थिंग की जाँच",
+  "accountLoadAudit": "उपकरण लोड की जाँच",
+  "accountSpecializations": "विशेषताएँ और कौशल",
+  "accountShowcase": "कारीगरी के नमूने",
+  "accountVerifiedPhotos": "स्थानीय घरों के काम की सत्यापित तस्वीरें",
+  "accountScorecard": "कारीगर का स्कोरकार्ड",
+  "accountPunctuality": "समय की पाबंदी",
+  "accountCraftsmanship": "उत्कृष्ट कारीगरी",
+  "accountSawdust": "बुरादा और साफ़-सफ़ाई",
+  "accountRecentFeedback": "हाल की ग्राहक प्रतिक्रियाएँ",
+  "accountVerifiedBookings": "सत्यापित बुकिंग",
+  "accountVerifiedMcb": "सत्यापित MCB स्पार्क मरम्मत",
+  "accountVerifiedInverter": "सत्यापित इन्वर्टर सेटअप",
+  "accountPerVisit": "/ विज़िट",
+  "accountIncludesWarranty": "₹25 हज़ार गिल्ड वारंटी शामिल",
+  "accountUnlockTitle": "सीधा संपर्क खोलें",
+  "accountPrivacyProtected": "100% गोपनीयता सुरक्षित • असली फ़ोन नंबर छिपा रहता है",
+  "accountPayPerLead": "हर संपर्क का भुगतान",
+  "accountOneTime": "एक बार",
+  "accountSingleArtisan": "एक कारीगर",
+  "accountDirectoryPass": "असीमित डायरेक्टरी पास",
+  "accountPerMonth": "/ महीना",
+  "accountUnlimitedContact": "सभी 10 सेवाओं और 7 जिलों में असीमित सुरक्षित कॉल और WhatsApp।",
+  "accountRecommended": "सुझाया गया",
+  "accountMaskedBenefit": "सुरक्षित कॉल: असली फ़ोन नंबर छिपा रहता है",
+  "accountMetaBenefit": "आधिकारिक Meta WhatsApp Cloud API ब्रिज शामिल",
+  "accountRetroactiveBenefit": "गिल्ड लॉक: मौके पर कभी भी ₹25 हज़ार वारंटी सक्रिय करें",
+  "accountUnlock49": "₹49 में खोलें",
+  "accountActivatePass": "डायरेक्टरी पास सक्रिय करें (₹499/माह)",
+  "accountPassActivated": "डायरेक्टरी पास सक्रिय! सभी सेवाओं में असीमित सुरक्षित संपर्क उपलब्ध।",
+  "accountMasterCover": "₹25,000 मास्टर कवर",
+  "accountBaseCover": "₹10,000 बेस कवर",
+  "accountLockVisit": "मौके की विज़िट को औपचारिक एस्क्रो सुरक्षा दें",
+  "accountDoorstepCode": "आगमन सत्यापन कोड",
+  "accountStartCode4921": "शुरुआती सत्यापन OTP: 4921",
+  "accountActive": "सक्रिय",
+  "accountUnderwriting": "काम के दौरान संपत्ति के नुकसान के लिए व्यापक सुरक्षा। प्रत्येक दावे पर ग्राहक की ₹250 कटौती लागू है।",
+  "accountEscrowBreakdown": "अग्रिम एस्क्रो का विवरण",
+  "accountInspectionTravel": "मूल जाँच और यात्रा",
+  "accountSafetyWarranty": "प्लैटफ़ॉर्म सुरक्षा शील्ड और वारंटी",
+  "accountStandbyHold": "कुल आरक्षित एस्क्रो राशि",
+  "accountConfirmLock": "पुष्टि करें और एस्क्रो लॉक करें (₹29 शील्ड)",
+  "accountVerifiedPhone": "+91 9822199882 • सत्यापित घरमालक",
+  "accountPrimaryLocality": "मुख्य: {name}, नांदेड़ ({pincode})",
+  "@accountPrimaryLocality": {
+    "placeholders": {
+      "name": {},
+      "pincode": {}
+    }
+  },
+  "accountSavedAddress": "{name} • प्लॉट 14, गुरु गोबिंद सिंह जी मार्ग के पास",
+  "@accountSavedAddress": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "accountPrivacyConnection": "नंबर छिपाना सक्रिय • असली नंबर निजी • {name} ({trade}) से जुड़े",
+  "@accountPrivacyConnection": {
+    "placeholders": {
+      "name": {},
+      "trade": {}
+    }
+  },
+  "accountWhatsappGreeting": "नमस्कार {name}, WhatsApp Cloud Relay से संपर्क कर रहा हूँ।",
+  "@accountWhatsappGreeting": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "accountEmptyBookings": "{tab} टैब में कोई बुकिंग नहीं।",
+  "@accountEmptyBookings": {
+    "placeholders": {
+      "tab": {}
+    }
+  },
+  "accountBookingReference": "बुकिंग #{id}",
+  "@accountBookingReference": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "accountVoiceNote": "{seconds} सेकंड का वॉइस नोट",
+  "@accountVoiceNote": {
+    "placeholders": {
+      "seconds": {}
+    }
+  },
+  "accountStartOtp": "शुरुआती सत्यापन OTP: {otp}",
+  "@accountStartOtp": {
+    "placeholders": {
+      "otp": {}
+    }
+  },
+  "accountTotalEstimate": "कुल अनुमान: ₹{amount}",
+  "@accountTotalEstimate": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "accountDirectLead": "सीधा ऑन-साइट संपर्क • {trade}",
+  "@accountDirectLead": {
+    "placeholders": {
+      "trade": {}
+    }
+  },
+  "accountOnsiteName": "{name} (मौके पर जाँच)",
+  "@accountOnsiteName": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "accountCoverLimit": "कवर सीमा: ₹{amount}",
+  "@accountCoverLimit": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "accountFavoriteSaved": "{name} को पसंदीदा में सहेजा!",
+  "@accountFavoriteSaved": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "accountSharingProfile": "{name} की प्रोफ़ाइल लिंक साझा कर रहे हैं...",
+  "@accountSharingProfile": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "accountWithinDistance": "{locality} • {distance} किमी के भीतर",
+  "@accountWithinDistance": {
+    "placeholders": {
+      "locality": {},
+      "distance": {}
+    }
+  },
+  "accountReviewCount": "{count} समीक्षाएँ",
+  "@accountReviewCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "accountExperienceYears": "{years}+ वर्ष",
+  "@accountExperienceYears": {
+    "placeholders": {
+      "years": {}
+    }
+  },
+  "accountArtisanGreeting": "नमस्ते {name} जी, मुझे कारीगर पर {trade} के लिए आपकी प्रोफ़ाइल मिली। क्या आप नांदेड़ में विज़िट के लिए उपलब्ध हैं?",
+  "@accountArtisanGreeting": {
+    "placeholders": {
+      "name": {},
+      "trade": {}
+    }
+  },
+  "accountActivateCover": "एक टैप से {cover} कवर और ₹29 सुरक्षा शील्ड सक्रिय करें",
+  "@accountActivateCover": {
+    "placeholders": {
+      "cover": {}
+    }
+  },
+  "accountCertifiedCount": "{count} प्रमाणित",
+  "@accountCertifiedCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "accountViewAllCount": "सभी देखें ({count})",
+  "@accountViewAllCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "accountBookName": "अभी {name} को बुक करें",
+  "@accountBookName": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "accountConnectName": "{name} ({trade}) से संपर्क करें",
+  "@accountConnectName": {
+    "placeholders": {
+      "name": {},
+      "trade": {}
+    }
+  },
+  "accountProxyDescription": "वर्चुअल प्रॉक्सी से कॉल और WhatsApp: {number}",
+  "@accountProxyDescription": {
+    "placeholders": {
+      "number": {}
+    }
+  },
+  "accountUnlockDays": "{name} से 30 दिन के लिए सुरक्षित कॉल और WhatsApp संपर्क खोलें।",
+  "@accountUnlockDays": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "accountContactUnlocked": "सीधा संपर्क खुला! {number} से कॉल उपलब्ध।",
+  "@accountContactUnlocked": {
+    "placeholders": {
+      "number": {}
+    }
+  },
+  "accountUnlockFailed": "संपर्क खोलने में विफल: {error}",
+  "@accountUnlockFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "accountArrivalInstructions": "आगमन सत्यापित करने और टाइमर शुरू करने के लिए मौके पर {name} को यह 4 अंकों का कोड दें।",
+  "@accountArrivalInstructions": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "accountCoverActive": "{cover} सक्रिय",
+  "@accountCoverActive": {
+    "placeholders": {
+      "cover": {}
+    }
+  },
+  "accountLockedBooking": "मौके की बुकिंग लॉक हुई! {name} को स्टार्ट OTP 4921 दें।",
+  "@accountLockedBooking": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "accountClaimError": "दावा भेजा नहीं जा सका। राशि और वारंटी पात्रता जाँचकर फिर कोशिश करें।",
+  "accountStatusAll": "सभी",
+  "accountStatusEnRoute": "रास्ते में",
+  "accountStatusUpcoming": "आगामी",
+  "accountStatusCompleted": "पूरे हुए",
+  "accountStatusInProgress": "काम जारी है"
+}

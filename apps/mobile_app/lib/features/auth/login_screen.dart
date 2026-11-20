@@ -5,6 +5,7 @@ import '../../../core/models/user_role.dart';
 import '../../../core/providers/app_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../l10n/localized_strings.dart';
 import '../shared/widgets/karigaar_button.dart';
 import '../shared/widgets/karigaar_brand_logo.dart';
 import '../shared/widgets/mode_switcher_pill.dart';
@@ -17,7 +18,8 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
-  final TextEditingController _phoneController = TextEditingController(text: '9822199882');
+  final TextEditingController _phoneController =
+      TextEditingController(text: '9822199882');
 
   @override
   void dispose() {
@@ -27,9 +29,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   void _proceedToOtp() {
     final phone = _phoneController.text.trim();
-    if (phone.length < 10) {
+    if (!RegExp(r'^\d{10}$').hasMatch(phone)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a valid 10-digit mobile number')),
+        SnackBar(content: Text(localizedStrings(context).invalidPhoneNumber)),
       );
       return;
     }
@@ -39,6 +41,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final currentRole = ref.watch(userRoleProvider);
+    final strings = localizedStrings(context);
 
     return Scaffold(
       backgroundColor: AppColors.surfaceBase,
@@ -57,8 +60,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 style: AppTypography.displayLg.copyWith(fontSize: 28),
               ),
               Text(
-                'Master Guildsman Meets Modern Concierge',
-                style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
+                strings.brandTagline,
+                style:
+                    AppTypography.bodySm.copyWith(color: AppColors.textMuted),
               ),
               const SizedBox(height: 28),
 
@@ -80,19 +84,23 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   children: [
                     Text(
                       currentRole == UserRole.customer
-                          ? 'Login as Homeowner'
-                          : 'Artisan Guild Portal',
-                      style: AppTypography.headlineSm.copyWith(fontWeight: FontWeight.w800),
+                          ? strings.loginAsHomeowner
+                          : strings.artisanGuildPortal,
+                      style: AppTypography.headlineSm
+                          .copyWith(fontWeight: FontWeight.w800),
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      currentRole.localizedTagline,
-                      style: AppTypography.bodyMd.copyWith(color: AppColors.textMuted),
+                      currentRole == UserRole.customer
+                          ? strings.homeownerTagline
+                          : strings.artisanTagline,
+                      style: AppTypography.bodyMd
+                          .copyWith(color: AppColors.textMuted),
                     ),
                     const SizedBox(height: 20),
 
                     // Phone Input
-                    Text('Mobile Number', style: AppTypography.labelMd),
+                    Text(strings.mobileNumber, style: AppTypography.labelMd),
                     const SizedBox(height: 8),
                     Container(
                       decoration: BoxDecoration(
@@ -103,19 +111,23 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       child: Row(
                         children: [
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 14, vertical: 14),
                             decoration: const BoxDecoration(
                               border: Border(
-                                right: BorderSide(color: AppColors.borderSubtle),
+                                right:
+                                    BorderSide(color: AppColors.borderSubtle),
                               ),
                             ),
                             child: Row(
                               children: [
-                                const Text('🇮🇳', style: TextStyle(fontSize: 18)),
+                                const Text('🇮🇳',
+                                    style: TextStyle(fontSize: 18)),
                                 const SizedBox(width: 6),
                                 Text(
                                   '+91',
-                                  style: AppTypography.labelLg.copyWith(fontWeight: FontWeight.w700),
+                                  style: AppTypography.labelLg
+                                      .copyWith(fontWeight: FontWeight.w700),
                                 ),
                               ],
                             ),
@@ -125,14 +137,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               controller: _phoneController,
                               keyboardType: TextInputType.phone,
                               maxLength: 10,
-                              style: AppTypography.headlineSm.copyWith(fontSize: 16),
-                              decoration: const InputDecoration(
-                                hintText: 'Enter 10-digit number',
+                              style: AppTypography.headlineSm
+                                  .copyWith(fontSize: 16),
+                              decoration: InputDecoration(
+                                hintText: strings.enterPhoneNumber,
                                 counterText: '',
                                 border: InputBorder.none,
                                 enabledBorder: InputBorder.none,
                                 focusedBorder: InputBorder.none,
-                                contentPadding: EdgeInsets.symmetric(horizontal: 14),
+                                contentPadding:
+                                    const EdgeInsets.symmetric(horizontal: 14),
                               ),
                             ),
                           ),
@@ -147,16 +161,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       height: 52,
                       child: ElevatedButton.icon(
                         onPressed: _proceedToOtp,
-                        icon: const Icon(Icons.chat_bubble_rounded, color: Colors.white, size: 20),
+                        icon: const Icon(Icons.chat_bubble_rounded,
+                            color: Colors.white, size: 20),
                         label: Text(
-                          'Continue with WhatsApp',
-                          style: AppTypography.labelLg.copyWith(color: Colors.white, fontWeight: FontWeight.w700),
+                          strings.continueWithWhatsApp,
+                          style: AppTypography.labelLg.copyWith(
+                              color: Colors.white, fontWeight: FontWeight.w700),
                         ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF25D366), // WhatsApp Green
+                          backgroundColor:
+                              const Color(0xFF25D366), // WhatsApp Green
                           foregroundColor: Colors.white,
                           elevation: 0,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
                         ),
                       ),
                     ),
@@ -164,7 +182,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                     // SMS Fallback
                     KarigaarButton(
-                      label: 'Get OTP via SMS',
+                      label: strings.getOtpViaSms,
                       variant: KarigaarButtonVariant.outline,
                       onPressed: _proceedToOtp,
                     ),
@@ -174,9 +192,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       Center(
                         child: TextButton.icon(
                           onPressed: () => context.push('/artisan/register'),
-                          icon: const Icon(Icons.person_add_alt_1_rounded, size: 18, color: AppColors.secondary),
+                          icon: const Icon(Icons.person_add_alt_1_rounded,
+                              size: 18, color: AppColors.secondary),
                           label: Text(
-                            'New Karigaar? Join the Nanded Guild (0% Fee)',
+                            strings.joinGuild,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: AppTypography.labelMd.copyWith(
@@ -196,13 +215,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.verified_user_rounded, size: 16, color: AppColors.tertiary),
+                  const Icon(Icons.verified_user_rounded,
+                      size: 16, color: AppColors.tertiary),
                   const SizedBox(width: 6),
                   Flexible(
                     child: Text(
-                      '100% Aadhaar & Police Verified Craftsmen • Pilot City: Nanded',
+                      strings.trustFooter,
                       textAlign: TextAlign.center,
-                      style: AppTypography.labelSm.copyWith(color: AppColors.textMuted),
+                      style: AppTypography.labelSm
+                          .copyWith(color: AppColors.textMuted),
                     ),
                   ),
                 ],

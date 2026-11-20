@@ -1,3 +1,4 @@
+import '../../../../l10n/localized_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -38,7 +39,7 @@ class _RetroactiveEscrowLockSheetState
     final isMaster = artisan.tier == GuildTier.masterGuildsman ||
         artisan.tier == GuildTier.guildElite;
     final coverAmount = isMaster ? 25000 : 10000;
-    final coverTitle = isMaster ? '₹25,000 Master Cover' : '₹10,000 Base Cover';
+    final coverTitle = isMaster ? localizedStrings(context).accountMasterCover : localizedStrings(context).accountBaseCover;
     final totalUpfront = artisan.inspectionFee + 29;
     final maxSheetHeight = MediaQuery.of(context).size.height * 0.90;
 
@@ -90,7 +91,7 @@ class _RetroactiveEscrowLockSheetState
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Upgrade to Protected Guild Booking',
+                          localizedStrings(context).accountUpgradeBooking,
                           style: AppTypography.headlineSm.copyWith(
                             fontSize: 17,
                             fontWeight: FontWeight.w700,
@@ -99,7 +100,7 @@ class _RetroactiveEscrowLockSheetState
                           overflow: TextOverflow.ellipsis,
                         ),
                         Text(
-                          'Lock on-site visit into formal escrow protection',
+                          localizedStrings(context).accountLockVisit,
                           style: AppTypography.bodySm.copyWith(
                             color: AppColors.textMuted,
                           ),
@@ -144,7 +145,7 @@ class _RetroactiveEscrowLockSheetState
                         ),
                         const SizedBox(width: 6),
                         Text(
-                          'Doorstep Handshake Code',
+                          localizedStrings(context).accountDoorstepCode,
                           style: AppTypography.labelSm.copyWith(
                             color: AppColors.tertiary,
                             fontWeight: FontWeight.w700,
@@ -158,7 +159,7 @@ class _RetroactiveEscrowLockSheetState
                       children: [
                         Flexible(
                           child: Text(
-                            'Start Handshake OTP: 4921',
+                            localizedStrings(context).accountStartCode4921,
                             style: AppTypography.headlineSm.copyWith(
                               fontSize: 16,
                               fontWeight: FontWeight.w800,
@@ -178,7 +179,7 @@ class _RetroactiveEscrowLockSheetState
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
-                            'Active',
+                            localizedStrings(context).accountActive,
                             style: AppTypography.labelSm.copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.w700,
@@ -190,7 +191,7 @@ class _RetroactiveEscrowLockSheetState
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Share this 4-digit code with ${artisan.name} on-site to verify arrival and activate the stopwatch.',
+                      localizedStrings(context).accountArrivalInstructions(artisan.name),
                       style: AppTypography.bodySm.copyWith(
                         color: AppColors.textPrimary,
                         fontSize: 11,
@@ -222,7 +223,7 @@ class _RetroactiveEscrowLockSheetState
                         const SizedBox(width: 6),
                         Expanded(
                           child: Text(
-                            '$coverTitle Active',
+                            localizedStrings(context).accountCoverActive(coverTitle),
                             style: AppTypography.headlineSm.copyWith(
                               fontSize: 14,
                               fontWeight: FontWeight.w700,
@@ -235,7 +236,7 @@ class _RetroactiveEscrowLockSheetState
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      'Comprehensive property damage underwriting during job execution. ₹250 customer deductible applies to eliminate frivolous claims.',
+                      localizedStrings(context).accountUnderwriting,
                       style: AppTypography.bodySm.copyWith(
                         color: AppColors.textMuted,
                         fontSize: 12,
@@ -258,19 +259,19 @@ class _RetroactiveEscrowLockSheetState
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Upfront Escrow Breakdown',
+                      localizedStrings(context).accountEscrowBreakdown,
                       style: AppTypography.labelSm.copyWith(
                         fontWeight: FontWeight.w700,
                         color: AppColors.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 10),
-                    _buildPriceRow('Base Inspection & Travel', '₹${artisan.inspectionFee}'),
+                    _buildPriceRow(localizedStrings(context).accountInspectionTravel, '₹${artisan.inspectionFee}'),
                     const SizedBox(height: 6),
-                    _buildPriceRow('Platform Safety Shield & Warranty', '₹29'),
+                    _buildPriceRow(localizedStrings(context).accountSafetyWarranty, '₹29'),
                     const Divider(height: 16),
                     _buildPriceRow(
-                      'Total Standby Escrow Hold',
+                      localizedStrings(context).accountStandbyHold,
                       '₹$totalUpfront',
                       isBold: true,
                     ),
@@ -286,8 +287,8 @@ class _RetroactiveEscrowLockSheetState
                   key: const Key('confirm_lock_escrow_btn'),
                   onPressed: _isProcessing ? null : () => _handleLockEscrow(coverAmount),
                   icon: const Icon(Icons.lock_rounded, size: 18),
-                  label: const Text(
-                    'Confirm & Lock Escrow (₹29 Shield)',
+                  label: Text(
+                    localizedStrings(context).accountConfirmLock,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -372,7 +373,7 @@ class _RetroactiveEscrowLockSheetState
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'On-site booking locked! Share Start OTP 4921 with ${artisan.name}.',
+            localizedStrings(context).accountLockedBooking(artisan.name),
           ),
           backgroundColor: AppColors.tertiary,
           behavior: SnackBarBehavior.floating,

@@ -1,8 +1,8 @@
 # T-14: Task-First Discovery & App-Wide Localization
 
-**Status:** In progress  
-**Branch:** `feat/T-14-service-discovery-localization`  
-**Base:** `origin/main` at `90e97d7`
+**Status:** Ready for review (local branch; not pushed)
+**Current branch:** `codex/T-14-localization-completion`
+**Base:** `origin/main` at `c50cc80` (initial T-14 search and locale work merged)
 
 ## Problem
 
@@ -39,5 +39,13 @@ Homeowners often know the repair or material they need, not the marketplace's tr
 - [x] Isolated branch from current `main` baseline.
 - [x] Added initial task alias search and a task-oriented homeowner search sheet.
 - [x] Added the app locale controller, persistence, and initial English/Hindi/Marathi ARB copy.
-- [ ] Complete localization coverage across all app screens and dynamic content.
-- [ ] Verify analyzer, tests, and Android/iOS build.
+- [x] Localized login, role switcher, and key homeowner home labels and validation in English, Hindi, and Marathi. Preserved English copy used by established flows.
+- [x] Added an English fallback for isolated widget previews/tests without localization delegates and Hindi/Marathi entry tests.
+- [x] Connected the shared language setting to artisan registration and localized the OTP, onboarding, locality selector, urgent dispatch banner, artisan active job, and shared loading copy.
+- [x] Added a repeatable localization assembly step that merges catalog, booking, customer account, and onboarding/artisan resources into the English, Hindi, and Marathi ARB files before `flutter gen-l10n`.
+- [x] Localized booking filter labels and selected catalog-driven trade labels in artisan onboarding while preserving canonical trade IDs in registration data.
+- [x] Ran `dart format` on the changed Dart files and `flutter test --no-pub --reporter=compact`; all 368 tests passed.
+- [x] Built the Android debug APK with `flutter build apk --debug --no-pub` (Gradle reported `Built build\\app\\outputs\\flutter-apk\\app-debug.apk`).
+- [x] Verified `flutter analyze --no-pub`; it reports no issues.
+- [x] Reran the full mobile suite after the English trade-label compatibility fix; all 368 tests passed.
+- [x] Rebuilt the Android debug APK after the final localization and analyzer fixes. This Windows environment cannot produce an iOS build.

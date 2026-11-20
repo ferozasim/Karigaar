@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../l10n/localized_strings.dart';
 
 /// Skeleton Loading & Telemetry Radar Sync Widget matching Stitch design `skeleton_loading_radar_sync/code.html`
 /// Features:
@@ -117,7 +118,8 @@ class _KarigaarRadarSyncSkeletonState extends State<KarigaarRadarSyncSkeleton>
                   height: 56,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.secondary.withValues(alpha: opacity1 * 0.35),
+                    color:
+                        AppColors.secondary.withValues(alpha: opacity1 * 0.35),
                   ),
                 ),
               ),
@@ -128,7 +130,8 @@ class _KarigaarRadarSyncSkeletonState extends State<KarigaarRadarSyncSkeleton>
                   height: 40,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.secondary.withValues(alpha: opacity2 * 0.45),
+                    color:
+                        AppColors.secondary.withValues(alpha: opacity2 * 0.45),
                   ),
                 ),
               ),
@@ -154,6 +157,7 @@ class _KarigaarRadarSyncSkeletonState extends State<KarigaarRadarSyncSkeleton>
 
   @override
   Widget build(BuildContext context) {
+    final strings = localizedStrings(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -214,7 +218,8 @@ class _KarigaarRadarSyncSkeletonState extends State<KarigaarRadarSyncSkeleton>
                         _buildShimmerBlock(width: 130, height: 14),
                       ],
                     ),
-                    _buildShimmerBlock(width: 72, height: 20, borderRadius: 9999),
+                    _buildShimmerBlock(
+                        width: 72, height: 20, borderRadius: 9999),
                   ],
                 ),
                 const SizedBox(height: 14),
@@ -230,9 +235,11 @@ class _KarigaarRadarSyncSkeletonState extends State<KarigaarRadarSyncSkeleton>
                           const SizedBox(height: 12),
                           Row(
                             children: [
-                              _buildShimmerBlock(width: 84, height: 24, borderRadius: 9999),
+                              _buildShimmerBlock(
+                                  width: 84, height: 24, borderRadius: 9999),
                               const SizedBox(width: 8),
-                              _buildShimmerBlock(width: 60, height: 24, borderRadius: 9999),
+                              _buildShimmerBlock(
+                                  width: 60, height: 24, borderRadius: 9999),
                             ],
                           ),
                         ],
@@ -249,7 +256,7 @@ class _KarigaarRadarSyncSkeletonState extends State<KarigaarRadarSyncSkeleton>
 
           // 10-Trade Grid Category Skeleton (2 rows x 4 columns sample)
           Text(
-            'CERTIFIED GUILD TRADES',
+            strings.skeletonTradesHeading,
             style: AppTypography.labelSm.copyWith(
               color: AppColors.textMuted,
               letterSpacing: 0.8,
@@ -338,7 +345,8 @@ class _KarigaarRadarSyncSkeletonState extends State<KarigaarRadarSyncSkeleton>
                             widget.statusTitle,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: AppTypography.labelMd.copyWith(color: Colors.white),
+                            style: AppTypography.labelMd
+                                .copyWith(color: Colors.white),
                           ),
                           Text(
                             widget.statusSubtitle,

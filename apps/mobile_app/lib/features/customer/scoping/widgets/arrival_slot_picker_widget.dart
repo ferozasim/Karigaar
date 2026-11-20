@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../l10n/localized_strings.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/models/arrival_slot_model.dart';
 import '../../../../core/providers/app_providers.dart';
@@ -123,7 +124,7 @@ class _ArrivalSlotPickerWidgetState
           children: [
             Expanded(
               child: Text(
-                'Select Arrival Date & Slot',
+                localizedStrings(context).flowArrivalDateSlot,
                 style: AppTypography.headlineSm.copyWith(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -227,7 +228,7 @@ class _ArrivalSlotPickerWidgetState
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
-                              'TODAY',
+                              localizedStrings(context).flowToday,
                               style: AppTypography.labelSm.copyWith(
                                 fontSize: 9,
                                 fontWeight: FontWeight.w800,
@@ -350,7 +351,7 @@ class _ArrivalSlotPickerWidgetState
                                       borderRadius: BorderRadius.circular(4),
                                     ),
                                     child: Text(
-                                      'EMERGENCY',
+                                      localizedStrings(context).flowEmergency,
                                       style: AppTypography.labelSm.copyWith(
                                         color: AppColors.secondary,
                                         fontSize: 10,

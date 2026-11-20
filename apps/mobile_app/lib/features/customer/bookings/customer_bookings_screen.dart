@@ -1,3 +1,4 @@
+import '../../../l10n/localized_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -86,6 +87,18 @@ class _CustomerBookingsScreenState
     }
   }
 
+  String _displayStatus(String status) {
+    final strings = localizedStrings(context);
+    return switch (status) {
+      'All' => strings.accountStatusAll,
+      'En-Route' => strings.accountStatusEnRoute,
+      'Upcoming' => strings.accountStatusUpcoming,
+      'Completed' => strings.accountStatusCompleted,
+      'In Progress' => strings.accountStatusInProgress,
+      _ => status,
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     final activeBooking = ref.watch(activeBookingProvider);
@@ -108,7 +121,7 @@ class _CustomerBookingsScreenState
     return Scaffold(
       backgroundColor: AppColors.surfaceBase,
       appBar: AppBar(
-        title: const Text('My Service Bookings'),
+        title: Text(localizedStrings(context).accountBookingsTitle),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () {
@@ -134,7 +147,7 @@ class _CustomerBookingsScreenState
                   padding: const EdgeInsets.only(right: 8),
                   child: ChoiceChip(
                     key: ValueKey('booking_tab_$tab'),
-                    label: Text(tab),
+                    label: Text(_displayStatus(tab)),
                     selected: isSelected,
                     selectedColor: AppColors.primary,
                     backgroundColor: AppColors.surfaceRaised,
@@ -154,7 +167,7 @@ class _CustomerBookingsScreenState
               children: [
                 if (showActiveCard) ...[
                   Text(
-                    'ACTIVE DISPATCH',
+                    localizedStrings(context).accountActiveDispatch,
                     style: AppTypography.labelSm.copyWith(
                       color: AppColors.secondary,
                       letterSpacing: 0.8,
@@ -172,7 +185,7 @@ class _CustomerBookingsScreenState
                 _buildDirectOnSiteLeadCard(context),
                 const SizedBox(height: 20),
                 Text(
-                  'UPCOMING & PAST ORDERS',
+                  localizedStrings(context).accountPastOrders,
                   style: AppTypography.labelSm.copyWith(
                     color: AppColors.textMuted,
                     letterSpacing: 0.8,
@@ -189,7 +202,8 @@ class _CustomerBookingsScreenState
                     ),
                     child: Center(
                       child: Text(
-                        'No bookings in $_selectedTab tab.',
+                        localizedStrings(context)
+                            .accountEmptyBookings(_displayStatus(_selectedTab)),
                         style: AppTypography.bodyMd.copyWith(
                           color: AppColors.textMuted,
                         ),
@@ -229,7 +243,8 @@ class _CustomerBookingsScreenState
             children: [
               Expanded(
                 child: Text(
-                  'Booking #${booking.bookingId}',
+                  localizedStrings(context)
+                      .accountBookingReference(booking.bookingId),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppTypography.labelSm.copyWith(
@@ -271,8 +286,8 @@ class _CustomerBookingsScreenState
             children: [
               TrustShieldBadge(
                 label: booking.damageCoverAmount >= 25000
-                    ? '₹25,000 Guild Damage Shield Active'
-                    : '₹10,000 Guild Damage Shield Active',
+                    ? localizedStrings(context).accountShield25
+                    : localizedStrings(context).accountShield10,
               ),
               if (booking.isRetroactiveOnSiteLock)
                 Container(
@@ -285,7 +300,7 @@ class _CustomerBookingsScreenState
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
-                    'ON-SITE ESCROW LOCKED',
+                    localizedStrings(context).accountOnsiteLocked,
                     style: AppTypography.labelSm.copyWith(
                       color: AppColors.tertiary,
                       fontWeight: FontWeight.w700,
@@ -341,7 +356,8 @@ class _CustomerBookingsScreenState
                       const SizedBox(width: 4),
                       Flexible(
                         child: Text(
-                          booking.scheduledSlot ?? 'Scheduled Window',
+                          booking.scheduledSlot ??
+                              localizedStrings(context).accountScheduledWindow,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: AppTypography.labelSm.copyWith(
@@ -376,7 +392,8 @@ class _CustomerBookingsScreenState
                       const SizedBox(width: 4),
                       Flexible(
                         child: Text(
-                          '${booking.audioMemoDurationSeconds ?? 14}s Voice Note',
+                          localizedStrings(context).accountVoiceNote(
+                              booking.audioMemoDurationSeconds ?? 14),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: AppTypography.labelSm.copyWith(
@@ -405,7 +422,8 @@ class _CustomerBookingsScreenState
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Start Handshake OTP: ${booking.startOtp}',
+                      localizedStrings(context)
+                          .accountStartOtp(booking.startOtp),
                       style: AppTypography.labelMd.copyWith(
                         color: AppColors.tertiary,
                       ),
@@ -416,7 +434,8 @@ class _CustomerBookingsScreenState
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Total Estimate: ₹${booking.totalFinalAmount}',
+                      localizedStrings(context)
+                          .accountTotalEstimate(booking.totalFinalAmount),
                       style: AppTypography.numericPrice.copyWith(fontSize: 18),
                     ),
                   ),
@@ -434,7 +453,7 @@ class _CustomerBookingsScreenState
                     vertical: 8,
                   ),
                 ),
-                child: const Text('Track Live'),
+                child: Text(localizedStrings(context).accountTrackLive),
               ),
             ],
           ),
@@ -469,7 +488,8 @@ class _CustomerBookingsScreenState
             runSpacing: 4,
             children: [
               Text(
-                'DIRECT ON-SITE LEAD • ${directArtisan.tradeTitle}',
+                localizedStrings(context)
+                    .accountDirectLead(directArtisan.tradeTitle),
                 style: AppTypography.labelSm.copyWith(
                   color: AppColors.textMuted,
                   letterSpacing: 0.5,
@@ -482,7 +502,7 @@ class _CustomerBookingsScreenState
                   borderRadius: BorderRadius.circular(9999),
                 ),
                 child: Text(
-                  'Direct Visit (Unprotected)',
+                  localizedStrings(context).accountDirectVisit,
                   style: AppTypography.labelSm.copyWith(
                     color: AppColors.secondary,
                     fontSize: 10,
@@ -494,12 +514,12 @@ class _CustomerBookingsScreenState
           ),
           const SizedBox(height: 8),
           Text(
-            '${directArtisan.name} (On-Site Diagnostic)',
+            localizedStrings(context).accountOnsiteName(directArtisan.name),
             style: AppTypography.headlineSm.copyWith(fontSize: 16),
           ),
           const SizedBox(height: 4),
           Text(
-            'Artisan present on-site. Upgrade now to activate Start OTP (4921), ₹29 Safety Shield & ₹25k Master Cover.',
+            localizedStrings(context).accountOnsiteUpgradeExplanation,
             style: AppTypography.bodySm.copyWith(
               color: AppColors.textMuted,
               fontSize: 12,
@@ -513,8 +533,8 @@ class _CustomerBookingsScreenState
               onPressed: () =>
                   RetroactiveEscrowLockSheet.show(context, directArtisan),
               icon: const Icon(Icons.shield_outlined, size: 16),
-              label: const Text(
-                'Upgrade to Protected Guild Booking',
+              label: Text(
+                localizedStrings(context).accountUpgradeBooking,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -617,7 +637,9 @@ class _CustomerBookingsScreenState
                 ),
                 onPressed: () =>
                     context.push('/customer/artisan/${item['artisanId']}'),
-                child: Text(isUpcoming ? 'View Artisan' : 'Book Again'),
+                child: Text(isUpcoming
+                    ? localizedStrings(context).accountViewArtisan
+                    : localizedStrings(context).accountBookAgain),
               ),
             ],
           ),
@@ -631,13 +653,13 @@ class _CustomerBookingsScreenState
                   key: Key('csat_${item['id']}'),
                   onPressed: () => _showCsatSheet(context, item),
                   icon: const Icon(Icons.star_outline_rounded, size: 16),
-                  label: const Text('Rate service'),
+                  label: Text(localizedStrings(context).accountRateService),
                 ),
                 OutlinedButton.icon(
                   key: Key('warranty_claim_${item['id']}'),
                   onPressed: () => _showWarrantyClaimSheet(context, item),
                   icon: const Icon(Icons.shield_outlined, size: 16),
-                  label: const Text('Raise warranty claim'),
+                  label: Text(localizedStrings(context).accountRaiseClaim),
                 ),
               ],
             ),
@@ -670,18 +692,21 @@ class _CustomerBookingsScreenState
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('How was the service?', style: AppTypography.headlineSm),
+              Text(localizedStrings(context).accountServiceQuestion,
+                  style: AppTypography.headlineSm),
               const SizedBox(height: 12),
-              _ratingRow('Overall', overall,
+              _ratingRow(localizedStrings(context).accountOverall, overall,
                   (value) => setSheetState(() => overall = value)),
-              _ratingRow('Cleanliness', cleanliness,
+              _ratingRow(
+                  localizedStrings(context).accountCleanliness,
+                  cleanliness,
                   (value) => setSheetState(() => cleanliness = value)),
-              _ratingRow('Care & finish', sawdust,
+              _ratingRow(localizedStrings(context).accountCareFinish, sawdust,
                   (value) => setSheetState(() => sawdust = value)),
               TextField(
                 controller: noteController,
-                decoration:
-                    const InputDecoration(labelText: 'Optional feedback'),
+                decoration: InputDecoration(
+                    labelText: localizedStrings(context).accountFeedback),
                 maxLength: 240,
               ),
               SizedBox(
@@ -703,7 +728,7 @@ class _CustomerBookingsScreenState
                         });
                     if (context.mounted) Navigator.pop(sheetContext);
                   },
-                  child: const Text('Submit rating'),
+                  child: Text(localizedStrings(context).accountSubmitRating),
                 ),
               ),
             ],
@@ -751,23 +776,24 @@ class _CustomerBookingsScreenState
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('30-day warranty claim', style: AppTypography.headlineSm),
+            Text(localizedStrings(context).accountClaimTitle,
+                style: AppTypography.headlineSm),
             const SizedBox(height: 8),
-            Text(
-                '₹250 deductible applies. Claims are reviewed by Karigaar support.',
+            Text(localizedStrings(context).accountDeductibleReview,
                 style: AppTypography.bodySm),
             TextField(
               controller: amountController,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
-                labelText: 'Estimated damage amount (₹)',
-                helperText: 'Cover limit: ₹${booking['cover'] ?? 25000}',
+                labelText: localizedStrings(context).accountDamageAmount,
+                helperText: localizedStrings(context)
+                    .accountCoverLimit(booking['cover'] as int? ?? 25000),
               ),
             ),
             TextField(
               controller: reasonController,
-              decoration:
-                  const InputDecoration(labelText: 'Describe the issue'),
+              decoration: InputDecoration(
+                  labelText: localizedStrings(context).accountDescribeIssue),
               maxLength: 400,
               maxLines: 3,
             ),
@@ -778,9 +804,9 @@ class _CustomerBookingsScreenState
                   final amount = int.tryParse(amountController.text.trim());
                   if (amount == null || reasonController.text.trim().isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content:
-                              Text('Enter a valid amount and claim reason.')),
+                      SnackBar(
+                          content: Text(localizedStrings(context)
+                              .accountClaimValidation)),
                     );
                     return;
                   }
@@ -807,9 +833,9 @@ class _CustomerBookingsScreenState
                     if (context.mounted) Navigator.pop(sheetContext);
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
+                        SnackBar(
                             content: Text(
-                                'Claim sent for review. We’ll update you in this booking.')),
+                                localizedStrings(context).accountClaimSent)),
                       );
                     }
                   } on ApiException catch (error) {
@@ -820,7 +846,7 @@ class _CustomerBookingsScreenState
                     }
                   }
                 },
-                child: const Text('Submit claim'),
+                child: Text(localizedStrings(context).accountSubmitClaim),
               ),
             ),
           ],
@@ -843,24 +869,24 @@ class _CustomerBookingsScreenState
         children: [
           _buildNavItem(
             icon: Icons.explore_rounded,
-            label: 'Explore',
+            label: localizedStrings(context).explore,
             isActive: false,
             onTap: () => context.go('/customer/home'),
           ),
           _buildNavItem(
             icon: Icons.assignment_rounded,
-            label: 'Bookings',
+            label: localizedStrings(context).bookings,
             isActive: true,
           ),
           _buildNavItem(
             icon: Icons.chat_bubble_outline_rounded,
-            label: 'Messages',
+            label: localizedStrings(context).messages,
             isActive: false,
             onTap: () => context.go('/customer/messages'),
           ),
           _buildNavItem(
             icon: Icons.person_outline_rounded,
-            label: 'Profile',
+            label: localizedStrings(context).profile,
             isActive: false,
             onTap: () => context.go('/customer/profile'),
           ),
