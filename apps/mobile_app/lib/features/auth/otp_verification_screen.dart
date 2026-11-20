@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pinput/pinput.dart';
 import '../../../core/models/user_role.dart';
+import '../../../core/models/artisan_onboarding.dart';
 import '../../../core/providers/app_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
@@ -55,11 +56,36 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
     super.dispose();
   }
 
-  void _verifyOtp() {
+  Future<void> _verifyOtp() async {
+    if (_otpController.text.length != 6) return;
     final role = ref.read(userRoleProvider);
+    final identity = await ref
+        .read(phoneIdentityServiceProvider)
+        .verifyCode(widget.phone, _otpController.text);
+    if (!mounted) return;
+    if (identity == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Invalid development code. Use 123456.')),
+      );
+      return;
+    }
     if (role == UserRole.artisan) {
-      context.go('/artisan/radar');
+      ref.read(authenticatedRoleProvider.notifier).state = UserRole.artisan;
+      ref.read(verifiedPhoneIdentityProvider.notifier).state = identity;
+      final draft =
+          await ref.read(artisanOnboardingStoreProvider).read(identity.userId);
+      if (!mounted) return;
+      if (draft?.status == ArtisanReviewStatus.approved &&
+          identity.isArtisanApproved) {
+        context.go('/artisan/radar');
+      } else if (draft != null && draft.status != ArtisanReviewStatus.draft) {
+        context.go('/artisan/application-status');
+      } else {
+        context.go('/artisan/register', extra: {'resume': true});
+      }
     } else {
+      ref.read(authenticatedRoleProvider.notifier).state = UserRole.customer;
+      ref.read(verifiedPhoneIdentityProvider.notifier).state = identity;
       context.go('/customer/home');
     }
   }
@@ -149,6 +175,12 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                         ),
                         textAlign: TextAlign.center,
                       ),
+                      const SizedBox(height: 10),
+                      Text(
+                        ref.watch(phoneIdentityServiceProvider).modeLabel,
+                        style: AppTypography.labelSm
+                            .copyWith(color: AppColors.textMuted),
+                      ),
                       const SizedBox(height: 32),
 
                       // Pinput 6-digit OTP
@@ -159,7 +191,10 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                           controller: _otpController,
                           defaultPinTheme: defaultPinTheme,
                           focusedPinTheme: focusedPinTheme,
-                          onCompleted: (pin) => _verifyOtp(),
+                          onCompleted: (pin) {
+                            _otpController.text = pin;
+                            _verifyOtp();
+                          },
                         ),
                       ),
 
@@ -217,7 +252,7 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                       // Verify Button
                       KarigaarButton(
                         label: strings.authVerifyContinue,
-                        onPressed: _verifyOtp,
+                        onPressed: () => _verifyOtp(),
                       ),
                       const SizedBox(height: 16),
                     ],

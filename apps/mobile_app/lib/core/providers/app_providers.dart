@@ -8,6 +8,7 @@ import '../models/booking_model.dart';
 import '../models/artisan_profile_model.dart';
 import '../models/wallet_settlement_entry.dart';
 import '../models/telemetry_model.dart';
+import '../models/artisan_onboarding.dart';
 import '../models/radar_broadcast_model.dart';
 import '../models/audio_memo_model.dart';
 import '../models/arrival_slot_model.dart';
@@ -16,6 +17,7 @@ import 'package:karigaar_app/core/services/audio_service.dart';
 import 'package:karigaar_app/core/services/api_service.dart';
 import 'package:karigaar_app/core/services/telemetry_service.dart';
 import 'package:karigaar_app/core/services/whatsapp_telephony_service.dart';
+import 'package:karigaar_app/core/services/identity_service.dart';
 import 'package:karigaar_app/core/services/radar_broadcast_service.dart';
 import '../config/app_data_service.dart';
 import '../config/app_constants.dart';
@@ -23,6 +25,21 @@ import 'repository_providers.dart';
 
 /// Current Active User Role (Customer vs Artisan)
 final userRoleProvider = StateProvider<UserRole>((ref) => UserRole.customer);
+final authenticatedRoleProvider = StateProvider<UserRole?>((ref) => null);
+
+/// Auth is deliberately a named development stub until Firebase Phone Auth is
+/// configured. The session stores identity only; profile and review state live
+/// in the onboarding repository.
+final phoneIdentityServiceProvider = Provider<IPhoneIdentityService>(
+    (ref) => const DevelopmentPhoneIdentityService());
+final verifiedPhoneIdentityProvider =
+    StateProvider<VerifiedPhoneIdentity?>((ref) => null);
+final artisanOnboardingStoreProvider =
+    Provider<ArtisanOnboardingStore>((ref) => const ArtisanOnboardingStore());
+final artisanOnboardingDraftProvider =
+    FutureProvider.family<ArtisanOnboardingDraft?, String>((ref, userId) {
+  return ref.watch(artisanOnboardingStoreProvider).read(userId);
+});
 
 /// Regional Launch Districts List (7 Districts: Nanded, Parbhani, Latur, Hingoli, Sambhajinagar, Nagpur, Nizamabad)
 final regionalDistrictsProvider =
