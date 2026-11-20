@@ -1,6 +1,6 @@
 # T-14: Task-First Discovery & App-Wide Localization
 
-**Status:** Ready for review (local branch; not pushed)
+**Status:** Pushed (PR not opened)
 **Current branch:** `codex/T-14-localization-completion`
 **Base:** `origin/main` at `c50cc80` (initial T-14 search and locale work merged)
 
