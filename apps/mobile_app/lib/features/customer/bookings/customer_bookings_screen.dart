@@ -10,6 +10,7 @@ import '../../../core/services/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../shared/widgets/trust_shield_badge.dart';
+import '../../shared/support/support_case_sheet.dart';
 import '../profile/widgets/retroactive_escrow_lock_sheet.dart';
 
 class CustomerBookingsScreen extends ConsumerStatefulWidget {
@@ -107,6 +108,9 @@ class _CustomerBookingsScreenState
     final activeRecords = ref
         .watch(repositoryActiveBookingsProvider(customerId))
         .valueOrNull;
+    final persistedBookings = ref
+        .watch(repositoryCustomerBookingsProvider(customerId))
+        .valueOrNull ?? const <BookingModel>[];
     final activeBooking = activeRecords == null || activeRecords.isEmpty
         ? ref.watch(activeBookingProvider)
         : (activeRecords.toList()
@@ -224,6 +228,12 @@ class _CustomerBookingsScreenState
                   ...filteredHistory.map(
                     (item) => _buildHistoricalCard(context, item),
                   ),
+                ..._buildPersistedSupportCards(
+                  context,
+                  persistedBookings
+                      .where((booking) => !booking.status.isActive)
+                      .toList(growable: false),
+                ),
               ],
             ),
           ),
@@ -465,11 +475,55 @@ class _CustomerBookingsScreenState
                 ),
                 child: Text(localizedStrings(context).accountTrackLive),
               ),
+              OutlinedButton.icon(
+                key: Key('customer_support_${booking.bookingId}'),
+                onPressed: () => showSupportCaseSheet(
+                  context: context,
+                  ref: ref,
+                  booking: booking,
+                  reporterId: booking.customerId,
+                  reporterRole: 'customer',
+                ),
+                icon: const Icon(Icons.support_agent_rounded, size: 18),
+                label: const Text('Get support'),
+              ),
             ],
           ),
         ],
       ),
     );
+  }
+
+  List<Widget> _buildPersistedSupportCards(
+    BuildContext context,
+    List<BookingModel> bookings,
+  ) {
+    if (bookings.isEmpty) return const [];
+    return [
+      const SizedBox(height: 20),
+      Text('Booking support', style: AppTypography.labelSm),
+      const SizedBox(height: 8),
+      ...bookings.map(
+        (booking) => Card(
+          color: AppColors.surfaceRaised,
+          child: ListTile(
+            title: Text(booking.issueTitle),
+            subtitle: Text('${booking.bookingId} · ${booking.status.label}'),
+            trailing: TextButton(
+              key: Key('customer_past_support_${booking.bookingId}'),
+              onPressed: () => showSupportCaseSheet(
+                context: context,
+                ref: ref,
+                booking: booking,
+                reporterId: booking.customerId,
+                reporterRole: 'customer',
+              ),
+              child: const Text('Get support'),
+            ),
+          ),
+        ),
+      ),
+    ];
   }
 
   Widget _buildDirectOnSiteLeadCard(BuildContext context) {

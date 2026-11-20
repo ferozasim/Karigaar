@@ -9,12 +9,14 @@ import '../../models/booking_lifecycle.dart';
 import '../../models/mandate_model.dart';
 import '../../models/user_profile_model.dart';
 import '../../models/user_role.dart';
+import '../../models/support_case.dart';
 import '../../models/wallet_model.dart';
 import '../../models/wallet_settlement_entry.dart';
 import '../interfaces/artisan_repository.dart';
 import '../interfaces/booking_repository.dart';
 import '../interfaces/mandate_repository.dart';
 import '../interfaces/user_repository.dart';
+import '../interfaces/support_case_repository.dart';
 import '../interfaces/wallet_repository.dart';
 
 /// Offline-first repository implementations used by development and tests.
@@ -239,6 +241,11 @@ class InMemoryBookingRepository implements IBookingRepository {
           booking.customerId == customerId && booking.status.isActive)
       .toList(growable: false);
 
+  List<BookingModel> _allCustomerBookings(String customerId) => _bookings.values
+      .where((booking) => booking.customerId == customerId)
+      .toList(growable: false)
+    ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
   List<BookingModel> _artisanBookings(String artisanId) => _bookings.values
       .where((booking) =>
           booking.assignedArtisanId == artisanId && booking.status.isActive)
@@ -248,6 +255,12 @@ class InMemoryBookingRepository implements IBookingRepository {
   Stream<List<BookingModel>> streamActiveBookings(String customerId) async* {
     yield _customerBookings(customerId);
     yield* _changes.stream.map((_) => _customerBookings(customerId));
+  }
+
+  @override
+  Stream<List<BookingModel>> streamCustomerBookings(String customerId) async* {
+    yield _allCustomerBookings(customerId);
+    yield* _changes.stream.map((_) => _allCustomerBookings(customerId));
   }
 
   @override
@@ -366,6 +379,12 @@ class PersistentLocalBookingRepository implements IBookingRepository {
   Stream<List<BookingModel>> streamActiveBookings(String customerId) async* {
     await _ready;
     yield* _delegate.streamActiveBookings(customerId);
+  }
+
+  @override
+  Stream<List<BookingModel>> streamCustomerBookings(String customerId) async* {
+    await _ready;
+    yield* _delegate.streamCustomerBookings(customerId);
   }
 
   @override
@@ -517,4 +536,119 @@ class InMemoryWalletRepository implements IWalletRepository {
   }
 
   Future<void> dispose() => _changes.close();
+}
+
+class InMemorySupportCaseRepository implements ISupportCaseRepository {
+  InMemorySupportCaseRepository([Iterable<SupportCase> seed = const []]) {
+    for (final supportCase in seed) {
+      _cases[supportCase.caseId] = supportCase;
+    }
+  }
+
+  final Map<String, SupportCase> _cases = {};
+  final StreamController<void> _changes = StreamController<void>.broadcast();
+
+  @override
+  Future<SupportCase> create(SupportCase supportCase) async {
+    final duplicate = _cases.values
+        .where((item) => item.idempotencyKey == supportCase.idempotencyKey)
+        .firstOrNull;
+    if (duplicate != null) return duplicate;
+    _cases[supportCase.caseId] = supportCase;
+    _changes.add(null);
+    return supportCase;
+  }
+
+  @override
+  Future<SupportCase?> getById(String caseId) async => _cases[caseId];
+
+  List<SupportCase> _forBooking(String bookingId) => _cases.values
+      .where((item) => item.bookingId == bookingId)
+      .toList(growable: false)
+    ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+  @override
+  Stream<List<SupportCase>> streamForBooking(String bookingId) async* {
+    yield _forBooking(bookingId);
+    yield* _changes.stream.map((_) => _forBooking(bookingId));
+  }
+
+  Future<void> dispose() => _changes.close();
+}
+
+class PersistentLocalSupportCaseRepository implements ISupportCaseRepository {
+  PersistentLocalSupportCaseRepository() {
+    _ready = _initialize();
+  }
+
+  static const _storageKey = 'support_cases_v1';
+  late final Future<void> _ready;
+  late InMemorySupportCaseRepository _delegate;
+
+  Future<void> _initialize() async {
+    var initial = <SupportCase>[];
+    try {
+      final raw = (await SharedPreferences.getInstance()).getString(_storageKey);
+      if (raw != null) {
+        initial = (jsonDecode(raw) as List)
+            .map((item) => SupportCase.fromJson(
+                  Map<String, dynamic>.from(item as Map),
+                ))
+            .toList(growable: false);
+      }
+    } catch (_) {
+      // Keep the local support flow available when platform storage is absent.
+    }
+    for (final supportCase in initial) {
+      _saved[supportCase.caseId] = supportCase;
+    }
+    _delegate = InMemorySupportCaseRepository(initial);
+  }
+
+  Future<void> _persist() async {
+    try {
+      final all = <SupportCase>[];
+      // The delegate owns the in-memory snapshot and exposes scoped streams;
+      // persisted submissions are mirrored in this instance's local cache.
+      all.addAll(_saved.values);
+      await (await SharedPreferences.getInstance()).setString(
+        _storageKey,
+        jsonEncode(all.map((item) => item.toJson()).toList()),
+      );
+    } catch (_) {
+      // In-memory mode remains usable if persistence is temporarily unavailable.
+    }
+  }
+
+  final Map<String, SupportCase> _saved = {};
+
+  @override
+  Future<SupportCase> create(SupportCase supportCase) async {
+    await _ready;
+    final savedDuplicate = _saved.values
+        .where((item) => item.idempotencyKey == supportCase.idempotencyKey)
+        .firstOrNull;
+    if (savedDuplicate != null) return savedDuplicate;
+    final result = await _delegate.create(supportCase);
+    _saved[result.caseId] = result;
+    await _persist();
+    return result;
+  }
+
+  @override
+  Future<SupportCase?> getById(String caseId) async {
+    await _ready;
+    return _saved[caseId] ?? _delegate.getById(caseId);
+  }
+
+  @override
+  Stream<List<SupportCase>> streamForBooking(String bookingId) async* {
+    await _ready;
+    yield* _delegate.streamForBooking(bookingId);
+  }
+
+  Future<void> dispose() async {
+    await _ready;
+    await _delegate.dispose();
+  }
 }

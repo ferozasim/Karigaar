@@ -10,6 +10,7 @@ import '../models/booking_model.dart';
 import '../models/user_profile_model.dart';
 import '../models/user_role.dart';
 import '../models/wallet_model.dart';
+import '../models/support_case.dart';
 import '../repositories/fallback/fallback_repositories.dart';
 import '../repositories/firestore/firestore_repositories.dart';
 import '../repositories/interfaces/artisan_repository.dart';
@@ -17,6 +18,7 @@ import '../repositories/interfaces/booking_repository.dart';
 import '../repositories/interfaces/mandate_repository.dart';
 import '../repositories/interfaces/user_repository.dart';
 import '../repositories/interfaces/wallet_repository.dart';
+import '../repositories/interfaces/support_case_repository.dart';
 import '../repositories/local/in_memory_repositories.dart';
 
 /// Whether Firebase was initialized by the host application. Tests and local
@@ -41,6 +43,7 @@ class RepositoryBundle {
     required this.booking,
     required this.mandate,
     required this.wallet,
+    required this.supportCase,
     required this.isFirebaseLive,
   });
 
@@ -49,6 +52,7 @@ class RepositoryBundle {
   final IBookingRepository booking;
   final IMandateRepository mandate;
   final IWalletRepository wallet;
+  final ISupportCaseRepository supportCase;
   final bool isFirebaseLive;
 
   Future<void> dispose() async {
@@ -65,6 +69,11 @@ class RepositoryBundle {
     }
     if (wallet is InMemoryWalletRepository) {
       await (wallet as InMemoryWalletRepository).dispose();
+    }
+    if (supportCase is InMemorySupportCaseRepository) {
+      await (supportCase as InMemorySupportCaseRepository).dispose();
+    } else if (supportCase is PersistentLocalSupportCaseRepository) {
+      await (supportCase as PersistentLocalSupportCaseRepository).dispose();
     }
   }
 }
@@ -105,6 +114,7 @@ RepositoryBundle createLocalRepositoryBundle({
             ),
           ],
     ),
+    supportCase: PersistentLocalSupportCaseRepository(),
     isFirebaseLive: false,
   );
 }
@@ -136,6 +146,10 @@ final repositoryBundleProvider = Provider<RepositoryBundle>((ref) {
       FirestoreWalletRepository(firestore),
       localBundle.wallet,
     ),
+    supportCase: FallbackSupportCaseRepository(
+      FirestoreSupportCaseRepository(firestore),
+      localBundle.supportCase,
+    ),
     isFirebaseLive: true,
   );
 });
@@ -155,6 +169,9 @@ final mandateRepositoryProvider = Provider<IMandateRepository>(
 final walletRepositoryProvider = Provider<IWalletRepository>(
   (ref) => ref.watch(repositoryBundleProvider).wallet,
 );
+final supportCaseRepositoryProvider = Provider<ISupportCaseRepository>(
+  (ref) => ref.watch(repositoryBundleProvider).supportCase,
+);
 
 /// Simple test helper: callers can override this provider with a custom
 /// deterministic bundle without configuring Firebase or global state.
@@ -171,6 +188,11 @@ final repositoryActiveBookingsProvider =
   return ref.watch(bookingRepositoryProvider).streamActiveBookings(customerId);
 });
 
+final repositoryCustomerBookingsProvider =
+    StreamProvider.family<List<BookingModel>, String>((ref, customerId) {
+  return ref.watch(bookingRepositoryProvider).streamCustomerBookings(customerId);
+});
+
 final repositoryBookingProvider =
     StreamProvider.family<BookingModel?, String>((ref, bookingId) {
   return ref.watch(bookingRepositoryProvider).streamBooking(bookingId);
@@ -179,4 +201,9 @@ final repositoryBookingProvider =
 final repositoryWalletProvider =
     StreamProvider.family<WalletModel?, String>((ref, artisanId) {
   return ref.watch(walletRepositoryProvider).streamWallet(artisanId);
+});
+
+final repositorySupportCasesProvider =
+    StreamProvider.family<List<SupportCase>, String>((ref, bookingId) {
+  return ref.watch(supportCaseRepositoryProvider).streamForBooking(bookingId);
 });

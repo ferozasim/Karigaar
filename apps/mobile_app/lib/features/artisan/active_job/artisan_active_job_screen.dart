@@ -12,6 +12,7 @@ import '../../../core/theme/app_typography.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../l10n/localized_strings.dart';
 import '../../shared/widgets/karigaar_button.dart';
+import '../../shared/support/support_case_sheet.dart';
 
 class ArtisanActiveJobScreen extends ConsumerStatefulWidget {
   final String bookingId;
@@ -369,6 +370,24 @@ class _ArtisanActiveJobScreenState
       backgroundColor: AppColors.surfaceBase,
       appBar: AppBar(
         title: Text(_strings.jobActiveBill),
+        actions: [
+          IconButton(
+            key: Key('artisan_support_${widget.bookingId}'),
+            tooltip: 'Report a booking issue',
+            onPressed: booking == null
+                ? null
+                : () => showSupportCaseSheet(
+                      context: context,
+                      ref: ref,
+                      booking: booking,
+                      reporterId: booking.assignedArtisanId ??
+                          ref.read(verifiedPhoneIdentityProvider)?.userId ??
+                          'artisan_demo',
+                      reporterRole: 'artisan',
+                    ),
+            icon: const Icon(Icons.support_agent_rounded),
+          ),
+        ],
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () {

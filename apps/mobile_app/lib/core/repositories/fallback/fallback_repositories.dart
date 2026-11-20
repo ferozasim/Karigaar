@@ -5,11 +5,13 @@ import '../../models/user_profile_model.dart';
 import '../../models/user_role.dart';
 import '../../models/wallet_model.dart';
 import '../../models/wallet_settlement_entry.dart';
+import '../../models/support_case.dart';
 import '../interfaces/artisan_repository.dart';
 import '../interfaces/booking_repository.dart';
 import '../interfaces/mandate_repository.dart';
 import '../interfaces/user_repository.dart';
 import '../interfaces/wallet_repository.dart';
+import '../interfaces/support_case_repository.dart';
 
 /// Uses the local repository when a Firebase operation cannot complete.
 ///
@@ -153,6 +155,13 @@ class FallbackBookingRepository implements IBookingRepository {
       );
 
   @override
+  Stream<List<BookingModel>> streamCustomerBookings(String customerId) =>
+      _streamWithFallback(
+        _primary.streamCustomerBookings(customerId),
+        _fallback.streamCustomerBookings(customerId),
+      );
+
+  @override
   Stream<List<BookingModel>> streamArtisanJobs(String artisanId) =>
       _streamWithFallback(
         _primary.streamArtisanJobs(artisanId),
@@ -293,5 +302,28 @@ class FallbackWalletRepository implements IWalletRepository {
           amountPaise: amountPaise,
           bankReference: bankReference,
         ),
+      );
+}
+
+class FallbackSupportCaseRepository implements ISupportCaseRepository {
+  FallbackSupportCaseRepository(this._primary, this._fallback);
+  final ISupportCaseRepository _primary;
+  final ISupportCaseRepository _fallback;
+
+  @override
+  Future<SupportCase> create(SupportCase supportCase) =>
+      _primary.create(supportCase);
+
+  @override
+  Future<SupportCase?> getById(String caseId) => _withFallback(
+        () => _primary.getById(caseId),
+        () => _fallback.getById(caseId),
+      );
+
+  @override
+  Stream<List<SupportCase>> streamForBooking(String bookingId) =>
+      _streamWithFallback(
+        _primary.streamForBooking(bookingId),
+        _fallback.streamForBooking(bookingId),
       );
 }
