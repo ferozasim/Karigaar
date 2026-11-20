@@ -6,12 +6,14 @@ import '../../models/booking_lifecycle.dart';
 import '../../models/mandate_model.dart';
 import '../../models/user_profile_model.dart';
 import '../../models/user_role.dart';
+import '../../models/support_case.dart';
 import '../../models/wallet_model.dart';
 import '../../models/wallet_settlement_entry.dart';
 import '../interfaces/artisan_repository.dart';
 import '../interfaces/booking_repository.dart';
 import '../interfaces/mandate_repository.dart';
 import '../interfaces/user_repository.dart';
+import '../interfaces/support_case_repository.dart';
 import '../interfaces/wallet_repository.dart';
 import 'firestore_serializers.dart';
 
@@ -224,6 +226,14 @@ class FirestoreBookingRepository implements IBookingRepository {
               .toList(growable: false));
 
   @override
+  Stream<List<BookingModel>> streamCustomerBookings(String customerId) =>
+      _bookings.where('customerId', isEqualTo: customerId).snapshots().map(
+          (snapshot) => snapshot.docs
+              .map((doc) => BookingModel.fromJson(_dataWithId(doc)))
+              .toList(growable: false)
+            ..sort((a, b) => b.createdAt.compareTo(a.createdAt)));
+
+  @override
   Stream<List<BookingModel>> streamArtisanJobs(String artisanId) => _bookings
       .where('assignedArtisanId', isEqualTo: artisanId)
       .snapshots()
@@ -335,4 +345,39 @@ class FirestoreWalletRepository implements IWalletRepository {
       _ledger(artisanId).snapshots().map((snapshot) => snapshot.docs
           .map((doc) => WalletSettlementEntry.fromJson(_dataWithId(doc)))
           .toList(growable: false));
+}
+
+class FirestoreSupportCaseRepository implements ISupportCaseRepository {
+  FirestoreSupportCaseRepository(this._firestore);
+
+  final FirebaseFirestore _firestore;
+  CollectionReference<Map<String, dynamic>> get _cases =>
+      _firestore.collection('support_cases');
+
+  @override
+  Future<SupportCase> create(SupportCase supportCase) =>
+      _firestore.runTransaction((transaction) async {
+        final reference = _cases.doc(supportCase.caseId);
+        final existing = await transaction.get(reference);
+        if (existing.exists) {
+          return SupportCase.fromJson(_dataWithId(existing));
+        }
+        transaction.set(reference, supportCase.toJson());
+        return supportCase;
+      });
+
+  @override
+  Future<SupportCase?> getById(String caseId) async {
+    final doc = await _cases.doc(caseId).get();
+    return doc.exists ? SupportCase.fromJson(_dataWithId(doc)) : null;
+  }
+
+  @override
+  Stream<List<SupportCase>> streamForBooking(String bookingId) => _cases
+      .where('bookingId', isEqualTo: bookingId)
+      .snapshots()
+      .map((snapshot) => snapshot.docs
+          .map((doc) => SupportCase.fromJson(_dataWithId(doc)))
+          .toList(growable: false)
+        ..sort((a, b) => b.createdAt.compareTo(a.createdAt)));
 }

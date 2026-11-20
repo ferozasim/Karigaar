@@ -23,6 +23,54 @@ service cloud.firestore {
       return isApprovedArtisan() && request.auth.token.artisanId == artisanId;
     }
 
+    function isBookingParty(bookingId) {
+      let booking = get(/databases/$(database)/documents/bookings/$(bookingId)).data;
+      return isAuthenticated() && (
+        booking.customerId == request.auth.uid ||
+        (booking.assignedArtisanId is string &&
+          ownsArtisan(booking.assignedArtisanId)) ||
+        isAdmin()
+      );
+    }
+
+    function isSupportCaseReporter(caseData) {
+      let booking = get(/databases/$(database)/documents/bookings/$(caseData.bookingId)).data;
+      return (caseData.reporterRole == 'customer' &&
+          booking.customerId == request.auth.uid &&
+          caseData.reporterId == request.auth.uid) ||
+        (caseData.reporterRole == 'artisan' &&
+          isApprovedArtisan() &&
+          booking.assignedArtisanId == request.auth.token.artisanId &&
+          caseData.reporterId == request.auth.token.artisanId);
+    }
+
+    function validSupportCaseCreate(caseId) {
+      let data = request.resource.data;
+      return data.caseId == caseId &&
+        data.bookingId is string &&
+        data.reporterId is string &&
+        data.reporterRole in ['customer', 'artisan'] &&
+        data.category in [
+          'noShow', 'propertyDamage', 'safetyConcern', 'serviceQuality',
+          'warranty', 'cancellation', 'payment', 'other'
+        ] &&
+        data.description is string &&
+        data.description.size() >= 10 && data.description.size() <= 2000 &&
+        data.evidenceReferences is list && data.evidenceReferences.size() <= 5 &&
+        data.idempotencyKey is string && data.idempotencyKey.size() > 0 &&
+        data.status == 'submitted' &&
+        data.events is list && data.events.size() == 1 &&
+        data.events[0].actorId == data.reporterId &&
+        data.events[0].actorRole == data.reporterRole &&
+        data.events[0].action == 'submitted' &&
+        data.events[0].occurredAt is string &&
+        data.keys().hasOnly([
+          'caseId', 'idempotencyKey', 'bookingId', 'reporterId', 'reporterRole',
+          'category', 'description', 'evidenceReferences', 'createdAt', 'status', 'events'
+        ]) &&
+        isSupportCaseReporter(data);
+    }
+
     function validBookingTransition(from, to) {
       return (from == 'draft' && to in ['broadcasting', 'cancelledByCustomer']) ||
         (from == 'broadcasting' && to in ['claimed', 'dispatchFailed', 'cancelledByCustomer']) ||
@@ -176,6 +224,14 @@ service cloud.firestore {
             request.resource.data.assignedArtisanId == request.auth.token.artisanId)
         );
       allow delete: if isAdmin();
+    }
+
+    // Support reports are immutable client submissions attached to a booking.
+    // T-19's trusted operations workflow owns review and resolution updates.
+    match /support_cases/{caseId} {
+      allow read: if isBookingParty(resource.data.bookingId);
+      allow create: if isAuthenticated() && validSupportCaseCreate(caseId);
+      allow update, delete: if false;
     }
 
     // UPI mandate records. Client-side writes are restricted to a user's own

@@ -8,7 +8,8 @@
 | [warranty-disputes_20261117](tracks/warranty-disputes_20261117/) | feature | pushed, PR ready | 3/3 | `cloud-webhooks_20261117`, `d5da306` | Ticket T-13: 30% reserve calculation, completed-booking CSAT and warranty intake, admin arbitration prototype; server persistence pending |
 | [service-discovery-localization_20261118](tracks/service-discovery-localization_20261118/) | feature | merged | 3/3 | PR #10, `b51b63a` | Ticket T-14: task-first discovery, trade aliases, shared persisted English/Hindi/Marathi locale, and customer/artisan flow localization; 368 tests and Android debug build verified |
 | [artisan-identity-onboarding_20261120](tracks/artisan-identity-onboarding_20261120/) | feature | merged | 3/3 | PR #11, `b0854b2` | Ticket T-15: verified phone identity, resumable safe onboarding draft, review states, and role/approval route gates |
-| [booking-dispatch-lifecycle_20261120](tracks/booking-dispatch-lifecycle_20261120/) | feature | in progress | 3/3 | T-14 merged (`b51b63a`), T-15 merged (`b0854b2`) | Ticket T-16: role-aware lifecycle, idempotent audited transitions, persisted booking recovery, and dispatch retry; Firestore emulator validation pending JDK 21 |
+| [booking-dispatch-lifecycle_20261120](tracks/booking-dispatch-lifecycle_20261120/) | feature | merged | 3/3 | PR #12, `4adfba7` | Ticket T-16: role-aware lifecycle, idempotent audited transitions, persisted booking recovery, and dispatch retry; Firestore emulator validation pending JDK 21 |
+| [support-safety-resolution_20261120](tracks/support-safety-resolution_20261120/) | feature | in progress | 1/3 | T-13 PR ready; T-19 not started; T-16 merged (`4adfba7`) | Ticket T-17: booking-linked customer/artisan safety and service issue reports; storage and admin resolution handoff remain |
 
 ## Completed Tracks (Historical Milestone Baselines)
 

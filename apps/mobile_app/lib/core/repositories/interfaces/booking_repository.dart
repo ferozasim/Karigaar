@@ -19,5 +19,6 @@ abstract interface class IBookingRepository {
   });
   Future<void> save(BookingModel booking);
   Stream<List<BookingModel>> streamActiveBookings(String customerId);
+  Stream<List<BookingModel>> streamCustomerBookings(String customerId);
   Stream<List<BookingModel>> streamArtisanJobs(String artisanId);
 }
