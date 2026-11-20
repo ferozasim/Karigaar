@@ -7,7 +7,7 @@ import '../../../core/providers/app_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/services/service_discovery_catalog.dart';
-import '../../../l10n/app_localizations.dart';
+import '../../../l10n/localized_strings.dart';
 import '../../shared/widgets/emergency_assist_banner.dart';
 import '../../shared/widgets/karigaar_brand_logo.dart';
 import '../../shared/widgets/karigaar_radar_sync_skeleton.dart';
@@ -113,7 +113,7 @@ class CustomerHomeScreen extends ConsumerWidget {
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
-                            AppLocalizations.of(context).searchServices,
+                            localizedStrings(context).searchServices,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: AppTypography.bodyMd
@@ -184,7 +184,7 @@ class CustomerHomeScreen extends ConsumerWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        '10 Launch Trades',
+                        localizedStrings(context).launchTrades,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: AppTypography.headlineSm,
@@ -192,7 +192,8 @@ class CustomerHomeScreen extends ConsumerWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      '${selectedDistrict.name} Guild',
+                      localizedStrings(context)
+                          .districtGuild(selectedDistrict.name),
                       style: AppTypography.labelSm
                           .copyWith(color: AppColors.secondary),
                     ),
@@ -229,7 +230,7 @@ class CustomerHomeScreen extends ConsumerWidget {
                 child: KarigaarRadarSyncSkeleton(),
               ),
               error: (err, _) => SliverToBoxAdapter(
-                child: Text('Error: $err'),
+                child: Text(localizedStrings(context).servicesLoadError),
               ),
             ),
 
@@ -263,7 +264,8 @@ class CustomerHomeScreen extends ConsumerWidget {
                               color: AppColors.tertiary, size: 20),
                           const SizedBox(width: 8),
                           Expanded(
-                            child: Text('The Karigaar Shield Commitment',
+                            child: Text(
+                                localizedStrings(context).shieldCommitment,
                                 style: AppTypography.labelLg),
                           ),
                         ],
@@ -299,7 +301,8 @@ class CustomerHomeScreen extends ConsumerWidget {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                          'Top Rated Karigaars in ${selectedDistrict.name}',
+                          localizedStrings(context)
+                              .topRatedInDistrict(selectedDistrict.name),
                           style: AppTypography.headlineSm),
                     ),
                   ],
@@ -371,6 +374,7 @@ class CustomerHomeScreen extends ConsumerWidget {
   }
 
   Widget _buildArtisanCard(BuildContext context, ArtisanProfileModel artisan) {
+    final strings = localizedStrings(context);
     return InkWell(
       borderRadius: BorderRadius.circular(16),
       onTap: () => context.push('/customer/artisan/${artisan.artisanId}'),
@@ -433,7 +437,7 @@ class CustomerHomeScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        '${artisan.localizedRoleTitle} • ${artisan.yearsExperience} yrs exp',
+                        '${artisan.localizedRoleTitle} • ${strings.yearsExperience(artisan.yearsExperience)}',
                         style: AppTypography.bodySm,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -446,7 +450,7 @@ class CustomerHomeScreen extends ConsumerWidget {
                           const SizedBox(width: 4),
                           Expanded(
                             child: Text(
-                              '${artisan.rating} (${artisan.reviewCount} reviews) • ${artisan.distanceKm} km away',
+                              '${artisan.rating} (${strings.reviewsAndDistance(artisan.reviewCount, artisan.distanceKm)})',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: AppTypography.labelSm
@@ -476,7 +480,7 @@ class CustomerHomeScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Diagnostic Inspection',
+                      strings.diagnosticInspection,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: AppTypography.labelSm,
@@ -497,7 +501,7 @@ class CustomerHomeScreen extends ConsumerWidget {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)),
                   ),
-                  child: Text('Book Artisan',
+                  child: Text(strings.bookArtisan,
                       style:
                           AppTypography.labelMd.copyWith(color: Colors.white)),
                 ),
@@ -560,23 +564,23 @@ class CustomerHomeScreen extends ConsumerWidget {
         children: [
           _buildNavItem(
               icon: Icons.explore_rounded,
-              label: AppLocalizations.of(context).explore,
+              label: localizedStrings(context).explore,
               isActive: true),
           _buildNavItem(
             icon: Icons.assignment_rounded,
-            label: AppLocalizations.of(context).bookings,
+            label: localizedStrings(context).bookings,
             isActive: false,
             onTap: () => context.go('/customer/bookings'),
           ),
           _buildNavItem(
             icon: Icons.chat_bubble_outline_rounded,
-            label: AppLocalizations.of(context).messages,
+            label: localizedStrings(context).messages,
             isActive: false,
             onTap: () => context.go('/customer/messages'),
           ),
           _buildNavItem(
             icon: Icons.person_outline_rounded,
-            label: AppLocalizations.of(context).profile,
+            label: localizedStrings(context).profile,
             isActive: false,
             onTap: () => context.go('/customer/profile'),
           ),
@@ -588,7 +592,7 @@ class CustomerHomeScreen extends ConsumerWidget {
   void _showQuickTradeSearchSheet(
       BuildContext context, List<TradeModel> trades) {
     var query = '';
-    final strings = AppLocalizations.of(context);
+    final strings = localizedStrings(context);
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,

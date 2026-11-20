@@ -1,3 +1,4 @@
+import '../../../../l10n/localized_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -93,7 +94,7 @@ class _DirectContactUnlockSheetState
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Unlock Direct Contact',
+                          localizedStrings(context).accountUnlockTitle,
                           style: AppTypography.headlineSm.copyWith(
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
@@ -102,7 +103,7 @@ class _DirectContactUnlockSheetState
                           overflow: TextOverflow.ellipsis,
                         ),
                         Text(
-                          'Connect with ${artisan.name} (${artisan.tradeTitle})',
+                          localizedStrings(context).accountConnectName(artisan.name, artisan.tradeTitle),
                           style: AppTypography.bodySm.copyWith(
                             color: AppColors.textMuted,
                           ),
@@ -141,7 +142,7 @@ class _DirectContactUnlockSheetState
                         const SizedBox(width: 6),
                         Expanded(
                           child: Text(
-                            '100% Privacy Protected • Zero Raw Phone Leakage',
+                            localizedStrings(context).accountPrivacyProtected,
                             style: AppTypography.labelSm.copyWith(
                               color: AppColors.tertiary,
                               fontWeight: FontWeight.w700,
@@ -154,7 +155,7 @@ class _DirectContactUnlockSheetState
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Calls & WhatsApp bridged via Virtual Proxy: ${KarigaarWhatsAppTelephonyService.defaultVirtualProxyDid}',
+                      localizedStrings(context).accountProxyDescription(KarigaarWhatsAppTelephonyService.defaultVirtualProxyDid),
                       style: AppTypography.bodySm.copyWith(
                         color: AppColors.textPrimary,
                         fontSize: 12,
@@ -169,12 +170,12 @@ class _DirectContactUnlockSheetState
               _buildOptionCard(
                 key: const Key('unlock_option_pay_per_lead'),
                 option: DirectContactUnlockOption.payPerLead,
-                title: 'Pay-Per-Lead',
+                title: localizedStrings(context).accountPayPerLead,
                 priceTag: '₹49',
-                periodTag: 'one-time',
+                periodTag: localizedStrings(context).accountOneTime,
                 subtitle:
-                    'Unlock direct masked calls and WhatsApp with ${artisan.name} for 30 days.',
-                badge: 'Single Artisan',
+                    localizedStrings(context).accountUnlockDays(artisan.name),
+                badge: localizedStrings(context).accountSingleArtisan,
                 badgeColor: AppColors.primary,
               ),
               const SizedBox(height: 10),
@@ -183,12 +184,12 @@ class _DirectContactUnlockSheetState
               _buildOptionCard(
                 key: const Key('unlock_option_directory_pass'),
                 option: DirectContactUnlockOption.directoryPass,
-                title: 'Unlimited Directory Pass',
+                title: localizedStrings(context).accountDirectoryPass,
                 priceTag: '₹499',
-                periodTag: '/ month',
+                periodTag: localizedStrings(context).accountPerMonth,
                 subtitle:
-                    'Unlimited masked calls & WhatsApp across all 10 trades and 7 districts.',
-                badge: 'RECOMMENDED',
+                    localizedStrings(context).accountUnlimitedContact,
+                badge: localizedStrings(context).accountRecommended,
                 badgeColor: AppColors.tertiary,
               ),
               const SizedBox(height: 14),
@@ -206,17 +207,17 @@ class _DirectContactUnlockSheetState
                   children: [
                     _buildFeatureRow(
                       Icons.shield_outlined,
-                      'Masked Telephony: Zero raw phone number exposure',
+                      localizedStrings(context).accountMaskedBenefit,
                     ),
                     const SizedBox(height: 6),
                     _buildFeatureRow(
                       Icons.chat_bubble_outline_rounded,
-                      'Official Meta WhatsApp Cloud API bridge included',
+                      localizedStrings(context).accountMetaBenefit,
                     ),
                     const SizedBox(height: 6),
                     _buildFeatureRow(
                       Icons.handshake_outlined,
-                      'Retroactive Guild Lock: Activate ₹25k warranty on-site anytime',
+                      localizedStrings(context).accountRetroactiveBenefit,
                     ),
                   ],
                 ),
@@ -248,8 +249,8 @@ class _DirectContactUnlockSheetState
                         )
                       : Text(
                           _selectedOption == DirectContactUnlockOption.payPerLead
-                              ? 'Unlock for ₹49'
-                              : 'Activate Directory Pass (₹499/mo)',
+                              ? localizedStrings(context).accountUnlock49
+                              : localizedStrings(context).accountActivatePass,
                           style: AppTypography.labelLg.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.w700,
@@ -435,8 +436,8 @@ class _DirectContactUnlockSheetState
           SnackBar(
             content: Text(
               _selectedOption == DirectContactUnlockOption.payPerLead
-                  ? 'Direct contact unlocked! Calling enabled via ${KarigaarWhatsAppTelephonyService.defaultVirtualProxyDid}.'
-                  : 'Directory Pass activated! Unlimited masked contact active across all trades.',
+                  ? localizedStrings(context).accountContactUnlocked(KarigaarWhatsAppTelephonyService.defaultVirtualProxyDid)
+                  : localizedStrings(context).accountPassActivated,
             ),
             backgroundColor: AppColors.tertiary,
             behavior: SnackBarBehavior.floating,
@@ -447,7 +448,7 @@ class _DirectContactUnlockSheetState
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to unlock contact: $e'),
+            content: Text(localizedStrings(context).accountUnlockFailed(e.toString())),
             backgroundColor: AppColors.error,
           ),
         );

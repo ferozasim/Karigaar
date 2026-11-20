@@ -7,6 +7,8 @@ import '../../../core/services/api_service.dart';
 import '../../../core/services/contact_intent_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../../l10n/localized_strings.dart';
 import '../../shared/widgets/karigaar_button.dart';
 
 class ArtisanActiveJobScreen extends ConsumerStatefulWidget {
@@ -15,15 +17,19 @@ class ArtisanActiveJobScreen extends ConsumerStatefulWidget {
   const ArtisanActiveJobScreen({super.key, required this.bookingId});
 
   @override
-  ConsumerState<ArtisanActiveJobScreen> createState() => _ArtisanActiveJobScreenState();
+  ConsumerState<ArtisanActiveJobScreen> createState() =>
+      _ArtisanActiveJobScreenState();
 }
 
-class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen> {
+class _ArtisanActiveJobScreenState
+    extends ConsumerState<ArtisanActiveJobScreen> {
   bool _startOtpVerified = false;
   int _dwellMinutes = 16;
   bool _invoiceSubmitted = false;
+  late AppLocalizations _strings;
   final TextEditingController _startOtpController = TextEditingController();
-  final TextEditingController _completionOtpController = TextEditingController();
+  final TextEditingController _completionOtpController =
+      TextEditingController();
 
   final List<BillPartItem> _parts = [
     const BillPartItem(
@@ -41,7 +47,8 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
   void _verifyStartOtp() {
     final code = _startOtpController.text.trim();
     final booking = ref.read(activeBookingProvider);
-    final isValid = booking != null ? booking.verifyStartOtp(code) : code == '4921';
+    final isValid =
+        booking != null ? booking.verifyStartOtp(code) : code == '4921';
     if (isValid) {
       setState(() => _startOtpVerified = true);
       if (booking != null) {
@@ -51,11 +58,12 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
         );
       }
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Start Code $code verified! Stopwatch activated.')),
+        SnackBar(
+            content: Text('Start Code $code verified! Stopwatch activated.')),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Invalid code! Ask customer for their 4-digit start code.')),
+        SnackBar(content: Text(_strings.jobInvalidStart)),
       );
     }
   }
@@ -70,10 +78,15 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
         bookingId: bookingId,
         dwellMinutes: _dwellMinutes,
       );
-      final compensation = res['data']['transitCompensation'] as Map<String, dynamic>?;
-      final credited = (compensation?['creditedToArtisanGuildWallet'] as num?)?.toDouble() ?? 80.0;
+      final compensation =
+          res['data']['transitCompensation'] as Map<String, dynamic>?;
+      final credited =
+          (compensation?['creditedToArtisanGuildWallet'] as num?)?.toDouble() ??
+              80.0;
 
-      ref.read(artisanWalletBalanceProvider.notifier).update((bal) => bal + credited);
+      ref
+          .read(artisanWalletBalanceProvider.notifier)
+          .update((bal) => bal + credited);
       if (booking != null) {
         ref.read(activeBookingProvider.notifier).state = booking.copyWith(
           status: BookingStatus.cancelledByCustomer,
@@ -85,7 +98,7 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
         await showDialog<void>(
           context: context,
           builder: (ctx) => AlertDialog(
-            title: const Text('Doorstep Access Denied'),
+            title: Text(_strings.jobAccessDenied),
             content: Text(
               'Doorstep access denial verified via dwell time (${_dwellMinutes}m >= 15m).\n\n₹${credited.toStringAsFixed(2)} transit fee has been credited to your Guild Wallet. Standby pre-auth captured.',
             ),
@@ -101,7 +114,7 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                     } catch (_) {}
                   }
                 },
-                child: const Text('Close Job'),
+                child: Text(_strings.jobCloseJob),
               ),
             ],
           ),
@@ -119,7 +132,8 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
     }
   }
 
-  void _addPart({String? name, int? price, String? receiptUrl, String? storeName}) {
+  void _addPart(
+      {String? name, int? price, String? receiptUrl, String? storeName}) {
     final partName = name ?? 'Finolex 2.5 sq mm Copper Wire (5m)';
     final partPrice = price ?? 220;
     final newPart = BillPartItem(
@@ -144,9 +158,11 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
   }
 
   void _showAddCustomPartDialog() {
-    final nameController = TextEditingController(text: 'Havells MCB 16A Single Pole');
+    final nameController =
+        TextEditingController(text: 'Havells MCB 16A Single Pole');
     final priceController = TextEditingController(text: '180');
-    final storeController = TextEditingController(text: 'Shree Balaji Hardware, Station Rd');
+    final storeController =
+        TextEditingController(text: 'Shree Balaji Hardware, Station Rd');
     bool hasReceipt = true;
 
     showDialog<void>(
@@ -155,32 +171,37 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
         return StatefulBuilder(
           builder: (context, setDialogState) {
             return AlertDialog(
-              title: const Text('Add Spare Part with 2FA'),
+              title: Text(_strings.jobAddPart2fa),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     TextField(
                       controller: nameController,
-                      decoration: const InputDecoration(labelText: 'Part Name & Specification'),
+                      decoration:
+                          InputDecoration(labelText: _strings.jobPartName),
                     ),
                     const SizedBox(height: 8),
                     TextField(
                       controller: priceController,
                       keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(labelText: 'Unit Price (₹)'),
+                      decoration:
+                          InputDecoration(labelText: _strings.jobUnitPrice),
                     ),
                     const SizedBox(height: 8),
                     TextField(
                       controller: storeController,
-                      decoration: const InputDecoration(labelText: 'Hardware Store Name'),
+                      decoration:
+                          InputDecoration(labelText: _strings.jobStoreName),
                     ),
                     const SizedBox(height: 8),
                     CheckboxListTile(
                       value: hasReceipt,
-                      title: const Text('Attach Hardware Store Receipt Photo', style: TextStyle(fontSize: 13)),
+                      title: Text(_strings.jobAttachReceipt,
+                          style: const TextStyle(fontSize: 13)),
                       contentPadding: EdgeInsets.zero,
-                      onChanged: (val) => setDialogState(() => hasReceipt = val ?? false),
+                      onChanged: (val) =>
+                          setDialogState(() => hasReceipt = val ?? false),
                     ),
                     Container(
                       padding: const EdgeInsets.all(8),
@@ -188,9 +209,10 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                         color: AppColors.surfaceSubtle,
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Text(
-                        'Pass-through spare parts include a 2% payment gateway surcharge and trigger an in-app customer RBI 2FA approval prompt.',
-                        style: TextStyle(fontSize: 11, color: AppColors.textMuted),
+                      child: Text(
+                        _strings.jobPartsDisclaimer,
+                        style: const TextStyle(
+                            fontSize: 11, color: AppColors.textMuted),
                       ),
                     ),
                   ],
@@ -199,20 +221,23 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(dialogCtx),
-                  child: const Text('Cancel'),
+                  child: Text(_strings.jobCancel),
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    final price = int.tryParse(priceController.text.trim()) ?? 180;
+                    final price =
+                        int.tryParse(priceController.text.trim()) ?? 180;
                     _addPart(
                       name: nameController.text.trim(),
                       price: price,
-                      receiptUrl: hasReceipt ? 'hardware_receipt_${_parts.length + 1}.jpg' : null,
+                      receiptUrl: hasReceipt
+                          ? 'hardware_receipt_${_parts.length + 1}.jpg'
+                          : null,
                       storeName: storeController.text.trim(),
                     );
                     Navigator.pop(dialogCtx);
                   },
-                  child: const Text('Add Part to Bill'),
+                  child: Text(_strings.jobAddPartBill),
                 ),
               ],
             );
@@ -249,8 +274,8 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Itemized Invoice Submitted! Customer notified to verify bill and release PIN.'),
+          SnackBar(
+            content: Text(_strings.jobInvoiceSubmitted),
             backgroundColor: AppColors.tertiary,
           ),
         );
@@ -266,6 +291,7 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
 
   @override
   Widget build(BuildContext context) {
+    _strings = localizedStrings(context);
     final booking = ref.watch(activeBookingProvider);
     final telemetryStatus = ref.watch(artisanTelemetryStatusProvider);
     final labor = booking?.laborFee ?? 249;
@@ -278,7 +304,7 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
     return Scaffold(
       backgroundColor: AppColors.surfaceBase,
       appBar: AppBar(
-        title: const Text('Active Job & Bill Builder'),
+        title: Text(_strings.jobActiveBill),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () {
@@ -305,24 +331,36 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.timer_rounded, color: AppColors.secondary, size: 24),
+                  const Icon(Icons.timer_rounded,
+                      color: AppColors.secondary, size: 24),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('ON-SITE REPAIR STOPWATCH', style: AppTypography.labelSm.copyWith(color: AppColors.secondary, fontSize: 10), maxLines: 1, overflow: TextOverflow.ellipsis),
-                        Text('28m 14s Elapsed', style: AppTypography.headlineSm.copyWith(color: Colors.white, fontSize: 18), maxLines: 1, overflow: TextOverflow.ellipsis),
+                        Text(_strings.jobStopwatch,
+                            style: AppTypography.labelSm.copyWith(
+                                color: AppColors.secondary, fontSize: 10),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis),
+                        Text(_strings.jobElapsed,
+                            style: AppTypography.headlineSm
+                                .copyWith(color: Colors.white, fontSize: 18),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis),
                       ],
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(6),
                     ),
-                    child: Text('Live Log', style: AppTypography.labelSm.copyWith(color: Colors.white, fontSize: 11)),
+                    child: Text(_strings.jobLiveLog,
+                        style: AppTypography.labelSm
+                            .copyWith(color: Colors.white, fontSize: 11)),
                   ),
                 ],
               ),
@@ -331,11 +369,13 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
             const SizedBox(height: 10),
 
             // En-Route Telemetry Streaming HUD (Contract 3)
-            if (booking?.status == BookingStatus.artisanEnRoute || !_startOtpVerified) ...[
+            if (booking?.status == BookingStatus.artisanEnRoute ||
+                !_startOtpVerified) ...[
               Container(
                 key: const Key('enroute_telemetry_hud'),
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
                   color: AppColors.surfaceRaised,
                   borderRadius: BorderRadius.circular(12),
@@ -364,7 +404,7 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                         const SizedBox(width: 6),
                         Expanded(
                           child: Text(
-                            'LIVE GPS TELEMETRY STREAMING (CONTRACT 3)',
+                            _strings.jobGpsStreaming,
                             style: AppTypography.labelSm.copyWith(
                               color: AppColors.secondary,
                               letterSpacing: 0.5,
@@ -376,7 +416,8 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                           ),
                         ),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 6, vertical: 2),
                           decoration: BoxDecoration(
                             color: telemetryStatus.isForeground
                                 ? AppColors.secondary.withValues(alpha: 0.1)
@@ -384,7 +425,9 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(
-                            telemetryStatus.isForeground ? 'Foreground (3s)' : 'Background (15s)',
+                            telemetryStatus.isForeground
+                                ? _strings.jobForeground
+                                : _strings.jobBackground,
                             style: AppTypography.labelSm.copyWith(
                               fontSize: 10,
                               color: telemetryStatus.isForeground
@@ -401,29 +444,32 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                         Expanded(
                           child: _buildTelemetryMetric(
                             icon: Icons.speed_rounded,
-                            label: 'Speed',
-                            value: '${telemetryStatus.currentSpeedKmph.toStringAsFixed(0)} km/h',
+                            label: _strings.jobSpeed,
+                            value:
+                                '${telemetryStatus.currentSpeedKmph.toStringAsFixed(0)} km/h',
                           ),
                         ),
                         Expanded(
                           child: _buildTelemetryMetric(
                             icon: Icons.navigation_rounded,
-                            label: 'Heading',
-                            value: '${telemetryStatus.headingDegrees.toStringAsFixed(0)}° NE',
+                            label: _strings.jobHeading,
+                            value:
+                                '${telemetryStatus.headingDegrees.toStringAsFixed(0)}° NE',
                           ),
                         ),
                         Expanded(
                           child: _buildTelemetryMetric(
                             icon: Icons.battery_charging_full_rounded,
-                            label: 'Battery',
+                            label: _strings.jobBattery,
                             value: '${telemetryStatus.batteryPercent}%',
                           ),
                         ),
                         Expanded(
                           child: _buildTelemetryMetric(
                             icon: Icons.route_rounded,
-                            label: 'Remaining',
-                            value: '${telemetryStatus.remainingDistanceKm.toStringAsFixed(1)} km',
+                            label: _strings.jobRemaining,
+                            value:
+                                '${telemetryStatus.remainingDistanceKm.toStringAsFixed(1)} km',
                           ),
                         ),
                       ],
@@ -435,7 +481,8 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                         Expanded(
                           child: Text(
                             'Streaming Mode: ${telemetryStatus.isForeground ? "High-Accuracy Foreground" : "Battery-Saver Background"}',
-                            style: AppTypography.bodySm.copyWith(color: AppColors.textMuted, fontSize: 11),
+                            style: AppTypography.bodySm.copyWith(
+                                color: AppColors.textMuted, fontSize: 11),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -447,8 +494,9 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                             value: telemetryStatus.isForeground,
                             activeThumbColor: AppColors.secondary,
                             onChanged: (bool isFg) {
-                              ref.read(artisanTelemetryStatusProvider.notifier).state =
-                                  telemetryStatus.copyWith(
+                              ref
+                                  .read(artisanTelemetryStatusProvider.notifier)
+                                  .state = telemetryStatus.copyWith(
                                 isForeground: isFg,
                                 pingIntervalSeconds: isFg ? 3 : 15,
                               );
@@ -460,19 +508,23 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                     if (telemetryStatus.isGeofenceTriggered) ...[
                       const SizedBox(height: 4),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
                           color: const Color(0xFFFEF3C7),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.near_me_rounded, size: 14, color: Color(0xFFB45309)),
+                            const Icon(Icons.near_me_rounded,
+                                size: 14, color: Color(0xFFB45309)),
                             const SizedBox(width: 4),
                             Expanded(
                               child: Text(
-                                'Doorstep 200m Geofence Triggered! Ready for Start Code.',
-                                style: AppTypography.labelSm.copyWith(color: const Color(0xFF92400E), fontSize: 10),
+                                _strings.jobGeofence,
+                                style: AppTypography.labelSm.copyWith(
+                                    color: const Color(0xFF92400E),
+                                    fontSize: 10),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -501,16 +553,19 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                   children: [
                     Row(
                       children: [
-                        const Icon(Icons.security_rounded, color: AppColors.secondary, size: 18),
+                        const Icon(Icons.security_rounded,
+                            color: AppColors.secondary, size: 18),
                         const SizedBox(width: 6),
                         Expanded(
-                          child: Text('Step 1: Enter Customer Start Code', style: AppTypography.labelLg.copyWith(fontSize: 15)),
+                          child: Text(_strings.jobEnterStart,
+                              style:
+                                  AppTypography.labelLg.copyWith(fontSize: 15)),
                         ),
                       ],
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Ask homeowner for their 4-digit security code (Demo: 4921) to confirm doorstep arrival.',
+                      _strings.jobStartDescription,
                       style: AppTypography.bodySm.copyWith(fontSize: 12),
                     ),
                     const SizedBox(height: 8),
@@ -518,16 +573,18 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                       controller: _startOtpController,
                       keyboardType: TextInputType.number,
                       maxLength: 4,
-                      style: AppTypography.headlineSm.copyWith(letterSpacing: 4),
-                      decoration: const InputDecoration(
-                        hintText: 'Enter 4-digit Start Code',
+                      style:
+                          AppTypography.headlineSm.copyWith(letterSpacing: 4),
+                      decoration: InputDecoration(
+                        hintText: _strings.jobStartHint,
                         counterText: '',
-                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 10),
                       ),
                     ),
                     const SizedBox(height: 8),
                     KarigaarButton(
-                      label: 'Verify Code & Begin Repair',
+                      label: _strings.jobVerifyBegin,
                       onPressed: _verifyStartOtp,
                     ),
                     const SizedBox(height: 12),
@@ -544,14 +601,16 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                         children: [
                           Row(
                             children: [
-                              const Icon(Icons.timer_outlined, size: 16, color: AppColors.secondary),
+                              const Icon(Icons.timer_outlined,
+                                  size: 16, color: AppColors.secondary),
                               const SizedBox(width: 6),
                               Expanded(
                                 child: Text(
                                   'Doorstep Dwell: ${_dwellMinutes}m (Min 15m for denial)',
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: AppTypography.labelSm.copyWith(fontWeight: FontWeight.w600),
+                                  style: AppTypography.labelSm
+                                      .copyWith(fontWeight: FontWeight.w600),
                                 ),
                               ),
                               Row(
@@ -559,7 +618,9 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                                 children: [
                                   IconButton(
                                     key: const Key('dwell_decrement_btn'),
-                                    icon: const Icon(Icons.remove_circle_outline, size: 18),
+                                    icon: const Icon(
+                                        Icons.remove_circle_outline,
+                                        size: 18),
                                     onPressed: () {
                                       if (_dwellMinutes > 0) {
                                         setState(() => _dwellMinutes--);
@@ -571,7 +632,8 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                                   const SizedBox(width: 6),
                                   IconButton(
                                     key: const Key('dwell_increment_btn'),
-                                    icon: const Icon(Icons.add_circle_outline, size: 18),
+                                    icon: const Icon(Icons.add_circle_outline,
+                                        size: 18),
                                     onPressed: () {
                                       setState(() => _dwellMinutes++);
                                     },
@@ -588,16 +650,21 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                             child: OutlinedButton.icon(
                               key: const Key('doorstep_access_denied_btn'),
                               onPressed: _triggerDoorstepDenial,
-                              icon: const Icon(Icons.door_front_door_outlined, size: 16, color: Color(0xFFDC2626)),
-                              label: const Text(
-                                'Doorstep Access Denied (Claim ₹80 Transit)',
+                              icon: const Icon(Icons.door_front_door_outlined,
+                                  size: 16, color: Color(0xFFDC2626)),
+                              label: Text(
+                                _strings.jobDeniedTransit,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(color: Color(0xFFDC2626), fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                    color: Color(0xFFDC2626),
+                                    fontWeight: FontWeight.bold),
                               ),
                               style: OutlinedButton.styleFrom(
-                                side: const BorderSide(color: Color(0xFFDC2626)),
-                                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                                side:
+                                    const BorderSide(color: Color(0xFFDC2626)),
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 12),
                               ),
                             ),
                           ),
@@ -609,19 +676,23 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
               ),
             ] else ...[
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
                   color: AppColors.tertiarySurfaceTint,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Row(
+                child: Row(
                   children: [
-                    Icon(Icons.check_circle_rounded, color: AppColors.tertiary, size: 20),
-                    SizedBox(width: 8),
+                    const Icon(Icons.check_circle_rounded,
+                        color: AppColors.tertiary, size: 20),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        'Start Code 4921 Verified • Doorstep Handshake Complete',
-                        style: TextStyle(color: AppColors.tertiary, fontWeight: FontWeight.bold),
+                        _strings.jobStartComplete,
+                        style: const TextStyle(
+                            color: AppColors.tertiary,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],
@@ -639,24 +710,26 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
               runSpacing: 4,
               children: [
                 Text(
-                  'Dynamic Bill Builder',
+                  _strings.jobBillBuilder,
                   style: AppTypography.headlineSm,
                 ),
                 TextButton.icon(
                   onPressed: _showAddCustomPartDialog,
                   icon: const Icon(Icons.playlist_add_rounded, size: 16),
-                  label: const Text('Custom Part'),
+                  label: Text(_strings.jobCustomPart),
                   style: TextButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
                     visualDensity: VisualDensity.compact,
                   ),
                 ),
                 TextButton.icon(
                   onPressed: _addPart,
                   icon: const Icon(Icons.add_rounded, size: 16),
-                  label: const Text('Add Part'),
+                  label: Text(_strings.jobAddPart),
                   style: TextButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
                     visualDensity: VisualDensity.compact,
                   ),
                 ),
@@ -674,10 +747,14 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.handyman_rounded, color: AppColors.primary, size: 20),
+                  const Icon(Icons.handyman_rounded,
+                      color: AppColors.primary, size: 20),
                   const SizedBox(width: 12),
-                  const Expanded(child: Text('Labor & Diagnostic Inspection', style: TextStyle(fontWeight: FontWeight.w600))),
-                  Text('₹$labor', style: AppTypography.numericPrice.copyWith(fontSize: 16)),
+                  Expanded(
+                      child: Text(_strings.jobLaborDiagnostic,
+                          style: const TextStyle(fontWeight: FontWeight.w600))),
+                  Text('₹$labor',
+                      style: AppTypography.numericPrice.copyWith(fontSize: 16)),
                 ],
               ),
             ),
@@ -697,24 +774,32 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                   children: [
                     Row(
                       children: [
-                        const Icon(Icons.inventory_2_rounded, color: AppColors.secondary, size: 20),
+                        const Icon(Icons.inventory_2_rounded,
+                            color: AppColors.secondary, size: 20),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(part.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w600)),
+                              Text(part.name,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w600)),
                               if (part.receiptPhotoUrl != null)
-                                const Row(
+                                Row(
                                   children: [
-                                    Icon(Icons.receipt_long_rounded, size: 14, color: AppColors.tertiary),
-                                    SizedBox(width: 4),
+                                    const Icon(Icons.receipt_long_rounded,
+                                        size: 14, color: AppColors.tertiary),
+                                    const SizedBox(width: 4),
                                     Expanded(
                                       child: Text(
-                                        'Receipt Photo Attached',
+                                        _strings.jobReceiptAttached,
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(fontSize: 11, color: AppColors.tertiary),
+                                        style: const TextStyle(
+                                            fontSize: 11,
+                                            color: AppColors.tertiary),
                                       ),
                                     ),
                                   ],
@@ -723,7 +808,9 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                           ),
                         ),
                         const SizedBox(width: 8),
-                        Text('₹${part.total}', style: AppTypography.numericPrice.copyWith(fontSize: 16)),
+                        Text('₹${part.total}',
+                            style: AppTypography.numericPrice
+                                .copyWith(fontSize: 16)),
                       ],
                     ),
                   ],
@@ -746,7 +833,9 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(child: Text('Labor & Inspection Base', style: AppTypography.bodySm)),
+                      Expanded(
+                          child: Text(_strings.jobLaborBase,
+                              style: AppTypography.bodySm)),
                       const SizedBox(width: 8),
                       Text('₹$labor', style: AppTypography.labelMd),
                     ],
@@ -755,7 +844,9 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(child: Text('Spare Parts (${_parts.length} items)', style: AppTypography.bodySm)),
+                      Expanded(
+                          child: Text('Spare Parts (${_parts.length} items)',
+                              style: AppTypography.bodySm)),
                       const SizedBox(width: 8),
                       Text('₹$partsTotal', style: AppTypography.labelMd),
                     ],
@@ -767,23 +858,33 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                       Expanded(
                         child: Row(
                           children: [
-                            Flexible(child: Text('2% Parts Gateway Surcharge', style: AppTypography.bodySm, overflow: TextOverflow.ellipsis)),
+                            Flexible(
+                                child: Text(_strings.jobPartsSurcharge,
+                                    style: AppTypography.bodySm,
+                                    overflow: TextOverflow.ellipsis)),
                             const SizedBox(width: 4),
-                            const Icon(Icons.info_outline_rounded, size: 12, color: AppColors.textMuted),
+                            const Icon(Icons.info_outline_rounded,
+                                size: 12, color: AppColors.textMuted),
                           ],
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Text('+₹$partsSurcharge', style: AppTypography.labelMd.copyWith(color: AppColors.secondary)),
+                      Text('+₹$partsSurcharge',
+                          style: AppTypography.labelMd
+                              .copyWith(color: AppColors.secondary)),
                     ],
                   ),
                   const SizedBox(height: 6),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(child: Text('18% GST (Labor & Surcharge)', style: AppTypography.bodySm)),
+                      Expanded(
+                          child: Text(_strings.jobGst,
+                              style: AppTypography.bodySm)),
                       const SizedBox(width: 8),
-                      Text('+₹$gst18', style: AppTypography.labelMd.copyWith(color: AppColors.textMuted)),
+                      Text('+₹$gst18',
+                          style: AppTypography.labelMd
+                              .copyWith(color: AppColors.textMuted)),
                     ],
                   ),
                   const Padding(
@@ -794,10 +895,14 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
-                        child: Text('Total Invoiced to Customer', style: AppTypography.labelLg.copyWith(fontWeight: FontWeight.bold)),
+                        child: Text(_strings.jobTotalInvoiced,
+                            style: AppTypography.labelLg
+                                .copyWith(fontWeight: FontWeight.bold)),
                       ),
                       const SizedBox(width: 8),
-                      Text('₹$totalBill', style: AppTypography.numericPrice.copyWith(fontSize: 22)),
+                      Text('₹$totalBill',
+                          style: AppTypography.numericPrice
+                              .copyWith(fontSize: 22)),
                     ],
                   ),
                 ],
@@ -811,21 +916,27 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                 key: const Key('submit_decoupled_invoice_btn'),
                 onPressed: _invoiceSubmitted ? null : _submitDecoupledInvoice,
                 icon: Icon(
-                  _invoiceSubmitted ? Icons.check_circle_outline_rounded : Icons.receipt_long_rounded,
+                  _invoiceSubmitted
+                      ? Icons.check_circle_outline_rounded
+                      : Icons.receipt_long_rounded,
                   size: 18,
                 ),
                 label: Text(
                   _invoiceSubmitted
-                      ? 'Itemized Invoice Submitted • Waiting Customer PIN'
-                      : 'Submit Itemized Invoice (Decoupled)',
+                      ? _strings.jobWaitingPin
+                      : _strings.jobSubmitInvoice,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: _invoiceSubmitted ? AppColors.tertiary : AppColors.primary,
+                  backgroundColor: _invoiceSubmitted
+                      ? AppColors.tertiary
+                      : AppColors.primary,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
                 ),
               ),
             ),
@@ -833,17 +944,19 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
             const SizedBox(height: 24),
 
             // Step 3: Completion PIN
-            Text('Step 3: Collect Completion PIN', style: AppTypography.headlineSm),
+            Text(_strings.jobCompletionHeading,
+                style: AppTypography.headlineSm),
             const SizedBox(height: 6),
-            Text('Ask customer for their 4-digit verbal completion PIN (Demo: 7294)', style: AppTypography.bodySm),
+            Text(_strings.jobCompletionDescription,
+                style: AppTypography.bodySm),
             const SizedBox(height: 12),
             TextField(
               controller: _completionOtpController,
               keyboardType: TextInputType.number,
               maxLength: 4,
               style: AppTypography.headlineSm.copyWith(letterSpacing: 4),
-              decoration: const InputDecoration(
-                hintText: 'Enter 4-digit Completion PIN',
+              decoration: InputDecoration(
+                hintText: _strings.jobCompletionHint,
                 counterText: '',
               ),
             ),
@@ -861,7 +974,8 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                     : pin == '7294';
                 if (isPinValid) {
                   if (currentBooking != null) {
-                    ref.read(activeBookingProvider.notifier).state = currentBooking.copyWith(
+                    ref.read(activeBookingProvider.notifier).state =
+                        currentBooking.copyWith(
                       status: BookingStatus.settled,
                       parts: List<BillPartItem>.from(_parts),
                       partsGatewaySurcharge: partsSurcharge,
@@ -876,7 +990,7 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                   showDialog<void>(
                     context: context,
                     builder: (ctx) => AlertDialog(
-                      title: const Text('IMPS Payout Settled!'),
+                      title: Text(_strings.jobPayoutSettled),
                       content: Text(
                         '₹$totalBill has been transferred to your registered bank account via RazorpayX / IMPS at 0% guild fee!',
                       ),
@@ -888,14 +1002,14 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                               context.go('/artisan/radar');
                             } catch (_) {}
                           },
-                          child: const Text('Back to Radar'),
+                          child: Text(_strings.jobBackRadar),
                         ),
                       ],
                     ),
                   );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Invalid completion PIN! Enter 7294 for demo.')),
+                    SnackBar(content: Text(_strings.jobInvalidCompletion)),
                   );
                 }
               },
@@ -961,20 +1075,26 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            isElite ? 'Guild Elite Partner' : 'Gold Guildsman',
+                            isElite
+                                ? _strings.jobElitePartner
+                                : _strings.jobGoldGuildsman,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: AppTypography.headlineSm.copyWith(fontSize: 16),
+                            style:
+                                AppTypography.headlineSm.copyWith(fontSize: 16),
                           ),
                           Text(
                             isElite
-                                ? '5% Commission Floor Active'
-                                : 'Tier Level 4 Craftsman',
+                                ? _strings.jobFloorActive
+                                : _strings.jobTier4,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: AppTypography.labelSm.copyWith(
-                              color: isElite ? AppColors.tertiary : AppColors.textMuted,
-                              fontWeight: isElite ? FontWeight.w700 : FontWeight.w500,
+                              color: isElite
+                                  ? AppColors.tertiary
+                                  : AppColors.textMuted,
+                              fontWeight:
+                                  isElite ? FontWeight.w700 : FontWeight.w500,
                             ),
                           ),
                         ],
@@ -985,7 +1105,8 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
               ),
               const SizedBox(width: 8),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: isElite
                       ? AppColors.tertiarySurfaceTint
@@ -993,7 +1114,7 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                   borderRadius: BorderRadius.circular(9999),
                 ),
                 child: Text(
-                  isElite ? '💎 5% Take-Rate' : 'Top 5% Partner',
+                  isElite ? _strings.jobTakeRate : _strings.jobTopPartner,
                   style: AppTypography.labelSm.copyWith(
                     color: isElite ? AppColors.tertiary : AppColors.secondary,
                     fontWeight: FontWeight.w700,
@@ -1011,9 +1132,11 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
               _buildTierConnector(isCompleted: true),
               _buildTierNode('Pro\n(12%)', isCompleted: true),
               _buildTierConnector(isCompleted: false),
-              _buildTierNode('Master\n(8%)', isCurrent: !isElite, isCompleted: isElite),
+              _buildTierNode('Master\n(8%)',
+                  isCurrent: !isElite, isCompleted: isElite),
               _buildTierConnector(isCompleted: isElite),
-              _buildTierNode('Elite\n(5% Floor)', isElite: true, isCurrent: isElite, isCompleted: isElite),
+              _buildTierNode('Elite\n(5% Floor)',
+                  isElite: true, isCurrent: isElite, isCompleted: isElite),
             ],
           ),
           const SizedBox(height: 14),
@@ -1024,17 +1147,19 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
               Expanded(
                 child: Text(
                   isElite
-                      ? 'Guild Elite Milestone: Unlocked'
-                      : 'Milestone: Master Guildsman (8%)',
+                      ? _strings.jobEliteMilestone
+                      : _strings.jobMasterMilestone,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
+                  style:
+                      AppTypography.bodySm.copyWith(color: AppColors.textMuted),
                 ),
               ),
               const SizedBox(width: 8),
               Text(
-                '42 / 50 Jobs',
-                style: AppTypography.labelMd.copyWith(fontWeight: FontWeight.w700),
+                _strings.jobJobsProgress,
+                style:
+                    AppTypography.labelMd.copyWith(fontWeight: FontWeight.w700),
               ),
             ],
           ),
@@ -1062,8 +1187,8 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
               Expanded(
                 child: Text(
                   isElite
-                      ? 'Guild Elite active! You keep 95% of job billings with a 5% commission floor.'
-                      : 'Complete 8 more jobs for 8% Master tier, or subscribe to Guild Elite for the 5% commission floor!',
+                      ? _strings.jobEliteDescription
+                      : _strings.jobMasterDescription,
                   style: AppTypography.bodySm.copyWith(
                     color: isElite ? AppColors.tertiary : AppColors.secondary,
                     fontWeight: FontWeight.w500,
@@ -1110,7 +1235,7 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                   runSpacing: 4,
                   children: [
                     Text(
-                      'Karigaar Guild Elite Partner',
+                      _strings.jobKarigaarElite,
                       style: AppTypography.headlineSm.copyWith(fontSize: 15),
                     ),
                     Container(
@@ -1121,7 +1246,7 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
-                        '5% Commission Floor (Keep 95%)',
+                        _strings.jobKeep95,
                         style: AppTypography.labelSm.copyWith(
                           color: AppColors.secondary,
                           fontWeight: FontWeight.w700,
@@ -1133,7 +1258,7 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '₹999 / month • Instant 1-tap wallet deduction',
+                  _strings.jobMonthlyDeduction,
                   style: AppTypography.bodySm.copyWith(
                     color: AppColors.primary,
                     fontWeight: FontWeight.w700,
@@ -1141,10 +1266,10 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '• 5% Commission Floor (Save up to ₹4,500/mo in platform fees)\n'
-                  '• Priority 10s Radar Dispatch blast before standard partners\n'
-                  '• ₹0 Instant IMPS Payout Fee (platform covers gateway charges)\n'
-                  '• Golden Guild Elite badge displayed to customers',
+                  '${_strings.jobEliteBenefitFees}\n'
+                  '${_strings.jobEliteBenefitRadar}\n'
+                  '${_strings.jobEliteBenefitImps}\n'
+                  '${_strings.jobEliteBenefitBadge}',
                   style: AppTypography.bodySm.copyWith(
                     color: AppColors.textMuted,
                     fontSize: 11,
@@ -1157,10 +1282,12 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                     width: double.infinity,
                     child: ElevatedButton.icon(
                       key: const Key('upgrade_to_guild_elite_btn'),
-                      onPressed: () => _showGuildEliteModal(context, walletBalance),
-                      icon: const Icon(Icons.workspace_premium_rounded, size: 16),
-                      label: const Text(
-                        'Upgrade to Guild Elite (₹999/mo)',
+                      onPressed: () =>
+                          _showGuildEliteModal(context, walletBalance),
+                      icon:
+                          const Icon(Icons.workspace_premium_rounded, size: 16),
+                      label: Text(
+                        _strings.jobUpgradeElite,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -1178,7 +1305,8 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                   Container(
                     key: const Key('guild_elite_active_badge'),
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 12),
                     decoration: BoxDecoration(
                       color: AppColors.tertiarySurfaceTint,
                       borderRadius: BorderRadius.circular(10),
@@ -1197,7 +1325,7 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                         const SizedBox(width: 6),
                         Expanded(
                           child: Text(
-                            '💎 Guild Elite Active • 5% Commission Floor Locked • Next billing in 30 days',
+                            _strings.jobEliteLocked,
                             style: AppTypography.labelSm.copyWith(
                               color: AppColors.tertiary,
                               fontWeight: FontWeight.w700,
@@ -1333,14 +1461,16 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Subscribe to Guild Elite',
-                            style: AppTypography.headlineSm.copyWith(fontSize: 18),
+                            _strings.jobSubscribeElite,
+                            style:
+                                AppTypography.headlineSm.copyWith(fontSize: 18),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                           Text(
-                            'Lock in sustainable 5% commission floor',
-                            style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
+                            _strings.jobLockFloor,
+                            style: AppTypography.bodySm
+                                .copyWith(color: AppColors.textMuted),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -1362,24 +1492,37 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Monthly Subscription Fee', style: AppTypography.bodySm),
-                          Text('₹999.00', style: AppTypography.headlineSm.copyWith(fontSize: 16)),
+                          Text(_strings.jobSubscriptionFee,
+                              style: AppTypography.bodySm),
+                          Text('₹999.00',
+                              style: AppTypography.headlineSm
+                                  .copyWith(fontSize: 16)),
                         ],
                       ),
                       const SizedBox(height: 6),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Current Wallet Balance', style: AppTypography.bodySm.copyWith(color: AppColors.textMuted)),
-                          Text('₹${currentBalance.toStringAsFixed(2)}', style: AppTypography.bodySm.copyWith(fontWeight: FontWeight.w600)),
+                          Text(_strings.jobWalletBalance,
+                              style: AppTypography.bodySm
+                                  .copyWith(color: AppColors.textMuted)),
+                          Text('₹${currentBalance.toStringAsFixed(2)}',
+                              style: AppTypography.bodySm
+                                  .copyWith(fontWeight: FontWeight.w600)),
                         ],
                       ),
                       const SizedBox(height: 6),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Post-Deduction Balance', style: AppTypography.bodySm.copyWith(color: AppColors.textMuted)),
-                          Text('₹${(currentBalance - 999.0).toStringAsFixed(2)}', style: AppTypography.bodySm.copyWith(color: AppColors.tertiary, fontWeight: FontWeight.w700)),
+                          Text(_strings.jobPostDeduction,
+                              style: AppTypography.bodySm
+                                  .copyWith(color: AppColors.textMuted)),
+                          Text(
+                              '₹${(currentBalance - 999.0).toStringAsFixed(2)}',
+                              style: AppTypography.bodySm.copyWith(
+                                  color: AppColors.tertiary,
+                                  fontWeight: FontWeight.w700)),
                         ],
                       ),
                     ],
@@ -1399,9 +1542,9 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                           .toggleGuildElite(true);
                       Navigator.of(ctx).pop();
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
+                        SnackBar(
                           content: Text(
-                            'Subscribed to Guild Elite! 5% commission floor active.',
+                            _strings.jobSubscribed,
                           ),
                           backgroundColor: AppColors.tertiary,
                         ),
@@ -1416,7 +1559,7 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                       ),
                     ),
                     child: Text(
-                      'Confirm & Deduct ₹999 from Wallet',
+                      _strings.jobConfirmDeduct,
                       style: AppTypography.labelLg.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w700,
@@ -1445,11 +1588,12 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
             Expanded(
               child: Row(
                 children: [
-                  const Icon(Icons.account_balance_wallet_rounded, color: AppColors.secondary, size: 22),
+                  const Icon(Icons.account_balance_wallet_rounded,
+                      color: AppColors.secondary, size: 22),
                   const SizedBox(width: 8),
                   Flexible(
                     child: Text(
-                      'Guild Wallet',
+                      _strings.jobGuildWallet,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: AppTypography.headlineSm.copyWith(fontSize: 18),
@@ -1478,7 +1622,7 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    'Instant IMPS Live',
+                    _strings.jobImpsLive,
                     style: AppTypography.labelSm.copyWith(
                       color: AppColors.tertiary,
                       fontWeight: FontWeight.w700,
@@ -1509,7 +1653,7 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'CLEARED AVAILABLE PAYOUT',
+                _strings.jobClearedPayout,
                 style: AppTypography.labelSm.copyWith(
                   color: AppColors.secondaryLight,
                   letterSpacing: 0.8,
@@ -1530,7 +1674,8 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(9999),
@@ -1562,7 +1707,7 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'LOCKED RESERVE',
+                            _strings.jobLockedReserve,
                             style: AppTypography.labelSm.copyWith(
                               color: Colors.white70,
                               fontSize: 10,
@@ -1587,7 +1732,7 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'AVAILABLE PAYOUT',
+                            _strings.jobAvailablePayout,
                             style: AppTypography.labelSm.copyWith(
                               color: Colors.white70,
                               fontSize: 10,
@@ -1613,20 +1758,24 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                  onPressed: () => _showInstantWithdrawalDialog(context, balance),
+                  onPressed: () =>
+                      _showInstantWithdrawalDialog(context, balance),
                   icon: const Icon(Icons.bolt_rounded, size: 20),
-                  label: const Text(
-                    'Withdraw to Bank via UPI / IMPS (₹0 Fee)',
+                  label: Text(
+                    _strings.jobWithdrawBank,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.secondary,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 14, horizontal: 12),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14)),
                     elevation: 0,
-                    textStyle: AppTypography.labelLg.copyWith(fontWeight: FontWeight.w700),
+                    textStyle: AppTypography.labelLg
+                        .copyWith(fontWeight: FontWeight.w700),
                   ),
                 ),
               ),
@@ -1641,20 +1790,24 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                       phoneNumber: '+919822012345',
                       prefilledMessage:
                           'Karigaar Guild Weekly Summary:\nTotal Cleared Balance: ₹${balance.toStringAsFixed(2)}\nActive Completed Jobs: 42\nTier: Gold Guildsman (Top 5%)\nSettlement Bank: HDFC Bank •••• 2104',
-                      contactName: 'Karigaar Partner Support',
+                      contactName: _strings.jobSupport,
                     );
                   },
-                  icon: const Icon(Icons.forward_to_inbox_rounded, size: 18, color: AppColors.tertiaryLight),
+                  icon: const Icon(Icons.forward_to_inbox_rounded,
+                      size: 18, color: AppColors.tertiaryLight),
                   label: Text(
-                    'Send Weekly Earnings Summary to WhatsApp',
+                    _strings.jobWeeklySummary,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: AppTypography.labelMd.copyWith(color: Colors.white.withValues(alpha: 0.9)),
+                    style: AppTypography.labelMd
+                        .copyWith(color: Colors.white.withValues(alpha: 0.9)),
                   ),
                   style: TextButton.styleFrom(
                     backgroundColor: Colors.white.withValues(alpha: 0.08),
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12, horizontal: 12),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
                   ),
                 ),
               ),
@@ -1669,23 +1822,27 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.account_balance_rounded, color: Colors.white70, size: 16),
+                      const Icon(Icons.account_balance_rounded,
+                          color: Colors.white70, size: 16),
                       const SizedBox(width: 6),
                       Flexible(
                         child: Text(
                           'HDFC Bank •••• 2104',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: AppTypography.bodySm.copyWith(color: Colors.white70),
+                          style: AppTypography.bodySm
+                              .copyWith(color: Colors.white70),
                         ),
                       ),
                     ],
                   ),
                   Text(
-                    'Verified Guild Vault',
+                    _strings.jobVerifiedVault,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: AppTypography.labelSm.copyWith(color: AppColors.tertiaryLight, fontWeight: FontWeight.w700),
+                    style: AppTypography.labelSm.copyWith(
+                        color: AppColors.tertiaryLight,
+                        fontWeight: FontWeight.w700),
                   ),
                 ],
               ),
@@ -1696,23 +1853,25 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
     );
   }
 
-  void _showInstantWithdrawalDialog(BuildContext context, double currentBalance) {
+  void _showInstantWithdrawalDialog(
+      BuildContext context, double currentBalance) {
     if (currentBalance <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('No cleared balance available for withdrawal.'),
+        SnackBar(
+          content: Text(_strings.jobNoBalance),
         ),
       );
       return;
     }
 
     const double minReserve = 2000.0;
-    final double available = currentBalance > minReserve ? currentBalance - minReserve : 0.0;
+    final double available =
+        currentBalance > minReserve ? currentBalance - minReserve : 0.0;
 
     if (available <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Cannot withdraw. A mandatory ₹2,000 security reserve must be maintained.'),
+        SnackBar(
+          content: Text(_strings.jobReserveRequired),
           backgroundColor: Colors.red,
         ),
       );
@@ -1728,7 +1887,7 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                'Instant IMPS Payout',
+                _strings.jobInstantPayout,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: AppTypography.headlineSm.copyWith(fontSize: 18),
@@ -1752,8 +1911,9 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Text(
-                'Mandatory ₹2,000 rolling security reserve locked in Guild Vault.',
-                style: AppTypography.labelSm.copyWith(color: const Color(0xFF92400E), fontSize: 11),
+                _strings.jobReserveLocked,
+                style: AppTypography.labelSm
+                    .copyWith(color: const Color(0xFF92400E), fontSize: 11),
               ),
             ),
             const SizedBox(height: 12),
@@ -1766,10 +1926,13 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Bank: HDFC Bank Limited (Nanded Main Branch)', style: AppTypography.labelSm),
-                  Text('Account: •••• •••• 2104', style: AppTypography.labelSm),
+                  Text(_strings.jobBankNanded, style: AppTypography.labelSm),
+                  Text(_strings.jobMaskedAccount, style: AppTypography.labelSm),
                   Text('IFSC: HDFC0001824', style: AppTypography.labelSm),
-                  Text('Payout Fee: ₹0.00 (Guild Covered)', style: AppTypography.labelSm.copyWith(color: AppColors.tertiary, fontWeight: FontWeight.bold)),
+                  Text(_strings.jobPayoutFee,
+                      style: AppTypography.labelSm.copyWith(
+                          color: AppColors.tertiary,
+                          fontWeight: FontWeight.bold)),
                 ],
               ),
             ),
@@ -1778,7 +1941,7 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: Text(_strings.jobCancel),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -1791,11 +1954,13 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
                   currentWalletBalance: currentBalance,
                   upiVpa: 'artisan@okaxis',
                 );
-                ref.read(artisanWalletBalanceProvider.notifier).state = currentBalance - available;
+                ref.read(artisanWalletBalanceProvider.notifier).state =
+                    currentBalance - available;
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('₹${available.toStringAsFixed(2)} transferred via IMPS! Ref #IMPS_NANDED_88291'),
+                      content: Text(
+                          '₹${available.toStringAsFixed(2)} transferred via IMPS! Ref #IMPS_NANDED_88291'),
                       backgroundColor: AppColors.tertiary,
                     ),
                   );
@@ -1803,7 +1968,8 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
               } on ApiException catch (e) {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(e.message), backgroundColor: Colors.red),
+                    SnackBar(
+                        content: Text(e.message), backgroundColor: Colors.red),
                   );
                 }
               }
@@ -1812,7 +1978,7 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
             ),
-            child: const Text('Confirm IMPS Payout'),
+            child: Text(_strings.jobConfirmPayout),
           ),
         ],
       ),
@@ -1835,14 +2001,16 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
             children: [
               Expanded(
                 child: Text(
-                  'Recent Activity',
+                  _strings.jobRecentActivity,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppTypography.headlineSm.copyWith(fontSize: 16),
                 ),
               ),
               const SizedBox(width: 8),
-              Text('View Ledger', style: AppTypography.labelMd.copyWith(color: AppColors.secondary, fontWeight: FontWeight.w700)),
+              Text(_strings.jobViewLedger,
+                  style: AppTypography.labelMd.copyWith(
+                      color: AppColors.secondary, fontWeight: FontWeight.w700)),
             ],
           ),
           const SizedBox(height: 14),
@@ -1850,8 +2018,8 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
           _buildTransactionRow(
             icon: Icons.add_task_rounded,
             iconColor: AppColors.tertiary,
-            title: 'MCB & Wiring Repair',
-            subtitle: 'Anand Nagar, Nanded • Today, 11:20 AM',
+            title: _strings.jobWiringRepair,
+            subtitle: _strings.jobActivityToday,
             amount: '+₹480.00',
             amountColor: AppColors.tertiary,
             status: 'Credited',
@@ -1861,8 +2029,8 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
           _buildTransactionRow(
             icon: Icons.send_to_mobile_rounded,
             iconColor: AppColors.secondary,
-            title: 'Daily Payout to HDFC',
-            subtitle: 'Ref #IMPS99824 • Yesterday',
+            title: _strings.jobDailyPayout,
+            subtitle: _strings.jobActivityYesterday,
             amount: '-₹2,100.00',
             amountColor: AppColors.primary,
             status: 'Success',
@@ -1877,12 +2045,14 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
             ),
             child: Row(
               children: [
-                const Icon(Icons.shield_rounded, color: AppColors.secondary, size: 18),
+                const Icon(Icons.shield_rounded,
+                    color: AppColors.secondary, size: 18),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'Guild guarantee: Guaranteed immediate IMPS payout processing 24/7 with zero service deduction.',
-                    style: AppTypography.bodySm.copyWith(color: AppColors.textMuted, fontSize: 11),
+                    _strings.jobGuildGuarantee,
+                    style: AppTypography.bodySm
+                        .copyWith(color: AppColors.textMuted, fontSize: 11),
                   ),
                 ),
               ],
@@ -1918,16 +2088,24 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: AppTypography.labelMd.copyWith(fontWeight: FontWeight.w600)),
-              Text(subtitle, style: AppTypography.bodySm.copyWith(color: AppColors.textMuted, fontSize: 11)),
+              Text(title,
+                  style: AppTypography.labelMd
+                      .copyWith(fontWeight: FontWeight.w600)),
+              Text(subtitle,
+                  style: AppTypography.bodySm
+                      .copyWith(color: AppColors.textMuted, fontSize: 11)),
             ],
           ),
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text(amount, style: AppTypography.labelLg.copyWith(color: amountColor, fontWeight: FontWeight.w700)),
-            Text(status, style: AppTypography.labelSm.copyWith(color: AppColors.textMuted, fontSize: 10)),
+            Text(amount,
+                style: AppTypography.labelLg
+                    .copyWith(color: amountColor, fontWeight: FontWeight.w700)),
+            Text(status,
+                style: AppTypography.labelSm
+                    .copyWith(color: AppColors.textMuted, fontSize: 10)),
           ],
         ),
       ],
@@ -1943,10 +2121,12 @@ class _ArtisanActiveJobScreenState extends ConsumerState<ArtisanActiveJobScreen>
       children: [
         Icon(icon, size: 18, color: AppColors.secondary),
         const SizedBox(height: 2),
-        Text(value, style: AppTypography.labelSm.copyWith(fontWeight: FontWeight.bold)),
-        Text(label, style: AppTypography.bodySm.copyWith(fontSize: 10, color: AppColors.textMuted)),
+        Text(value,
+            style: AppTypography.labelSm.copyWith(fontWeight: FontWeight.bold)),
+        Text(label,
+            style: AppTypography.bodySm
+                .copyWith(fontSize: 10, color: AppColors.textMuted)),
       ],
     );
   }
 }
-

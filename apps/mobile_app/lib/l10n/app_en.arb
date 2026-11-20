@@ -16,6 +16,791 @@
   "quickServiceSearch": "Find a service",
   "selectServicePrompt": "What do you need help with? Search a task like tiles, granite, or plumbing.",
   "inspectionWarranty": "Inspection ₹{fee} • {days} day warranty",
-  "@inspectionWarranty": {"placeholders": {"fee": {}, "days": {}}},
-  "noServicesFound": "No matching service found. Try another task or trade."
+  "@inspectionWarranty": {
+    "placeholders": {
+      "fee": {},
+      "days": {}
+    }
+  },
+  "noServicesFound": "No matching service found. Try another task or trade.",
+  "brandTagline": "Master Guildsman Meets Modern Concierge",
+  "loginAsHomeowner": "Login as Homeowner",
+  "artisanGuildPortal": "Artisan Guild Portal",
+  "homeownerTagline": "Book verified master Karigaars in 25 mins",
+  "artisanTagline": "Claim nearby emergency jobs and check your wallet",
+  "mobileNumber": "Mobile number",
+  "enterPhoneNumber": "Enter 10-digit number",
+  "invalidPhoneNumber": "Please enter a valid 10-digit mobile number",
+  "continueWithWhatsApp": "Continue with WhatsApp",
+  "getOtpViaSms": "Get OTP via SMS",
+  "joinGuild": "New Karigaar? Join the Nanded Guild (0% Fee)",
+  "trustFooter": "Aadhaar and police verified craftspeople • Pilot city: Nanded",
+  "homeowner": "Homeowner",
+  "homeownerMode": "Homeowner Mode",
+  "karigaar": "Karigaar",
+  "artisanMode": "Artisan Mode",
+  "launchTrades": "10 Launch Trades",
+  "districtGuild": "{district} Guild",
+  "@districtGuild": {
+    "placeholders": {
+      "district": {}
+    }
+  },
+  "shieldCommitment": "The Karigaar Shield Commitment",
+  "topRatedInDistrict": "Top rated Karigaars in {district}",
+  "@topRatedInDistrict": {
+    "placeholders": {
+      "district": {}
+    }
+  },
+  "yearsExperience": "{years} years experience",
+  "@yearsExperience": {
+    "placeholders": {
+      "years": {}
+    }
+  },
+  "reviewsAndDistance": "{reviews} reviews • {distance} km away",
+  "@reviewsAndDistance": {
+    "placeholders": {
+      "reviews": {},
+      "distance": {}
+    }
+  },
+  "diagnosticInspection": "Diagnostic Inspection",
+  "bookArtisan": "Book Artisan",
+  "servicesLoadError": "Could not load services. Try again.",
+  "authOtpVerification": "OTP Verification",
+  "authVerifyWhatsAppCode": "Verify WhatsApp Code",
+  "authCodeSent": "We sent a 6-digit verification code to\n",
+  "authResendCode": "Resend Code via WhatsApp",
+  "authFallbackSms": "Fallback SMS sent via DLT gateway.",
+  "authSmsFallback": "Didn't receive on WhatsApp? Send via SMS",
+  "authVerifyContinue": "Verify & Continue",
+  "authStepPersonal": "Step 1 of 4: Personal Details",
+  "authStepTrade": "Step 2 of 4: Trade Selection",
+  "authStepAudit": "Step 3 of 4: KYC & Tools Audit",
+  "authStepPayout": "Step 4 of 4: Payout & Protection",
+  "authLegalNameError": "Please enter your full Aadhaar name and 10-digit mobile number.",
+  "authTradeError": "Please select your primary trade from the 10 launch trades.",
+  "authAadhaarError": "Please enter a valid 12-digit Aadhaar number.",
+  "authJoinGuild": "Join the Karigaar Guild",
+  "authAlreadyRegistered": "Already registered in the Guild? Log In here",
+  "authAccreditation": "Guild Accreditation",
+  "authCommissionGuarantee": "5% Commission Floor Guarantee",
+  "authJoinDescription": "Connect directly with premium households in your pin code. Transparent daily payouts and guild master insurance cover.",
+  "authAverageEarnings": "Over ₹42,000/mo Avg. Earnings",
+  "authGuildProfessionals": "Join 12,400+ verified professionals across Nanded Guild",
+  "authPersonalHeading": "Step 1: Personal Details & Locality",
+  "authPersonalDescription": "Your legal info for KYC, guild credentials and instant direct deposits",
+  "authFullName": "Full Legal Name",
+  "authMatchesAadhaar": "Matches Aadhaar Card",
+  "authNameHint": "e.g. Ramesh Chandra Sharma",
+  "authWhatsAppNumber": "WhatsApp Mobile Number",
+  "authInstantOtp": "Instant OTP Dispatch",
+  "authWhatsAppHint": "Enter 10-digit WhatsApp number",
+  "authEmergencyContact": "Emergency Contact (Next-of-Kin)",
+  "authContactName": "Contact Name",
+  "authPhoneHint": "10-digit Phone",
+  "authWorkingLocality": "Primary Working Locality",
+  "authExperience": "Trade Experience",
+  "authPriorityLeads": "Higher tier gets priority leads",
+  "authDispatchAlerts": "WhatsApp Dispatch Alerts",
+  "authDispatchDescription": "Receive emergency high-pay calls, daily settlement slips, and guild warranty alerts instantly.",
+  "authReferralQuestion": "Have a Master Craftsman Referral Code?",
+  "authReferralHint": "e.g. GUILD500",
+  "authReferralApplied": "Referral code GUILD500 applied! ₹500 joining bonus unlocked.",
+  "authApply": "Apply",
+  "authPrimaryTrade": "Select Primary Trade",
+  "authPrimaryTradeDescription": "Tap your certified craft from Nanded 10 launch trades",
+  "authOneRequired": "1 Required",
+  "authRoleType": "Karigaar Role Type",
+  "authKycHeading": "Step 3: Aadhaar KYC & Tools Audit",
+  "authKycDescription": "Biometric verification and calibrated equipment checklist for Guild safety rating",
+  "authAadhaarNumber": "12-Digit Aadhaar Number",
+  "authEncrypted": "Encrypted & UIDAI Compliant",
+  "authTradeCard": "Aadhaar / Trade Card",
+  "authFrontSync": "Front photo & DigiLocker sync",
+  "authDigilockerSuccess": "DigiLocker KYC Gateway synced successfully!",
+  "authFrontCaptured": "Aadhaar Front Scan Captured",
+  "authCaptureAadhaar": "Capture Front of Aadhaar Card",
+  "authPhotoLimit": "Clear photo • Max size 10MB (JPG/PNG)",
+  "authAutoVerified": "72% Auto-verified",
+  "authUpload": "Tap to upload",
+  "authToolsAudit": "Calibrated Tools Audit",
+  "authSafetyStandard": "Guild Safety Standard",
+  "authMultimeter": "Digital True-RMS Multimeter & Phase Tester (calibrated)",
+  "authInsulatedTools": "1000V Insulated Screwdrivers & Pliers Set",
+  "authDrillTools": "Heavy Duty Rotary Hammer Drill & Safety Goggles",
+  "authCleanupTools": "Canvas Drop-Cloth & Sawdust Cleanup Vacuum Bag",
+  "authPayoutHeading": "Step 4: Bank / UPI Payout Verification",
+  "authPayoutDescription": "Link your bank or UPI ID for instant 10-second IMPS payout settlements with zero guild fee",
+  "authDirectPayout": "Instant Guild Direct Payout",
+  "authBankAccount": "Bank Account Number",
+  "authReenterBank": "Re-Enter Bank Account Number",
+  "authIfsc": "IFSC Code",
+  "authBranchResolved": "Branch Resolved: HDFC Bank, Vazirabad Branch, Nanded (431601)",
+  "authUpiPayout": "UPI Fast Payout VPA",
+  "authPennyDrop": "Penny-Drop Verified",
+  "authVerifiedUpi": "Verified UPI ID / VPA (₹0 IMPS Fee)",
+  "authPennyDropSimulation": "Simulated ₹1 IMPS penny-drop test successful. Payout wallet linked.",
+  "authProtectionActive": "₹25,000 Guild Protection Shield Active",
+  "authProtectionDescription": "Karigaar covers accidental on-site property damage up to ₹25,000. You earn with zero liability and sustainable 5% commission floor guarantee (Guild Elite).",
+  "authBack": "Back",
+  "authNextStep": "Next Step",
+  "authVerifyWhatsApp": "Verify via WhatsApp OTP",
+  "jobInvalidStart": "Invalid code! Ask customer for their 4-digit start code.",
+  "jobAccessDenied": "Doorstep Access Denied",
+  "jobCloseJob": "Close Job",
+  "jobAddPart2fa": "Add Spare Part with 2FA",
+  "jobPartName": "Part Name & Specification",
+  "jobUnitPrice": "Unit Price (₹)",
+  "jobStoreName": "Hardware Store Name",
+  "jobAttachReceipt": "Attach Hardware Store Receipt Photo",
+  "jobPartsDisclaimer": "Pass-through spare parts include a 2% payment gateway surcharge and trigger an in-app customer RBI 2FA approval prompt.",
+  "jobCancel": "Cancel",
+  "jobAddPartBill": "Add Part to Bill",
+  "jobInvoiceSubmitted": "Itemized Invoice Submitted! Customer notified to verify bill and release PIN.",
+  "jobActiveBill": "Active Job & Bill Builder",
+  "jobStopwatch": "ON-SITE REPAIR STOPWATCH",
+  "jobElapsed": "28m 14s Elapsed",
+  "jobLiveLog": "Live Log",
+  "jobGpsStreaming": "LIVE GPS TELEMETRY STREAMING (CONTRACT 3)",
+  "jobForeground": "Foreground (3s)",
+  "jobBackground": "Background (15s)",
+  "jobSpeed": "Speed",
+  "jobHeading": "Heading",
+  "jobBattery": "Battery",
+  "jobRemaining": "Remaining",
+  "jobGeofence": "Doorstep 200m Geofence Triggered! Ready for Start Code.",
+  "jobEnterStart": "Step 1: Enter Customer Start Code",
+  "jobStartDescription": "Ask homeowner for their 4-digit security code (Demo: 4921) to confirm doorstep arrival.",
+  "jobStartHint": "Enter 4-digit Start Code",
+  "jobVerifyBegin": "Verify Code & Begin Repair",
+  "jobDeniedTransit": "Doorstep Access Denied (Claim ₹80 Transit)",
+  "jobStartComplete": "Start Code 4921 Verified • Doorstep Handshake Complete",
+  "jobBillBuilder": "Dynamic Bill Builder",
+  "jobCustomPart": "Custom Part",
+  "jobAddPart": "Add Part",
+  "jobLaborDiagnostic": "Labor & Diagnostic Inspection",
+  "jobReceiptAttached": "Receipt Photo Attached",
+  "jobLaborBase": "Labor & Inspection Base",
+  "jobPartsSurcharge": "2% Parts Gateway Surcharge",
+  "jobGst": "18% GST (Labor & Surcharge)",
+  "jobTotalInvoiced": "Total Invoiced to Customer",
+  "jobWaitingPin": "Itemized Invoice Submitted • Waiting Customer PIN",
+  "jobSubmitInvoice": "Submit Itemized Invoice (Decoupled)",
+  "jobCompletionHeading": "Step 3: Collect Completion PIN",
+  "jobCompletionDescription": "Ask customer for their 4-digit verbal completion PIN (Demo: 7294)",
+  "jobCompletionHint": "Enter 4-digit Completion PIN",
+  "jobPayoutSettled": "IMPS Payout Settled!",
+  "jobBackRadar": "Back to Radar",
+  "jobInvalidCompletion": "Invalid completion PIN! Enter 7294 for demo.",
+  "jobElitePartner": "Guild Elite Partner",
+  "jobGoldGuildsman": "Gold Guildsman",
+  "jobFloorActive": "5% Commission Floor Active",
+  "jobTier4": "Tier Level 4 Craftsman",
+  "jobTakeRate": "💎 5% Take-Rate",
+  "jobTopPartner": "Top 5% Partner",
+  "jobApprentice": "Apprentice\n(15%)",
+  "jobPro": "Pro\n(12%)",
+  "jobMaster": "Master\n(8%)",
+  "jobElite": "Elite\n(5% Floor)",
+  "jobEliteMilestone": "Guild Elite Milestone: Unlocked",
+  "jobMasterMilestone": "Milestone: Master Guildsman (8%)",
+  "jobJobsProgress": "42 / 50 Jobs",
+  "jobEliteDescription": "Guild Elite active! You keep 95% of job billings with a 5% commission floor.",
+  "jobMasterDescription": "Complete 8 more jobs for 8% Master tier, or subscribe to Guild Elite for the 5% commission floor!",
+  "jobKarigaarElite": "Karigaar Guild Elite Partner",
+  "jobKeep95": "5% Commission Floor (Keep 95%)",
+  "jobMonthlyDeduction": "₹999 / month • Instant 1-tap wallet deduction",
+  "jobEliteBenefitFees": "• 5% Commission Floor (Save up to ₹4,500/mo in platform fees)\n",
+  "jobEliteBenefitRadar": "• Priority 10s Radar Dispatch blast before standard partners\n",
+  "jobEliteBenefitImps": "• ₹0 Instant IMPS Payout Fee (platform covers gateway charges)\n",
+  "jobEliteBenefitBadge": "• Golden Guild Elite badge displayed to customers",
+  "jobUpgradeElite": "Upgrade to Guild Elite (₹999/mo)",
+  "jobEliteLocked": "💎 Guild Elite Active • 5% Commission Floor Locked • Next billing in 30 days",
+  "jobSubscribeElite": "Subscribe to Guild Elite",
+  "jobLockFloor": "Lock in sustainable 5% commission floor",
+  "jobSubscriptionFee": "Monthly Subscription Fee",
+  "jobWalletBalance": "Current Wallet Balance",
+  "jobPostDeduction": "Post-Deduction Balance",
+  "jobSubscribed": "Subscribed to Guild Elite! 5% commission floor active.",
+  "jobConfirmDeduct": "Confirm & Deduct ₹999 from Wallet",
+  "jobGuildWallet": "Guild Wallet",
+  "jobImpsLive": "Instant IMPS Live",
+  "jobClearedPayout": "CLEARED AVAILABLE PAYOUT",
+  "jobLockedReserve": "LOCKED RESERVE",
+  "jobAvailablePayout": "AVAILABLE PAYOUT",
+  "jobWithdrawBank": "Withdraw to Bank via UPI / IMPS (₹0 Fee)",
+  "jobSupport": "Karigaar Partner Support",
+  "jobWeeklySummary": "Send Weekly Earnings Summary to WhatsApp",
+  "jobVerifiedVault": "Verified Guild Vault",
+  "jobNoBalance": "No cleared balance available for withdrawal.",
+  "jobReserveRequired": "Cannot withdraw. A mandatory ₹2,000 security reserve must be maintained.",
+  "jobInstantPayout": "Instant IMPS Payout",
+  "jobReserveLocked": "Mandatory ₹2,000 rolling security reserve locked in Guild Vault.",
+  "jobBankNanded": "Bank: HDFC Bank Limited (Nanded Main Branch)",
+  "jobMaskedAccount": "Account: •••• •••• 2104",
+  "jobPayoutFee": "Payout Fee: ₹0.00 (Guild Covered)",
+  "jobConfirmPayout": "Confirm IMPS Payout",
+  "jobRecentActivity": "Recent Activity",
+  "jobViewLedger": "View Ledger",
+  "jobWiringRepair": "MCB & Wiring Repair",
+  "jobActivityToday": "Anand Nagar, Nanded • Today, 11:20 AM",
+  "jobDailyPayout": "Daily Payout to HDFC",
+  "jobActivityYesterday": "Ref #IMPS99824 • Yesterday",
+  "jobGuildGuarantee": "Guild guarantee: Guaranteed immediate IMPS payout processing 24/7 with zero service deduction.",
+  "jobProfileUpdated": "Profile & rate card updated and synced to district directory!",
+  "jobBioHint": "Describe your craft expertise & safety gear...",
+  "jobWorkPhotoHint": "e.g. 6-Way Distribution Box Setup",
+  "jobNandedGuild": "Nanded Trade Guild",
+  "jobJobsRating": "4.9★ (340 jobs)",
+  "jobEmergency": "EMERGENCY BREAKDOWN",
+  "jobOnePhoto": "1 Photo",
+  "jobBroadcastTimeout": "Broadcast timed out without acceptance. Search expanded to regional guild.",
+  "jobScanning": "Scanning Nanded for incoming requests...",
+  "jobDutyPaused": "Duty paused. Go online to receive jobs.",
+  "jobKeepActive": "Keep app active to receive 45s priority broadcasts",
+  "jobVoiceExample": "Customer Voice Note: \"MCB switch sparking when turning on AC. Need 32A replacement.\"",
+  "jobPausePreview": "Pause Preview",
+  "jobListenMemo": "Listen to Customer Audio Memo",
+  "localitySelect": "Select Locality",
+  "localityPilotDistrict": "Pilot City: Nanded-Waghala (Maharashtra)",
+  "localityDistrict": "District: {district}",
+  "localitySearchHint": "Search locality or PIN code",
+  "localityEmptyText": "No locality found in {city}",
+  "localityChanged": "Switched service hub to {name} ({pincode})",
+  "@localityDistrict": {
+    "placeholders": {
+      "district": {
+        "type": "String"
+      }
+    }
+  },
+  "@localityEmptyText": {
+    "placeholders": {
+      "city": {
+        "type": "String"
+      }
+    }
+  },
+  "@localityChanged": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "pincode": {
+        "type": "String"
+      }
+    }
+  },
+  "emergencyTitle": "URGENT BREAKDOWN? (25 MINS)",
+  "emergencyDispatch": "Immediate Doorstep Dispatch",
+  "emergencyCoverage": "Electricians & Plumbers on stand-by across Nanded",
+  "emergencyBookFast": "Book Fast",
+  "skeletonTradesHeading": "CERTIFIED GUILD TRADES",
+  "catalogTradeName": "{id, select, trade_electrician {Electrician} trade_plumber {Plumber} trade_carpenter {Carpenter} trade_mason {Mason / Civil Worker} trade_painter {Painter} trade_ac_refrig {AC & Refrigeration} trade_appliance {Appliance Repair} trade_welder {Welder / Fabricator} trade_pest {Pest Control} trade_deep_cleaning {Deep Cleaning} other {{fallback}}}",
+  "@catalogTradeName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "fallback": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogTradeTagline": "{id, select, trade_electrician {Short circuit, MCB, switchboard & heavy appliance wiring} trade_plumber {Pipe leaks, tap replacement, drainage blockages & sanitary fittings} trade_carpenter {Door locks, modular kitchen hinges, veneer repairs & furniture assembly} trade_mason {Tile replacement, wall plastering, concrete drilling & waterproofing} trade_painter {Wall touch-ups, dampness treatment, door polish & full home painting} trade_ac_refrig {Foam jet service, gas refill, compressor diagnosis & cooling issues} trade_appliance {Washing machine, microwave, geyser, mixer grinder & RO purifier} trade_welder {Main gate hinge welding, window safety grill, railing & shed repair} trade_pest {Cockroach gel treatment, termite drill barrier, bed bug eradication} trade_deep_cleaning {Full bathroom descaling, kitchen oil degreasing & sofa shampooing} other {{fallback}}}",
+  "@catalogTradeTagline": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "fallback": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogPackageName": "{id, select, pkg_elec_mcb {Short Circuit & MCB Tripping} pkg_elec_switchboard {Switchboard & Socket Repair} pkg_elec_fan {Ceiling Fan / Chandelier Fitting} pkg_elec_inverter {Inverter & Battery Wiring} pkg_plumb_leak {Water Pipe Joint Leakage Fix} pkg_plumb_drain {Kitchen Sink & Bathroom Drain Unclog} pkg_plumb_tap {Tap / Mixer / Diverter Replacement} pkg_plumb_tank {Overhead Tank Float Valve & Motor Line} pkg_carp_lock {Main Door Deadbolt / Godrej Lock Repair} pkg_carp_hinge {Hydraulic Cabinet & Wardrobe Hinge Replacement} pkg_carp_door_trim {Door Dragging & Frame Planing} pkg_carp_furniture {Bed / Table Assembly & Structural Tightening} pkg_mason_tile {Broken Floor / Wall Tile Patching (Up to 4 tiles)} pkg_mason_plaster {Wall Crack & Plaster Repair} pkg_mason_waterproof {Bathroom / Balcony Corner Waterproofing} pkg_paint_patch {Single Wall Patch & Touch-up (Putty + Paint)} pkg_paint_damp {Anti-Dampness Chemical Barrier + Topcoat} pkg_paint_wood {Door & Window Enamel / Melamine Polishing} pkg_ac_deep_clean {Split AC Foam Jet Deep Service} pkg_ac_gas_leak {AC Gas Leakage Check & Top-up} pkg_fridge_cooling {Refrigerator Low Cooling / Defrost Fix} pkg_app_geyser {Instant / Storage Geyser Heating Element Fix} pkg_app_washing {Washing Machine Spin / Drain Drum Issue} pkg_app_ro {RO Water Purifier Membrane & Filter Overhaul} pkg_weld_gate {Main Sliding / Swing Gate Heavy Hinge Arc Welding} pkg_weld_grill {Balcony & Window Safety Grill Reinforcement} pkg_weld_sheet {Tin Shed & Polycarbonate Roof Bracket Fix} pkg_pest_cockroach {Kitchen & Bathroom Herbal Gel Treatment} pkg_pest_termite {Wood Termite Drill & Inject Chemical Shield} pkg_pest_bedbug {2-Stage Bed Bug Thermal & Spray Eradication} pkg_clean_bath {Intense Bathroom Hard Water Stain & Tile Descaling} pkg_clean_kitchen {Modular Kitchen Chimney & Slab Degreasing} pkg_clean_sofa {Fabric Sofa 5-Seater Shampoo & Wet Extraction} other {{fallback}}}",
+  "@catalogPackageName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "fallback": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogPackageDescription": "{id, select, pkg_elec_mcb {Continuous tripping, spark diagnosis, neutral fault identification & fuse repair} pkg_elec_switchboard {Loose modular switches, burnt contact points, 16A power socket installation} pkg_elec_fan {Anchor rod hanging, speed regulator rewiring, vibration reduction} pkg_elec_inverter {Backup bypass line, heavy load terminal setup, battery water check} pkg_plumb_leak {CPVC/PVC pipe joint soldering, concealed wall seepage diagnosis} pkg_plumb_drain {High pressure mechanical auger drain clearing, trap cleaning} pkg_plumb_tap {Ceramic spindle change, quarter-turn angle valve fitting, teflon sealing} pkg_plumb_tank {Ball cock auto cut-off valve replacement, airlock clearance} pkg_carp_lock {Cylinder replacement, jammed latch alignment, brass strike plate fitting} pkg_carp_hinge {Soft-close hinge tension adjustment, plywood screw anchor grip repair} pkg_carp_door_trim {Precision bottom trimming, monsoon swollen wood clearance} pkg_carp_furniture {Hardware re-bolting, wooden bracket reinforcement, termite inspection} pkg_mason_tile {Adhesive bedding, laser levelling, anti-fungal epoxy grouting} pkg_mason_plaster {Polymer-modified cement slurry, v-groove chasing, smooth trowel finish} pkg_mason_waterproof {Dr. Fixit 2-coat chemical membrane application on skirtings} pkg_paint_patch {Sanding, acrylic wall putty, 2-coat primer and shade matching} pkg_paint_damp {Efflorescence salt removal, silicone damp-lock treatment} pkg_paint_wood {Fine sandpaper smoothing, high-gloss PU coating} pkg_ac_deep_clean {Indoor coil antibacterial foam pressure wash, outdoor unit blower rinse, filter disinfection} pkg_ac_gas_leak {Nitrogen pressure leak testing, flare nut brazing, R32/R410A vacuum charging} pkg_fridge_cooling {Thermostat calibration, bi-metal sensor replacement, capillary flush} pkg_app_geyser {Copper heating coil descaling, safety thermostat auto cut-off calibration} pkg_app_washing {Motor belt tightening, drain pump lint filter unclog, PCB relay check} pkg_app_ro {TDS level calibration, sediment + carbon filter change, booster pump check} pkg_weld_gate {Heavy duty mild steel ball-bearing pivot welding, slag chipping, rust-primer coat} pkg_weld_grill {Loose anchor pin tack welding, angle iron strengthening} pkg_weld_sheet {Wind-damaged purlin joint welding, self-tapping screw gasket replacement} pkg_pest_cockroach {Odorless Fipronil bait dot application in hinges, under-sink crevices (safe for kids & pets)} pkg_pest_termite {Precision 6mm skirt drilling, pressurized Imidacloprid injection, wood-colored seal} pkg_pest_bedbug {Mattress seam steam purge, residual pyrethroid spraying, 15-day free repeat visit} pkg_clean_bath {Single-disc scrubber rotary tile wash, tap chrome buffing, glass divider spot removal} pkg_clean_kitchen {Caustic-free baffle filter ultrasonic cleaning, stainless steel polish, tile grout whitening} pkg_clean_sofa {Deep foam agitation, industrial vacuum suction moisture extraction, citrus deodorizer} other {{fallback}}}",
+  "@catalogPackageDescription": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "fallback": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogBundleTitle": "{id, select, bundle_monsoon_elec {Monsoon Electrical Shield} bundle_plumb_health {Full Home Plumbing Health Check} bundle_ac_summer {Pre-Summer AC Super Cool} bundle_carpenter_care {Modular Kitchen & Door Alignment} other {{fallback}}}",
+  "@catalogBundleTitle": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "fallback": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogBundleSubtitle": "{id, select, bundle_monsoon_elec {Prevent short circuits, MCB trips & moisture leakage shocks} bundle_plumb_health {Concealed pipe seepage scan, overhead tank valve test & trap unclogging} bundle_ac_summer {Antibacterial foam jet deep wash, cooling test & gas pressure audit} bundle_carpenter_care {Hydraulic soft-close hinge tightening & swollen door planing} other {{fallback}}}",
+  "@catalogBundleSubtitle": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "fallback": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogBundleTask": "{id, select, bundle_monsoon_elec_0 {MCB trip diagnosis & fuse load calibration} bundle_monsoon_elec_1 {Switchboard moisture & earthing leakage check} bundle_monsoon_elec_2 {Ceiling fan & backup wiring tightening} bundle_plumb_health_0 {Concealed pipe joint acoustic seepage audit} bundle_plumb_health_1 {Kitchen sink & bathroom mechanical drain auger cleaning} bundle_plumb_health_2 {Quarter-turn angle valves & ceramic spindle tune-up} bundle_ac_summer_0 {Indoor cooling coil high-pressure foam jet wash} bundle_ac_summer_1 {Outdoor unit condenser rinse & compressor vibration damping} bundle_ac_summer_2 {R32/R410A gas pressure measurement & filter disinfection} bundle_carpenter_care_0 {Hydraulic cabinet & wardrobe soft-close tension adjustment} bundle_carpenter_care_1 {Swollen door frame planing & bottom clearance trimming} bundle_carpenter_care_2 {Main door deadbolt & Godrej lock cylinder servicing} other {{fallback}}}",
+  "@catalogBundleTask": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "fallback": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogRoleName": "{id, select, headMistry {Head Mistry / Ustad} skilledKarigaar {Skilled Karigaar} helperAssistant {Helper / Bigari} thekedar {Thekedar / Team Contractor} other {{fallback}}}",
+  "@catalogRoleName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "fallback": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogRoleBadge": "{id, select, headMistry {👑 Head Mistry} skilledKarigaar {🔧 Skilled Karigaar} helperAssistant {🤝 Helper} thekedar {👷 Thekedar} other {{fallback}}}",
+  "@catalogRoleBadge": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "fallback": {
+        "type": "String"
+      }
+    }
+  },
+  "flowVerifiedGuild": "Verified Master Guild",
+  "flowNandedRating": "4.9 (1.4k jobs in Nanded)",
+  "flowInspectionWarranty": "Includes 45-min diagnostic inspection & 30-day rework warranty",
+  "flowSelectIssues": "Select Issues to Resolve",
+  "flowSelectIssuesHint": "Choose all relevant problems for accurate tooling",
+  "flowBundleApplied": "Curated Bundle Applied",
+  "flowPhotoVoice": "Photo & 15-Second Voice Note",
+  "flowSparesHint": "Help your craftsman bring the exact spares from the hardware store",
+  "flowPhotoRemoved": "Removed attached photo.",
+  "flowPhotoAttached": "Defect Photo Attached",
+  "flowAddPhoto": "Add Issue Photo (Optional)",
+  "flowShieldFee": "+₹29 Shield Fee",
+  "flowAdjustableBill": "Adjustable on-site bill",
+  "flowRequestArtisan": "Request Artisan",
+  "flowSkillTier": "Craftsperson Skill Tier",
+  "flowMasterRate": "1.25x (+25% Master Tier)",
+  "flowStandardRate": "1.0x (Standard Rate)",
+  "flowHelperRate": "0.65x (-35% Helper Tier)",
+  "flowContractorRate": "1.35x (+35% Team Contractor)",
+  "flowMandateTitle": "Upfront ₹99 Standby Mandate",
+  "flowMandateProvider": "Razorpay / Cashfree UPI Autopay Protected",
+  "flowMandateWhy": "Why is a ₹99 pre-authorization required?",
+  "flowMandateExplanation": "Secures ₹99 standby transit fee hold to protect artisan fuel and travel. The hold is RELEASED upon job completion and debited ONLY if doorstep access is denied for >15 minutes.",
+  "flowSelectUpi": "Quick Select UPI App",
+  "flowUpiId": "Enter UPI ID / VPA",
+  "flowUpiHint": "e.g. mobile@okaxis",
+  "flowUpiInvalid": "Please enter a valid UPI VPA (e.g. name@bank)",
+  "flowAuthorizeMandate": "Authorize ₹99 Mandate & Request Artisan",
+  "flowAudioTitle": "15s Audio Memo Scoping",
+  "flowRecording": "Recording in progress (Max 15s)...",
+  "flowAudioLanguages": "Explain defect in Hindi, Marathi, or English",
+  "flowAudioHint": "Record up to 15 seconds of motor hum, water leak sound, or sparking sound for the master artisan.",
+  "flowRecordAudio": "Record 15s Audio Memo",
+  "flowPause": "Pause",
+  "flowPlayPreview": "Play Preview",
+  "flowRerecord": "Re-record",
+  "flowDeleteAudio": "Delete Audio Memo",
+  "flowArrivalDateSlot": "Select Arrival Date & Slot",
+  "flowToday": "TODAY",
+  "flowEmergency": "EMERGENCY",
+  "flowLiveTracking": "Live Tracking",
+  "flowNoBooking": "No active booking found",
+  "flowDispatchRadar": "Live Dispatch Radar",
+  "flowYourHome": "Your Home",
+  "flowArrived": "Arrived",
+  "flowArrivedZero": "Arrived at Doorstep (0 km)",
+  "flowStationary": "Stationary • At Destination",
+  "flowArrivalHint": "Artisan has arrived in your vicinity. Provide code once at your door.",
+  "flowDwellExplanation": "Artisan is waiting outside. Standby ₹99 transit fee applies if doorstep entry is unreachable or denied for >15 mins.",
+  "flowStartCodeLabel": "DOORSTEP SECURITY START CODE",
+  "flowStartCodeHint": "Share this 4-digit code verbally ONLY when your Karigaar arrives at your doorstep.",
+  "flowMaskedWhatsapp": "Masked WhatsApp Channel",
+  "flowMaskedCall": "Masked Telephony Bridge",
+  "flowDirections": "Quick Doorstep Directions",
+  "flowMilestones": "Booking Milestones",
+  "flowBookingConfirmed": "Booking Confirmed & Escrow Held",
+  "flowArtisanDispatched": "Artisan Dispatched from Anand Nagar",
+  "flowArrivedWithin": "Arrived at Doorstep (Within 200m)",
+  "flowArrivedDoorstep": "Arrived at doorstep",
+  "flowTrackingActive": "Live tracking active",
+  "flowHandshakeVerified": "Handshake verified",
+  "flowPendingArrival": "Pending arrival",
+  "flowWorkCompletion": "Work Completed & Completion OTP",
+  "flowImpsSettled": "IMPS payout settled",
+  "flowRepairProgress": "Repair in progress",
+  "flowPendingFinish": "Pending finish",
+  "flowInvoiceReview": "Customer Invoice Review",
+  "flowPaidSettled": "Paid & Settled",
+  "flowPendingReview": "Pending Review",
+  "flowLaborInspection": "Labor & Diagnostic Inspection",
+  "flowPartsSurcharge": "2% Parts Gateway Surcharge",
+  "flowGst": "18% GST (Labor & Surcharge)",
+  "flowGrandTotalPayable": "Grand Total Payable",
+  "flowCompletionCodeLabel": "YOUR 4-DIGIT COMPLETION OTP",
+  "flowCompletionCodeHint": "Share verbally with artisan only after satisfactory completion.",
+  "flowReviewRelease": "Review Detailed Invoice & Release OTP",
+  "flowItemizedInvoice": "Itemized Service Invoice",
+  "flowSpares": "Spare Parts & Materials",
+  "flowGrandTotal": "Grand Total",
+  "flowReleaseCompletion": "RELEASE COMPLETION OTP TO ARTISAN",
+  "flowReleaseConsent": "By revealing and releasing this OTP, you verify job completion and authorize escrow release.",
+  "flowCompletionSuccess": "Completion Verified! Standby ₹99 mandate released, escrow settled.",
+  "accountProfileTitle": "Homeowner Profile & Settings",
+  "accountMasterProtection": "₹25,000 Master Guild Damage Protection Active",
+  "accountSavedLocalities": "Saved Nanded Localities",
+  "accountChange": "Change",
+  "accountPaymentPreferences": "Escrow & Payment Preferences",
+  "accountTransitMandate": "₹99 Transit Fee Mandate & RBI 2FA Parts Approval",
+  "accountPreauthorization": "UPI Escrow Pre-Authorization",
+  "accountCompletionPayout": "Release payout only after 4-digit Completion OTP",
+  "accountWhatsappAlerts": "WhatsApp Dispatch & Gate Pass Alerts",
+  "accountTrackingInvoices": "Receive live artisan tracking & digital GST invoices",
+  "accountPortalSecurity": "Guild Portal & Security",
+  "accountSosContact": "Emergency SOS Contact",
+  "accountControlDesk": "+91 9422100100 • Nanded Control Desk (24x7)",
+  "accountSwitchGuild": "Switch to Artisan Guild Portal",
+  "accountRadarWallet": "Open 45s Job Radar & Instant IMPS Wallet",
+  "accountSignOut": "Sign Out / Switch Number",
+  "accountChatTitle": "Guild Masked Chat & WhatsApp",
+  "accountMaskedCall": "Masked Call Bridge",
+  "accountViewArtisanProfile": "View Artisan Profile",
+  "accountGateApproved": "Gate Pass Approved",
+  "accountSharePin": "Share Live Pin",
+  "accountCallOnArrival": "Call on Arrival",
+  "accountWhatsappRelay": "WhatsApp Relay",
+  "accountMessageHint": "Message artisan via Guild Bridge...",
+  "accountSend": "Send",
+  "accountBookingsTitle": "My Service Bookings",
+  "accountActiveDispatch": "ACTIVE DISPATCH",
+  "accountPastOrders": "UPCOMING & PAST ORDERS",
+  "accountShield25": "₹25,000 Guild Damage Shield Active",
+  "accountShield10": "₹10,000 Guild Damage Shield Active",
+  "accountOnsiteLocked": "ON-SITE ESCROW LOCKED",
+  "accountScheduledWindow": "Scheduled Window",
+  "accountTrackLive": "Track Live",
+  "accountDirectVisit": "Direct Visit (Unprotected)",
+  "accountOnsiteUpgradeExplanation": "Artisan present on-site. Upgrade now to activate Start OTP (4921), ₹29 Safety Shield & ₹25k Master Cover.",
+  "accountUpgradeBooking": "Upgrade to Protected Guild Booking",
+  "accountViewArtisan": "View Artisan",
+  "accountBookAgain": "Book Again",
+  "accountRateService": "Rate service",
+  "accountRaiseClaim": "Raise warranty claim",
+  "accountServiceQuestion": "How was the service?",
+  "accountOverall": "Overall",
+  "accountCleanliness": "Cleanliness",
+  "accountCareFinish": "Care & finish",
+  "accountFeedback": "Optional feedback",
+  "accountSubmitRating": "Submit rating",
+  "accountClaimTitle": "30-day warranty claim",
+  "accountDeductibleReview": "₹250 deductible applies. Claims are reviewed by Karigaar support.",
+  "accountDamageAmount": "Estimated damage amount (₹)",
+  "accountDescribeIssue": "Describe the issue",
+  "accountClaimValidation": "Enter a valid amount and claim reason.",
+  "accountClaimSent": "Claim sent for review. We’ll update you in this booking.",
+  "accountSubmitClaim": "Submit claim",
+  "accountCraftsmanProfile": "Craftsman Profile",
+  "accountRemovedFavorite": "Removed from favorites.",
+  "accountPro": "PRO",
+  "accountAvailableToday": "Available Today",
+  "accountExperience": "Experience",
+  "accountCompletedJobs": "Completed Jobs",
+  "accountCallArtisan": "Call Artisan",
+  "accountWhatsappArtisan": "WhatsApp Artisan",
+  "accountMaskedUnlocked": "Masked Virtual DID Active (+91-11-4084-2190) • Direct Contact Unlocked",
+  "accountMaskedLocked": "Masked Virtual Telephony (+91-11-4084-2190) • Unlock from ₹49",
+  "accountMasterAmount": "₹25,000 Master",
+  "accountBaseAmount": "₹10,000 Base",
+  "accountOnsiteQuestion": "Artisan On-Site? Lock Escrow & Warranty",
+  "accountMasterShortCover": "₹25k Master Cover",
+  "accountBaseShortCover": "₹10k Base Cover",
+  "accountVerifiedGuildsman": "Karigaar Verified Guildsman",
+  "accountTripleScreened": "Triple-screened for home safety & master craftsmanship",
+  "accountGovtPolice": "Govt. ID & Police",
+  "accountBackgroundCleared": "Background Cleared",
+  "accountNsdc": "NSDC Certified",
+  "accountSkillGrade": "Skill-Tested Grade A",
+  "accountDamageProtection": "Damage Protection",
+  "accountCalibratedTools": "Calibrated Tools",
+  "accountToolAudit": "Tool Audit Passed",
+  "accountWiring": "3-Phase Wiring",
+  "accountInverterSetup": "Inverter Setup",
+  "accountMcbDiagnosis": "MCB Spark Diagnosis",
+  "accountSwitchboards": "Modular Switchboards",
+  "accountEarthing": "Earthing Verification",
+  "accountLoadAudit": "Appliance Load Audit",
+  "accountSpecializations": "Specializations & Skills",
+  "accountShowcase": "Craftsmanship Showcase",
+  "accountVerifiedPhotos": "Verified work photos from local homes",
+  "accountScorecard": "Artisan Scorecard",
+  "accountPunctuality": "Punctuality & Timing",
+  "accountCraftsmanship": "Master Craftsmanship",
+  "accountSawdust": "Sawdust & Cleanliness",
+  "accountRecentFeedback": "Recent Client Feedback",
+  "accountVerifiedBookings": "Verified Bookings",
+  "accountVerifiedMcb": "Verified MCB Spark Repair Job",
+  "accountVerifiedInverter": "Verified Inverter Setup Job",
+  "accountPerVisit": "/ visit",
+  "accountIncludesWarranty": "Includes ₹25k Guild Warranty",
+  "accountUnlockTitle": "Unlock Direct Contact",
+  "accountPrivacyProtected": "100% Privacy Protected • Zero Raw Phone Leakage",
+  "accountPayPerLead": "Pay-Per-Lead",
+  "accountOneTime": "one-time",
+  "accountSingleArtisan": "Single Artisan",
+  "accountDirectoryPass": "Unlimited Directory Pass",
+  "accountPerMonth": "/ month",
+  "accountUnlimitedContact": "Unlimited masked calls & WhatsApp across all 10 trades and 7 districts.",
+  "accountRecommended": "RECOMMENDED",
+  "accountMaskedBenefit": "Masked Telephony: Zero raw phone number exposure",
+  "accountMetaBenefit": "Official Meta WhatsApp Cloud API bridge included",
+  "accountRetroactiveBenefit": "Retroactive Guild Lock: Activate ₹25k warranty on-site anytime",
+  "accountUnlock49": "Unlock for ₹49",
+  "accountActivatePass": "Activate Directory Pass (₹499/mo)",
+  "accountPassActivated": "Directory Pass activated! Unlimited masked contact active across all trades.",
+  "accountMasterCover": "₹25,000 Master Cover",
+  "accountBaseCover": "₹10,000 Base Cover",
+  "accountLockVisit": "Lock on-site visit into formal escrow protection",
+  "accountDoorstepCode": "Doorstep Handshake Code",
+  "accountStartCode4921": "Start Handshake OTP: 4921",
+  "accountActive": "Active",
+  "accountUnderwriting": "Comprehensive property damage underwriting during job execution. ₹250 customer deductible applies to eliminate frivolous claims.",
+  "accountEscrowBreakdown": "Upfront Escrow Breakdown",
+  "accountInspectionTravel": "Base Inspection & Travel",
+  "accountSafetyWarranty": "Platform Safety Shield & Warranty",
+  "accountStandbyHold": "Total Standby Escrow Hold",
+  "accountConfirmLock": "Confirm & Lock Escrow (₹29 Shield)",
+  "accountVerifiedPhone": "+91 9822199882 • Verified Homeowner",
+  "accountPrimaryLocality": "Primary: {name}, Nanded ({pincode})",
+  "@accountPrimaryLocality": {
+    "placeholders": {
+      "name": {},
+      "pincode": {}
+    }
+  },
+  "accountSavedAddress": "{name} • Plot 14, Near Guru Gobind Singh Ji Marg",
+  "@accountSavedAddress": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "accountPrivacyConnection": "Number Masking Active • Zero Raw MSISDN Leakage • Connected with {name} ({trade})",
+  "@accountPrivacyConnection": {
+    "placeholders": {
+      "name": {},
+      "trade": {}
+    }
+  },
+  "accountWhatsappGreeting": "Namaskar {name}, connecting via WhatsApp Cloud Relay.",
+  "@accountWhatsappGreeting": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "accountEmptyBookings": "No bookings in {tab} tab.",
+  "@accountEmptyBookings": {
+    "placeholders": {
+      "tab": {}
+    }
+  },
+  "accountBookingReference": "Booking #{id}",
+  "@accountBookingReference": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "accountVoiceNote": "{seconds}s Voice Note",
+  "@accountVoiceNote": {
+    "placeholders": {
+      "seconds": {}
+    }
+  },
+  "accountStartOtp": "Start Handshake OTP: {otp}",
+  "@accountStartOtp": {
+    "placeholders": {
+      "otp": {}
+    }
+  },
+  "accountTotalEstimate": "Total Estimate: ₹{amount}",
+  "@accountTotalEstimate": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "accountDirectLead": "DIRECT ON-SITE LEAD • {trade}",
+  "@accountDirectLead": {
+    "placeholders": {
+      "trade": {}
+    }
+  },
+  "accountOnsiteName": "{name} (On-Site Diagnostic)",
+  "@accountOnsiteName": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "accountCoverLimit": "Cover limit: ₹{amount}",
+  "@accountCoverLimit": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "accountFavoriteSaved": "Saved {name} to favorites!",
+  "@accountFavoriteSaved": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "accountSharingProfile": "Sharing {name}'s profile link...",
+  "@accountSharingProfile": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "accountWithinDistance": "{locality} • Within {distance} km",
+  "@accountWithinDistance": {
+    "placeholders": {
+      "locality": {},
+      "distance": {}
+    }
+  },
+  "accountReviewCount": "{count} Reviews",
+  "@accountReviewCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "accountExperienceYears": "{years}+ Yrs",
+  "@accountExperienceYears": {
+    "placeholders": {
+      "years": {}
+    }
+  },
+  "accountArtisanGreeting": "Namaste {name} Ji, I found your profile on Karigaar for {trade}. Are you available for a visit in Nanded?",
+  "@accountArtisanGreeting": {
+    "placeholders": {
+      "name": {},
+      "trade": {}
+    }
+  },
+  "accountActivateCover": "Activate {cover} Cover & ₹29 Safety Shield with 1 tap",
+  "@accountActivateCover": {
+    "placeholders": {
+      "cover": {}
+    }
+  },
+  "accountCertifiedCount": "{count} Certified",
+  "@accountCertifiedCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "accountViewAllCount": "View All ({count})",
+  "@accountViewAllCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "accountBookName": "Book {name} Now",
+  "@accountBookName": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "accountConnectName": "Connect with {name} ({trade})",
+  "@accountConnectName": {
+    "placeholders": {
+      "name": {},
+      "trade": {}
+    }
+  },
+  "accountProxyDescription": "Calls & WhatsApp bridged via Virtual Proxy: {number}",
+  "@accountProxyDescription": {
+    "placeholders": {
+      "number": {}
+    }
+  },
+  "accountUnlockDays": "Unlock direct masked calls and WhatsApp with {name} for 30 days.",
+  "@accountUnlockDays": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "accountContactUnlocked": "Direct contact unlocked! Calling enabled via {number}.",
+  "@accountContactUnlocked": {
+    "placeholders": {
+      "number": {}
+    }
+  },
+  "accountUnlockFailed": "Failed to unlock contact: {error}",
+  "@accountUnlockFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "accountArrivalInstructions": "Share this 4-digit code with {name} on-site to verify arrival and activate the stopwatch.",
+  "@accountArrivalInstructions": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "accountCoverActive": "{cover} Active",
+  "@accountCoverActive": {
+    "placeholders": {
+      "cover": {}
+    }
+  },
+  "accountLockedBooking": "On-site booking locked! Share Start OTP 4921 with {name}.",
+  "@accountLockedBooking": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "accountClaimError": "Claim could not be submitted. Check the amount, warranty eligibility, and try again.",
+  "sharedSavePercent": "Save {percent}%",
+  "@sharedSavePercent": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "accountStatusAll": "All",
+  "accountStatusEnRoute": "En-Route",
+  "accountStatusUpcoming": "Upcoming",
+  "accountStatusCompleted": "Completed",
+  "accountStatusInProgress": "In Progress"
 }

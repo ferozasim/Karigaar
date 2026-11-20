@@ -4,6 +4,7 @@ import '../../../core/models/city_model.dart';
 import '../../../core/providers/app_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../l10n/localized_strings.dart';
 
 class LocalitySelectorSheet extends ConsumerStatefulWidget {
   const LocalitySelectorSheet({super.key});
@@ -18,7 +19,8 @@ class LocalitySelectorSheet extends ConsumerStatefulWidget {
   }
 
   @override
-  ConsumerState<LocalitySelectorSheet> createState() => _LocalitySelectorSheetState();
+  ConsumerState<LocalitySelectorSheet> createState() =>
+      _LocalitySelectorSheetState();
 }
 
 class _LocalitySelectorSheetState extends ConsumerState<LocalitySelectorSheet> {
@@ -33,6 +35,7 @@ class _LocalitySelectorSheetState extends ConsumerState<LocalitySelectorSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final strings = localizedStrings(context);
     final cityAsync = ref.watch(pilotCityProvider);
     final selectedLocality = ref.watch(selectedLocalityProvider);
 
@@ -67,16 +70,22 @@ class _LocalitySelectorSheetState extends ConsumerState<LocalitySelectorSheet> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Select Locality', style: AppTypography.headlineSm),
+                    Text(strings.localitySelect,
+                        style: AppTypography.headlineSm),
                     Consumer(
                       builder: (context, ref, _) {
-                        final currentDistrict = ref.watch(selectedDistrictProvider);
-                        final isNanded = currentDistrict.name.toLowerCase().contains('nanded');
+                        final currentDistrict =
+                            ref.watch(selectedDistrictProvider);
+                        final isNanded = currentDistrict.name
+                            .toLowerCase()
+                            .contains('nanded');
                         return Text(
                           isNanded
-                              ? 'Pilot City: Nanded-Waghala (Maharashtra)'
-                              : 'District: ${currentDistrict.fullName}',
-                          style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
+                              ? strings.localityPilotDistrict
+                              : strings
+                                  .localityDistrict(currentDistrict.fullName),
+                          style: AppTypography.bodySm
+                              .copyWith(color: AppColors.textMuted),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         );
@@ -89,15 +98,19 @@ class _LocalitySelectorSheetState extends ConsumerState<LocalitySelectorSheet> {
               Consumer(
                 builder: (context, ref, _) {
                   final currentDistrict = ref.watch(selectedDistrictProvider);
-                  final isNanded = currentDistrict.name.toLowerCase().contains('nanded');
+                  final isNanded =
+                      currentDistrict.name.toLowerCase().contains('nanded');
                   return Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
                       color: AppColors.secondarySurfaceTint,
                       borderRadius: BorderRadius.circular(9999),
                     ),
                     child: Text(
-                      isNanded ? '10 Hubs Active' : '${currentDistrict.localities.length} Hubs Active',
+                      isNanded
+                          ? '10 Hubs Active'
+                          : '${currentDistrict.localities.length} Hubs Active',
                       style: AppTypography.labelSm.copyWith(
                         color: AppColors.secondary,
                         fontWeight: FontWeight.w700,
@@ -122,33 +135,46 @@ class _LocalitySelectorSheetState extends ConsumerState<LocalitySelectorSheet> {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: districts.map((dist) {
-                      final isSelected = dist.name.toLowerCase() == activeDistrict.name.toLowerCase();
+                      final isSelected = dist.name.toLowerCase() ==
+                          activeDistrict.name.toLowerCase();
                       return Padding(
                         padding: const EdgeInsets.only(right: 8),
                         child: InkWell(
                           onTap: () {
-                            ref.read(selectedDistrictProvider.notifier).state = dist;
+                            ref.read(selectedDistrictProvider.notifier).state =
+                                dist;
                             if (dist.localities.isNotEmpty) {
-                              ref.read(selectedLocalityProvider.notifier).state = dist.localities.first;
+                              ref
+                                  .read(selectedLocalityProvider.notifier)
+                                  .state = dist.localities.first;
                             }
                           },
                           borderRadius: BorderRadius.circular(20),
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 200),
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 14, vertical: 6),
                             decoration: BoxDecoration(
-                              color: isSelected ? AppColors.primary : AppColors.surfaceSubtle,
+                              color: isSelected
+                                  ? AppColors.primary
+                                  : AppColors.surfaceSubtle,
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
-                                color: isSelected ? AppColors.primary : AppColors.borderSubtle,
+                                color: isSelected
+                                    ? AppColors.primary
+                                    : AppColors.borderSubtle,
                               ),
                             ),
                             child: Center(
                               child: Text(
                                 dist.name,
                                 style: AppTypography.labelSm.copyWith(
-                                  color: isSelected ? Colors.white : AppColors.textPrimary,
-                                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                                  color: isSelected
+                                      ? Colors.white
+                                      : AppColors.textPrimary,
+                                  fontWeight: isSelected
+                                      ? FontWeight.w700
+                                      : FontWeight.w500,
                                 ),
                               ),
                             ),
@@ -175,8 +201,9 @@ class _LocalitySelectorSheetState extends ConsumerState<LocalitySelectorSheet> {
               });
             },
             decoration: InputDecoration(
-              hintText: 'Search locality or pincode...',
-              prefixIcon: const Icon(Icons.search_rounded, color: AppColors.textMuted),
+              hintText: strings.localitySearchHint,
+              prefixIcon:
+                  const Icon(Icons.search_rounded, color: AppColors.textMuted),
               suffixIcon: _searchQuery.isNotEmpty
                   ? IconButton(
                       icon: const Icon(Icons.clear_rounded, size: 18),
@@ -194,7 +221,8 @@ class _LocalitySelectorSheetState extends ConsumerState<LocalitySelectorSheet> {
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide.none,
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             ),
           ),
 
@@ -218,9 +246,11 @@ class _LocalitySelectorSheetState extends ConsumerState<LocalitySelectorSheet> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.location_off_rounded, size: 48, color: AppColors.textSubtle),
+                        const Icon(Icons.location_off_rounded,
+                            size: 48, color: AppColors.textSubtle),
                         const SizedBox(height: 8),
-                        Text('No locality found in ${city.name}', style: AppTypography.bodyMd),
+                        Text(strings.localityEmptyText(city.name),
+                            style: AppTypography.bodyMd),
                       ],
                     ),
                   );
@@ -228,10 +258,12 @@ class _LocalitySelectorSheetState extends ConsumerState<LocalitySelectorSheet> {
 
                 return ListView.separated(
                   itemCount: localities.length,
-                  separatorBuilder: (_, __) => const Divider(height: 1, color: AppColors.borderSubtle),
+                  separatorBuilder: (_, __) =>
+                      const Divider(height: 1, color: AppColors.borderSubtle),
                   itemBuilder: (context, index) {
                     final loc = localities[index];
-                    final isSelected = loc.localityId == selectedLocality.localityId;
+                    final isSelected =
+                        loc.localityId == selectedLocality.localityId;
                     return _buildLocalityItem(loc, isSelected);
                   },
                 );
@@ -250,7 +282,8 @@ class _LocalitySelectorSheetState extends ConsumerState<LocalitySelectorSheet> {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Switched service hub to ${loc.name} (${loc.pincode})'),
+            content: Text(localizedStrings(context)
+                .localityChanged(loc.name, loc.pincode)),
             duration: const Duration(seconds: 1),
           ),
         );
@@ -285,7 +318,8 @@ class _LocalitySelectorSheetState extends ConsumerState<LocalitySelectorSheet> {
                         child: Text(
                           loc.name,
                           style: AppTypography.labelLg.copyWith(
-                            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                            fontWeight:
+                                isSelected ? FontWeight.w700 : FontWeight.w600,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -294,7 +328,8 @@ class _LocalitySelectorSheetState extends ConsumerState<LocalitySelectorSheet> {
                       if (loc.emergencyHub) ...[
                         const SizedBox(width: 8),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 6, vertical: 2),
                           decoration: BoxDecoration(
                             color: AppColors.tertiarySurfaceTint,
                             borderRadius: BorderRadius.circular(6),
@@ -317,7 +352,8 @@ class _LocalitySelectorSheetState extends ConsumerState<LocalitySelectorSheet> {
                       Flexible(
                         child: Text(
                           loc.marathiName,
-                          style: AppTypography.bodySm.copyWith(color: AppColors.textMuted, fontSize: 12),
+                          style: AppTypography.bodySm.copyWith(
+                              color: AppColors.textMuted, fontSize: 12),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -325,7 +361,8 @@ class _LocalitySelectorSheetState extends ConsumerState<LocalitySelectorSheet> {
                       const SizedBox(width: 8),
                       Text(
                         '• Pincode ${loc.pincode}',
-                        style: AppTypography.bodySm.copyWith(color: AppColors.textMuted, fontSize: 11),
+                        style: AppTypography.bodySm
+                            .copyWith(color: AppColors.textMuted, fontSize: 11),
                       ),
                     ],
                   ),
@@ -333,7 +370,8 @@ class _LocalitySelectorSheetState extends ConsumerState<LocalitySelectorSheet> {
               ),
             ),
             if (isSelected)
-              const Icon(Icons.check_circle_rounded, color: AppColors.tertiary, size: 22),
+              const Icon(Icons.check_circle_rounded,
+                  color: AppColors.tertiary, size: 22),
           ],
         ),
       ),
@@ -376,7 +414,8 @@ class _LocalitySelectorSheetState extends ConsumerState<LocalitySelectorSheet> {
 
     return ListView.separated(
       itemCount: fallbackLocalities.length,
-      separatorBuilder: (_, __) => const Divider(height: 1, color: AppColors.borderSubtle),
+      separatorBuilder: (_, __) =>
+          const Divider(height: 1, color: AppColors.borderSubtle),
       itemBuilder: (context, index) {
         final loc = fallbackLocalities[index];
         final isSelected = loc.localityId == selectedLocality.localityId;

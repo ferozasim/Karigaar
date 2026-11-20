@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../l10n/localized_strings.dart';
 
 class EmergencyAssistBanner extends StatelessWidget {
   final VoidCallback onBookUrgent;
@@ -8,6 +9,7 @@ class EmergencyAssistBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final strings = localizedStrings(context);
     final textScaler = MediaQuery.textScalerOf(context);
     final isLargeText = textScaler.scale(1.0) >= 1.4;
 
@@ -27,7 +29,7 @@ class EmergencyAssistBanner extends StatelessWidget {
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                'URGENT BREAKDOWN? (25 MINS)',
+                strings.emergencyTitle,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: AppTypography.labelSm.copyWith(
@@ -40,7 +42,7 @@ class EmergencyAssistBanner extends StatelessWidget {
         ),
         const SizedBox(height: 6),
         Text(
-          'Immediate Doorstep Dispatch',
+          strings.emergencyDispatch,
           style: AppTypography.headlineSm.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.w800,
@@ -48,7 +50,7 @@ class EmergencyAssistBanner extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          'Electricians & Plumbers on stand-by across Nanded',
+          strings.emergencyCoverage,
           style: AppTypography.bodySm.copyWith(
             color: Colors.white.withValues(alpha: 0.9),
           ),
@@ -73,7 +75,7 @@ class EmergencyAssistBanner extends StatelessWidget {
           const Icon(Icons.bolt_rounded, size: 18, color: Color(0xFFD97706)),
           const SizedBox(width: 4),
           Text(
-            'Book Fast',
+            strings.emergencyBookFast,
             style: AppTypography.labelMd.copyWith(
               color: const Color(0xFF92400E),
               fontWeight: FontWeight.w800,

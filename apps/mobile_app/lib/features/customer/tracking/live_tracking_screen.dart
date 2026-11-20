@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../l10n/localized_strings.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/models/booking_model.dart';
@@ -20,8 +21,8 @@ class LiveTrackingScreen extends ConsumerWidget {
 
     if (booking == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Live Tracking')),
-        body: const Center(child: Text('No active booking found')),
+        appBar: AppBar(title: Text(localizedStrings(context).flowLiveTracking)),
+        body: Center(child: Text(localizedStrings(context).flowNoBooking)),
       );
     }
 
@@ -40,7 +41,7 @@ class LiveTrackingScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: AppColors.surfaceBase,
       appBar: AppBar(
-        title: const Text('Live Dispatch Radar'),
+        title: Text(localizedStrings(context).flowDispatchRadar),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () {
@@ -71,7 +72,8 @@ class LiveTrackingScreen extends ConsumerWidget {
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.radar_rounded, size: 20, color: Color(0xFFB45309)),
+                        const Icon(Icons.radar_rounded,
+                            size: 20, color: Color(0xFFB45309)),
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
@@ -115,16 +117,20 @@ class LiveTrackingScreen extends ConsumerWidget {
                                 color: AppColors.primary,
                                 shape: BoxShape.circle,
                               ),
-                              child: const Icon(Icons.home_rounded, color: Colors.white, size: 20),
+                              child: const Icon(Icons.home_rounded,
+                                  color: Colors.white, size: 20),
                             ),
                             const SizedBox(height: 4),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 6, vertical: 2),
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(4),
                               ),
-                              child: Text('Your Home', style: AppTypography.labelSm),
+                              child: Text(
+                                  localizedStrings(context).flowYourHome,
+                                  style: AppTypography.labelSm),
                             ),
                           ],
                         ),
@@ -132,11 +138,15 @@ class LiveTrackingScreen extends ConsumerWidget {
                       // Artisan Motorcycle Marker (Moving)
                       Positioned(
                         left: (60.0 +
-                                (1.0 - (feed.remainingDistanceKm / 2.0).clamp(0.0, 1.0)) *
+                                (1.0 -
+                                        (feed.remainingDistanceKm / 2.0)
+                                            .clamp(0.0, 1.0)) *
                                     140.0)
                             .clamp(20.0, 260.0),
                         bottom: (60.0 +
-                                (1.0 - (feed.remainingDistanceKm / 2.0).clamp(0.0, 1.0)) *
+                                (1.0 -
+                                        (feed.remainingDistanceKm / 2.0)
+                                            .clamp(0.0, 1.0)) *
                                     60.0)
                             .clamp(30.0, 160.0),
                         child: Column(
@@ -154,18 +164,21 @@ class LiveTrackingScreen extends ConsumerWidget {
                                   ),
                                 ],
                               ),
-                              child: const Icon(Icons.two_wheeler_rounded, color: Colors.white, size: 22),
+                              child: const Icon(Icons.two_wheeler_rounded,
+                                  color: Colors.white, size: 22),
                             ),
                             const SizedBox(height: 4),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 6, vertical: 2),
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Text(
                                 '${booking.assignedArtisanName?.split(' ').first ?? 'Ganesh'} • ${feed.isGeofenceTriggered ? "Arrived" : "${feed.etaMinutes} mins away"}',
-                                style: AppTypography.labelSm.copyWith(color: AppColors.secondary),
+                                style: AppTypography.labelSm
+                                    .copyWith(color: AppColors.secondary),
                               ),
                             ),
                           ],
@@ -176,12 +189,15 @@ class LiveTrackingScreen extends ConsumerWidget {
                         left: 16,
                         top: 16,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 8),
                           decoration: BoxDecoration(
                             color: Colors.white.withValues(alpha: 0.95),
                             borderRadius: BorderRadius.circular(10),
                             boxShadow: [
-                              BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 8),
+                              BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.08),
+                                  blurRadius: 8),
                             ],
                           ),
                           child: Row(
@@ -200,9 +216,10 @@ class LiveTrackingScreen extends ConsumerWidget {
                               const SizedBox(width: 8),
                               Text(
                                 feed.isGeofenceTriggered
-                                    ? 'Arrived at Doorstep (0 km)'
+                                    ? localizedStrings(context).flowArrivedZero
                                     : 'Arriving in ~${feed.etaMinutes} mins (${feed.remainingDistanceKm.toStringAsFixed(1)} km)',
-                                style: AppTypography.labelMd.copyWith(fontWeight: FontWeight.bold),
+                                style: AppTypography.labelMd
+                                    .copyWith(fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),
@@ -213,7 +230,8 @@ class LiveTrackingScreen extends ConsumerWidget {
                         left: 16,
                         bottom: 12,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
                             color: Colors.black.withValues(alpha: 0.65),
                             borderRadius: BorderRadius.circular(6),
@@ -221,11 +239,12 @@ class LiveTrackingScreen extends ConsumerWidget {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(Icons.speed_rounded, size: 14, color: Colors.white),
+                              const Icon(Icons.speed_rounded,
+                                  size: 14, color: Colors.white),
                               const SizedBox(width: 4),
                               Text(
                                 feed.isGeofenceTriggered
-                                    ? 'Stationary • At Destination'
+                                    ? localizedStrings(context).flowStationary
                                     : '${feed.currentLocationLabel} • 45° NE',
                                 style: AppTypography.labelSm.copyWith(
                                   color: Colors.white,
@@ -250,7 +269,8 @@ class LiveTrackingScreen extends ConsumerWidget {
                     decoration: BoxDecoration(
                       color: const Color(0xFFFEF3C7),
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: const Color(0xFFF59E0B), width: 1.5),
+                      border: Border.all(
+                          color: const Color(0xFFF59E0B), width: 1.5),
                     ),
                     child: Row(
                       children: [
@@ -260,7 +280,8 @@ class LiveTrackingScreen extends ConsumerWidget {
                             color: Color(0xFFF59E0B),
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.near_me_rounded, color: Colors.white, size: 22),
+                          child: const Icon(Icons.near_me_rounded,
+                              color: Colors.white, size: 22),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -276,8 +297,9 @@ class LiveTrackingScreen extends ConsumerWidget {
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                'Artisan has arrived in your vicinity. Provide code once at your door.',
-                                style: AppTypography.bodySm.copyWith(color: const Color(0xFFB45309)),
+                                localizedStrings(context).flowArrivalHint,
+                                style: AppTypography.bodySm
+                                    .copyWith(color: const Color(0xFFB45309)),
                               ),
                             ],
                           ),
@@ -288,7 +310,8 @@ class LiveTrackingScreen extends ConsumerWidget {
                 ],
 
                 // Doorstep Arrival Dwell Warning Notice
-                if (feed.isGeofenceTriggered || booking.status == BookingStatus.artisanArrived) ...[
+                if (feed.isGeofenceTriggered ||
+                    booking.status == BookingStatus.artisanArrived) ...[
                   const SizedBox(height: 12),
                   Container(
                     key: const Key('doorstep_dwell_warning_card'),
@@ -297,11 +320,13 @@ class LiveTrackingScreen extends ConsumerWidget {
                     decoration: BoxDecoration(
                       color: const Color(0xFFFEF2F2),
                       borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: const Color(0xFFF87171), width: 1.2),
+                      border: Border.all(
+                          color: const Color(0xFFF87171), width: 1.2),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.warning_amber_rounded, color: Color(0xFFDC2626), size: 24),
+                        const Icon(Icons.warning_amber_rounded,
+                            color: Color(0xFFDC2626), size: 24),
                         const SizedBox(width: 10),
                         Expanded(
                           child: Column(
@@ -309,12 +334,16 @@ class LiveTrackingScreen extends ConsumerWidget {
                             children: [
                               Text(
                                 'Doorstep Arrival Dwell Warning (${booking.dwellMinutesAtDestination}m)',
-                                style: AppTypography.labelMd.copyWith(color: const Color(0xFF991B1B), fontWeight: FontWeight.bold),
+                                style: AppTypography.labelMd.copyWith(
+                                    color: const Color(0xFF991B1B),
+                                    fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                'Artisan is waiting outside. Standby ₹99 transit fee applies if doorstep entry is unreachable or denied for >15 mins.',
-                                style: AppTypography.bodySm.copyWith(color: const Color(0xFFB91C1C), fontSize: 11),
+                                localizedStrings(context).flowDwellExplanation,
+                                style: AppTypography.bodySm.copyWith(
+                                    color: const Color(0xFFB91C1C),
+                                    fontSize: 11),
                               ),
                             ],
                           ),
@@ -340,11 +369,12 @@ class LiveTrackingScreen extends ConsumerWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.lock_rounded, color: AppColors.secondary, size: 20),
+                          const Icon(Icons.lock_rounded,
+                              color: AppColors.secondary, size: 20),
                           const SizedBox(width: 8),
                           Flexible(
                             child: Text(
-                              'DOORSTEP SECURITY START CODE',
+                              localizedStrings(context).flowStartCodeLabel,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: AppTypography.labelSm.copyWith(
@@ -366,9 +396,10 @@ class LiveTrackingScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        'Share this 4-digit code verbally ONLY when your Karigaar arrives at your doorstep.',
+                        localizedStrings(context).flowStartCodeHint,
                         textAlign: TextAlign.center,
-                        style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
+                        style: AppTypography.bodySm
+                            .copyWith(color: AppColors.textMuted),
                       ),
                     ],
                   ),
@@ -392,17 +423,21 @@ class LiveTrackingScreen extends ConsumerWidget {
                         decoration: BoxDecoration(
                           color: AppColors.surfaceSubtle,
                           borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: AppColors.tertiary, width: 2),
+                          border:
+                              Border.all(color: AppColors.tertiary, width: 2),
                         ),
-                        child: const Icon(Icons.person_rounded, size: 30, color: AppColors.textMuted),
+                        child: const Icon(Icons.person_rounded,
+                            size: 30, color: AppColors.textMuted),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(booking.assignedArtisanName ?? 'Ganesh Kadam', style: AppTypography.labelLg),
-                            Text('${booking.tradeName} • Master Tier', style: AppTypography.bodySm),
+                            Text(booking.assignedArtisanName ?? 'Ganesh Kadam',
+                                style: AppTypography.labelLg),
+                            Text('${booking.tradeName} • Master Tier',
+                                style: AppTypography.bodySm),
                             const SizedBox(height: 4),
                             const TrustShieldBadge.policeVerified(),
                           ],
@@ -411,7 +446,7 @@ class LiveTrackingScreen extends ConsumerWidget {
                       // WhatsApp Chat & Call Buttons
                       IconButton(
                         key: const Key('tracking_whatsapp_chat_btn'),
-                        tooltip: 'Masked WhatsApp Channel',
+                        tooltip: localizedStrings(context).flowMaskedWhatsapp,
                         onPressed: () {
                           ContactIntentService.initiateMaskedWhatsAppChat(
                             context,
@@ -422,11 +457,12 @@ class LiveTrackingScreen extends ConsumerWidget {
                             contactName: booking.assignedArtisanName,
                           );
                         },
-                        icon: const Icon(Icons.chat_bubble_rounded, color: Color(0xFF25D366)),
+                        icon: const Icon(Icons.chat_bubble_rounded,
+                            color: Color(0xFF25D366)),
                       ),
                       IconButton(
                         key: const Key('tracking_phone_call_btn'),
-                        tooltip: 'Masked Telephony Bridge',
+                        tooltip: localizedStrings(context).flowMaskedCall,
                         onPressed: () {
                           ContactIntentService.initiateMaskedTelephonyCall(
                             context,
@@ -436,7 +472,8 @@ class LiveTrackingScreen extends ConsumerWidget {
                             contactName: booking.assignedArtisanName,
                           );
                         },
-                        icon: const Icon(Icons.phone_rounded, color: AppColors.primary),
+                        icon: const Icon(Icons.phone_rounded,
+                            color: AppColors.primary),
                       ),
                     ],
                   ),
@@ -445,14 +482,16 @@ class LiveTrackingScreen extends ConsumerWidget {
                 const SizedBox(height: 20),
 
                 // Canned Quick Chips for Landmark & Doorstep Navigation (Contract 3)
-                Text('Quick Doorstep Directions', style: AppTypography.headlineSm),
+                Text(localizedStrings(context).flowDirections,
+                    style: AppTypography.headlineSm),
                 const SizedBox(height: 8),
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
                   children: feed.cannedQuickChips.map((chip) {
                     return ActionChip(
-                      avatar: const Icon(Icons.chat_bubble_outline_rounded, size: 16, color: AppColors.primary),
+                      avatar: const Icon(Icons.chat_bubble_outline_rounded,
+                          size: 16, color: AppColors.primary),
                       label: Text(chip, style: AppTypography.labelSm),
                       backgroundColor: Colors.white,
                       side: const BorderSide(color: AppColors.borderSubtle),
@@ -471,41 +510,48 @@ class LiveTrackingScreen extends ConsumerWidget {
 
                 const SizedBox(height: 24),
                 // 5-Stage Milestone Progress
-                Text('Booking Milestones', style: AppTypography.headlineSm),
+                Text(localizedStrings(context).flowMilestones,
+                    style: AppTypography.headlineSm),
                 const SizedBox(height: 14),
                 _buildMilestoneStep(
-                  title: 'Booking Confirmed & Escrow Held',
+                  title: localizedStrings(context).flowBookingConfirmed,
                   time: '12 mins ago',
                   isCompleted: activeStage > 0,
                   isCurrent: activeStage == 0,
                 ),
                 _buildMilestoneStep(
-                  title: 'Artisan Dispatched from Anand Nagar',
+                  title: localizedStrings(context).flowArtisanDispatched,
                   time: '8 mins ago',
                   isCompleted: activeStage > 1,
                   isCurrent: activeStage == 1,
                 ),
                 _buildMilestoneStep(
                   title: feed.isGeofenceTriggered
-                      ? 'Arrived at Doorstep (Within 200m)'
+                      ? localizedStrings(context).flowArrivedWithin
                       : 'En Route to Doorstep (~${feed.etaMinutes} mins)',
                   time: feed.isGeofenceTriggered
-                      ? 'Arrived at doorstep'
-                      : (activeStage > 2 ? 'Arrived at doorstep' : 'Live tracking active'),
+                      ? localizedStrings(context).flowArrivedDoorstep
+                      : (activeStage > 2
+                          ? localizedStrings(context).flowArrivedDoorstep
+                          : localizedStrings(context).flowTrackingActive),
                   isCompleted: activeStage > 2,
                   isCurrent: activeStage == 2,
                 ),
                 _buildMilestoneStep(
                   title: 'Start Code ${booking.startOtp} Verified',
-                  time: activeStage > 3 ? 'Handshake verified' : 'Pending arrival',
+                  time: activeStage > 3
+                      ? localizedStrings(context).flowHandshakeVerified
+                      : localizedStrings(context).flowPendingArrival,
                   isCompleted: activeStage > 3,
                   isCurrent: activeStage == 3,
                 ),
                 _buildMilestoneStep(
-                  title: 'Work Completed & Completion OTP',
+                  title: localizedStrings(context).flowWorkCompletion,
                   time: activeStage > 4
-                      ? 'IMPS payout settled'
-                      : (activeStage == 4 ? 'Repair in progress' : 'Pending finish'),
+                      ? localizedStrings(context).flowImpsSettled
+                      : (activeStage == 4
+                          ? localizedStrings(context).flowRepairProgress
+                          : localizedStrings(context).flowPendingFinish),
                   isCompleted: activeStage > 4,
                   isCurrent: activeStage == 4,
                   isLast: true,
@@ -531,12 +577,14 @@ class LiveTrackingScreen extends ConsumerWidget {
                           Expanded(
                             child: Row(
                               children: [
-                                const Icon(Icons.receipt_long_rounded, color: AppColors.primary, size: 20),
+                                const Icon(Icons.receipt_long_rounded,
+                                    color: AppColors.primary, size: 20),
                                 const SizedBox(width: 8),
                                 Expanded(
                                   child: Text(
-                                    'Customer Invoice Review',
-                                    style: AppTypography.headlineSm.copyWith(fontSize: 16),
+                                    localizedStrings(context).flowInvoiceReview,
+                                    style: AppTypography.headlineSm
+                                        .copyWith(fontSize: 16),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -546,19 +594,25 @@ class LiveTrackingScreen extends ConsumerWidget {
                           ),
                           const SizedBox(width: 8),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
-                              color: booking.status == BookingStatus.completed || booking.status == BookingStatus.settled
+                              color: booking.status ==
+                                          BookingStatus.completed ||
+                                      booking.status == BookingStatus.settled
                                   ? AppColors.tertiarySurfaceTint
                                   : AppColors.surfaceSubtle,
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
-                              booking.status == BookingStatus.completed || booking.status == BookingStatus.settled
-                                  ? 'Paid & Settled'
-                                  : 'Pending Review',
+                              booking.status == BookingStatus.completed ||
+                                      booking.status == BookingStatus.settled
+                                  ? localizedStrings(context).flowPaidSettled
+                                  : localizedStrings(context).flowPendingReview,
                               style: AppTypography.labelSm.copyWith(
-                                color: booking.status == BookingStatus.completed || booking.status == BookingStatus.settled
+                                color: booking.status ==
+                                            BookingStatus.completed ||
+                                        booking.status == BookingStatus.settled
                                     ? AppColors.tertiary
                                     : AppColors.textMuted,
                                 fontWeight: FontWeight.bold,
@@ -571,9 +625,13 @@ class LiveTrackingScreen extends ConsumerWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(child: Text('Labor & Diagnostic Inspection', style: AppTypography.bodySm)),
+                          Expanded(
+                              child: Text(
+                                  localizedStrings(context).flowLaborInspection,
+                                  style: AppTypography.bodySm)),
                           const SizedBox(width: 8),
-                          Text('₹${booking.laborFee}', style: AppTypography.labelMd),
+                          Text('₹${booking.laborFee}',
+                              style: AppTypography.labelMd),
                         ],
                       ),
                       if (booking.parts.isNotEmpty) ...[
@@ -581,7 +639,8 @@ class LiveTrackingScreen extends ConsumerWidget {
                         ...booking.parts.map((p) => Padding(
                               padding: const EdgeInsets.only(bottom: 4),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(
                                     child: Text(
@@ -592,7 +651,8 @@ class LiveTrackingScreen extends ConsumerWidget {
                                     ),
                                   ),
                                   const SizedBox(width: 8),
-                                  Text('₹${p.total}', style: AppTypography.labelMd),
+                                  Text('₹${p.total}',
+                                      style: AppTypography.labelMd),
                                 ],
                               ),
                             )),
@@ -600,9 +660,15 @@ class LiveTrackingScreen extends ConsumerWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Expanded(child: Text('2% Parts Gateway Surcharge', style: AppTypography.bodySm)),
+                            Expanded(
+                                child: Text(
+                                    localizedStrings(context)
+                                        .flowPartsSurcharge,
+                                    style: AppTypography.bodySm)),
                             const SizedBox(width: 8),
-                            Text('+₹${booking.partsGatewaySurcharge}', style: AppTypography.labelMd.copyWith(color: AppColors.secondary)),
+                            Text('+₹${booking.partsGatewaySurcharge}',
+                                style: AppTypography.labelMd
+                                    .copyWith(color: AppColors.secondary)),
                           ],
                         ),
                       ],
@@ -610,9 +676,13 @@ class LiveTrackingScreen extends ConsumerWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(child: Text('18% GST (Labor & Surcharge)', style: AppTypography.bodySm)),
+                          Expanded(
+                              child: Text(localizedStrings(context).flowGst,
+                                  style: AppTypography.bodySm)),
                           const SizedBox(width: 8),
-                          Text('+₹${booking.gstAmount}', style: AppTypography.labelMd.copyWith(color: AppColors.textMuted)),
+                          Text('+₹${booking.gstAmount}',
+                              style: AppTypography.labelMd
+                                  .copyWith(color: AppColors.textMuted)),
                         ],
                       ),
                       const Padding(
@@ -622,9 +692,16 @@ class LiveTrackingScreen extends ConsumerWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(child: Text('Grand Total Payable', style: AppTypography.labelLg.copyWith(fontWeight: FontWeight.bold))),
+                          Expanded(
+                              child: Text(
+                                  localizedStrings(context)
+                                      .flowGrandTotalPayable,
+                                  style: AppTypography.labelLg
+                                      .copyWith(fontWeight: FontWeight.bold))),
                           const SizedBox(width: 8),
-                          Text('₹${booking.grandTotal}', style: AppTypography.numericPrice.copyWith(fontSize: 20)),
+                          Text('₹${booking.grandTotal}',
+                              style: AppTypography.numericPrice
+                                  .copyWith(fontSize: 20)),
                         ],
                       ),
                       const SizedBox(height: 14),
@@ -635,12 +712,13 @@ class LiveTrackingScreen extends ConsumerWidget {
                         decoration: BoxDecoration(
                           color: AppColors.secondarySurfaceTint,
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: AppColors.secondaryContainer),
+                          border:
+                              Border.all(color: AppColors.secondaryContainer),
                         ),
                         child: Column(
                           children: [
                             Text(
-                              'YOUR 4-DIGIT COMPLETION OTP',
+                              localizedStrings(context).flowCompletionCodeLabel,
                               style: AppTypography.labelSm.copyWith(
                                 color: AppColors.secondary,
                                 letterSpacing: 0.8,
@@ -658,9 +736,10 @@ class LiveTrackingScreen extends ConsumerWidget {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              'Share verbally with artisan only after satisfactory completion.',
+                              localizedStrings(context).flowCompletionCodeHint,
                               textAlign: TextAlign.center,
-                              style: AppTypography.bodySm.copyWith(fontSize: 11, color: AppColors.textMuted),
+                              style: AppTypography.bodySm.copyWith(
+                                  fontSize: 11, color: AppColors.textMuted),
                             ),
                           ],
                         ),
@@ -669,16 +748,18 @@ class LiveTrackingScreen extends ConsumerWidget {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () => _showCustomerInvoiceReviewSheet(context, ref, booking),
+                          onPressed: () => _showCustomerInvoiceReviewSheet(
+                              context, ref, booking),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primary,
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 12),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
                           ),
-                          child: const Text(
-                            'Review Detailed Invoice & Release OTP',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                          child: Text(
+                            localizedStrings(context).flowReviewRelease,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
@@ -693,7 +774,8 @@ class LiveTrackingScreen extends ConsumerWidget {
     );
   }
 
-  void _showCustomerInvoiceReviewSheet(BuildContext context, WidgetRef ref, BookingModel booking) {
+  void _showCustomerInvoiceReviewSheet(
+      BuildContext context, WidgetRef ref, BookingModel booking) {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -733,15 +815,20 @@ class LiveTrackingScreen extends ConsumerWidget {
                         color: AppColors.primaryContainer,
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Icon(Icons.receipt_long_rounded, color: Colors.white, size: 22),
+                      child: const Icon(Icons.receipt_long_rounded,
+                          color: Colors.white, size: 22),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Itemized Service Invoice', style: AppTypography.headlineSm.copyWith(fontSize: 18)),
-                          Text('Booking #${booking.bookingId}', style: AppTypography.labelSm.copyWith(color: AppColors.textMuted)),
+                          Text(localizedStrings(context).flowItemizedInvoice,
+                              style: AppTypography.headlineSm
+                                  .copyWith(fontSize: 18)),
+                          Text('Booking #${booking.bookingId}',
+                              style: AppTypography.labelSm
+                                  .copyWith(color: AppColors.textMuted)),
                         ],
                       ),
                     ),
@@ -761,38 +848,49 @@ class LiveTrackingScreen extends ConsumerWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(child: Text('Labor & Diagnostic Inspection', style: AppTypography.bodySm)),
+                          Expanded(
+                              child: Text(
+                                  localizedStrings(context).flowLaborInspection,
+                                  style: AppTypography.bodySm)),
                           const SizedBox(width: 8),
-                          Text('₹${booking.laborFee}', style: AppTypography.labelMd),
+                          Text('₹${booking.laborFee}',
+                              style: AppTypography.labelMd),
                         ],
                       ),
                       const SizedBox(height: 8),
                       if (booking.parts.isNotEmpty) ...[
-                        Text('Spare Parts & Materials', style: AppTypography.labelSm.copyWith(fontWeight: FontWeight.bold)),
+                        Text(localizedStrings(context).flowSpares,
+                            style: AppTypography.labelSm
+                                .copyWith(fontWeight: FontWeight.bold)),
                         const SizedBox(height: 4),
                         ...booking.parts.map((p) => Padding(
                               padding: const EdgeInsets.symmetric(vertical: 2),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(
                                     child: Row(
                                       children: [
-                                        const Icon(Icons.inventory_2_outlined, size: 14, color: AppColors.secondary),
+                                        const Icon(Icons.inventory_2_outlined,
+                                            size: 14,
+                                            color: AppColors.secondary),
                                         const SizedBox(width: 4),
                                         Expanded(
                                           child: Text(
                                             '${p.name} (Receipt Attached)',
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
-                                            style: AppTypography.bodySm.copyWith(fontSize: 12),
+                                            style: AppTypography.bodySm
+                                                .copyWith(fontSize: 12),
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
                                   const SizedBox(width: 8),
-                                  Text('₹${p.total}', style: AppTypography.labelSm),
+                                  Text('₹${p.total}',
+                                      style: AppTypography.labelSm),
                                 ],
                               ),
                             )),
@@ -800,9 +898,14 @@ class LiveTrackingScreen extends ConsumerWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Expanded(child: Text('2% Parts Payment Gateway Surcharge', style: AppTypography.bodySm)),
+                            Expanded(
+                                child: Text(
+                                    '2% Parts Payment Gateway Surcharge',
+                                    style: AppTypography.bodySm)),
                             const SizedBox(width: 8),
-                            Text('+₹${booking.partsGatewaySurcharge}', style: AppTypography.labelMd.copyWith(color: AppColors.secondary)),
+                            Text('+₹${booking.partsGatewaySurcharge}',
+                                style: AppTypography.labelMd
+                                    .copyWith(color: AppColors.secondary)),
                           ],
                         ),
                         const SizedBox(height: 6),
@@ -810,9 +913,13 @@ class LiveTrackingScreen extends ConsumerWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(child: Text('18% GST (Labor & Gateway Surcharge)', style: AppTypography.bodySm)),
+                          Expanded(
+                              child: Text('18% GST (Labor & Gateway Surcharge)',
+                                  style: AppTypography.bodySm)),
                           const SizedBox(width: 8),
-                          Text('+₹${booking.gstAmount}', style: AppTypography.labelMd.copyWith(color: AppColors.textMuted)),
+                          Text('+₹${booking.gstAmount}',
+                              style: AppTypography.labelMd
+                                  .copyWith(color: AppColors.textMuted)),
                         ],
                       ),
                       const Padding(
@@ -822,9 +929,15 @@ class LiveTrackingScreen extends ConsumerWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(child: Text('Grand Total', style: AppTypography.labelLg.copyWith(fontWeight: FontWeight.bold))),
+                          Expanded(
+                              child: Text(
+                                  localizedStrings(context).flowGrandTotal,
+                                  style: AppTypography.labelLg
+                                      .copyWith(fontWeight: FontWeight.bold))),
                           const SizedBox(width: 8),
-                          Text('₹${booking.grandTotal}', style: AppTypography.numericPrice.copyWith(fontSize: 22)),
+                          Text('₹${booking.grandTotal}',
+                              style: AppTypography.numericPrice
+                                  .copyWith(fontSize: 22)),
                         ],
                       ),
                     ],
@@ -842,7 +955,7 @@ class LiveTrackingScreen extends ConsumerWidget {
                   child: Column(
                     children: [
                       Text(
-                        'RELEASE COMPLETION OTP TO ARTISAN',
+                        localizedStrings(context).flowReleaseCompletion,
                         style: AppTypography.labelSm.copyWith(
                           color: AppColors.secondary,
                           letterSpacing: 0.8,
@@ -860,9 +973,10 @@ class LiveTrackingScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'By revealing and releasing this OTP, you verify job completion and authorize escrow release.',
+                        localizedStrings(context).flowReleaseConsent,
                         textAlign: TextAlign.center,
-                        style: AppTypography.bodySm.copyWith(fontSize: 11, color: AppColors.textMuted),
+                        style: AppTypography.bodySm
+                            .copyWith(fontSize: 11, color: AppColors.textMuted),
                       ),
                     ],
                   ),
@@ -885,7 +999,8 @@ class LiveTrackingScreen extends ConsumerWidget {
                           mandateId: booking.mandateId ?? 'man_preauth_9981',
                         );
 
-                        ref.read(activeBookingProvider.notifier).state = booking.copyWith(
+                        ref.read(activeBookingProvider.notifier).state =
+                            booking.copyWith(
                           status: BookingStatus.completed,
                           mandateStatus: UpiMandateStatus.released,
                         );
@@ -895,8 +1010,9 @@ class LiveTrackingScreen extends ConsumerWidget {
                         }
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Completion Verified! Standby ₹99 mandate released, escrow settled.'),
+                            SnackBar(
+                              content: Text(localizedStrings(context)
+                                  .flowCompletionSuccess),
                               backgroundColor: AppColors.tertiary,
                             ),
                           );
@@ -913,11 +1029,13 @@ class LiveTrackingScreen extends ConsumerWidget {
                       backgroundColor: AppColors.primary,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
                     ),
                     child: Text(
                       'Verify & Release Completion OTP (${booking.completionOtp})',
-                      style: AppTypography.labelLg.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                      style: AppTypography.labelLg.copyWith(
+                          color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
@@ -985,7 +1103,9 @@ class LiveTrackingScreen extends ConsumerWidget {
               decoration: BoxDecoration(
                 color: isCompleted
                     ? AppColors.tertiary
-                    : (isCurrent ? AppColors.secondarySurfaceTint : AppColors.surfaceSubtle),
+                    : (isCurrent
+                        ? AppColors.secondarySurfaceTint
+                        : AppColors.surfaceSubtle),
                 shape: BoxShape.circle,
                 border: Border.all(
                   color: iconColor,
@@ -993,7 +1113,8 @@ class LiveTrackingScreen extends ConsumerWidget {
                 ),
               ),
               child: isCompleted
-                  ? const Icon(Icons.check_rounded, color: Colors.white, size: 14)
+                  ? const Icon(Icons.check_rounded,
+                      color: Colors.white, size: 14)
                   : (isCurrent
                       ? Center(
                           child: Container(
@@ -1024,7 +1145,11 @@ class LiveTrackingScreen extends ConsumerWidget {
                 title,
                 style: AppTypography.labelMd.copyWith(
                   fontWeight: isCurrent ? FontWeight.bold : FontWeight.w600,
-                  color: isCurrent ? AppColors.textPrimary : (isCompleted ? AppColors.textPrimary : AppColors.textMuted),
+                  color: isCurrent
+                      ? AppColors.textPrimary
+                      : (isCompleted
+                          ? AppColors.textPrimary
+                          : AppColors.textMuted),
                 ),
               ),
               Text(time, style: AppTypography.bodySm.copyWith(fontSize: 11)),

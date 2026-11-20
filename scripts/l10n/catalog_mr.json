@@ -1,0 +1,109 @@
+{
+  "catalogTradeName": "{id, select, trade_electrician {इलेक्ट्रिशियन} trade_plumber {प्लंबर (नळ कारागीर)} trade_carpenter {सुतार (कारपेंटर)} trade_mason {गवंडी / सिव्हिल कामगार} trade_painter {रंगारी (पेंटर)} trade_ac_refrig {एसी आणि फ्रीज मेकॅनिक} trade_appliance {घरगुती उपकरणे दुरुस्ती} trade_welder {वेल्डर / लोहार कामगार} trade_pest {कीटक नियंत्रण (पेस्ट कंट्रोल)} trade_deep_cleaning {डीप क्लीनिंग (स्वच्छता सेवा)} other {{fallback}}}",
+  "@catalogTradeName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "fallback": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogTradeTagline": "{id, select, trade_electrician {शॉर्ट सर्किट, MCB, स्विचबोर्ड आणि मोठ्या उपकरणांची वायरिंग} trade_plumber {पाइप गळती, नळ बदलणे, तुंबलेली गटारे आणि सॅनिटरी फिटिंग} trade_carpenter {दरवाजाचे कुलूप, किचनची बिजागरी, लाकडी दुरुस्ती आणि फर्निचर जोडणी} trade_mason {फरशी बदलणे, भिंतीचे प्लास्टर, काँक्रीट ड्रिलिंग आणि जलरोधक काम} trade_painter {भिंतीचे रंगकाम, ओलाव्याचा उपचार, दरवाजाची पॉलिश आणि घराची रंगरंगोटी} trade_ac_refrig {फोम जेट स्वच्छता, गॅस भरणे, कंप्रेसर तपासणी आणि कूलिंग समस्या} trade_appliance {वॉशिंग मशीन, मायक्रोवेव्ह, गिझर, मिक्सर ग्राइंडर आणि RO प्युरिफायर} trade_welder {गेटच्या बिजागरीचे वेल्डिंग, सुरक्षा जाळी, रेलिंग आणि शेडची दुरुस्ती} trade_pest {झुरळांवरील जेल उपचार, वाळवीरोधक ड्रिलिंग आणि ढेकूण नियंत्रण} trade_deep_cleaning {बाथरूमचा थर काढणे, किचनची चरबी साफ करणे आणि सोफा धुलाई} other {{fallback}}}",
+  "@catalogTradeTagline": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "fallback": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogPackageName": "{id, select, pkg_elec_mcb {शॉर्ट सर्किट आणि MCB ट्रिपिंग} pkg_elec_switchboard {स्विचबोर्ड आणि सॉकेट दुरुस्ती} pkg_elec_fan {छताचा पंखा / झुंबर बसवणे} pkg_elec_inverter {इन्व्हर्टर आणि बॅटरी वायरिंग} pkg_plumb_leak {पाण्याच्या पाइप जोडाची गळती दुरुस्ती} pkg_plumb_drain {किचन सिंक आणि बाथरूमचे तुंबलेले गटार मोकळे करणे} pkg_plumb_tap {नळ / मिक्सर / डायव्हर्टर बदलणे} pkg_plumb_tank {वरच्या टाकीचा फ्लोट व्हॉल्व्ह आणि मोटर लाइन} pkg_carp_lock {मुख्य दरवाजाचा डेडबोल्ट / गोदरेज कुलूप दुरुस्ती} pkg_carp_hinge {कॅबिनेट आणि कपाटाची हायड्रॉलिक बिजागरी बदलणे} pkg_carp_door_trim {घासणारा दरवाजा आणि चौकट रंधणे} pkg_carp_furniture {पलंग / टेबल जोडणी आणि मजबुतीकरण} pkg_mason_tile {तुटलेली फरशी / भिंतीची टाइल दुरुस्ती (4 पर्यंत)} pkg_mason_plaster {भिंतीच्या भेगा आणि प्लास्टर दुरुस्ती} pkg_mason_waterproof {बाथरूम / बाल्कनी कोपऱ्यांचे जलरोधक काम} pkg_paint_patch {एका भिंतीची दुरुस्ती आणि रंगकाम (पुट्टी + रंग)} pkg_paint_damp {ओलावारोधक रासायनिक थर आणि टॉपकोट} pkg_paint_wood {दरवाजा आणि खिडकीची इनॅमल / मेलामाइन पॉलिश} pkg_ac_deep_clean {स्प्लिट AC फोम जेट सखोल सर्व्हिस} pkg_ac_gas_leak {AC गॅस गळती तपासणी आणि भराई} pkg_fridge_cooling {फ्रिजचे कमी कूलिंग / डीफ्रॉस्ट दुरुस्ती} pkg_app_geyser {इन्स्टंट / स्टोरेज गिझर हीटिंग एलिमेंट दुरुस्ती} pkg_app_washing {वॉशिंग मशीन स्पिन / ड्रेन ड्रम समस्या} pkg_app_ro {RO प्युरिफायर मेम्ब्रेन आणि फिल्टर सर्व्हिस} pkg_weld_gate {मुख्य स्लायडिंग / स्विंग गेट बिजागरीचे आर्क वेल्डिंग} pkg_weld_grill {बाल्कनी आणि खिडकीची सुरक्षा जाळी मजबूत करणे} pkg_weld_sheet {टिन शेड आणि पॉलीकार्बोनेट छत ब्रॅकेट दुरुस्ती} pkg_pest_cockroach {किचन आणि बाथरूम हर्बल जेल उपचार} pkg_pest_termite {लाकडातील वाळवीसाठी ड्रिल आणि रासायनिक संरक्षण} pkg_pest_bedbug {ढेकणांचा 2-टप्पे उष्णता आणि स्प्रे उपचार} pkg_clean_bath {बाथरूममधील कडक पाण्याचे डाग आणि टाइल थर स्वच्छता} pkg_clean_kitchen {मॉड्युलर किचन चिमणी आणि ओट्याची चरबी स्वच्छता} pkg_clean_sofa {5-आसनी कापडी सोफ्याची शॅम्पू आणि ओली स्वच्छता} other {{fallback}}}",
+  "@catalogPackageName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "fallback": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogPackageDescription": "{id, select, pkg_elec_mcb {वारंवार ट्रिपिंग, ठिणगी व न्यूट्रल दोष तपासणी आणि फ्यूज दुरुस्ती} pkg_elec_switchboard {सैल स्विच, जळलेले संपर्क आणि 16A पावर सॉकेट बसवणे} pkg_elec_fan {अँकर रॉड बसवणे, रेग्युलेटर वायरिंग आणि कंपन कमी करणे} pkg_elec_inverter {बॅकअप बायपास लाइन, जड लोड टर्मिनल आणि बॅटरी पाण्याची तपासणी} pkg_plumb_leak {CPVC/PVC पाइप जोडाचे सोल्डरिंग आणि भिंतीतील गळती तपासणी} pkg_plumb_drain {उच्च दाबाच्या यांत्रिक ऑगरने गटार आणि ट्रॅप स्वच्छता} pkg_plumb_tap {सिरेमिक स्पिंडल बदलणे, क्वार्टर-टर्न व्हॉल्व्ह बसवणे आणि टेफ्लॉन सीलिंग} pkg_plumb_tank {बॉल कॉक ऑटो कट-ऑफ व्हॉल्व्ह बदलणे आणि एअर लॉक काढणे} pkg_carp_lock {सिलिंडर बदलणे, अडकलेली कडी सरळ करणे आणि पितळी स्ट्राइक प्लेट बसवणे} pkg_carp_hinge {सॉफ्ट-क्लोज बिजागरीचा ताण आणि प्लायवूड स्क्रूची पकड दुरुस्ती} pkg_carp_door_trim {खालचा भाग अचूक कापणे आणि पावसात फुगलेले लाकूड दुरुस्त करणे} pkg_carp_furniture {बोल्ट घट्ट करणे, लाकडी ब्रॅकेट मजबूत करणे आणि वाळवी तपासणी} pkg_mason_tile {चिकटवण्याचा थर, लेझर समतलीकरण आणि बुरशीरोधक एपॉक्सी ग्राउटिंग} pkg_mason_plaster {पॉलिमर मिश्रित सिमेंट, V-ग्रूव्ह कटिंग आणि गुळगुळीत फिनिश} pkg_mason_waterproof {स्कर्टिंगवर Dr. Fixit रासायनिक आवरणाचे 2 थर} pkg_paint_patch {घासणे, ॲक्रेलिक पुट्टी, प्राइमरचे 2 थर आणि रंग जुळवणे} pkg_paint_damp {क्षारांचा थर काढणे आणि सिलिकॉन डॅम्प-लॉक उपचार} pkg_paint_wood {बारीक सँडपेपरने घासणे आणि चमकदार PU कोटिंग} pkg_ac_deep_clean {आतील कॉइलची जीवाणुरोधक फोम धुलाई, बाहेरील ब्लोअर आणि फिल्टर निर्जंतुकीकरण} pkg_ac_gas_leak {नायट्रोजन दाबाने गळती तपासणी, फ्लेअर नट ब्रेझिंग आणि R32/R410A व्हॅक्यूम चार्जिंग} pkg_fridge_cooling {थर्मोस्टॅट कॅलिब्रेशन, बायमेटल सेन्सर बदलणे आणि कॅपिलरी फ्लश} pkg_app_geyser {तांब्याच्या हीटिंग कॉइलचा थर काढणे आणि सुरक्षा थर्मोस्टॅट तपासणी} pkg_app_washing {मोटर बेल्ट घट्ट करणे, ड्रेन पंप फिल्टर मोकळा करणे आणि PCB रिले तपासणी} pkg_app_ro {TDS कॅलिब्रेशन, सेडिमेंट व कार्बन फिल्टर बदलणे आणि बूस्टर पंप तपासणी} pkg_weld_gate {माइल्ड स्टील बॉल-बेअरिंग पिव्हट वेल्डिंग, स्लॅग काढणे आणि गंजरोधक प्राइमर} pkg_weld_grill {सैल अँकर पिनचे टॅक वेल्डिंग आणि अँगल आयर्न मजबुतीकरण} pkg_weld_sheet {वाऱ्याने तुटलेले पर्लिन जोड वेल्डिंग आणि सेल्फ-टॅपिंग स्क्रू गॅस्केट बदलणे} pkg_pest_cockroach {बिजागरी व सिंकखालील फटींत गंधरहित Fipronil जेल (मुले व पाळीव प्राण्यांसाठी सुरक्षित)} pkg_pest_termite {6 मिमी ड्रिलिंग, दाबाने Imidacloprid इंजेक्शन आणि लाकडी रंगाचे सील} pkg_pest_bedbug {गादीच्या शिवणीवर वाफ, पायरेथ्रॉइड स्प्रे आणि 15 दिवसांत मोफत पुनर्भेट} pkg_clean_bath {रोटरी स्क्रबरने टाइल धुलाई, नळ पॉलिश आणि काचेचे डाग काढणे} pkg_clean_kitchen {कॉस्टिकविना बॅफल फिल्टरची अल्ट्रासोनिक स्वच्छता, स्टील पॉलिश आणि ग्राउट सफाई} pkg_clean_sofa {सखोल फोम स्वच्छता, औद्योगिक व्हॅक्यूमने ओलावा काढणे आणि सिट्रस सुगंध} other {{fallback}}}",
+  "@catalogPackageDescription": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "fallback": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogBundleTitle": "{id, select, bundle_monsoon_elec {पावसाळी विद्युत सुरक्षा} bundle_plumb_health {घरगुती प्लंबिंग आरोग्य तपासणी} bundle_ac_summer {उन्हाळापूर्व एसी सुपर कुल सर्व्हिसिंग} bundle_carpenter_care {मॉड्यूलर किचन व दरवाजा अलाइनमेंट} other {{fallback}}}",
+  "@catalogBundleTitle": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "fallback": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogBundleSubtitle": "{id, select, bundle_monsoon_elec {शॉर्ट सर्किट, MCB ट्रिप आणि ओलाव्यामुळे शॉक टाळा} bundle_plumb_health {भिंतीतील गळती तपासणी, वरच्या टाकीचा व्हॉल्व्ह तपासणे आणि ट्रॅप स्वच्छता} bundle_ac_summer {जीवाणुरोधक फोम जेट धुलाई, कूलिंग आणि गॅस दाब तपासणी} bundle_carpenter_care {हायड्रॉलिक सॉफ्ट-क्लोज बिजागरी घट्ट करणे आणि फुगलेला दरवाजा रंधणे} other {{fallback}}}",
+  "@catalogBundleSubtitle": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "fallback": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogBundleTask": "{id, select, bundle_monsoon_elec_0 {MCB ट्रिप तपासणी आणि फ्यूज लोड कॅलिब्रेशन} bundle_monsoon_elec_1 {स्विचबोर्ड ओलावा आणि अर्थिंग गळती तपासणी} bundle_monsoon_elec_2 {छताचा पंखा आणि बॅकअप वायरिंग घट्ट करणे} bundle_plumb_health_0 {आवाजाद्वारे लपलेल्या पाइप जोडाची गळती तपासणी} bundle_plumb_health_1 {किचन सिंक आणि बाथरूम गटाराची यांत्रिक ऑगर स्वच्छता} bundle_plumb_health_2 {क्वार्टर-टर्न अँगल व्हॉल्व्ह आणि सिरेमिक स्पिंडल सर्व्हिस} bundle_ac_summer_0 {आतील कूलिंग कॉइलची उच्च दाबाने फोम जेट धुलाई} bundle_ac_summer_1 {बाहेरील कंडेन्सर धुलाई आणि कंप्रेसर कंपन कमी करणे} bundle_ac_summer_2 {R32/R410A गॅस दाब मोजणे आणि फिल्टर निर्जंतुकीकरण} bundle_carpenter_care_0 {कॅबिनेट आणि कपाटाच्या हायड्रॉलिक सॉफ्ट-क्लोज ताणाचे समायोजन} bundle_carpenter_care_1 {फुगलेली चौकट रंधणे आणि खालची मोकळी जागा योग्य करणे} bundle_carpenter_care_2 {मुख्य दरवाजाचा डेडबोल्ट आणि गोदरेज कुलूप सिलिंडर सर्व्हिस} other {{fallback}}}",
+  "@catalogBundleTask": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "fallback": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogRoleName": "{id, select, headMistry {मुख्य मिस्त्री / उस्ताद} skilledKarigaar {कुशल कारागीर} helperAssistant {मदतनीस / बिगारी} thekedar {ठेकेदार / टीम प्रमुख} other {{fallback}}}",
+  "@catalogRoleName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "fallback": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogRoleBadge": "{id, select, headMistry {👑 मुख्य मिस्त्री / उस्ताद} skilledKarigaar {🔧 कुशल कारागीर} helperAssistant {🤝 मदतनीस / बिगारी} thekedar {👷 ठेकेदार / टीम प्रमुख} other {{fallback}}}",
+  "@catalogRoleBadge": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "fallback": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedSavePercent": "{percent}% बचत",
+  "@sharedSavePercent": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  }
+}

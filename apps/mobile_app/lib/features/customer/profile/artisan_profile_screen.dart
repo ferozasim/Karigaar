@@ -1,3 +1,4 @@
+import '../../../l10n/localized_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -16,7 +17,8 @@ class ArtisanProfileScreen extends ConsumerStatefulWidget {
   const ArtisanProfileScreen({super.key, required this.artisanId});
 
   @override
-  ConsumerState<ArtisanProfileScreen> createState() => _ArtisanProfileScreenState();
+  ConsumerState<ArtisanProfileScreen> createState() =>
+      _ArtisanProfileScreenState();
 }
 
 class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
@@ -45,13 +47,15 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
           },
         ),
         title: Text(
-          'Craftsman Profile',
+          localizedStrings(context).accountCraftsmanProfile,
           style: AppTypography.headlineSm.copyWith(fontSize: 18),
         ),
         actions: [
           IconButton(
             icon: Icon(
-              _isFavorited ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+              _isFavorited
+                  ? Icons.favorite_rounded
+                  : Icons.favorite_border_rounded,
               color: _isFavorited ? AppColors.error : AppColors.primary,
             ),
             onPressed: () {
@@ -62,8 +66,9 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                 SnackBar(
                   content: Text(
                     _isFavorited
-                        ? 'Saved ${artisan.name} to favorites!'
-                        : 'Removed from favorites.',
+                        ? localizedStrings(context)
+                            .accountFavoriteSaved(artisan.name)
+                        : localizedStrings(context).accountRemovedFavorite,
                   ),
                   duration: const Duration(seconds: 1),
                 ),
@@ -75,7 +80,8 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('Sharing ${artisan.name}\'s profile link...'),
+                  content: Text(localizedStrings(context)
+                      .accountSharingProfile(artisan.name)),
                   duration: const Duration(seconds: 1),
                 ),
               );
@@ -186,7 +192,11 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                     color: AppColors.primaryContainer,
                     child: Center(
                       child: Text(
-                        artisan.name.split(' ').map((e) => e.isNotEmpty ? e[0] : '').take(2).join(),
+                        artisan.name
+                            .split(' ')
+                            .map((e) => e.isNotEmpty ? e[0] : '')
+                            .take(2)
+                            .join(),
                         style: AppTypography.displayLg.copyWith(
                           fontSize: 32,
                           color: AppColors.secondary,
@@ -200,7 +210,8 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                 bottom: -6,
                 right: -4,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
                     color: AppColors.tertiary,
                     borderRadius: BorderRadius.circular(12),
@@ -216,10 +227,11 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.verified_rounded, color: Colors.white, size: 13),
+                      const Icon(Icons.verified_rounded,
+                          color: Colors.white, size: 13),
                       const SizedBox(width: 3),
                       Text(
-                        'PRO',
+                        localizedStrings(context).accountPro,
                         style: AppTypography.labelSm.copyWith(
                           color: Colors.white,
                           fontSize: 10,
@@ -282,7 +294,8 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                       ? district.localities.first.name
                       : 'Anand Nagar');
               return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: AppColors.surfaceSubtle,
                   borderRadius: BorderRadius.circular(9999),
@@ -293,11 +306,14 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.location_on_rounded, color: AppColors.secondary, size: 15),
+                      const Icon(Icons.location_on_rounded,
+                          color: AppColors.secondary, size: 15),
                       const SizedBox(width: 4),
                       Text(
-                        '$localityName • Within ${artisan.distanceKm} km',
-                        style: AppTypography.labelMd.copyWith(color: AppColors.primary),
+                        localizedStrings(context).accountWithinDistance(
+                            localityName, artisan.distanceKm),
+                        style: AppTypography.labelMd
+                            .copyWith(color: AppColors.primary),
                       ),
                       const SizedBox(width: 8),
                       Container(
@@ -310,7 +326,7 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        'Available Today',
+                        localizedStrings(context).accountAvailableToday,
                         style: AppTypography.labelSm.copyWith(
                           color: AppColors.tertiary,
                           fontWeight: FontWeight.w700,
@@ -333,21 +349,23 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                   icon: Icons.star_rounded,
                   iconColor: AppColors.secondary,
                   title: '${artisan.rating}★',
-                  subtitle: '${artisan.reviewCount} Reviews',
+                  subtitle: localizedStrings(context)
+                      .accountReviewCount(artisan.reviewCount),
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: _buildMetricTile(
-                  title: '${artisan.yearsExperience}+ Yrs',
-                  subtitle: 'Experience',
+                  title: localizedStrings(context)
+                      .accountExperienceYears(artisan.yearsExperience),
+                  subtitle: localizedStrings(context).accountExperience,
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: _buildMetricTile(
                   title: '${artisan.totalJobsCompleted}+',
-                  subtitle: 'Completed Jobs',
+                  subtitle: localizedStrings(context).accountCompletedJobs,
                 ),
               ),
             ],
@@ -476,14 +494,15 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                         : Icons.lock_outline_rounded,
                     size: 18,
                   ),
-                  label: const Text(
-                    'Call Artisan',
+                  label: Text(
+                    localizedStrings(context).accountCallArtisan,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.primary,
-                    side: const BorderSide(color: AppColors.primary, width: 1.5),
+                    side:
+                        const BorderSide(color: AppColors.primary, width: 1.5),
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14)),
@@ -501,8 +520,9 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                       ContactIntentService.initiateMaskedWhatsAppChat(
                         context,
                         calleeId: artisan.artisanId,
-                        message:
-                            'Namaste ${artisan.name} Ji, I found your profile on Karigaar for ${artisan.tradeTitle}. Are you available for a visit in Nanded?',
+                        message: localizedStrings(context)
+                            .accountArtisanGreeting(
+                                artisan.name, artisan.tradeTitle),
                         contactName: artisan.name,
                       );
                     }
@@ -514,8 +534,8 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                     size: 18,
                     color: Colors.white,
                   ),
-                  label: const Text(
-                    'WhatsApp Artisan',
+                  label: Text(
+                    localizedStrings(context).accountWhatsappArtisan,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -535,9 +555,7 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
           Row(
             children: [
               Icon(
-                isUnlocked
-                    ? Icons.check_circle_rounded
-                    : Icons.shield_outlined,
+                isUnlocked ? Icons.check_circle_rounded : Icons.shield_outlined,
                 size: 13,
                 color: isUnlocked ? AppColors.tertiary : AppColors.textMuted,
               ),
@@ -545,11 +563,12 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
               Expanded(
                 child: Text(
                   isUnlocked
-                      ? 'Masked Virtual DID Active (+91-11-4084-2190) • Direct Contact Unlocked'
-                      : 'Masked Virtual Telephony (+91-11-4084-2190) • Unlock from ₹49',
+                      ? localizedStrings(context).accountMaskedUnlocked
+                      : localizedStrings(context).accountMaskedLocked,
                   style: AppTypography.bodySm.copyWith(
                     fontSize: 11,
-                    color: isUnlocked ? AppColors.tertiary : AppColors.textMuted,
+                    color:
+                        isUnlocked ? AppColors.tertiary : AppColors.textMuted,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -565,7 +584,9 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
   Widget _buildRetroactiveEscrowLockBanner(ArtisanProfileModel artisan) {
     final isMaster = artisan.tier == GuildTier.masterGuildsman ||
         artisan.tier == GuildTier.guildElite;
-    final coverAmount = isMaster ? '₹25,000 Master' : '₹10,000 Base';
+    final coverAmount = isMaster
+        ? localizedStrings(context).accountMasterAmount
+        : localizedStrings(context).accountBaseAmount;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -596,7 +617,8 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                   color: AppColors.tertiary,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Icon(Icons.lock_rounded, color: Colors.white, size: 16),
+                child: const Icon(Icons.lock_rounded,
+                    color: Colors.white, size: 16),
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -604,13 +626,14 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Artisan On-Site? Lock Escrow & Warranty',
+                      localizedStrings(context).accountOnsiteQuestion,
                       style: AppTypography.headlineSm.copyWith(fontSize: 14),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(
-                      'Activate $coverAmount Cover & ₹29 Safety Shield with 1 tap',
+                      localizedStrings(context)
+                          .accountActivateCover(coverAmount),
                       style: AppTypography.bodySm.copyWith(
                         color: AppColors.textMuted,
                         fontSize: 11,
@@ -628,10 +651,11 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
             width: double.infinity,
             child: ElevatedButton.icon(
               key: const Key('upgrade_to_protected_guild_booking_btn'),
-              onPressed: () => RetroactiveEscrowLockSheet.show(context, artisan),
+              onPressed: () =>
+                  RetroactiveEscrowLockSheet.show(context, artisan),
               icon: const Icon(Icons.shield_outlined, size: 16),
-              label: const Text(
-                'Upgrade to Protected Guild Booking',
+              label: Text(
+                localizedStrings(context).accountUpgradeBooking,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -653,7 +677,9 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
   Widget _buildVerificationShieldSection(ArtisanProfileModel artisan) {
     final isMaster = artisan.tier == GuildTier.masterGuildsman ||
         artisan.tier == GuildTier.guildElite;
-    final coverTitle = isMaster ? '₹25k Master Cover' : '₹10k Base Cover';
+    final coverTitle = isMaster
+        ? localizedStrings(context).accountMasterShortCover
+        : localizedStrings(context).accountBaseShortCover;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -686,10 +712,12 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Karigaar Verified Guildsman', style: AppTypography.headlineSm.copyWith(fontSize: 16)),
+                    Text(localizedStrings(context).accountVerifiedGuildsman,
+                        style: AppTypography.headlineSm.copyWith(fontSize: 16)),
                     Text(
-                      'Triple-screened for home safety & master craftsmanship',
-                      style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
+                      localizedStrings(context).accountTripleScreened,
+                      style: AppTypography.bodySm
+                          .copyWith(color: AppColors.textMuted),
                     ),
                   ],
                 ),
@@ -700,23 +728,24 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
           // 4-Pillar Adaptive Grid (supports 2.0x text scaling without clipping)
           Column(
             children: [
-              const IntrinsicHeight(
+              IntrinsicHeight(
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Expanded(
                       child: _VerificationPod(
                         icon: Icons.badge_rounded,
-                        title: 'Govt. ID & Police',
-                        subtitle: 'Background Cleared',
+                        title: localizedStrings(context).accountGovtPolice,
+                        subtitle:
+                            localizedStrings(context).accountBackgroundCleared,
                       ),
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     Expanded(
                       child: _VerificationPod(
                         icon: Icons.workspace_premium_rounded,
-                        title: 'NSDC Certified',
-                        subtitle: 'Skill-Tested Grade A',
+                        title: localizedStrings(context).accountNsdc,
+                        subtitle: localizedStrings(context).accountSkillGrade,
                       ),
                     ),
                   ],
@@ -731,15 +760,16 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                       child: _VerificationPod(
                         icon: Icons.shield_rounded,
                         title: coverTitle,
-                        subtitle: 'Damage Protection',
+                        subtitle:
+                            localizedStrings(context).accountDamageProtection,
                       ),
                     ),
                     const SizedBox(width: 10),
-                    const Expanded(
+                    Expanded(
                       child: _VerificationPod(
                         icon: Icons.build_circle_rounded,
-                        title: 'Calibrated Tools',
-                        subtitle: 'Tool Audit Passed',
+                        title: localizedStrings(context).accountCalibratedTools,
+                        subtitle: localizedStrings(context).accountToolAudit,
                       ),
                     ),
                   ],
@@ -755,13 +785,13 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
   Widget _buildSpecializationsSection(ArtisanProfileModel artisan) {
     final List<String> skills = artisan.specialties.isNotEmpty
         ? artisan.specialties
-        : const [
-            '3-Phase Wiring',
-            'Inverter Setup',
-            'MCB Spark Diagnosis',
-            'Modular Switchboards',
-            'Earthing Verification',
-            'Appliance Load Audit',
+        : [
+            localizedStrings(context).accountWiring,
+            localizedStrings(context).accountInverterSetup,
+            localizedStrings(context).accountMcbDiagnosis,
+            localizedStrings(context).accountSwitchboards,
+            localizedStrings(context).accountEarthing,
+            localizedStrings(context).accountLoadAudit,
           ];
 
     return Padding(
@@ -774,14 +804,18 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
             children: [
               Expanded(
                 child: Text(
-                  'Specializations & Skills',
+                  localizedStrings(context).accountSpecializations,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppTypography.headlineSm.copyWith(fontSize: 17),
                 ),
               ),
               const SizedBox(width: 8),
-              Text('${skills.length} Certified', style: AppTypography.labelMd.copyWith(color: AppColors.secondary)),
+              Text(
+                  localizedStrings(context)
+                      .accountCertifiedCount(skills.length),
+                  style: AppTypography.labelMd
+                      .copyWith(color: AppColors.secondary)),
             ],
           ),
           const SizedBox(height: 12),
@@ -790,7 +824,8 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
             runSpacing: 8,
             children: skills.map((skill) {
               return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                 decoration: BoxDecoration(
                   color: AppColors.surfaceRaised,
                   borderRadius: BorderRadius.circular(12),
@@ -798,7 +833,8 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                 ),
                 child: Text(
                   skill,
-                  style: AppTypography.labelMd.copyWith(color: AppColors.primary),
+                  style:
+                      AppTypography.labelMd.copyWith(color: AppColors.primary),
                 ),
               );
             }).toList(),
@@ -868,14 +904,19 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text('Craftsmanship Showcase', style: AppTypography.headlineSm.copyWith(fontSize: 17)),
+                    Text(localizedStrings(context).accountShowcase,
+                        style: AppTypography.headlineSm.copyWith(fontSize: 17)),
                     Text(
-                      'Verified work photos from local homes',
-                      style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
+                      localizedStrings(context).accountVerifiedPhotos,
+                      style: AppTypography.bodySm
+                          .copyWith(color: AppColors.textMuted),
                     ),
                   ],
                 ),
-                Text('View All ($viewAllCount)', style: AppTypography.labelMd.copyWith(color: AppColors.secondary)),
+                Text(
+                    localizedStrings(context).accountViewAllCount(viewAllCount),
+                    style: AppTypography.labelMd
+                        .copyWith(color: AppColors.secondary)),
               ],
             ),
           ),
@@ -904,7 +945,8 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                       height: 100,
                       decoration: const BoxDecoration(
                         color: AppColors.primaryContainer,
-                        borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(15)),
                       ),
                       child: Stack(
                         children: [
@@ -919,7 +961,8 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                             top: 8,
                             left: 8,
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 3),
                               decoration: BoxDecoration(
                                 color: AppColors.primary.withValues(alpha: 0.8),
                                 borderRadius: BorderRadius.circular(6),
@@ -937,7 +980,8 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                             bottom: 8,
                             right: 8,
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 3),
                               decoration: BoxDecoration(
                                 color: Colors.black.withValues(alpha: 0.6),
                                 borderRadius: BorderRadius.circular(6),
@@ -963,7 +1007,8 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                           children: [
                             Text(
                               item['title'] as String,
-                              style: AppTypography.headlineSm.copyWith(fontSize: 13),
+                              style: AppTypography.headlineSm
+                                  .copyWith(fontSize: 13),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -1003,13 +1048,16 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Artisan Scorecard', style: AppTypography.headlineSm.copyWith(fontSize: 17)),
+          Text(localizedStrings(context).accountScorecard,
+              style: AppTypography.headlineSm.copyWith(fontSize: 17)),
           const SizedBox(height: 14),
-          _buildScoreBar('Punctuality & Timing', 5.0, 1.0),
+          _buildScoreBar(
+              localizedStrings(context).accountPunctuality, 5.0, 1.0),
           const SizedBox(height: 12),
-          _buildScoreBar('Master Craftsmanship', 4.9, 0.98),
+          _buildScoreBar(
+              localizedStrings(context).accountCraftsmanship, 4.9, 0.98),
           const SizedBox(height: 12),
-          _buildScoreBar('Sawdust & Cleanliness', 5.0, 1.0),
+          _buildScoreBar(localizedStrings(context).accountSawdust, 5.0, 1.0),
         ],
       ),
     );
@@ -1033,7 +1081,8 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
             const SizedBox(width: 8),
             Text(
               '${score.toStringAsFixed(1)} / 5.0',
-              style: AppTypography.labelMd.copyWith(fontWeight: FontWeight.w700),
+              style:
+                  AppTypography.labelMd.copyWith(fontWeight: FontWeight.w700),
             ),
           ],
         ),
@@ -1044,7 +1093,8 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
             value: factor,
             minHeight: 8,
             backgroundColor: AppColors.surfaceSubtle,
-            valueColor: const AlwaysStoppedAnimation<Color>(AppColors.secondary),
+            valueColor:
+                const AlwaysStoppedAnimation<Color>(AppColors.secondary),
           ),
         ),
       ],
@@ -1066,10 +1116,12 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
               runSpacing: 4,
               children: [
                 Text(
-                  'Recent Client Feedback',
+                  localizedStrings(context).accountRecentFeedback,
                   style: AppTypography.headlineSm.copyWith(fontSize: 17),
                 ),
-                Text('Verified Bookings', style: AppTypography.labelMd.copyWith(color: AppColors.secondary)),
+                Text(localizedStrings(context).accountVerifiedBookings,
+                    style: AppTypography.labelMd
+                        .copyWith(color: AppColors.secondary)),
               ],
             ),
           ),
@@ -1081,7 +1133,7 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
             stars: 5,
             comment:
                 '${artisan.name} arrived in 18 minutes with full laser & testing toolkit. Repaired our heavy main distribution board that was sparking constantly. Super polite, zero dust left behind!',
-            verifiedBadgeText: 'Verified MCB Spark Repair Job',
+            verifiedBadgeText: localizedStrings(context).accountVerifiedMcb,
           ),
           const SizedBox(height: 12),
           _buildReviewCard(
@@ -1091,7 +1143,8 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
             stars: 5,
             comment:
                 'Exceptional precision on our 3-phase inverter changeover switch. Transparent billing and genuine master artisan attitude. Highly recommended in Nanded!',
-            verifiedBadgeText: 'Verified Inverter Setup Job',
+            verifiedBadgeText:
+                localizedStrings(context).accountVerifiedInverter,
           ),
         ],
       ),
@@ -1135,12 +1188,15 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(name, style: AppTypography.labelMd.copyWith(fontWeight: FontWeight.w700)),
+                          Text(name,
+                              style: AppTypography.labelMd
+                                  .copyWith(fontWeight: FontWeight.w700)),
                           Text(
                             localityAndDate,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: AppTypography.bodySm.copyWith(color: AppColors.textMuted, fontSize: 11),
+                            style: AppTypography.bodySm.copyWith(
+                                color: AppColors.textMuted, fontSize: 11),
                           ),
                         ],
                       ),
@@ -1151,7 +1207,8 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
               Row(
                 children: List.generate(
                   stars,
-                  (_) => const Icon(Icons.star_rounded, color: AppColors.secondary, size: 16),
+                  (_) => const Icon(Icons.star_rounded,
+                      color: AppColors.secondary, size: 16),
                 ),
               ),
             ],
@@ -1159,7 +1216,8 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
           const SizedBox(height: 10),
           Text(
             comment,
-            style: AppTypography.bodyMd.copyWith(color: AppColors.textMuted, fontSize: 13),
+            style: AppTypography.bodyMd
+                .copyWith(color: AppColors.textMuted, fontSize: 13),
           ),
           const SizedBox(height: 10),
           Container(
@@ -1171,7 +1229,8 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.check_circle_rounded, color: AppColors.tertiary, size: 14),
+                const Icon(Icons.check_circle_rounded,
+                    color: AppColors.tertiary, size: 14),
                 const SizedBox(width: 4),
                 Flexible(
                   child: Text(
@@ -1229,14 +1288,16 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                       children: [
                         Text(
                           '₹${artisan.inspectionFee}',
-                          style: AppTypography.numericPrice.copyWith(fontSize: 22),
+                          style:
+                              AppTypography.numericPrice.copyWith(fontSize: 22),
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          '/ visit',
+                          localizedStrings(context).accountPerVisit,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: AppTypography.labelSm.copyWith(color: AppColors.textMuted),
+                          style: AppTypography.labelSm
+                              .copyWith(color: AppColors.textMuted),
                         ),
                       ],
                     ),
@@ -1244,11 +1305,12 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                   const SizedBox(height: 2),
                   Row(
                     children: [
-                      const Icon(Icons.verified_rounded, color: AppColors.tertiary, size: 13),
+                      const Icon(Icons.verified_rounded,
+                          color: AppColors.tertiary, size: 13),
                       const SizedBox(width: 3),
                       Flexible(
                         child: Text(
-                          'Includes ₹25k Guild Warranty',
+                          localizedStrings(context).accountIncludesWarranty,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: AppTypography.labelSm.copyWith(
@@ -1279,15 +1341,18 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                             setState(() {
                               _isSecuringSlot = false;
                             });
-                            context.push('/customer/service/${artisan.primaryTradeId}');
+                            context.push(
+                                '/customer/service/${artisan.primaryTradeId}');
                           }
                         });
                       },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16)),
                   elevation: 2,
                 ),
                 child: _isSecuringSlot
@@ -1296,7 +1361,8 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                         height: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
                       )
                     : Row(
@@ -1304,7 +1370,8 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                         children: [
                           Flexible(
                             child: Text(
-                              'Book ${artisan.name.split(' ').first} Now',
+                              localizedStrings(context).accountBookName(
+                                  artisan.name.split(' ').first),
                               style: AppTypography.labelLg.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w700,
@@ -1314,7 +1381,8 @@ class _ArtisanProfileScreenState extends ConsumerState<ArtisanProfileScreen> {
                             ),
                           ),
                           const SizedBox(width: 4),
-                          const Icon(Icons.arrow_forward_rounded, size: 16, color: Colors.white),
+                          const Icon(Icons.arrow_forward_rounded,
+                              size: 16, color: Colors.white),
                         ],
                       ),
               ),
@@ -1356,7 +1424,8 @@ class _VerificationPod extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: AppTypography.labelMd.copyWith(fontSize: 11, fontWeight: FontWeight.w700),
+                  style: AppTypography.labelMd
+                      .copyWith(fontSize: 11, fontWeight: FontWeight.w700),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),

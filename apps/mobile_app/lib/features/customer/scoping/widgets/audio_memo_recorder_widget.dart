@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../../../../l10n/localized_strings.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/models/audio_memo_model.dart';
 import '../../../../core/services/audio_service.dart';
@@ -164,7 +165,7 @@ class _AudioMemoRecorderWidgetState
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '15s Audio Memo Scoping',
+                            localizedStrings(context).flowAudioTitle,
                             style: AppTypography.headlineSm.copyWith(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -174,10 +175,10 @@ class _AudioMemoRecorderWidgetState
                           ),
                           Text(
                             state.isRecording
-                                ? 'Recording in progress (Max 15s)...'
+                                ? localizedStrings(context).flowRecording
                                 : state.isStopped || state.isPlaying || state.isPaused
                                     ? 'Voice memo attached (${_service.recordedMemo?.durationSeconds ?? _service.elapsedSeconds}s)'
-                                    : 'Explain defect in Hindi, Marathi, or English',
+                                    : localizedStrings(context).flowAudioLanguages,
                             style: AppTypography.labelSm.copyWith(
                               color: state.isRecording
                                   ? AppColors.error
@@ -258,7 +259,7 @@ class _AudioMemoRecorderWidgetState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Record up to 15 seconds of motor hum, water leak sound, or sparking sound for the master artisan.',
+          localizedStrings(context).flowAudioHint,
           style: AppTypography.bodySm.copyWith(color: AppColors.textMuted),
         ),
         const SizedBox(height: 14),
@@ -269,7 +270,7 @@ class _AudioMemoRecorderWidgetState
             onPressed: () => _service.startRecording(),
             icon: const Icon(Icons.mic_rounded, size: 20),
             label: Text(
-              'Record 15s Audio Memo',
+              localizedStrings(context).flowRecordAudio,
               style: AppTypography.labelMd.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
@@ -471,7 +472,7 @@ class _AudioMemoRecorderWidgetState
                 size: 20,
               ),
               label: Text(
-                isPlaying ? 'Pause' : 'Play Preview',
+                isPlaying ? localizedStrings(context).flowPause : localizedStrings(context).flowPlayPreview,
                 style: AppTypography.labelMd.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
@@ -494,7 +495,7 @@ class _AudioMemoRecorderWidgetState
               onPressed: () => _service.startRecording(),
               icon: const Icon(Icons.refresh_rounded, size: 18),
               label: Text(
-                'Re-record',
+                localizedStrings(context).flowRerecord,
                 style: AppTypography.labelMd.copyWith(
                   color: AppColors.textPrimary,
                 ),
@@ -511,7 +512,7 @@ class _AudioMemoRecorderWidgetState
             ),
             IconButton(
               key: const Key('delete_memo_button'),
-              tooltip: 'Delete Audio Memo',
+              tooltip: localizedStrings(context).flowDeleteAudio,
               onPressed: () => _service.deleteAndReset(),
               icon: const Icon(
                 Icons.delete_outline_rounded,

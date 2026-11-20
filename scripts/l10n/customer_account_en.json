@@ -1,0 +1,317 @@
+{
+  "accountProfileTitle": "Homeowner Profile & Settings",
+  "accountMasterProtection": "₹25,000 Master Guild Damage Protection Active",
+  "accountSavedLocalities": "Saved Nanded Localities",
+  "accountChange": "Change",
+  "accountPaymentPreferences": "Escrow & Payment Preferences",
+  "accountTransitMandate": "₹99 Transit Fee Mandate & RBI 2FA Parts Approval",
+  "accountPreauthorization": "UPI Escrow Pre-Authorization",
+  "accountCompletionPayout": "Release payout only after 4-digit Completion OTP",
+  "accountWhatsappAlerts": "WhatsApp Dispatch & Gate Pass Alerts",
+  "accountTrackingInvoices": "Receive live artisan tracking & digital GST invoices",
+  "accountPortalSecurity": "Guild Portal & Security",
+  "accountSosContact": "Emergency SOS Contact",
+  "accountControlDesk": "+91 9422100100 • Nanded Control Desk (24x7)",
+  "accountSwitchGuild": "Switch to Artisan Guild Portal",
+  "accountRadarWallet": "Open 45s Job Radar & Instant IMPS Wallet",
+  "accountSignOut": "Sign Out / Switch Number",
+  "accountChatTitle": "Guild Masked Chat & WhatsApp",
+  "accountMaskedCall": "Masked Call Bridge",
+  "accountViewArtisanProfile": "View Artisan Profile",
+  "accountGateApproved": "Gate Pass Approved",
+  "accountSharePin": "Share Live Pin",
+  "accountCallOnArrival": "Call on Arrival",
+  "accountWhatsappRelay": "WhatsApp Relay",
+  "accountMessageHint": "Message artisan via Guild Bridge...",
+  "accountSend": "Send",
+  "accountBookingsTitle": "My Service Bookings",
+  "accountActiveDispatch": "ACTIVE DISPATCH",
+  "accountPastOrders": "UPCOMING & PAST ORDERS",
+  "accountShield25": "₹25,000 Guild Damage Shield Active",
+  "accountShield10": "₹10,000 Guild Damage Shield Active",
+  "accountOnsiteLocked": "ON-SITE ESCROW LOCKED",
+  "accountScheduledWindow": "Scheduled Window",
+  "accountTrackLive": "Track Live",
+  "accountDirectVisit": "Direct Visit (Unprotected)",
+  "accountOnsiteUpgradeExplanation": "Artisan present on-site. Upgrade now to activate Start OTP (4921), ₹29 Safety Shield & ₹25k Master Cover.",
+  "accountUpgradeBooking": "Upgrade to Protected Guild Booking",
+  "accountViewArtisan": "View Artisan",
+  "accountBookAgain": "Book Again",
+  "accountRateService": "Rate service",
+  "accountRaiseClaim": "Raise warranty claim",
+  "accountServiceQuestion": "How was the service?",
+  "accountOverall": "Overall",
+  "accountCleanliness": "Cleanliness",
+  "accountCareFinish": "Care & finish",
+  "accountFeedback": "Optional feedback",
+  "accountSubmitRating": "Submit rating",
+  "accountClaimTitle": "30-day warranty claim",
+  "accountDeductibleReview": "₹250 deductible applies. Claims are reviewed by Karigaar support.",
+  "accountDamageAmount": "Estimated damage amount (₹)",
+  "accountDescribeIssue": "Describe the issue",
+  "accountClaimValidation": "Enter a valid amount and claim reason.",
+  "accountClaimSent": "Claim sent for review. We’ll update you in this booking.",
+  "accountSubmitClaim": "Submit claim",
+  "accountCraftsmanProfile": "Craftsman Profile",
+  "accountRemovedFavorite": "Removed from favorites.",
+  "accountPro": "PRO",
+  "accountAvailableToday": "Available Today",
+  "accountExperience": "Experience",
+  "accountCompletedJobs": "Completed Jobs",
+  "accountCallArtisan": "Call Artisan",
+  "accountWhatsappArtisan": "WhatsApp Artisan",
+  "accountMaskedUnlocked": "Masked Virtual DID Active (+91-11-4084-2190) • Direct Contact Unlocked",
+  "accountMaskedLocked": "Masked Virtual Telephony (+91-11-4084-2190) • Unlock from ₹49",
+  "accountMasterAmount": "₹25,000 Master",
+  "accountBaseAmount": "₹10,000 Base",
+  "accountOnsiteQuestion": "Artisan On-Site? Lock Escrow & Warranty",
+  "accountMasterShortCover": "₹25k Master Cover",
+  "accountBaseShortCover": "₹10k Base Cover",
+  "accountVerifiedGuildsman": "Karigaar Verified Guildsman",
+  "accountTripleScreened": "Triple-screened for home safety & master craftsmanship",
+  "accountGovtPolice": "Govt. ID & Police",
+  "accountBackgroundCleared": "Background Cleared",
+  "accountNsdc": "NSDC Certified",
+  "accountSkillGrade": "Skill-Tested Grade A",
+  "accountDamageProtection": "Damage Protection",
+  "accountCalibratedTools": "Calibrated Tools",
+  "accountToolAudit": "Tool Audit Passed",
+  "accountWiring": "3-Phase Wiring",
+  "accountInverterSetup": "Inverter Setup",
+  "accountMcbDiagnosis": "MCB Spark Diagnosis",
+  "accountSwitchboards": "Modular Switchboards",
+  "accountEarthing": "Earthing Verification",
+  "accountLoadAudit": "Appliance Load Audit",
+  "accountSpecializations": "Specializations & Skills",
+  "accountShowcase": "Craftsmanship Showcase",
+  "accountVerifiedPhotos": "Verified work photos from local homes",
+  "accountScorecard": "Artisan Scorecard",
+  "accountPunctuality": "Punctuality & Timing",
+  "accountCraftsmanship": "Master Craftsmanship",
+  "accountSawdust": "Sawdust & Cleanliness",
+  "accountRecentFeedback": "Recent Client Feedback",
+  "accountVerifiedBookings": "Verified Bookings",
+  "accountVerifiedMcb": "Verified MCB Spark Repair Job",
+  "accountVerifiedInverter": "Verified Inverter Setup Job",
+  "accountPerVisit": "/ visit",
+  "accountIncludesWarranty": "Includes ₹25k Guild Warranty",
+  "accountUnlockTitle": "Unlock Direct Contact",
+  "accountPrivacyProtected": "100% Privacy Protected • Zero Raw Phone Leakage",
+  "accountPayPerLead": "Pay-Per-Lead",
+  "accountOneTime": "one-time",
+  "accountSingleArtisan": "Single Artisan",
+  "accountDirectoryPass": "Unlimited Directory Pass",
+  "accountPerMonth": "/ month",
+  "accountUnlimitedContact": "Unlimited masked calls & WhatsApp across all 10 trades and 7 districts.",
+  "accountRecommended": "RECOMMENDED",
+  "accountMaskedBenefit": "Masked Telephony: Zero raw phone number exposure",
+  "accountMetaBenefit": "Official Meta WhatsApp Cloud API bridge included",
+  "accountRetroactiveBenefit": "Retroactive Guild Lock: Activate ₹25k warranty on-site anytime",
+  "accountUnlock49": "Unlock for ₹49",
+  "accountActivatePass": "Activate Directory Pass (₹499/mo)",
+  "accountPassActivated": "Directory Pass activated! Unlimited masked contact active across all trades.",
+  "accountMasterCover": "₹25,000 Master Cover",
+  "accountBaseCover": "₹10,000 Base Cover",
+  "accountLockVisit": "Lock on-site visit into formal escrow protection",
+  "accountDoorstepCode": "Doorstep Handshake Code",
+  "accountStartCode4921": "Start Handshake OTP: 4921",
+  "accountActive": "Active",
+  "accountUnderwriting": "Comprehensive property damage underwriting during job execution. ₹250 customer deductible applies to eliminate frivolous claims.",
+  "accountEscrowBreakdown": "Upfront Escrow Breakdown",
+  "accountInspectionTravel": "Base Inspection & Travel",
+  "accountSafetyWarranty": "Platform Safety Shield & Warranty",
+  "accountStandbyHold": "Total Standby Escrow Hold",
+  "accountConfirmLock": "Confirm & Lock Escrow (₹29 Shield)",
+  "accountVerifiedPhone": "+91 9822199882 • Verified Homeowner",
+  "accountPrimaryLocality": "Primary: {name}, Nanded ({pincode})",
+  "@accountPrimaryLocality": {
+    "placeholders": {
+      "name": {},
+      "pincode": {}
+    }
+  },
+  "accountSavedAddress": "{name} • Plot 14, Near Guru Gobind Singh Ji Marg",
+  "@accountSavedAddress": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "accountPrivacyConnection": "Number Masking Active • Zero Raw MSISDN Leakage • Connected with {name} ({trade})",
+  "@accountPrivacyConnection": {
+    "placeholders": {
+      "name": {},
+      "trade": {}
+    }
+  },
+  "accountWhatsappGreeting": "Namaskar {name}, connecting via WhatsApp Cloud Relay.",
+  "@accountWhatsappGreeting": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "accountEmptyBookings": "No bookings in {tab} tab.",
+  "@accountEmptyBookings": {
+    "placeholders": {
+      "tab": {}
+    }
+  },
+  "accountBookingReference": "Booking #{id}",
+  "@accountBookingReference": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "accountVoiceNote": "{seconds}s Voice Note",
+  "@accountVoiceNote": {
+    "placeholders": {
+      "seconds": {}
+    }
+  },
+  "accountStartOtp": "Start Handshake OTP: {otp}",
+  "@accountStartOtp": {
+    "placeholders": {
+      "otp": {}
+    }
+  },
+  "accountTotalEstimate": "Total Estimate: ₹{amount}",
+  "@accountTotalEstimate": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "accountDirectLead": "DIRECT ON-SITE LEAD • {trade}",
+  "@accountDirectLead": {
+    "placeholders": {
+      "trade": {}
+    }
+  },
+  "accountOnsiteName": "{name} (On-Site Diagnostic)",
+  "@accountOnsiteName": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "accountCoverLimit": "Cover limit: ₹{amount}",
+  "@accountCoverLimit": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "accountFavoriteSaved": "Saved {name} to favorites!",
+  "@accountFavoriteSaved": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "accountSharingProfile": "Sharing {name}'s profile link...",
+  "@accountSharingProfile": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "accountWithinDistance": "{locality} • Within {distance} km",
+  "@accountWithinDistance": {
+    "placeholders": {
+      "locality": {},
+      "distance": {}
+    }
+  },
+  "accountReviewCount": "{count} Reviews",
+  "@accountReviewCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "accountExperienceYears": "{years}+ Yrs",
+  "@accountExperienceYears": {
+    "placeholders": {
+      "years": {}
+    }
+  },
+  "accountArtisanGreeting": "Namaste {name} Ji, I found your profile on Karigaar for {trade}. Are you available for a visit in Nanded?",
+  "@accountArtisanGreeting": {
+    "placeholders": {
+      "name": {},
+      "trade": {}
+    }
+  },
+  "accountActivateCover": "Activate {cover} Cover & ₹29 Safety Shield with 1 tap",
+  "@accountActivateCover": {
+    "placeholders": {
+      "cover": {}
+    }
+  },
+  "accountCertifiedCount": "{count} Certified",
+  "@accountCertifiedCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "accountViewAllCount": "View All ({count})",
+  "@accountViewAllCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "accountBookName": "Book {name} Now",
+  "@accountBookName": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "accountConnectName": "Connect with {name} ({trade})",
+  "@accountConnectName": {
+    "placeholders": {
+      "name": {},
+      "trade": {}
+    }
+  },
+  "accountProxyDescription": "Calls & WhatsApp bridged via Virtual Proxy: {number}",
+  "@accountProxyDescription": {
+    "placeholders": {
+      "number": {}
+    }
+  },
+  "accountUnlockDays": "Unlock direct masked calls and WhatsApp with {name} for 30 days.",
+  "@accountUnlockDays": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "accountContactUnlocked": "Direct contact unlocked! Calling enabled via {number}.",
+  "@accountContactUnlocked": {
+    "placeholders": {
+      "number": {}
+    }
+  },
+  "accountUnlockFailed": "Failed to unlock contact: {error}",
+  "@accountUnlockFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "accountArrivalInstructions": "Share this 4-digit code with {name} on-site to verify arrival and activate the stopwatch.",
+  "@accountArrivalInstructions": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "accountCoverActive": "{cover} Active",
+  "@accountCoverActive": {
+    "placeholders": {
+      "cover": {}
+    }
+  },
+  "accountLockedBooking": "On-site booking locked! Share Start OTP 4921 with {name}.",
+  "@accountLockedBooking": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "accountClaimError": "Claim could not be submitted. Check the amount, warranty eligibility, and try again.",
+  "accountStatusAll": "All",
+  "accountStatusEnRoute": "En-Route",
+  "accountStatusUpcoming": "Upcoming",
+  "accountStatusCompleted": "Completed",
+  "accountStatusInProgress": "In Progress"
+}

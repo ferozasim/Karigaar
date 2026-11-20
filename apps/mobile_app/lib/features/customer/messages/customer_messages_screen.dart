@@ -1,3 +1,4 @@
+import '../../../l10n/localized_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -98,7 +99,7 @@ class _CustomerMessagesScreenState
     return Scaffold(
       backgroundColor: AppColors.surfaceBase,
       appBar: AppBar(
-        title: const Text('Guild Masked Chat & WhatsApp'),
+        title: Text(localizedStrings(context).accountChatTitle),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () {
@@ -112,7 +113,7 @@ class _CustomerMessagesScreenState
         actions: [
           IconButton(
             key: const Key('masked_call_action_btn'),
-            tooltip: 'Masked Call Bridge',
+            tooltip: localizedStrings(context).accountMaskedCall,
             icon: const Icon(Icons.phone_in_talk_rounded),
             onPressed: () => ContactIntentService.initiateMaskedTelephonyCall(
               context,
@@ -122,7 +123,7 @@ class _CustomerMessagesScreenState
             ),
           ),
           IconButton(
-            tooltip: 'View Artisan Profile',
+            tooltip: localizedStrings(context).accountViewArtisanProfile,
             icon: const Icon(Icons.info_outline_rounded),
             onPressed: () =>
                 context.push('/customer/artisan/${selectedArtisan.artisanId}'),
@@ -210,7 +211,8 @@ class _CustomerMessagesScreenState
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'Number Masking Active • Zero Raw MSISDN Leakage • Connected with ${selectedArtisan.name} (${selectedArtisan.tradeTitle})',
+                    localizedStrings(context).accountPrivacyConnection(
+                        selectedArtisan.name, selectedArtisan.tradeTitle),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: AppTypography.labelSm.copyWith(
@@ -230,9 +232,8 @@ class _CustomerMessagesScreenState
               children: messages.map((msg) {
                 final isCustomer = msg['sender'] == 'customer';
                 return Align(
-                  alignment: isCustomer
-                      ? Alignment.centerRight
-                      : Alignment.centerLeft,
+                  alignment:
+                      isCustomer ? Alignment.centerRight : Alignment.centerLeft,
                   child: Container(
                     margin: const EdgeInsets.only(bottom: 12),
                     constraints: const BoxConstraints(maxWidth: 280),
@@ -281,21 +282,25 @@ class _CustomerMessagesScreenState
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
             child: Row(
               children: [
-                _buildQuickChip('Gate Pass Approved'),
+                _buildQuickChip(localizedStrings(context).accountGateApproved),
                 const SizedBox(width: 8),
-                _buildQuickChip('Share Live Pin'),
+                _buildQuickChip(localizedStrings(context).accountSharePin),
                 const SizedBox(width: 8),
-                _buildQuickChip('Call on Arrival'),
+                _buildQuickChip(localizedStrings(context).accountCallOnArrival),
                 const SizedBox(width: 8),
                 ActionChip(
                   key: const Key('whatsapp_cloud_relay_chip'),
-                  avatar: const Icon(Icons.chat_bubble_rounded, size: 14, color: Color(0xFF25D366)),
-                  label: const Text('WhatsApp Relay', style: TextStyle(fontSize: 12)),
+                  avatar: const Icon(Icons.chat_bubble_rounded,
+                      size: 14, color: Color(0xFF25D366)),
+                  label: Text(localizedStrings(context).accountWhatsappRelay,
+                      style: const TextStyle(fontSize: 12)),
                   backgroundColor: AppColors.surfaceRaised,
-                  onPressed: () => ContactIntentService.initiateMaskedWhatsAppChat(
+                  onPressed: () =>
+                      ContactIntentService.initiateMaskedWhatsAppChat(
                     context,
                     calleeId: selectedArtisan.artisanId,
-                    message: 'Namaskar ${selectedArtisan.name}, connecting via WhatsApp Cloud Relay.',
+                    message: localizedStrings(context)
+                        .accountWhatsappGreeting(selectedArtisan.name),
                     contactName: selectedArtisan.name,
                   ),
                 ),
@@ -315,8 +320,8 @@ class _CustomerMessagesScreenState
                 Expanded(
                   child: TextField(
                     controller: _messageController,
-                    decoration: const InputDecoration(
-                      hintText: 'Message artisan via Guild Bridge...',
+                    decoration: InputDecoration(
+                      hintText: localizedStrings(context).accountMessageHint,
                       isDense: true,
                     ),
                     onSubmitted: (_) => _sendMessage(),
@@ -333,7 +338,7 @@ class _CustomerMessagesScreenState
                       vertical: 12,
                     ),
                   ),
-                  child: const Text('Send'),
+                  child: Text(localizedStrings(context).accountSend),
                 ),
               ],
             ),
@@ -364,24 +369,24 @@ class _CustomerMessagesScreenState
         children: [
           _buildNavItem(
             icon: Icons.explore_rounded,
-            label: 'Explore',
+            label: localizedStrings(context).explore,
             isActive: false,
             onTap: () => context.go('/customer/home'),
           ),
           _buildNavItem(
             icon: Icons.assignment_rounded,
-            label: 'Bookings',
+            label: localizedStrings(context).bookings,
             isActive: false,
             onTap: () => context.go('/customer/bookings'),
           ),
           _buildNavItem(
             icon: Icons.chat_bubble_outline_rounded,
-            label: 'Messages',
+            label: localizedStrings(context).messages,
             isActive: true,
           ),
           _buildNavItem(
             icon: Icons.person_outline_rounded,
-            label: 'Profile',
+            label: localizedStrings(context).profile,
             isActive: false,
             onTap: () => context.go('/customer/profile'),
           ),
