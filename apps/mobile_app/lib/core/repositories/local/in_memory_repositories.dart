@@ -1,7 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../models/artisan_profile_model.dart';
 import '../../models/booking_model.dart';
+import '../../models/booking_lifecycle.dart';
 import '../../models/mandate_model.dart';
 import '../../models/user_profile_model.dart';
 import '../../models/user_role.dart';
@@ -130,13 +134,16 @@ class InMemoryBookingRepository implements IBookingRepository {
   }
 
   final Map<String, BookingModel> _bookings = {};
+  List<BookingModel> get snapshot => List.unmodifiable(_bookings.values);
   final StreamController<void> _changes = StreamController<void>.broadcast();
 
   void _publish() => _changes.add(null);
 
   @override
   Future<void> createBooking(BookingModel booking) async {
-    if (_bookings.containsKey(booking.bookingId)) {
+    final existing = _bookings[booking.bookingId];
+    if (existing != null) {
+      if (existing.idempotencyKey == booking.idempotencyKey) return;
       throw StateError('Booking ${booking.bookingId} already exists');
     }
     _bookings[booking.bookingId] = booking;
@@ -145,6 +152,12 @@ class InMemoryBookingRepository implements IBookingRepository {
 
   @override
   Future<BookingModel?> getById(String bookingId) async => _bookings[bookingId];
+
+  @override
+  Stream<BookingModel?> streamBooking(String bookingId) async* {
+    yield _bookings[bookingId];
+    yield* _changes.stream.map((_) => _bookings[bookingId]);
+  }
 
   @override
   Future<void> save(BookingModel booking) async {
@@ -156,15 +169,69 @@ class InMemoryBookingRepository implements IBookingRepository {
   Future<void> updateStatus(String bookingId, BookingStatus status) async {
     final booking = _bookings[bookingId];
     if (booking == null) throw StateError('Booking $bookingId was not found');
-    await save(booking.copyWith(
-      status: status,
-      arrivalTime:
-          status == BookingStatus.artisanArrived ? DateTime.now() : null,
-      completionTime:
-          status == BookingStatus.completed || status == BookingStatus.settled
-              ? DateTime.now()
-              : null,
-    ));
+    await transitionBooking(
+      bookingId: bookingId,
+      to: status,
+      actorId: 'system',
+      actorRole: UserRole.admin,
+      eventKey: 'legacy_${booking.status.name}_${status.name}',
+    );
+  }
+
+  @override
+  Future<BookingModel> transitionBooking({
+    required String bookingId,
+    required BookingStatus to,
+    required String actorId,
+    required UserRole actorRole,
+    required String eventKey,
+    String? reason,
+    String? assignArtisanId,
+    String? assignArtisanName,
+    String? assignArtisanPhone,
+  }) async {
+    final booking = _bookings[bookingId];
+    if (booking == null) throw StateError('Booking $bookingId was not found');
+    final priorEvent = booking.statusEvents
+        .where((event) => event.eventKey == eventKey)
+        .firstOrNull;
+    if (priorEvent != null) return booking;
+    if (!BookingLifecycle.canTransition(booking.status, to,
+        actorRole: actorRole)) {
+      throw StateError('Invalid booking transition ${booking.status.name} -> ${to.name}');
+    }
+    if (assignArtisanId != null &&
+        !BookingLifecycle.canAssign(
+          to: to,
+          actorId: actorId,
+          assignedArtisanId: assignArtisanId,
+        )) {
+      throw StateError('Only a claiming artisan can assign this booking');
+    }
+    final now = DateTime.now().toUtc();
+    final event = BookingStatusEvent(
+      from: booking.status,
+      to: to,
+      actorId: actorId,
+      actorRole: actorRole,
+      eventKey: eventKey,
+      occurredAt: now,
+      reason: reason,
+    );
+    final updated = booking.copyWith(
+      status: to,
+      statusEvents: [...booking.statusEvents, event],
+      clearAssignedArtisan: to == BookingStatus.dispatchFailed,
+      assignedArtisanId: assignArtisanId,
+      assignedArtisanName: assignArtisanName,
+      assignedArtisanPhone: assignArtisanPhone,
+      arrivalTime: to == BookingStatus.artisanArrived ? now : null,
+      completionTime: to == BookingStatus.completed || to == BookingStatus.settled
+          ? now
+          : null,
+    );
+    await save(updated);
+    return updated;
   }
 
   List<BookingModel> _customerBookings(String customerId) => _bookings.values
@@ -190,6 +257,127 @@ class InMemoryBookingRepository implements IBookingRepository {
   }
 
   Future<void> dispose() => _changes.close();
+}
+
+/// Local booking adapter backed by SharedPreferences so a pilot booking can be
+/// reopened after app restart. If the platform store is unavailable, it keeps
+/// operating with the same deterministic in-memory behavior as the test adapter.
+class PersistentLocalBookingRepository implements IBookingRepository {
+  PersistentLocalBookingRepository({Iterable<BookingModel> seed = const []})
+      : _seed = seed.toList(growable: false) {
+    _ready = _initialize();
+  }
+
+  static const _storageKey = 'booking_repository_v1';
+  final List<BookingModel> _seed;
+  late final Future<void> _ready;
+  late InMemoryBookingRepository _delegate;
+
+  Future<void> _initialize() async {
+    var initial = _seed;
+    try {
+      final raw = (await SharedPreferences.getInstance()).getString(_storageKey);
+      if (raw != null) {
+        final decoded = jsonDecode(raw) as List<dynamic>;
+        initial = decoded
+            .map((item) => BookingModel.fromJson(item as Map<String, dynamic>))
+            .toList(growable: false);
+      }
+    } on Object {
+      // Keep the offline app available when the preference plugin is absent.
+    }
+    _delegate = InMemoryBookingRepository(initial);
+  }
+
+  Future<void> _persist() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(
+        _storageKey,
+        jsonEncode(_delegate.snapshot.map((booking) => booking.toJson()).toList()),
+      );
+    } on Object {
+      // In-memory state remains available if local disk persistence fails.
+    }
+  }
+
+  @override
+  Future<void> createBooking(BookingModel booking) async {
+    await _ready;
+    await _delegate.createBooking(booking);
+    await _persist();
+  }
+
+  @override
+  Future<BookingModel?> getById(String bookingId) async {
+    await _ready;
+    return _delegate.getById(bookingId);
+  }
+
+  @override
+  Stream<BookingModel?> streamBooking(String bookingId) async* {
+    await _ready;
+    yield* _delegate.streamBooking(bookingId);
+  }
+
+  @override
+  Future<void> save(BookingModel booking) async {
+    await _ready;
+    await _delegate.save(booking);
+    await _persist();
+  }
+
+  @override
+  Future<void> updateStatus(String bookingId, BookingStatus status) async {
+    await _ready;
+    await _delegate.updateStatus(bookingId, status);
+    await _persist();
+  }
+
+  @override
+  Future<BookingModel> transitionBooking({
+    required String bookingId,
+    required BookingStatus to,
+    required String actorId,
+    required UserRole actorRole,
+    required String eventKey,
+    String? reason,
+    String? assignArtisanId,
+    String? assignArtisanName,
+    String? assignArtisanPhone,
+  }) async {
+    await _ready;
+    final booking = await _delegate.transitionBooking(
+      bookingId: bookingId,
+      to: to,
+      actorId: actorId,
+      actorRole: actorRole,
+      eventKey: eventKey,
+      reason: reason,
+      assignArtisanId: assignArtisanId,
+      assignArtisanName: assignArtisanName,
+      assignArtisanPhone: assignArtisanPhone,
+    );
+    await _persist();
+    return booking;
+  }
+
+  @override
+  Stream<List<BookingModel>> streamActiveBookings(String customerId) async* {
+    await _ready;
+    yield* _delegate.streamActiveBookings(customerId);
+  }
+
+  @override
+  Stream<List<BookingModel>> streamArtisanJobs(String artisanId) async* {
+    await _ready;
+    yield* _delegate.streamArtisanJobs(artisanId);
+  }
+
+  Future<void> dispose() async {
+    await _ready;
+    await _delegate.dispose();
+  }
 }
 
 class InMemoryMandateRepository implements IMandateRepository {

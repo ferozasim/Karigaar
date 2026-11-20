@@ -136,6 +136,12 @@ class FallbackBookingRepository implements IBookingRepository {
       );
 
   @override
+  Stream<BookingModel?> streamBooking(String bookingId) => _streamWithFallback(
+        _primary.streamBooking(bookingId),
+        _fallback.streamBooking(bookingId),
+      );
+
+  @override
   Future<void> save(BookingModel booking) => _withFallback(
       () => _primary.save(booking), () => _fallback.save(booking));
 
@@ -158,6 +164,43 @@ class FallbackBookingRepository implements IBookingRepository {
       _withFallback(
         () => _primary.updateStatus(bookingId, status),
         () => _fallback.updateStatus(bookingId, status),
+      );
+
+  @override
+  Future<BookingModel> transitionBooking({
+    required String bookingId,
+    required BookingStatus to,
+    required String actorId,
+    required UserRole actorRole,
+    required String eventKey,
+    String? reason,
+    String? assignArtisanId,
+    String? assignArtisanName,
+    String? assignArtisanPhone,
+  }) =>
+      _withFallback(
+        () => _primary.transitionBooking(
+          bookingId: bookingId,
+          to: to,
+          actorId: actorId,
+          actorRole: actorRole,
+          eventKey: eventKey,
+          reason: reason,
+          assignArtisanId: assignArtisanId,
+          assignArtisanName: assignArtisanName,
+          assignArtisanPhone: assignArtisanPhone,
+        ),
+        () => _fallback.transitionBooking(
+          bookingId: bookingId,
+          to: to,
+          actorId: actorId,
+          actorRole: actorRole,
+          eventKey: eventKey,
+          reason: reason,
+          assignArtisanId: assignArtisanId,
+          assignArtisanName: assignArtisanName,
+          assignArtisanPhone: assignArtisanPhone,
+        ),
       );
 }
 

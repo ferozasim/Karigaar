@@ -3,11 +3,13 @@ import '../../../l10n/localized_strings.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/models/booking_model.dart';
+import '../../../core/models/user_role.dart';
 import '../../../core/models/trade_model.dart';
 import '../../../core/models/karigaar_role_type.dart';
 import '../../../core/models/preventive_bundle_model.dart';
 import '../../../core/services/api_service.dart';
 import '../../../core/providers/app_providers.dart';
+import '../../../core/providers/repository_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../shared/widgets/trust_shield_badge.dart';
@@ -38,6 +40,8 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
   KarigaarRoleType _selectedRoleTier = KarigaarRoleType.skilledKarigaar;
   bool _hasInitializedTradeSelection = false;
   bool _hasAttachedPhoto = false;
+  late final String _bookingRequestId =
+      'bk_${DateTime.now().microsecondsSinceEpoch}';
 
   @override
   Widget build(BuildContext context) {
@@ -554,7 +558,13 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                           alignment: Alignment.centerRight,
                           child: ElevatedButton(
                             onPressed: () {
-                              _showUpiPreAuthMandateSheet(context, grandTotal);
+                              _showUpiPreAuthMandateSheet(
+                                context,
+                                grandTotal,
+                                trade,
+                                laborTotal,
+                                safetyShieldFee,
+                              );
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.primary,
@@ -731,7 +741,13 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
     );
   }
 
-  void _showUpiPreAuthMandateSheet(BuildContext context, int grandTotal) {
+  void _showUpiPreAuthMandateSheet(
+    BuildContext context,
+    int grandTotal,
+    TradeModel trade,
+    int laborTotal,
+    int safetyShieldFee,
+  ) {
     final vpaController = TextEditingController(text: 'customer@okaxis');
     String? errorMessage;
 
@@ -932,9 +948,13 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
 
                           try {
                             final api = ref.read(apiServiceProvider);
+                            final customerIdentity =
+                                ref.read(verifiedPhoneIdentityProvider);
+                            final customerId =
+                                customerIdentity?.userId ?? 'cust_01';
                             final res = await api.createUpiPreAuthMandate(
-                              bookingId: 'BK_NANDED_8821',
-                              customerId: 'cust_01',
+                              bookingId: _bookingRequestId,
+                              customerId: customerId,
                               upiVpa: vpa,
                               amount: 99,
                             );
@@ -956,7 +976,7 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                             if (audioMemo != null) {
                               try {
                                 final uploadRes = await api.uploadAudioMemo(
-                                  bookingId: 'BK_NANDED_8821',
+                                  bookingId: _bookingRequestId,
                                   tradeId: widget.tradeId,
                                   durationSeconds: audioMemo.durationSeconds,
                                   waveform: audioMemo.waveform,
@@ -996,7 +1016,7 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                             if (selectedSlot != null) {
                               try {
                                 await api.reserveArrivalSlot(
-                                  bookingId: 'BK_NANDED_8821',
+                                  bookingId: _bookingRequestId,
                                   tradeId: widget.tradeId,
                                   date: selectedDate,
                                   slotId: selectedSlot.slotId,
@@ -1004,31 +1024,63 @@ class _ServiceScopingScreenState extends ConsumerState<ServiceScopingScreen> {
                               } catch (_) {}
                             }
 
-                            final currentBooking =
-                                ref.read(activeBookingProvider);
-                            if (currentBooking != null) {
-                              ref.read(activeBookingProvider.notifier).state =
-                                  currentBooking.copyWith(
-                                mandateStatus: UpiMandateStatus.authorized,
-                                mandateId: mandateData?['mandateId'] as String?,
-                                upiVpa: vpa,
+                            final locality = ref.read(selectedLocalityProvider);
+                            var booking = await ref
+                                .read(bookingRepositoryProvider)
+                                .getById(_bookingRequestId);
+                            if (booking == null) {
+                              booking = BookingModel(
+                                bookingId: _bookingRequestId,
+                                idempotencyKey: _bookingRequestId,
+                                customerId: customerId,
+                                customerName: 'Asim Farooqui',
+                                customerPhone: customerIdentity?.phone ??
+                                    '+919822199882',
+                                tradeId: widget.tradeId,
+                                tradeName: trade.name,
+                                localityId: locality.localityId,
+                                localityName: '${locality.name}, Nanded',
+                                address: '${locality.name}, Nanded',
+                                status: BookingStatus.draft,
+                                laborFee: laborTotal,
+                                safetyShieldFee: safetyShieldFee,
                                 audioMemoUrl: audioUrl,
                                 audioMemoDurationSeconds: audioDuration,
                                 audioMemoWaveform: audioWf,
                                 audioMemoTranscript: audioTranscript,
+                                createdAt: DateTime.now().toUtc(),
                                 scheduledDate: selectedDate,
                                 scheduledSlot: slotLabel,
                                 scheduledSlotId: slotId,
                                 isEmergencyDispatch: isEmergency,
+                                mandateStatus: UpiMandateStatus.authorized,
+                                mandateId: mandateData?['mandateId'] as String?,
+                                upiVpa: vpa,
                               );
+                              await ref
+                                  .read(bookingRepositoryProvider)
+                                  .createBooking(booking);
                             }
+                            if (booking.status == BookingStatus.draft) {
+                              booking = await ref
+                                  .read(bookingRepositoryProvider)
+                                  .transitionBooking(
+                                    bookingId: booking.bookingId,
+                                    to: BookingStatus.broadcasting,
+                                    actorId: booking.customerId,
+                                    actorRole: UserRole.customer,
+                                    eventKey: '${_bookingRequestId}_dispatch',
+                                  );
+                            }
+                            ref.read(activeBookingProvider.notifier).state =
+                                booking;
 
                             if (sheetContext.mounted) {
                               Navigator.pop(sheetContext);
                             }
                             if (context.mounted) {
                               await context.push(
-                                  '/customer/active-tracking/BK_NANDED_8821');
+                                  '/customer/active-tracking/$_bookingRequestId');
                             }
                           } catch (e) {
                             setSheetState(() {

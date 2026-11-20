@@ -4,8 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/config/partner_copy.dart';
 import '../../../core/models/booking_model.dart';
+import '../../../core/models/user_role.dart';
 import '../../../core/models/radar_broadcast_model.dart';
 import '../../../core/providers/app_providers.dart';
+import '../../../core/providers/repository_providers.dart';
 import '../../../core/services/contact_intent_service.dart';
 import '../../../core/services/radar_broadcast_service.dart';
 import '../../../core/theme/app_colors.dart';
@@ -48,6 +50,28 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(radarUnfulfilledEventProvider, (previous, event) {
+      if (event == null ||
+          event.fallbackAction != 'MANUAL_RETRY_OR_ESCALATE' ||
+          ref.read(isFirebaseLiveProvider)) {
+        return;
+      }
+      () async {
+        try {
+          final updated = await ref.read(bookingRepositoryProvider).transitionBooking(
+                bookingId: event.bookingId,
+                to: BookingStatus.dispatchFailed,
+                actorId: 'local_dispatch_service',
+                actorRole: UserRole.admin,
+                eventKey: '${event.broadcastId}_unfulfilled',
+                reason: event.reason,
+              );
+          ref.read(activeBookingProvider.notifier).state = updated;
+        } catch (_) {
+          // A stale or already-claimed broadcast must not overwrite its owner.
+        }
+      }();
+    });
     final isOnline = ref.watch(artisanDutyOnlineProvider);
     final countdown = ref.watch(radarCountdownProvider);
     final activeBroadcast = ref.watch(activeRadarBroadcastProvider);
@@ -519,21 +543,69 @@ class _ArtisanJobRadarScreenState extends ConsumerState<ArtisanJobRadarScreen> {
                                   setState(() => _isClaiming = true);
                                   try {
                                     final current = activeBroadcast;
+                                    final identity = ref.read(verifiedPhoneIdentityProvider);
+                                    final artisanActorId = identity?.userId ?? 'art_nanded_01';
+                                    final artisanProfileId = identity == null
+                                        ? 'art_nanded_01'
+                                        : 'art_${identity.userId}';
                                     await ref.read(radarBroadcastServiceProvider).acceptBroadcastJob(
                                           broadcastId: current.broadcastId,
-                                          artisanId: 'art_nanded_01',
+                                          artisanId: artisanProfileId,
                                         );
 
-                                    final currentBooking = ref.read(activeBookingProvider);
-                                    if (currentBooking != null) {
-                                      ref.read(activeBookingProvider.notifier).state = currentBooking.copyWith(
-                                            status: BookingStatus.artisanEnRoute,
-                                            assignedArtisanId: 'art_nanded_01',
-                                          );
+                                    final repository =
+                                        ref.read(bookingRepositoryProvider);
+                                    BookingModel? booking;
+                                    try {
+                                      booking = await repository
+                                          .getById(current.bookingId);
+                                    } catch (_) {
+                                      // Keep the local dispatch journey usable
+                                      // when the persisted adapter is offline.
+                                    }
+                                    if (booking != null &&
+                                        booking.status ==
+                                            BookingStatus.broadcasting) {
+                                      booking = await repository.transitionBooking(
+                                        bookingId: booking.bookingId,
+                                        to: BookingStatus.claimed,
+                                        actorId: artisanActorId,
+                                        actorRole: UserRole.artisan,
+                                        eventKey: '${current.broadcastId}_claim',
+                                        assignArtisanId: artisanProfileId,
+                                        assignArtisanName: ref
+                                            .read(currentArtisanProfileProvider)
+                                            .name,
+                                      );
+                                      booking = await repository.transitionBooking(
+                                        bookingId: booking.bookingId,
+                                        to: BookingStatus.assigned,
+                                        actorId: artisanActorId,
+                                        actorRole: UserRole.artisan,
+                                        eventKey: '${current.broadcastId}_assign',
+                                      );
+                                      booking = await repository.transitionBooking(
+                                        bookingId: booking.bookingId,
+                                        to: BookingStatus.artisanEnRoute,
+                                        actorId: artisanActorId,
+                                        actorRole: UserRole.artisan,
+                                        eventKey: '${current.broadcastId}_enroute',
+                                      );
+                                      ref.read(activeBookingProvider.notifier).state =
+                                          booking;
+                                    } else {
+                                      throw StateError(
+                                          'This booking is no longer available to claim.');
                                     }
 
                                     if (!context.mounted) return;
                                     await context.push('/artisan/active-job/${current.bookingId}');
+                                  } catch (error) {
+                                    if (context.mounted) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text('Could not accept this booking: $error')),
+                                      );
+                                    }
                                   } finally {
                                     if (mounted) {
                                       setState(() => _isClaiming = false);

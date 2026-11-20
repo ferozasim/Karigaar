@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/models/booking_model.dart';
 import '../../../core/config/app_data_service.dart';
 import '../../../core/providers/app_providers.dart';
+import '../../../core/providers/repository_providers.dart';
 import '../../../core/services/api_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
@@ -101,7 +102,16 @@ class _CustomerBookingsScreenState
 
   @override
   Widget build(BuildContext context) {
-    final activeBooking = ref.watch(activeBookingProvider);
+    final customerId =
+        ref.watch(verifiedPhoneIdentityProvider)?.userId ?? 'cust_01';
+    final activeRecords = ref
+        .watch(repositoryActiveBookingsProvider(customerId))
+        .valueOrNull;
+    final activeBooking = activeRecords == null || activeRecords.isEmpty
+        ? ref.watch(activeBookingProvider)
+        : (activeRecords.toList()
+              ..sort((a, b) => b.createdAt.compareTo(a.createdAt)))
+            .first;
     final activeStatusText =
         activeBooking != null ? _statusLabel(activeBooking.status) : 'En-Route';
 
