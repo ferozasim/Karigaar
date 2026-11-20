@@ -25,16 +25,24 @@ sessions separate and prevent unapproved accounts from opening work screens.
   approved application state.
 - Removed registration's direct promotion of unreviewed form data into the
   public artisan profile.
+- Added callable functions for phone-verified application submission and
+  admin-only review transitions. Decisions write an audit event and update the
+  artisan approval custom claim; approval creates a profile with verification
+  flags still false.
+- Tightened Firestore rules for user records, private artisan applications,
+  review history, public artisan profiles, and broadcast-job acceptance.
 
 ## Boundary and remaining live integration
 
-The development adapter never issues artisan approval. The local review state
-supports UI flow only; it is not an authority for live access control. A
-Firebase Phone Auth adapter, server-verified artisan approval custom claim,
-backend onboarding persistence, and admin review actions remain necessary
-before production use.
+The development adapter never issues artisan approval. The mobile app still
+uses its local draft/status store and does not call the new Firebase Functions;
+the admin portal's current approval buttons remain demo-only. Wire those clients
+to Firebase Phone Auth and the callable review flow before production use. The
+server functions and Firestore rules define the trusted boundary, but they have
+not been exercised against the Firebase emulator in this pass.
 
 ## Verification
 
-`dart analyze` on the changed Dart files: no issues found. Automated tests were
-not run in this delivery pass.
+`dart analyze` on the changed Dart files: no issues found. TypeScript
+`tsc --noEmit`: no issues found. Automated tests and Firebase emulator checks
+were not run in this delivery pass.
